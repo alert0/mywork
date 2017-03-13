@@ -1,0 +1,538 @@
+/*新建流程的*/
+
+.dyfOuterBorder {
+	/*
+	border: 1px solid #CDCDCD;
+	padding: 20px;
+	*/
+}
+
+.dyfContainer {
+	height: 100%;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.dyfA {}
+
+.listbox-item-style {
+	display: inline-block;
+	line-height: 13px;
+	clear: both;
+	height: 13px;
+	width: 13px;
+	cursor: default;
+}
+
+
+/*.listbox-item-style-bg-1{
+	background:url(../images/listbox/s-1.png) no-repeat;
+}
+
+.listbox-item-style-bg-2{
+	background:url(../images/listbox/s-2.png) no-repeat;
+}
+
+.listbox-item-style-bg-3{
+	background:url(../images/listbox/s-3.png) no-repeat;
+}
+
+.listbox-item-style-bg-4{
+	background:url(../images/listbox/s-4.png) no-repeat;
+}*/
+
+.mainItem {
+	margin: 0 0 0 0;
+	padding: 0px;
+	list-style: none;
+}
+
+.centerItem {
+	height: 30px;
+	line-height: 30px;
+	padding-left: 0px;
+	position: relative;
+	margin-bottom: 5px;
+	font-size: 14px
+}
+
+.centerItem:hover {
+	background: #f5f5f5;
+}
+
+.centerItem:hover .imageItem {
+	display: block!important;
+}
+
+.centerItem a {
+	color: #7a7a7a;
+	margin-left: 20px;
+	margin-right: 12px;
+}
+
+.centerItem a:hover {
+	color: #4ab1fc;
+}
+
+.centerItem .ant-menu-item{
+	width: 100%;
+}
+
+.imageItem {
+	position: absolute;
+	right: 0;
+	height: 30px;
+	z-index: 101;
+	padding-right: 10px
+}
+
+.fontItem {
+	width: 60%;
+	float: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.imgspan {
+	height: 26px;
+	width: 30px;
+	float: left;
+	margin-top: 4px;
+}
+
+.imgdiv {
+	background-color: rgb(153, 153, 153);
+	border: 1px solid #e0e0e0;
+	border-bottom: none;
+}
+
+.imgspan img {
+	margin-top: 3px;
+	margin-left: 17px;
+	cursor: pointer;
+}
+
+.agentlistdata {
+	position: absolute;
+	background-color: #f5f5f5;
+	border: 1px solid #e0e0e0;
+	z-index: 100;
+	min-width: 50px;
+}
+
+.agenter {
+	float: left;
+	border-bottom-style: solid;
+	border-bottom: 1px solid #e2e3e4;
+	margin-bottom: 13px;
+	margin-left: 15px;
+	margin-right: 15px;
+	height: 24px;
+	line-height: 24px;
+}
+
+.importTxt {}
+
+.importSpan {
+	margin-top: 5px;
+	width: 206px;
+	background-color: #fff;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.importSpan img {
+	float: right;
+	margin-top: 7;
+	position: relative;
+	top: -30;
+}
+
+.centerItem:hover {
+	display: block;
+}
+
+.labelText {
+	margin-top: 10px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	display: none;
+}
+
+.wf-create-main {
+	height: 100%;
+}
+
+.wf-create-main .ant-card {
+	background: #f5f5f5;
+	border-radius: 0;
+	font-size: 12px;
+	position: relative;
+	transition: all .3s;
+	margin-bottom: 10px;
+	min-width: 273px;
+	font-family: "Microsoft Yahei"!important;
+	overflow: visible;
+}
+
+.wf-create-main .ant-card:hover {
+	background: #ffffff;
+	border-color: #d5d5d5;
+}
+
+.wf-create-main .ant-card-bordered {
+	border-width: 0px;
+	border: 1px solid #f5f5f5;
+	border-top: 4px solid red;
+}
+
+.wf-create-main .ant-card-body {
+	padding: 15px 0px 0px 0px;
+}
+
+.wf-card-item {
+	height: 30px;
+	line-height: 30px;
+	padding-left: 0px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	padding-left: 0px;
+}
+
+.wf-card-item a {
+	color: #123885;
+	margin-left: 8px;
+	margin-right: 12px;
+}
+
+.wf-card-icon {
+	width: 64px;
+	height: 64px;
+}
+
+.wf-card-type-name {
+	width: 100%;
+	text-align: center;
+	color: #292929;
+	font-size: 16px;
+}
+
+.wf-card-type-name>span {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.wf-card-btn-icon {
+	cursor: pointer;
+	padding-left: 15px;
+}
+
+.wf-tab {}
+
+.wf-bar-advance {
+	position: absolute;
+	right: 20px;
+	z-index: 999;
+	height: 37px;
+}
+
+.advanceBtn {
+	font-family: 'menu' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-size: 22px;
+	display: inline-block;
+	vertical-align: baseline;
+	text-align: center;
+	text-rendering: auto;
+	margin-right: 5px;
+	cursor: pointer;
+}
+
+.wf-bar-advance-search {
+	float: left;
+	display: inline-block;
+	vertical-align: baseline;
+	margin-top: 5px;
+}
+
+.wf-bar-advance-btn {
+	float: right;
+	display: inline-block;
+	vertical-align: baseline;
+	margin-top: 5px;
+	font-size: 16px;
+}
+
+.wf-bar-advance-btn i {
+	cursor: pointer;
+	padding-right: 5px;
+}
+
+.abcbtn-group {
+	padding-left: 10px;
+	padding-bottom: 13px;
+	font-family: "arial";
+	font-size: 16px;
+}
+
+.abcbtn-group .ant-btn {
+	border-radius: 1px;
+	margin-right: 2px;
+	padding: 0px;
+	width: 30px;
+	height: 30px;
+	border: none;
+	background: #f5f5f5;
+	font-size: 16px;
+}
+
+.abcbtn-group .ant-btn:last-child {
+	width: 60px;
+}
+
+.abcbtn-group .ant-btn-ghost:focus,
+.abcbtn-group .ant-btn-ghost:hover,
+.abcbtn-group .btn-selected {
+	color: #fff;
+	background-color: #108ee9;
+	border-color: #108ee9;
+}
+
+.abcbtn-group .ant-btn-ghost[disabled]:focus,
+.abcbtn-group .ant-btn-ghost[disabled]:hover {
+	color: #ccc;
+	background-color: #f7f7f7;
+	border-color: #d9d9d9;
+}
+
+.abc-circle {
+	width: 60px;
+	height: 60px;
+	background: #55D2D4;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.abc-span {
+	display: inline;
+	font-size: 32px;
+	line-height: 60px;
+	color: #ffffff;
+}
+
+.autocomplete-suggestions {
+	color: #484848;
+	width: 226px;
+}
+
+.autocomplete-suggestion {
+	padding: 2px 5px;
+	color: #5b5b5b;
+	white-space: nowrap;
+	overflow: hidden;
+	height: 30px;
+	line-height: 30px;
+	cursor: pointer;
+	text-overflow: ellipsis;
+	border-bottom: 1px solid #e2e3e4;
+	cursor: pointer;
+}
+
+.autocomplete-suggestion:hover {
+	border-bottom-color: #99cdf8;
+}
+
+.importwf {
+	position: absolute;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #d9d9d9;
+	z-index: 9999;
+	width: 226px;
+	height: 50px;
+	display: none;
+	box-shadow: 0 1px 6px hsla(0, 0%, 39%, .2);
+	border-radius: 6px;
+}
+
+.importwf input {
+	width: 200px;
+	height: 28px;
+	box-shadow: none;
+	margin-left: 13px;
+	margin-top: 8px;
+}
+
+.one-card-title {
+	float: left;
+	width: 300px!important;
+	height: 100%;
+	margin-bottom: 15px;
+}
+
+.one-card-content {
+	margin-left: 300px;
+	height: 100%;
+}
+
+.one-card-content-inner {
+	padding: 0 10px;
+	height: 100%
+}
+
+.one-card-content ul {
+	overflow: visible;
+}
+
+.one-card-content ul li,
+.usedtodo>ul>li {
+	width: 360px;
+	float: left;
+}
+
+.usedtodo {
+	width: 100%;
+	height: 100%;
+}
+
+.usedtodo>ul>li .centerItem {
+	margin-bottom: 20px;
+}
+
+
+/*.wf-create-main .ant-tabs-content{
+  overflow-y: auto; 
+  height: 100%;
+  margin-top: 5px;
+}
+.wf-create-main .ant-tabs-bar{
+  margin: -36px 0 0;
+}*/
+
+
+/*新建流程图标*/
+
+.icon-circle-add-item {
+	display: block;
+	width: 60px;
+	height: 60px;
+	margin: 0 auto;
+	font-size: 32px;
+	line-height: 59px;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+}
+
+.wf-create-main .wea-add-drop-btn {
+	display: inline-block;
+	width: 30px;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content {
+	position: absolute;
+	top: 30px;
+	right: 0;
+	background: #fff;
+	border: 1px solid #dadada;
+	box-shadow: 0 0 2px #dadada;
+	padding: 10px 0;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content .wea-add-drop-btn-on {
+	height: 27px;
+	width: 30px;
+	position: absolute;
+	top: -27px;
+	right: -1px;
+	line-height: 21px;
+	border: 1px solid #dadada;
+	border-bottom: 0;
+	background-color: #fff;
+	box-shadow: 0px -1px 2px -1px #dadada;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-btn-area {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content .ant-menu {
+	border-right: 0;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content .ant-menu-item {
+	padding: 0 5px;
+	height: 30px;
+	line-height: 30px;
+	border-right: 0;
+	text-align: left;
+	text-indent: 1em;
+	font-size: 14px;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content .ant-menu-item-active,
+.ant-menu-item:hover {
+	background-color: #dadada;
+	color: #7a7a7a;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content a {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content a:hover {
+	color: #7a7a7a;
+}
+
+
+/*最科学的清浮动。。用after撑高，请慎用overflow：hidden,暂不影响其他的*/
+
+.wf-create-main .clearfix:after {
+	clear: both;
+	content: ".";
+	display: block;
+	font-size: 0;
+	height: 0;
+	visibility: hidden
+}
+
+.wf-create-main .clearfix:after {
+	_zoom: 1;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content .wea-input-focus {
+	width: 80%;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content .wea-input-focus>button {
+	width: 14%;
+}
+
+.wf-create-main .wea-add-drop-btn .wea-add-drop-content .wea-input-focus .ant-input-wrapper>input {
+	width: 100%;
+}
+
+.wf-create-main .wea-wf-add-content {
+	width: 100%;
+	padding: 20px 10px 0;
+	overflow-y: auto;
+}
