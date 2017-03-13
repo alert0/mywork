@@ -1,0 +1,155 @@
+@font-face {
+  font-family: 'form';
+  src:  url('/font/workflow/form.eot?4qncbq');
+  src:  url('/font/workflow/form.eot?4qncbq#iefix') format('embedded-opentype'),
+    url('/font/workflow/form.ttf?4qncbq') format('truetype'),
+    url('/font/workflow/form.woff?4qncbq') format('woff'),
+    url('/font/workflow/form.svg?4qncbq#form') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-Right-menu-"], [class*=" icon-Right-menu-"],[class^="icon-form-"], [class*=" icon-form-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'form' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-Right-menu--go-back:before {
+  content: "\e900";
+}
+.icon-Right-menu-Advice:before {
+  content: "\e901";
+}
+.icon-Right-menu-Approval:before {
+  content: "\e902";
+}
+.icon-Right-menu-batch:before {
+  content: "\e903";
+}
+.icon-Right-menu-Collection:before {
+  content: "\e904";
+}
+.icon-Right-menu-Custom:before {
+  content: "\e905";
+}
+.icon-Right-menu-delete:before {
+  content: "\e906";
+}
+.icon-Right-menu-Detailed:before {
+  content: "\e907";
+}
+.icon-Right-menu-edit:before {
+  content: "\e908";
+}
+.icon-Right-menu-Enable:before {
+  content: "\e909";
+}
+.icon-Right-menu-File:before {
+  content: "\e90a";
+}
+.icon-Right-menu-Flow-setting:before {
+  content: "\e90b";
+}
+.icon-Right-menu-Forcible:before {
+  content: "\e90c";
+}
+.icon-Right-menu-help:before {
+  content: "\e90d";
+}
+.icon-Right-menu-Journal:before {
+  content: "\e90e";
+}
+.icon-Right-menu-leading-in:before {
+  content: "\e90f";
+}
+.icon-Right-menu-New-Flow:before {
+  content: "\e910";
+}
+.icon-Right-menu-New-SMS:before {
+  content: "\e911";
+}
+.icon-Right-menu-overtime:before {
+  content: "\e912";
+}
+.icon-Right-menu-Print-log:before {
+  content: "\e913";
+}
+.icon-Right-menu-Return:before {
+  content: "\e914";
+}
+.icon-Right-menu-Revoke:before {
+  content: "\e915";
+}
+.icon-Right-menu-suspend:before {
+  content: "\e916";
+}
+.icon-Right-menu-task-list:before {
+  content: "\e917";
+}
+.icon-Right-menu-Trigger-process:before {
+  content: "\e918";
+}
+.icon-Right-menu-Turn-to-do:before {
+  content: "\e919";
+}
+.icon-Right-menu-WeChat:before {
+  content: "\e91a";
+}
+.icon-form-Batch-add-hot:before {
+  content: "\ea23";
+}
+.icon-form-Batch-add:before {
+  content: "\ea24";
+}
+.icon-form-Add-to-hot:before {
+  content: "\ea25";
+}
+.icon-form-Add-to:before {
+  content: "\ea26";
+}
+.icon-form-copy-hot:before {
+  content: "\ea27";
+}
+.icon-form-copy:before {
+  content: "\ea28";
+}
+.icon-form-delete-hot:before {
+  content: "\ea29";
+}
+.icon-form-delete:before {
+  content: "\ea2a";
+}
+.icon-form-sap-hot:before {
+  content: "\ea2b";
+}
+.icon-form-sap:before {
+  content: "\ea2c";
+}
+.icon-form-Total-person-time:before {
+  content: "\a900";
+}
+.icon-form-Already-view:before {
+  content: "\a901";
+}
+.icon-form-Has-been-submitted:before {
+  content: "\a902";
+}
+.icon-form-Not-submitted:before {
+  content: "\a903";
+}
+.icon-form-Not-viewed:before {
+  content: "\a904";
+}
+.icon-form-open:before {
+  content: "\a905";
+}
+

@@ -1,0 +1,25 @@
+@font-face {
+	font-family: 'wevicon';
+	src: url('/font/weviconfont.eot?fdc1bk');
+	src: url('/font/weviconfont.eot?fdc1bk#iefix') format('embedded-opentype'),
+		url('/font/weviconfont.woff?fdc1bk') format('woff'),
+		url('/font/weviconfont.ttf?fdc1bk') format('truetype'),
+		url('/font/weviconfont.svg?fdc1bk#menu') format('svg');
+}
+
+.wevicon {
+	display: inline-block;
+	font-style: normal;
+	vertical-align: middle;
+	text-align: center;
+	text-transform: none;
+	text-rendering: auto;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.wevicon:before {
+    display: block;
+    font-family: "wevicon" !important;    
+}

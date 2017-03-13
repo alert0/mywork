@@ -1,0 +1,66 @@
+.css-hrmbirth{
+  height: 100%;
+}
+.css-hrmbirth .ant-modal{
+  top: 50%;
+  margin-top: -238px;
+  padding-bottom:0;
+}
+.css-hrmbirth .ant-modal-body{
+  padding: 0px;
+}
+.css-hrmbirth .ant-modal-header{
+  padding:5px 16px;
+  background:#4f81bd;
+  border:0px;
+  color:#ffffff;
+  border-radius: 0;
+}
+.css-hrmbirth .ant-modal-close{
+  top:10px;
+  right: 10px;
+  color:#ffffff;
+}
+.css-hrmbirth-containner{
+  width: 499px;
+  height:475px;
+  padding:247px 30px 0;
+  position: relative;
+}
+.css-hrmbirth-text{
+  width:100%;
+  height: auto;
+}
+.css-hrmbirth-userinfo{
+  width:400px;
+  height: 90px;
+  line-height: 90px;
+  position: absolute;
+  bottom: 20px;
+  left: 30px;
+  text-align: left;
+  overflow-y: hidden;
+}
+.css-hrmbirth-text-cong{
+  text-align: left;
+}
+.css-hrmbirth-text-date{
+  text-align: right;
+}
+.css-hrmbirth-user-container{
+  width: 100%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.css-hrmbirth-user-item{
+  height: 18px;
+  width:400px;
+  line-height: 18px;
+}
+.css-hrmbirth-user{
+  display: inline-block;
+  width: 65px;
+}
+.css-hrmbirth-detp{
+  margin-left: 5px;
+}

@@ -1,0 +1,103 @@
+.homepage {position:relative;margin-top: -10px;margin-right: -10px;background: transparent!important;}
+.homepage .page-noright {width:100%;position:absolute;top:250px;text-align:center;}
+.homepage #Container {border-spacing:0;width:100%;}
+.homepage #Container table {border-spacing:0;}
+.homepage .group {height:auto;margin-right:10px;}
+.homepage .td-span {width: 100%;height:19px;line-height:19px;display: block;}
+.homepage .td-span a {max-width:calc(100% - 11px);height:19px;display: inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.homepage .td-span .wfremindimg{vertical-align: middle;margin-top: -10px;cursor: pointer;}
+.homepage .td-span-formmodecustomsearch {white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+.homepage .ant-table-body table {table-layout:fixed;}
+.homepage .layouttable {width:100%;table-layout:fixed;border-collapse:collapse;}
+.homepage .layouttable td {vertical-align:top;}
+.homepage .toolbar {height:auto!important;line-height:inherit!important;}
+.homepage .valign{vertical-align: top;}
+.homepage .item {position:relative;box-shadow:0 0 5px #ddd;height:100%;}
+.homepage .item .header {box-sizing:content-box;}
+.homepage .item .content {overflow: hidden !important;}
+.homepage .nodisplay {display:none;}
+
+/** ----------- 将antd的表格的宽高 ------------ **/
+.homepage .item .ant-table-small {border:0 !important;}
+.homepage .item .ant-table-tbody > tr > td {border:0 !important;padding:6px 2px;}
+.homepage .item .ant-table-thead > tr > th {padding:8px 0px;}
+.homepage .ant-carousel {height:100%;}
+.homepage .ant-carousel .slick-slider {padding-bottom:0px !important;height:100%;}
+/** ----------- 将antd的表格线去除 ------------ **/
+.homepage .ant-tabs-bar {margin-bottom:0 !important;}
+/** ----------- 计划报告元素相关css ------------ **/
+.addWorkPlan {border:none;background:url(/page/element/MyCalendar/img/add_wev8.png) no-repeat;color:#333;width:24px;height:24px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.addWorkPlan2 {border:none;background:url(/page/element/MyCalendar/img/add_hot_wev8.png) no-repeat;color:#333;width:94px;height:24px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+/** -------- 文档中心元素列表式2样式css------- **/
+.news-silde .ant-carousel .slick-dots li.slick-active button:before {color:#FFFFFF;opacity:1;}
+.news-silde .ant-carousel .slick-dots {overflow:hidden;height:23px;background:#adadb2;opacity:0.6;}
+.news-silde .ant-carousel .slick-dots li {width:8px;}
+.news-silde .ant-carousel .slick-dots li button:before {color:#242323;opacity:0.75;}
+.news-silde .ant-carousel .slick-dots li button:hover:before,.news-silde .ant-carousel .slick-dots li button:focus:before {color:#FFFFFF;}
+/** -------- 拖动元素，创建临时对象用于记住其原始位置，占位的css------- **/
+.location {border:2px dashed  #BCBCBC;margin-top:10px;}
+/**------个人数据css-------- **/
+.homepage .module {width:100%;height:100%;position:relative;cursor:pointer;}
+.homepage .workflow {background-color:#33a3ff;background-image:url("/images/homepage/portalcenter/workflow_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .project {background-color:#cb61fe;background-image:url("/images/homepage/portalcenter/project_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .capital {background-color:#ffd200;background-image:url("/images/homepage/portalcenter/capital_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .cowork {background-color:#fd9000;background-image:url("/images/homepage/portalcenter/cowork_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .crm {background-color:#6871e3;background-image:url("/images/homepage/portalcenter/crm_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .blog {background-color:#56de37;background-image:url("/images/homepage/portalcenter/blog_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .doc {background-color:#fd2677;background-image:url("/images/homepage/portalcenter/doc_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .meetting {background-color:#fd2677;background-image:url("/images/homepage/portalcenter/meetting_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .workplan {background-color:#fd2677;background-image:url("/images/homepage/portalcenter/workplan_wev8.png");background-position:center center;background-repeat:no-repeat;}
+.homepage .num {position:absolute;left:0px;bottom:0px;color:#ffffff;padding-left:15px;padding-bottom:10px;font-size:24px;font-family:微软雅黑;}
+.homepage .mtitle {height:100%;margin:auto;bottom:0px;color:#ffffff;width:100%;line-height:100%;vertical-align:middle;font-size:20px;text-align:center;font-family:微软雅黑;display:none;}
+/**-------日历日程相关css---------**/
+.homepage .events {line-height:24px;list-style:none;margin:0;padding:0;}
+.homepage .events li {color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.homepage .events li span {vertical-align:middle;}
+.homepage .events li span:first-child {font-size:9px;margin-right:4px;}
+.homepage .event-warning {color:#fac450;}
+.homepage .event-normal {color:#2db7f5;}
+.homepage .event-error {color:#f50;}
+.homepage .notes-month {text-align:center;}
+.homepage .notes-month section {font-size:28px;}
+.homepage .ant-fullcalendar-value {width:30px;height:30px;line-height:30px;}
+.homepage .ant-fullcalendar-event {color:#fff;background:url(/page/element/MyCalendar/img/green_circle_wev8.png) center center no-repeat;}
+.homepage .ant-fullcalendar-today .ant-fullcalendar-value {background:url(/page/element/MyCalendar/img/blue_circle_wev8.png) center center no-repeat;}
+.homepage .item .ant-fullcalendar-current {color:#666;background:url(/page/element/MyCalendar/img/blue_ring_wev8.png) center center no-repeat;}
+.homepage .ant-radio-group {display:none;}
+/**--------公告元素相关css---------**/
+.homepage .noticeitemimgblock {width:97px;height:66px;position:relative;border:1px solid #d7d8e0;}
+.homepage .siteminputblock {/*margin:9px;*/}
+.homepage .noticeinfoline {height:8px!important;}
+.homepage .noticeitemtitle {font-size:14px;}
+.homepage .noticeitemdesc {color:#80828a;width:100%;text-Overflow:ellipsis;white-Space:nowrap;word-Break:keep-all;overflow:hidden;}
+.homepage .noticeitemline {height:1px!important;background:#ebebeb;margin:2px 0px;}
+.homepage .noticeitemnew {height:54px;border:1px dotted #eeeeee;position:relative;margin-top:2px;}
+/**--------我的邮件相关css---------**/
+.homepage .mail-sparator {margin-left:8px;margin-top:6px;color:#000000;}
+.homepage .mail-sparator .mail-sparator-font a {color:blue;text-decoration:none;}
+.homepage .mail-sparator .mail-sparator-font:hover {color:#018efb;}
+.homepage .mail-sparator .mail-sparator-font a:hover {color:#018efb;}
+/**--------计划报告相关css---------**/
+.homepage .item .plan-view {margin-left:14px;}
+.homepage .item .plan-view .plan-title {width:48px;height:28px;text-align:center;font-weight:bold;border-top:1px #DBDBDB solid;border-bottom:1px #DBDBDB solid;}
+.homepage .item .plan-view .selected {background:#4F95E4;}
+.homepage .item .plan-view .month-sel {width:91px;height:100%;}
+.homepage .item .plan-view .month-sel span {float:left;display:block;height:28px;}
+.homepage .item .plan-view .week_btn1 {width:16px;background:url(/page/element/plan/resource/image/prev.png) center no-repeat;}
+.homepage .item .plan-view .week_prev:hover {width:16px;background:url(/page/element/plan/resource/image/prev_hover.png) center no-repeat;}
+.homepage .item .plan-view .week_btn2 {width:16px;background:url(/page/element/plan/resource/image/next.png) center no-repeat;}
+.homepage .item .plan-view .week_next:hover {width:16px;background:url(/page/element/plan/resource/image/next_hover.png) center no-repeat;}
+.homepage .item .plan-view .week_month {width:56px;padding-top:5px;}
+.homepage .item .plan-view .sel-month-week {background:url(/page/element/plan/resource/image/tab_bg.png) repeat-x;}
+.homepage .item .custompage-iframe {border:0 !important;}
+/**--------多图元素相关css---------**/
+.homepage .item .imgslide {overflow:auto;}
+.homepage .item .imgslide .carousel {width:95%;float:left;text-align:center;margin:0 auto;}
+.homepage .item .imgslide .setting {width:5%;float:left;cursor:pointer;display:none;}
+.homepage .item .imgslide .slick-dots .li-class {width:20%;list-style:none;}
+/**--------图片元素相关css---------**/
+.homepage .jCarouselLite {margin:auto;}
+.homepage .jCarouselLite li {margin-left:2px;margin-right:2px;}
+.homepage .clear {clear:both;display:block;}
+.homepage .picturenext {width:32px;height:32px;float:right;background:transparent url(/page/element/Picture/resource/image/next-horizontal_wev8.png) no-repeat 0 0;}
+.homepage .pictureback {width:32px;height:32px;float:left;background:transparent url(/page/element/Picture/resource/image/prev-horizontal_wev8.png) no-repeat 0 0;}

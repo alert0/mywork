@@ -1,0 +1,547 @@
+::-webkit-input-placeholder {
+	color: #ffffff !important ;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */ 
+	color: #ffffff !important ;
+} 
+::-moz-placeholder { /* Mozilla Firefox 19+ */ 
+	color: #ffffff !important ;
+} 
+:-ms-input-placeholder { /* Internet Explorer 10+ */ 
+	color: #ffffff !important ;
+}
+.css-portal-headblock{
+	max-width: 100%;
+	min-width: 70%;
+	height: 55px;	
+	background-color: #0066B1;
+}
+.css-topmenu-btnblock .wevicon{
+	vertical-align: top;
+}
+
+.css-portal-headblock>div{
+	height:100%;
+	float:left;
+}
+.css-portal-logo{
+	width:190px;
+	height: 100%;
+	color: #ffffff;
+    font-size: 15px;
+    padding-left: 20px;
+}
+.css-portal-logo img{
+	width:100%;
+	height:100%;
+}
+.css-topmenu-btnblock{
+	width:40px;
+	height:55px;
+	margin:0 5px;
+	/*float:left;*/
+	display: inline-block;
+	font-size: 18px;
+	color: #ffffff;
+	text-align: center;
+	vertical-align: middle;	
+}
+.css-topmenu-rightblock .css-topmenu-btnblock{
+	width:30px;
+}
+.css-topmenu-splitdiv{
+	width:1px;
+	height:28%;
+	display: inline-block;
+	background-color: #74C4FF;
+	vertical-align: middle;	
+}
+.css-topmenu-splitdiv-margin5{
+	margin: 0 5px;
+}
+.css-topmenu-topmenu{
+	text-align: left;
+	width:125px;
+	padding-left: 10px;
+	margin-left: 0px;
+}
+.css-topmenu-topmenu-expand,.css-topmenu-frequse-expand,.css-topmenu-searchblock-expand,.css-topmenu-notice-expand,.css-topmenu-morebtn-expand,.css-topmenu-hrminfo-expand{
+	color:#11334E;
+	background-color: #fff;
+}
+.css-topmenu-topmenu .css-topmenu-icon{
+	float:left;
+	height: 100%;
+}
+.css-topmenu-topmenu .css-topmenu-menuname{
+	float:left;
+	text-align: left;
+	margin-left: 12px;
+	font-size: 14px;
+	width: 75px;
+	height: 100%;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.css-topmenu-frequse{
+	width:52px;
+	font-size: 22px;
+	margin-left: 0px;
+}
+.css-topmenu-frequse>div{
+	height:100%;
+	transition: background 0.3s;
+}
+.css-topmenu-frequse-expand>div{
+	/*background:rgba(255,255,255,0.2);
+	transition: background 0.3s;*/
+}
+
+.css-topmenu-plugindiv{
+	max-width: 200px;
+	min-width: 0px;
+	height: 100%;
+    display: inline-block;
+    color: #fff;
+    vertical-align: middle;
+}
+.css-topmenu-plugindiv>*{
+	margin: 0 5px;
+	cursor: pointer;
+}
+.css-topmenu-plugindiv>*,.css-topmenu-plugindiv .plugin-text{
+	float:left;
+}
+.css-topmenu-plugindiv .plugin-text{
+	font-size: 12px;
+}
+.css-topmenu-plugindiv .plugin-img{
+	margin-left: 5px;
+	vertical-align: middle;
+}
+.css-topmenu-hrminfo{
+	width:auto !important;
+	text-align: left;
+	padding: 0;
+	margin-right: 10px;
+	padding-right: 6px;
+	min-width: 130px;
+}
+.css-topmenu-hrminfo>span,.css-topmenu-hrminfo>.wevicon{
+	font-size: 12px;
+}
+.css-topmenu-hrminfo>span{
+	max-width: 85px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+	margin-right: 5px;
+}
+.css-topmenu-hrminfo>.wevicon{
+}
+.css-topmenu-show,.css-topmenu-frequse-show,.css-topmenu-quicks-show,.css-topmenu-toolbar-show,.css-topmenu-hrminfo-show,.css-topmenu-remindinfo-show{
+	padding-top: 5px;
+}
+.css-topmenu-show{
+	padding:2px 10px 10px 2px;
+	width:552px;
+}
+.css-topmenu-frequse-show{
+	font-size: 12px;
+	width:110px;
+}
+.css-topmenu-quicks-show{
+	width:100px;
+	font-size: 12px;
+	padding-bottom: 5px;
+}
+.css-topmenu-toolbar-show{
+	width:180px;
+	font-size: 12px;
+    padding-bottom: 10px;
+}
+.css-topmenu-hrminfo-show{
+	width:280px;
+	padding-bottom: 5px;
+}
+.css-topmenu-remindinfo-show{
+	width:220px;
+	font-size: 12px;
+	padding:0;
+
+}
+.css-topmenu-remindinfo-show .css-topmenu-remindinfo-item{
+	height:30px;
+	margin:5px 0;
+	padding:0 16px;
+}
+.css-topmenu-remindinfo-show .css-topmenu-remindinfo-text{
+	float: left;
+
+}
+.css-topmenu-remindinfo-show .css-topmenu-remindinfo-num{
+	float: right;
+}
+.css-topmenu-remindinfo{
+	height: 100%;
+    display: inline-block;
+}
+.css-topmenu-remindinfo .wevicon{
+	line-height: 32px;
+    float: left;
+    font-size: 12px;
+    transform: rotate(-45deg);
+}
+.css-topmenu-remindinfo span{
+	margin-left: 10px;
+}
+.css-topmenu-remindinfo-show .css-topmenu-remindinfo-num,.css-topmenu-remindinfo .wevicon,.css-topmenu-notice .ant-badge-dot{
+	color:#f15b01;
+}
+.css-topmenu-rightblock .css-topmenu-notice,.css-topmenu-rightblock .css-topmenu-morebtn{
+	width: 40px;
+	margin:0;
+	position: relative;
+}
+.css-topmenu-notice .ant-badge-dot{
+	top: -1px;
+	left: 15px;
+}
+.css-topmenu-hrminfo-show-nochange{
+	width:150px;
+}
+.css-topmenu-scroll{
+	max-height: 334px;
+	min-width:0px;
+}
+.css-topmenu-item{
+	width:100px;
+	height:100px;
+	margin-left:8px;
+	margin-top:8px;
+	font-size:12px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.css-topmenu-item-selected{
+	border: 4px solid #98abcc;
+}
+.css-topmenu-item-cover{
+	width:100%;
+	height:100%;
+}
+.css-topmenu-item-cover > div{
+	width: 100%;
+	text-align: center;
+}
+.css-topmenu-item-icon{
+	font-size: 35px;
+	margin-top: 20px;
+	height: 35px;
+}
+.css-topmenu-item-icon>.wevicon{
+	line-height: 35px;
+    vertical-align: top;
+    color:#fff;
+}
+.css-topmenu-item-text{
+	height: 20px;
+	line-height: 20px;
+	margin-top:10px;
+	padding: 0 10px;
+}
+.css-topmenu-item-text > span{
+	color:#fff;
+	display: inline-block;
+	width: 100%;
+	font-size: 12px;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.css-topmenu-frequse-menu{
+	max-height: 300px;
+	overflow-y: auto;
+}
+.css-topmenu-frequse-setting{
+	height:30px;
+	text-align: center;
+	border-top: 1px solid #F3F3F3;
+}
+.css-topmenu-frequse-setting>span{
+	margin-left: 5px;
+    vertical-align: middle;
+}
+.css-topmenu-frequse-setting>.wevicon{
+	font-size: 16px;
+    vertical-align: middle;
+}
+.css-topmenu-frequse-ul{
+	display: block;
+    list-style: none;
+    text-align: left;
+    padding: 0;
+    margin:0;
+}
+.css-topmenu-frequse-item{
+	height: 30px;
+    padding-left:20px;
+    padding-right:12px;
+    cursor: pointer;
+    position: relative;
+
+    width: 100%;
+    display: inline-block;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.css-topmenu-frequse-item .wevicon{
+	float:left;
+	font-size: 16px;
+}
+.css-topmenu-frequse-item span{
+	margin-left: 5px;    
+}
+.css-topmenu-searchblock{
+	width:296px;
+	/*margin-left: 12px;*/
+}
+.css-topmenu-frequse{
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.css-topmenu-searchblock .css-topmenu-searchblock-text{
+    height: 100%;
+    padding:0 5px;
+}
+.css-topmenu-searchblock-text > span{
+	padding-right: 5px;
+
+}
+.css-topmenu-searchblock-text .wevicon,.css-topmenu-hrminfo>.wevicon{
+	font-size: 16px;
+}
+.css-topmenu-searchblock-text>.wevicon{
+	padding-left: 0px;
+}
+.css-topmenu-searchblock > div{
+	/* background-color:#84CAFE; */
+	background: rgba(0,0,0,0.08);
+	transition: background 1s;
+    text-align: left;
+	width:100%;
+	height:100%;
+	font-size: 12px;
+	border-radius: 4px;
+}
+.css-topmenu-searchblock-over > div{
+	background: rgba(0,0,0,0.2);
+}
+	
+
+.css-topmenu-searchblock>div *{
+	padding-left: 5px;
+}
+.css-topmenu-searchblock input{
+	height:30px;
+	width:190px;
+	background: transparent;
+    border: 0;
+    outline: none;
+    color: #ffffff;
+    line-height:1;
+    padding: 0;
+}
+.css-topmenu-searchblock .wevicon-topmenu-search{
+	font-size: 15px;
+}
+.css-topmenu-toolbar-show .css-topmenu-frequse-item,.css-topmenu-quicks-show .css-topmenu-frequse-item{
+	padding-left: 12px;
+}
+.css-topmenu-hrminfo-show .css-topmenu-frequse-item{
+	padding-left: 15px;
+}
+.css-topmenu-toolbar-show .css-topmenu-frequse-item span,.css-topmenu-quicks-show .css-topmenu-frequse-item span{
+	margin-left: 14px;
+}
+.css-topmenu-toolbar-item img{
+    border-style: none;
+    width: 17px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.ant-popover-inner-content {
+    padding: 0px 0px;
+}
+.ant-popover-inner {
+    min-width: 50px;
+    box-shadow: none;
+}
+.css-topmenu-hrminfo-itemarea{
+	width: 280px;
+	padding:0 5px;
+	margin:5px 0;
+	max-height: 450px;
+}
+.css-topmenu-hrminfo-item{
+	width: 100%;
+	height: 55px;
+	border-bottom: 1px solid #e9e9e9;
+}
+.css-topmenu-hrminfo-icon{
+	width:60px;
+	height: 100%;
+	float: left;
+	padding: 8px 10px;
+	display: inline-block;
+    vertical-align: top;
+}
+.css-topmenu-hrminfo-icon>img{
+	width:100%;
+	border-radius: 20px;
+}
+.css-topmenu-hrminfo-text{
+	width: 180px;
+	float: left;
+	line-height: 25px;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 2px 0;
+    height: 100%;
+}
+.css-topmenu-hrminfo-username{
+	color:#363636;
+}
+.css-topmenu-hrminfo-jobs{
+	color:#0071ca;
+	margin-left: 10px;
+}
+.css-topmenu-hrminfo-dept{
+	color:#868686;
+}
+.css-topmenu-hrminfo-checked{
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+}
+.wevicon-portal-color0{
+	background-color: #2a569f;
+}
+.wevicon-portal-color1{
+	background-color: #6644ee;
+}
+.wevicon-portal-color2{
+	background-color:#df583a;
+}
+.wevicon-portal-color3{
+	background-color:#8b3e86;
+}
+.wevicon-portal-color4{
+	background-color:#008272;
+}
+.wevicon-portal-color5{
+	background-color:#2c579b;
+}
+.wevicon-portal-color6{
+	background-color:#0078d7;
+}
+.wevicon-portal-color7{
+	background-color:#1c83ce;
+}
+.css-topmenu-morebtn,.css-topmenu-fav,.css-topmenu-mobile,.css-topmenu-toolbar {
+	opacity: 0.6;
+	filter:Alpha(opacity=60);
+}
+.css-topmenu-toolbar-item:hover,.css-topmenu-hrminfo-item:hover,.css-topmenu-frequse-item:hover,.css-topmenu-remindinfo-item:hover{
+	background-color: #EAEAEA;
+	color:#494d52;
+}
+.css-topmenu-frequse-item:hover span{
+	color:#494d52;
+}
+.css-topmenu-item-cover:hover{
+	background: rgba(0,0,0,0.2);
+}
+.css-topmenu-rightblock .css-topmenu-toolbar:hover,.css-topmenu-notice-expand,.css-topmenu-morebtn-expand,.css-topmenu-frequse-expand .css-topmenu-toolbar{
+	opacity: 1;
+	filter:Alpha(opacity=100);
+}
+.css-topmenu-btnblock,.css-topmenu-toolbar-item,.css-topmenu-hrminfo-item,.css-topmenu-frequse-item,.css-topmenu-frequse-setting,.css-topmenu-item,.css-topmenu-remindinfo-item{
+	cursor: pointer;
+}
+.css-topmenu-searchblock>div>*,.css-topmenu-searchblock-text>*,.css-topmenu-item > *{
+	float: left;
+}
+.css-portal-logo,.css-topmenu-btnblock,.css-topmenu-btnblock>.wevicon,.css-topmenu-btnblock>div>.wevicon,.css-topmenu-plugindiv,.css-topmenu-plugindiv *{
+	line-height: 55px;
+}
+.css-topmenu-searchblock>div .wevicon,.css-topmenu-morebtn>div>.wevicon,.css-topmenu-morebtn,.css-topmenu-notice,.css-topmenu-searchblock *{
+	line-height: 55px;
+}
+.css-topmenu-frequse-setting,.css-topmenu-frequse-item,.css-topmenu-frequse-item>*,.css-topmenu-remindinfo-item{
+	line-height: 30px;
+}
+.css-topmenu-hrminfo,.css-topmenu-hrminfo-item,.css-topmenu-hrminfo>.wevicon{
+	line-height: 55px;
+}
+.css-topmenu-frequse>div>.wevicon,.css-topmenu-frequse>div{
+	line-height: 35px;
+}
+.css-topmenu-frequse-show,.css-topmenu-quicks-show,.css-topmenu-toolbar-show,.css-topmenu-frequse-item,.css-topmenu-remindinfo-show{
+	color:#a6adb6;
+}
+.css-topmenu-frequse-item span{
+	color:#656b72;
+}
+.css-topmenu-frequse-pop{
+	max-height: 300px;
+	min-width:0px;
+}
+.wevicon-topmenu-Arrow{
+	transform: rotate(0deg);
+	-webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -moz-transform:rotate(0deg);
+	-o-transform:rotate(0deg); 
+	transition-duration: 0.3s;
+	-moz-transition-duration: 0.3s; 
+	-webkit-transition-duration: 0.3s;
+	-o-transition-duration: 0.3s;
+}
+.ant-popover-open .wevicon-topmenu-Arrow{
+	transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -moz-transform:rotate(180deg);
+	-o-transform:rotate(180deg); 
+}
+.css-topmenu-popover,.css-topmenu-popover-newtop{
+	top: 55px !important;
+	padding-top: 0px;
+}
+.css-topmenu-popover .ant-popover-arrow,.css-topmenu-popover-newtop .ant-popover-arrow{
+	display: none;
+}
+.css-topmenu-popover .ant-popover-inner,.css-topmenu-popover-newtop .ant-popover-inner{
+	border-top: 0;
+	border-radius: 0;
+}
+
+.css-topmenu-rightblock .css-topmenu-suggest{
+}
+.css-topmenu-suggest span{
+	font-size: 12px;
+}
+.css-topmenu-suggest *{
+}
+.css-topmenu-popover .scroll-wrapper>.scroll-content{
+	overflow-x: hidden !important;
+	margin-right: 0px !important;
+}

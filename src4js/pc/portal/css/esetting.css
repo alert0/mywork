@@ -1,0 +1,86 @@
+.zd_btn_cancle,.zd_btn_submit,.zd_btn_submit2 {color:#007aff;height:30px;line-height:30px;padding-left:18px;padding-right:18px;font-size:12px;cursor:pointer;position:relative;top:0px;vertical-align:middle;border:none;background-color:transparent;outline:none;}
+.zd_btn_cancleHover,.zd_btn_submit_hover,.zd_btn_submit2_hover,.e8_btn_mousedown {color:#FFFFFF;background-color:#2690E3;}
+.e8_sep_line {height:30px;top:2px;line-height:30px;position:relative;color:#cccccc;}
+.zDialog_div_bottom {position:fixed;padding-top:5px !important;padding-bottom:5px !important;background-color:#FAFAFA;z-index:3;bottom:0;width:100%;border:none;border-top:1px solid #dadedb;top:expression(eval(document.compatMode && document.compatMode=='CSS1Compat')? documentElement.scrollTop+(documentElement.clientHeight- this.clientHeight):document.body.scrollTop+(document.body.clientHeight- this.clientHeight));}
+.zDialog_div_bottom table tr td {padding-bottom:0px;}
+.zDialog_div_content {overflow-y:auto;z-index:2;position:relative;}
+.dialogPadding {padding:10px;}
+.addbtn {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/add_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.addbtn2 {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/add2_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.addbtnB {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/badd_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.addbtnB2 {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/badd2_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.sapbtn {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/sap_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.sapbtn2 {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/sap2_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.downloadbtn {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/download_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.downloadbtn2 {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/download2_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.copybtn {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/copy_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.copybtn2 {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/copy2_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.delbtn {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/delete_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.delbtn2 {border:none;BACKGROUND:url(/wui/theme/ecology8/jquery/js/button/delete2_wev8.png) no-repeat;color:#333;WIDTH:21px;height:21px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+.ps-container.ps-active-x>.ps-scrollbar-x-rail,.ps-container.ps-active-y>.ps-scrollbar-y-rail {display:block;}
+.ps-container>.ps-scrollbar-x-rail {display:none;position:absolute;/* please don't change 'position' */    -webkit-border-radius:4px;-moz-border-radius:4px;-ms-border-radius:4px;border-radius:4px;opacity:0;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";filter:alpha(opacity=0);-webkit-transition:background-color 0.2s linear,opacity 0.2s linear;-moz-transition:background-color 0.2s linear,opacity 0.2s linear;-o-transition:background-color 0.2s linear,opacity 0.2s linear;transition:background-color 0.2s linear,opacity 0.2s linear;bottom:3px;/* there must be 'bottom' for ps-scrollbar-x-rail */    height:8px;}
+.ps-container>.ps-scrollbar-x-rail>.ps-scrollbar-x {position:absolute;/* please don't change 'position' */    background-color:#aaa;-webkit-border-radius:4px;-moz-border-radius:4px;-ms-border-radius:4px;border-radius:4px;-webkit-transition:background-color 0.2s linear;-moz-transition:background-color 0.2s linear;-o-transition:background-color 0.2s linear;transition:background-color 0.2s linear;bottom:0;/* there must be 'bottom' for ps-scrollbar-x */    height:8px;}
+.ps-container>.ps-scrollbar-x-rail.in-scrolling {background-color:#eee;opacity:0.9;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";filter:alpha(opacity=90);}
+.ps-container>.ps-scrollbar-y-rail {display:none;position:absolute;/* please don't change 'position' */    -webkit-border-radius:4px;-moz-border-radius:4px;-ms-border-radius:4px;border-radius:4px;opacity:0;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";filter:alpha(opacity=0);-webkit-transition:background-color 0.2s linear,opacity 0.2s linear;-moz-transition:background-color 0.2s linear,opacity 0.2s linear;-o-transition:background-color 0.2s linear,opacity 0.2s linear;transition:background-color 0.2s linear,opacity 0.2s linear;right:0px;z-index:7;/* there must be 'right' for ps-scrollbar-y-rail */    width:8px;}
+.ps-container>.ps-scrollbar-y-rail>.ps-scrollbar-y {position:absolute;/* please don't change 'position' */    background-color:#aaa;-webkit-border-radius:4px;-moz-border-radius:4px;-ms-border-radius:4px;border-radius:4px;-webkit-transition:background-color 0.2s linear;-moz-transition:background-color 0.2s linear;-o-transition:background-color 0.2s linear;transition:background-color 0.2s linear;right:0;/* there must be 'right' for ps-scrollbar-y */    width:8px;}
+.ps-container>.ps-scrollbar-y-rail.in-scrolling {background-color:#eee;opacity:0.9;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";filter:alpha(opacity=90);}
+.ps-container:hover>.ps-scrollbar-x-rail,.ps-container:hover>.ps-scrollbar-y-rail {opacity:0.6;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";filter:alpha(opacity=60);}
+.ps-container:hover>.ps-scrollbar-x-rail.in-scrolling,.ps-container:hover>.ps-scrollbar-y-rail.in-scrolling {background-color:#eee;opacity:0.9;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";filter:alpha(opacity=90);}
+.ps-container:hover>.ps-scrollbar-x-rail:hover {background-color:#eee;opacity:0.9;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";filter:alpha(opacity=90);}
+.ps-container:hover>.ps-scrollbar-x-rail:hover>.ps-scrollbar-x {background-color:#999;}
+.ps-container:hover>.ps-scrollbar-y-rail:hover {background-color:#eee;opacity:0.9;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";filter:alpha(opacity=90);}
+.ps-container:hover>.ps-scrollbar-y-rail:hover>.ps-scrollbar-y {background-color:#999;}
+/* -----元素设置样式开始----- */.weavertabs {border:1px solid #D9D9D9;}
+.weavertabs-nav {width:100%;padding:0px;margin:0px;}
+.weavertabs-nav tr td {padding:3 0;text-align:center;border-right:1px solid #D9D9D9;cursor:pointer;font-size:13px;background:#FFFFFF url(/js/jquery/plugins/weavertabs/tab_wev8.gif) repeat-x scroll 0 0;}
+.weavertabs-content div {display:none;}
+.weavertabs-content .chartitem {display:block;}
+.weavertabs-content .chartitem span {margin-right:20px;display:inline-block;}
+.weavertabs-content .chartcontainer {display:block;}
+.weavertabs-content .chartitem .ctitle {width:200px;padding-left:3px;padding-top:2px;cursor:default;}
+.weavertabs-content .chartitem .cset:hover {color:#018efb;cursor:pointer;}
+.weavertabs-content .chartitem .cdel:hover {color:#018efb;cursor:pointer;}
+.weavertabs-content .addnewchart:hover {color:#018efb;cursor:pointer;}
+.box {height:100%;}
+.p_tab_menu {overflow:hidden;padding:0px;margin:0px;border-bottom:1px solid #D9D9D9;margin-bottom:10px;}
+.p_tab_menu li {float:left;height:24px !important;line-height:24px !important;color:#5F5F5F;text-align:center;cursor:pointer;list-style-type:none;padding-left:8px;padding-right:8px;font-size:14px;}
+.p_tab_menu li.current {color:#1264B5;}
+.tab_box {height:100%;width:100%;overflow:hidden;position:absolute;}
+.tab_box .hide {display:none;}
+.magic-line {position:absolute;left:0;height:2px !important;line-height:2px !important;margin-top:22px;}
+.magic-line {top:35px !important;}
+TABLE.LayoutTable {WIDTH:100%;border:0;margin:0;border-collapse:collapse;}
+TABLE.LayoutTable TR {height:30px;}
+.interval {color:#5b5b5b;padding-left:9px !important;background-color:#FFF !important;font-size:12px;}
+.groupbg {background-image:url(/wui/theme/ecology8/templates/default/images/groupHead_wev8.png);background-repeat:no-repeat;background-position:0 50%;display:inline-block;width:16px;height:17px;float:left;}
+.e8_grouptitle {font-weight:bold;float:left;display:inline-block;padding-left:5px;}
+.interval .hideBlockDiv,.interval .toolbar {color:rgb(204,204,204);cursor:pointer;display:inline-block;text-align:center;line-height:30px !important;height:30px !important;}
+TABLE.LayoutTable TD.Line {BACKGROUND-COLOR:#E6E6E6;BACKGROUND-REPEAT:repeat-x;HEIGHT:1px}
+.paddingLeft18 {padding-left:30px !important;padding-top:0px !important;padding-bottom:0px !important;padding-right:0px !important;height:1px !important;background-color:#fff !important;}
+td .fieldName,.field,.groupHeadHide *,.LayoutTable .ListStyle td {vertical-align:middle !important;}
+.fieldName {padding-left:30px !important;background-color:#fff !important;height:30px !important;font-size:12px;word-wrap:break-word;}
+.field {background-color:rgb(248,248,248) !important;height:30px !important;font-size:12px;padding-left:5px;padding-right:5px;word-wrap:break-word;}
+.LayoutTable input.InputStyle,.LayoutTable input[type="text"],.e8_innerShowContent,.sbHolder {border:1px solid #E9E9E2;width:60%;}
+.LayoutTable input[type="text"] {line-height:22px;height:22px;outline:none;}
+.intervalDivClass {height:1px !important;background-color:#F3F2F2;background-repeat:repeat-x;}
+.intervalDivClass,.intervalDivClass div {display:block !important;}
+.paddingLeft0 {padding:0px !important;height:1px !important;background-color:#fff !important;}
+TABLE.ListStyle {width:"100%";margin:10px 0pt 15px;width:100%;text-align:left;border-collapse:collapse;}
+TABLE.ListStyle tr {height:30px;}
+TABLE.ListStyle td {height:30px;}
+TABLE.ListStyle th {height:30px;}
+TABLE.ListStyle TR.HeaderForXtalbe TH,TABLE.ListStyle TR.header TH,TABLE.ListStyle TR.header TD,TABLE.BroswerStyle TR.DataHeader TH {*height:40px !important;height:30px !important;line-height:30px;padding:0px 5px 0px 12px;cursor:pointer;color:#000;background-color:rgb(248,248,248);font-weight:normal;border-bottom:2px solid #B7E0FE;border-collapse:collapse;text-align:left;font-size:12px;}
+TABLE.ListStyle tbody tr td {color:#242424;padding:0px 5px 0px 12px;vertical-align:middle;background-color:#fff;font-size:12px;text-align:left;}
+TABLE.ListStyle TR.DataDark TD,TABLE.ListStyle TR.DataLight TD,TABLE.BroswerStyle TR.DataDark TD,TABLE.BroswerStyle TR.DataLight TD {BACKGROUND-COLOR:#FFFFFF;color:#242424;height:30px;border-bottom:1px solid #E6E6E6;}
+TABLE.ListStyle TR.DataLight:hover TD,TABLE.ListStyle TR.DataDark:hover TD,TABLE.BroswerStyle TR.DataDark:hover TD,TABLE.BroswerStyle TR.DataLight:hover TD {color:#000;height:30px;BACKGROUND-COLOR:#f5fafb !important;border-bottom:1px solid #E6E6E6;}
+.TABLE .ListStyle TR.Selected td,.table .ListStyle TR.Selected td {color:#000;background-color:#f5fafb;height:30px;}
+.TABLE .ListStyle TR.Selected TD a {color:#000;}
+.TABLE.ListStyle TR.Selected td {background-color:#f5fafb;}
+table.ListStyle tr.Selected td {color:#000;background-color:#f5fafb;height:30px;}
+table.BroswerStyle tr.Selected td {color:#000;height:30px;border-bottom:1px solid #75bbf4;}
+.table.ListStyle tr.Selected td a {color:#000;}
+table.ListStyle td a:link {color:#242424;max-width:90%;text-overflow:ellipsis;display:inline-block;overflow:hidden;vertical-align:middle;}
+.paddingLeft0Table {padding:0px !important;height:1px !important;background-color:#fff !important;}
+BUTTON.Browser {BACKGROUND-IMAGE:url(/wui/theme/ecology8/skins/default/general/browser_wev8.png) !important;width:16px;BORDER-RIGHT:medium none;BORDER-TOP:medium none;OVERFLOW:hidden;BORDER-LEFT:medium none;WIDTH:16px;CURSOR:pointer;BORDER-BOTTOM:medium none;BACKGROUND-REPEAT:no-repeat;HEIGHT:16px;BACKGROUND-COLOR:transparent;}
+.setting_button_row {padding-top:5px !important;padding-bottom:5px !important;background-color:#F6F6F6;padding-left:0px !important;padding-right:0px !important;width:100%;border:none;border-top:1px solid #dadedb;}
+/* -----元素设置样式结束----- */
