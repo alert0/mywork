@@ -1,0 +1,297 @@
+/*-------------------------------默认-------------------------------*/
+.wevicon-menu-default:before     { content: "\e96c"; }
+/*-------------------------------门户-------------------------------*/
+.wevicon-menu-0-0_portal:before  { content: "\e93d"; }
+.wevicon-menu-0-1_portal:before  { content: "\e93e"; }
+.wevicon-menu-0-2_portal:before  { content: "\e93f"; }
+.wevicon-menu-0-3_portal:before  { content: "\e940"; }
+.wevicon-menu-0-4_portal:before  { content: "\e941"; }
+.wevicon-menu-0-5_portal:before  { content: "\e942"; }
+.wevicon-menu-0-6_portal:before  { content: "\e943"; }
+.wevicon-menu-0-7_portal:before  { content: "\e944"; }
+.wevicon-menu-0-8_portal:before  { content: "\e93d"; }
+.wevicon-menu-0-9_portal:before  { content: "\e93e"; }
+.wevicon-menu-0-10_portal:before { content: "\e93f"; }
+.wevicon-menu-0-11_portal:before { content: "\e940"; }
+.wevicon-menu-0-12_portal:before { content: "\e941"; }
+.wevicon-menu-0-13_portal:before { content: "\e942"; }
+.wevicon-menu-0-14_portal:before { content: "\e943"; }
+.wevicon-menu-0-15_portal:before { content: "\e944"; }
+.wevicon-menu-0-16_portal:before { content: "\e93d"; }
+.wevicon-menu-0-17_portal:before { content: "\e93e"; }
+.wevicon-menu-0-18_portal:before { content: "\e93f"; }
+.wevicon-menu-0-19_portal:before { content: "\e940"; }
+.wevicon-menu-0-20_portal:before { content: "\e941"; }
+.wevicon-menu-0-21_portal:before { content: "\e942"; }
+.wevicon-menu-0-22_portal:before { content: "\e943"; }
+.wevicon-menu-0-23_portal:before { content: "\e944"; }
+/*-----------------------------我的流程-----------------------------*/
+/* 待办事宜 */
+.wevicon-menu-1-13:before  { content: "\e98f"; }
+/* 新建流程 */
+.wevicon-menu-1-12:before  { content: "\e98b"; }
+/* 已办事宜 */
+.wevicon-menu-1-90:before  { content: "\e989"; }
+/* 流程督办 */
+.wevicon-menu-1-235:before { content: "\e98e"; }
+/* 我的请求 */
+.wevicon-menu-1-14:before  { content: "\e98d"; }
+/* 流程代理 */
+.wevicon-menu-1-86:before  { content: "\e987"; }
+/* 查询流程 */
+.wevicon-menu-1-15:before  { content: "\e98c"; }
+/* 自定义查询 */
+.wevicon-menu-1-223:before { content: "\e988"; }
+/* 流程监控 */
+.wevicon-menu-1-101:before { content: "\e98a"; }
+/*-----------------------------我的知识-----------------------------*/
+/* 新建文档 */
+.wevicon-menu-2-16:before  { content: "\e949"; }
+/* 我的文档 */
+.wevicon-menu-2-17:before  { content: "\e928"; }
+/* 查询文档 */
+.wevicon-menu-2-23:before  { content: "\e98c"; }
+/* 文档目录 */
+.wevicon-menu-2-615:before { content: "\e945"; }
+/* 虚拟目录 */
+.wevicon-menu-2-218:before { content: "\e947"; }
+/* 最新文档 */
+.wevicon-menu-2-21:before  { content: "\e94a"; }
+/* 知识排名 */
+.wevicon-menu-2-22:before  { content: "\e94b"; }
+/* 文档订阅 */
+.wevicon-menu-2-83:before  { content: "\e94b"; }
+/* 批量共享 */
+.wevicon-menu-2-112:before { content: "\e92c"; }
+/* 移动复制 */
+.wevicon-menu-2-113:before { content: "\e946"; }
+/* 全文搜索 */
+.wevicon-menu-2-217:before { content: "\ea0a"; }
+/* 文档监控 */
+.wevicon-menu-2-102:before { content: "\e98a"; }
+/*-----------------------------我的人事-----------------------------*/
+/* 查询人员 */
+.wevicon-menu-5-49:before  { content: "\e966"; }
+/* 新建人员 */
+.wevicon-menu-5-42:before  { content: "\e963"; }
+/* 我的卡片 */
+.wevicon-menu-5-43:before  { content: "\e962"; }
+/* 我的下属 */
+.wevicon-menu-5-44:before  { content: "\e967"; }
+/* 我的培训 */
+.wevicon-menu-5-45:before  { content: "\e968"; }
+/* 我的工资 */
+.wevicon-menu-5-47:before  { content: "\e969"; }
+/* 奖惩考核 */
+.wevicon-menu-5-48:before  { content: "\e960"; }
+/* 我的考勤 */
+.wevicon-menu-5-162:before { content: "\e961"; }
+/* 在线人员 */
+.wevicon-menu-5-219:before { content: "\e964"; }
+/* 密码设置 */
+.wevicon-menu-5-241:before { content: "\e965"; }
+/*-----------------------------我的通信-----------------------------*/
+/* 短信 */
+.wevicon-menu-107-11:before  { content: "\e912"; }
+/* 微信 */
+.wevicon-menu-107-583:before { content: "\e916"; }
+/*-------------------------------微搜-------------------------------*/
+/* 微搜 */
+.wevicon-menu-559-560:before { content: "\e9aa"; }
+/*-----------------------------工作微博-----------------------------*/
+/* 我的微博 */
+.wevicon-menu-392-393:before { content: "\e95c"; }
+/* 我的关注 */
+.wevicon-menu-392-394:before { content: "\e95b"; }
+/* 微博报表 */
+.wevicon-menu-392-395:before { content: "\e95d"; }
+/* 微博设置 */
+.wevicon-menu-392-399:before { content: "\e95e"; }
+/*-----------------------------我的协作-----------------------------*/
+/* 协作交流 */
+.wevicon-menu-80-576:before { content: "\e919"; }
+/* 与我相关 */
+.wevicon-menu-80-577:before { content: "\e928"; }
+/* 主题审批 */
+.wevicon-menu-80-579:before { content: "\e91e"; }
+/* 内部沟通速查 */
+.wevicon-menu-80-373:before { content: "\e9dd"; }
+/* 我的帖子 */
+.wevicon-menu-80-647:before { content: "\e91b"; }
+/* 内容审批 */
+.wevicon-menu-80-580:before { content: "\e918"; }
+/* 协作申请 */
+.wevicon-menu-80-638:before { content: "\e917"; }
+/* 主题监控 */
+.wevicon-menu-80-581:before { content: "\e98a"; }
+/* 内容监控 */
+.wevicon-menu-80-582:before { content: "\e98a"; }
+/*-----------------------------我的客户-----------------------------*/
+/* 新建客户 */
+.wevicon-menu-3-24:before  { content: "\e92b"; }
+/* 我的客户 */
+.wevicon-menu-3-25:before  { content: "\e928"; }
+/* 客户联系 */
+.wevicon-menu-3-26:before  { content: "\e922"; }
+/* 合同管理 */
+.wevicon-menu-3-28:before  { content: "\e924"; }
+/* 查询联系人 */
+.wevicon-menu-3-29:before  { content: "\e923"; }
+/* 查询客户 */
+.wevicon-menu-3-30:before  { content: "\e925"; }
+/* 批量共享 */
+.wevicon-menu-3-31:before  { content: "\e92c"; }
+/* 客户监控 */
+.wevicon-menu-3-32:before  { content: "\e92a"; }
+/* 客户生日 */
+.wevicon-menu-3-279:before { content: "\e921"; }
+/* 分配客户经理 */
+.wevicon-menu-3-676:before { content: "\e927"; }
+/*-----------------------------我的项目-----------------------------*/
+/* 任务执行 */
+.wevicon-menu-4-39:before  { content: "\e991"; }
+/* 项目执行 */
+.wevicon-menu-4-36:before  { content: "\e991"; }
+/* 我的项目 */
+.wevicon-menu-4-40:before  { content: "\e993"; }
+/* 新建项目 */
+.wevicon-menu-4-35:before  { content: "\e994"; }
+/* 项目导入 */
+.wevicon-menu-4-648:before { content: "\e992"; }
+/* 审批任务 */
+.wevicon-menu-4-38:before  { content: "\e990"; }
+/* 查询项目 */
+.wevicon-menu-4-41:before  { content: "\e995"; }
+/* 查询任务 */
+.wevicon-menu-4-329:before { content: "\e997"; }
+/* 项目监控 */
+.wevicon-menu-4-216:before { content: "\e98a"; }
+/* 批量共享 */
+.wevicon-menu-4-668:before { content: "\e92c"; }
+/*-----------------------------我的资产-----------------------------*/
+/* 我的资产 */
+.wevicon-menu-7-57:before  { content: "\e909"; }
+/* 查询资产 */
+.wevicon-menu-7-58:before  { content: "\e90a"; }
+/* 入库申请 */
+.wevicon-menu-7-593:before { content: "\e90b"; }
+/* 查询资产资料 */
+.wevicon-menu-7-612:before { content: "\e907"; }
+/* 入库验收 */
+.wevicon-menu-7-594:before { content: "\e908"; }
+/* 管理资产 */
+.wevicon-menu-7-595:before { content: "\e906"; }
+/*-----------------------------我的会议-----------------------------*/
+/* 会议日历 */
+.wevicon-menu-6-573:before { content: "\e959"; }
+/* 会议室使用情况 */
+.wevicon-menu-6-54:before  { content: "\e958"; }
+/* 查询会议 */
+.wevicon-menu-6-55:before  { content: "\e98c"; }
+/* 会议任务 */
+.wevicon-menu-6-575:before { content: "\e95a"; }
+/* 会议报表 */
+.wevicon-menu-6-574:before { content: "\e957"; }
+/* 周期会议 */
+.wevicon-menu-6-611:before { content: "\e956"; }
+/*-------------------------------公文-------------------------------*/
+/* 待办发文 */
+.wevicon-menu-616-620:before { content: "\e93c"; }
+/* 发文拟稿 */
+.wevicon-menu-616-619:before { content: "\e92f"; }
+/* 已办发文 */
+.wevicon-menu-616-622:before { content: "\e92e"; }
+/* 我的发文 */
+.wevicon-menu-616-621:before { content: "\e934"; }
+/* 发文查询 */
+.wevicon-menu-616-623:before { content: "\e938"; }
+/* 发文监控 */
+.wevicon-menu-616-626:before { content: "\e932"; }
+/* 发文库 */
+.wevicon-menu-616-627:before { content: "\e939"; }
+
+/* 待办收文 */
+.wevicon-menu-616-628:before { content: "\e93b"; }
+/* 收文登记 */
+.wevicon-menu-616-629:before { content: "\e936"; }
+/* 已办收文 */
+.wevicon-menu-616-630:before { content: "\e92d"; }
+/* 我的收文 */
+.wevicon-menu-616-631:before { content: "\e933"; }
+/* 收文查询 */
+.wevicon-menu-616-632:before { content: "\e937"; }
+/* 收文监控 */
+.wevicon-menu-616-633:before { content: "\e931"; }
+/* 收文库 */
+.wevicon-menu-616-634:before { content: "\e930"; }
+
+/* 发送公文 */
+.wevicon-menu-616-624:before { content: "\e93a"; }
+/* 接受公文 */
+.wevicon-menu-616-625:before { content: "\e935"; }
+/*---------------------------------调查-----------------------------*/
+/* 调查结果 */
+.wevicon-menu-635-189:before { content: "\e91f"; }
+/* 参与调查 */
+.wevicon-menu-635-637:before { content: "\e920"; }
+/*-------------------------------我的日程----------------------------*/
+/* 我的日程 */
+.wevicon-menu-140-60:before  { content: "\e99e"; }
+/* 所有日程 */
+.wevicon-menu-140-240:before { content: "\e99b"; }
+/* 工作交流 */
+.wevicon-menu-140-618:before { content: "\e99c"; }
+/* 周期日程 */
+.wevicon-menu-140-209:before { content: "\e99d"; }
+/* 日程共享 */
+.wevicon-menu-140-242:before { content: "\e9a0"; }
+/* 查询日程 */
+.wevicon-menu-140-61:before  { content: "\e99f"; }
+/*-------------------------------车辆管理----------------------------*/
+/* 车辆使用情况 */
+.wevicon-menu-144-145:before { content: "\e90f"; }
+/* 车辆申请审批 */
+.wevicon-menu-144-146:before { content: "\e90c"; }
+/* 查询车辆 */
+.wevicon-menu-144-147:before { content: "\e90e"; }
+/* 车辆信息维护 */
+.wevicon-menu-144-148:before { content: "\e90d"; }
+/*-------------------------------我的相册----------------------------*/
+/* 相册主页 */
+.wevicon-menu-199-200:before { content: "\e904"; }
+/* 相册空间 */
+.wevicon-menu-199-208:before { content: "\e905"; }
+/*-------------------------------信息中心----------------------------*/
+/* 新闻公告 */
+.wevicon-menu-111-118:before { content: "\e95f"; }
+/*-------------------------------我的邮件----------------------------*/
+/* 写信 */
+.wevicon-menu-536-53601:before { content: "\e94a"; }
+/* 接收 */
+.wevicon-menu-536-53602:before { content: "\e951"; }
+/* 收件箱 */
+.wevicon-menu-536-53603:before { content: "\e951"; }
+/* 已发送 */
+.wevicon-menu-536-53604:before { content: "\e953"; }
+/* 草稿箱 */
+.wevicon-menu-536-53605:before { content: "\e94e"; }
+/* 垃圾箱 */
+.wevicon-menu-536-53606:before { content: "\e94d"; }
+/* 待办邮件 */
+.wevicon-menu-536-53607:before { content: "\e955"; }
+/* 内部邮件 */
+.wevicon-menu-536-53608:before { content: "\e972"; }
+/* 标星邮件 */
+.wevicon-menu-536-53609:before { content: "\e954"; }
+/* 我的文件夹 */
+.wevicon-menu-536-53610:before { content: "\e950"; }
+/* 我的标签 */
+.wevicon-menu-536-53611:before { content: "\e952"; }
+/* 联系人 */
+.wevicon-menu-536-53612:before { content: "\e94c"; }
+/* 附件 */
+.wevicon-menu-536-53613:before { content: "\e94f"; }
+/* 邮件设置 */
+.wevicon-menu-536-53614:before { content: "\e95e"; }
+/* 邮件监控 */
+.wevicon-menu-536-53615:before { content: "\e98a"; }

@@ -1,0 +1,113 @@
+.wea-menu {
+    background-color: #fff;
+}
+
+.wea-menu .wevicon-menu-default {
+    color: #87a4b6;
+}
+
+.wea-menu-selected .wevicon-menu-default {
+    color: #fff;
+}
+
+.wea-menu-inline .wea-menu-selected,
+.wea-menu-vertical .wea-menu-selected {
+    background-color: #0077d1;
+}
+
+.wea-menu-inline .wea-menu-selected:hover,
+.wea-menu-vertical .ant-menu-root > .ant-menu-submenu-vertical:hover > ul > li.wea-menu-selected,
+.wea-menu-vertical .wea-menu-selected:hover {
+    background-color: #0077d1;
+}
+
+.wea-menu-inline .ant-menu-item:hover,
+.wea-menu-vertical .ant-menu-item-active,
+.wea-menu-vertical .ant-menu-item:hover,
+.wea-menu-vertical .ant-menu-submenu-active {
+    background-color: #0077d1;
+    color: #fff;
+}
+
+.wea-menu-inline .ant-menu-item:hover,
+.wea-menu-inline .ant-menu-submenu-title:hover,
+.wea-menu-vertical .ant-menu-item-active,
+.wea-menu-vertical .ant-menu-submenu-active {
+    background-color: #0077d1;
+    color: #fff;
+}
+
+.wea-menu-vertical .ant-menu-root > .ant-menu-item-active,
+.wea-menu-vertical .ant-menu-root > .ant-menu-submenu-active {
+    background-color: #eff2f7;
+}
+
+.wea-menu-vertical .ant-menu-submenu-active > ul {
+    box-shadow: 1px 0 2px -1px #ccc;
+    background-color: #eff2f7;
+}
+
+.wea-menu-inline .ant-menu-item:hover .wevicon-menu-default,
+.wea-menu-inline .ant-menu-submenu-title:hover .wevicon-menu-default {
+    color: #fff;
+}
+
+.wea-menu-vertical .ant-menu-root > .ant-menu-submenu-vertical:hover > ul > li:first-child {
+    text-indent: -10px;
+}
+
+.e9-left-menu-top {
+
+}
+
+.e9-lmt-email {
+    width: 197px;
+    height: 40px;
+}
+
+.e9-lmt-email-clear {
+    clear: both;
+}
+
+.e9-lmt-email-item {
+    float: left;
+    width: 98px;
+    background: #f6f6f6;
+    cursor: pointer;
+}
+
+.e9-lmt-email-item:first-child {
+    width: 99px;
+    background: #ececec;
+}
+
+.e9-lmt-email-title {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.e9-lmt-email-dropdown {
+    width: 20px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.e9-lmt-email-item-ul {
+    position: relative;
+    z-index: 2;
+    width: 197px;
+    display: none;
+}
+
+.e9-lmt-email-item-ul li {
+    height: 40px;
+    line-height: 40px;
+    padding-left: 35px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.e9-lmt-email-item-ul li:hover {
+    background: #dadfe3;
+}

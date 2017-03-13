@@ -1,0 +1,133 @@
+.wea-workflow-icon {
+	font-size: 22px;
+	background: #55D2D4;
+	display: inline-block;
+	vertical-align: middle;
+	width: 35px;
+	height: 35px;
+	line-height: 35px;
+	text-align: center;
+	border-radius: 50%;
+	margin-right: 10px;
+	color: #fff;
+}
+
+.wea-workflow-batchsubmit {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.wea-workflow-batchsubmit .ant-modal {
+	top: 0;
+}
+
+.wea-workflow-batchsubmit .ant-modal-header,
+.wea-workflow-batchsubmit .ant-modal-body {
+	padding: 0px;
+}
+
+.wea-workflow-batchsubmit .ant-modal-title {
+	font-weight: 500;
+	font-size: 16px;
+	color: #484848;
+}
+
+.wea-workflow-batchsubmit .ant-modal-footer {
+	text-align: center;
+}
+
+.wea-workflow-batchsubmit .wea-workflow-batchsubmit-area {
+	padding: 14px 20px;
+	height: 235px;
+}
+
+.wea-workflow-batchsubmit .wea-workflow-batchsubmit-sign {
+	width: 100%;
+	height: 167px;
+}
+
+.wea-workflow-batchsubmit .icon-communication-message {
+	font-size: 16px;
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+.wea-workflow-phrases {
+	width: 126px;
+}
+
+.wea-workflow-phrases .wea-workflow-phrases-list {
+	max-height: 112px;
+	overflow-y: auto;
+}
+
+.wea-workflow-phrases .wea-workflow-phrases-item {
+	height: 28px;
+	padding-left: 2px;
+	line-height: 28px;
+	cursor: pointer;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wea-workflow-phrases .wea-workflow-phrases-item:hover {
+	background-color: #ecf7fd;
+}
+
+.wea-workflow-phrases .wea-workflow-phrases-add {
+	height: 28px;
+	line-height: 28px;
+	text-align: center;
+	border-top: 1px solid #D2D2D2;
+	cursor: pointer;
+}
+
+.wea-workflow-phrases .icon-top-Common {
+	font-size: 18px;
+	color: #5AB536;
+}
+
+.wea-workflow-phrases .wea-workflow-phrases-edit {
+	position: absolute;
+	padding: 3px;
+	border: 1px solid #D2D2D2;
+	box-shadow: 1px 1px 5px #ddd;
+	top: 0px;
+	z-index: 999;
+	width: 168px;
+}
+
+.wea-workflow-phrases .wea-workflow-phrases-edit input {
+	height: 26px;
+	width: 106px;
+	margin-right: 6px;
+}
+
+.wea-workflow-phrases .wea-workflow-phrases-edit .ant-btn {
+	padding: 2px 8px;
+	bottom: 2px;
+}
+
+
+/*queryflow部分样式*/
+.wea-workflow-query{
+	position: relative;
+}
+
+.wea-workflow-query .wea-workflow-query-search {
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-bottom: 78px;
+}
+
+.wea-workflow-query .wea-workflow-query-btns {
+	width: 100%;
+	padding: 20px 0;
+	position: absolute;
+	bottom: 0;
+	text-align: center;
+	border-top: 1px solid #dadada;
+	background-color: #fff;
+}

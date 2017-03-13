@@ -1,0 +1,435 @@
+.css-portal-headblock{
+	max-width: 100%;
+	min-width: 70%;
+	height: 50px;	
+}
+.css-portal-headblock>div{
+	height:100%;
+	float:left;
+}
+.css-portal-logo{
+	width:225px;
+	height: 100%;
+    font-size: 15px;
+}
+.css-portal-logo span{
+	padding-left: 10px;
+}
+.css-portal-logo img{
+	width:100%;
+	height:100%;
+}
+.css-topmenu-btnblock{
+	width:40px;
+	height:50px;
+	margin:0 5px;
+	display: inline-block;
+	font-size: 18px;
+	text-align: center;
+	vertical-align: middle;	
+}
+.css-topmenu-rightblock .css-topmenu-btnblock{
+	width:30px;
+}
+.css-topmenu-splitdiv{
+	width:1px;
+	height:55%;
+	display: inline-block;
+	vertical-align: middle;	
+}
+.css-topmenu-topmenu{
+	text-align: left;
+	margin-right: 0px;
+	margin-left: 5px
+}
+
+.css-topmenu-topmenu .css-topmenu-icon{
+	float:left;
+	height: 100%;
+	width: 100%;
+    text-align: center;
+}
+.css-topmenu-topmenu .css-topmenu-menuname{
+	float:left;
+	text-align: left;
+	margin-left: 5px;
+	font-size: 14px;
+	width: 78px;
+	height: 100%;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: none;
+}
+.css-topmenu-frequse{
+	padding:0;
+	font-size: 14px;
+}
+.css-topmenu-frequse>div{
+	height:100%;
+}
+
+.css-topmenu-plugindiv{
+	max-width: 200px;
+	min-width: 0px;
+	height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+.css-topmenu-plugindiv>*{
+	min-width: 30px;
+	margin: 0 5px;
+	cursor: pointer;
+}
+.css-topmenu-plugindiv>*,.css-topmenu-plugindiv .plugin-text{
+	float:left;
+}
+.css-topmenu-plugindiv .plugin-text{
+	font-size: 12px;
+}
+.css-topmenu-plugindiv .plugin-img{
+	margin-left: 5px;
+	vertical-align: middle;
+}
+.css-topmenu-hrminfo{
+	width:150px !important;
+	text-align: left;
+	padding:0;
+}
+.css-topmenu-hrminfo>span,.css-topmenu-hrminfo>.wevicon{
+	font-size: 12px;
+	float:left;
+}
+.css-topmenu-hrminfo>span{
+	max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.css-topmenu-hrminfo>.wevicon{
+	margin-left: 5px;
+}
+.css-topmenu-frequse-show,.css-topmenu-toolbar-show,.css-topmenu-hrminfo-show,.css-topmenu-remindinfo-show{
+	padding-top: 5px;
+}
+.css-topmenu-show{
+	padding-right: 40px;
+	width:345px;
+}
+.css-topmenu-frequse-show{
+	font-size: 12px;
+	width:110px;
+    padding-bottom: 10px;
+}
+.css-topmenu-quicks-show{
+	width:61px;
+	font-size: 12px;
+}
+.css-topmenu-toolbar-show{
+	width:180px;
+	font-size: 12px;
+}
+.css-topmenu-hrminfo-show{
+	width:260px;
+	padding-bottom: 5px;
+}
+.css-topmenu-remindinfo-show{
+	width:180px;
+	font-size: 12px;
+	padding:0;
+
+}
+.css-topmenu-remindinfo-show .css-topmenu-remindinfo-item{
+	height:30px;
+	margin:5px 0;
+	padding:0 10px;
+}
+.css-topmenu-remindinfo-show .css-topmenu-remindinfo-text{
+	float: left;
+
+}
+.css-topmenu-remindinfo-show .css-topmenu-remindinfo-num{
+	float: right;
+}
+.css-topmenu-remindinfo{
+	height: 100%;
+    display: inline-block;
+}
+.css-topmenu-remindinfo .wevicon{
+	line-height: 32px;
+    float: left;
+    font-size: 12px;
+    transform: rotate(-45deg);
+}
+.css-topmenu-remindinfo span{
+	margin-left: 10px;
+}
+.css-topmenu-notice{
+	position: relative;
+}
+.css-topmenu-notice .ant-badge-dot{
+	top: -1px;
+	left: 15px;
+}
+.css-topmenu-hrminfo-show-nochange{
+	width:150px;
+}
+.css-topmenu-portal,.css-topmenu-item{
+	width: 45px;
+    margin-left: 15px;
+    margin-right: 0px;
+    font-size: 14px;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+} 
+.css-topmenu-item{
+	height:35px;
+	line-height: 35px;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+}
+.css-topmenu-item>.wevicon{
+	font-size: 20px;
+}
+.css-topmenu-frequse-menu{
+	max-height: 300px;
+	overflow-y: auto;
+}
+.css-topmenu-frequse-setting{
+	height:30px;
+	text-align: center;
+	padding-left: 10px;
+	padding-right:10px;
+}
+.css-topmenu-frequse-setting>span{
+	margin-left: 5px;
+    vertical-align: middle;
+}
+.css-topmenu-frequse-setting>.wevicon{
+	font-size: 16px;
+    vertical-align: middle;
+}
+.css-topmenu-frequse-ul{
+	display: block;
+    list-style: none;
+    text-align: left;
+    padding: 0;
+    margin:0;
+}
+.css-topmenu-frequse-item{
+	height: 30px;
+    padding-left:20px;
+    cursor: pointer;
+    position: relative;
+}
+.css-topmenu-frequse-item .wevicon{
+	float:left;
+	font-size: 16px;
+}
+.css-topmenu-frequse-item span{
+	margin-left: 5px;
+}
+.css-topmenu-searchblock{
+	width:240px;
+	margin-left: 25px;
+}
+.css-topmenu-topmenu,.css-topmenu-searchblock,.css-topmenu-frequse,.css-topmenu-notice,.css-topmenu-morebtn{
+	padding-top:7px;
+	padding-bottom:7px;
+}
+.css-topmenu-searchblock .css-topmenu-searchblock-text{
+	margin-left: 0;
+	padding-left: 5px;
+    height: 100%;
+}
+.css-topmenu-searchblock-text .wevicon,.css-topmenu-hrminfo>.wevicon{
+	font-size: 16px;
+}
+.css-topmenu-searchblock > div{
+    text-align: left;
+	width:100%;
+	height:100%;
+	font-size: 12px;
+}
+.css-topmenu-searchblock *{
+	margin-left: 5px;
+}
+.css-topmenu-searchblock input{
+	height:30px;
+	width:140px;
+	background: transparent;
+    border: 0;
+    outline: none;
+    line-height:1;
+}
+.css-topmenu-searchblock .wevicon-topmenu-search{
+	font-size: 18px;
+}
+.css-topmenu-toolbar-show .css-topmenu-frequse-item,.css-topmenu-quicks-show .css-topmenu-frequse-item{
+	padding-left: 10px;
+}
+.css-topmenu-toolbar-item img{
+    border-style: none;
+    width: 17px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.css-topmenu-hrminfo-item{
+	width: 100%;
+	height: 50px;
+}
+.css-topmenu-hrminfo-icon{
+	width:60px;
+	height: 100%;
+	float: left;
+	padding: 5px 10px;
+}
+.css-topmenu-hrminfo-icon>img{
+	width:100%;
+	border-radius: 20px;
+}
+.css-topmenu-hrminfo-text{
+	width: 180px;
+	float: left;
+	line-height: 25px;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.css-topmenu-hrminfo-jobs{
+	margin-left: 10px;
+}
+
+.css-topmenu-hrminfo-checked{
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+}
+
+.css-topmenu-morebtn,.css-topmenu-fav,.css-topmenu-mobile,.css-topmenu-toolbar {
+	opacity: 0.6;
+	filter:Alpha(opacity=60);
+}
+.css-topmenu-topmenu-normal{
+	width: 345px;
+	/*transition-property: background-color;
+	transition-duration: 600ms;
+	transition-timing-function: linear;*/
+}
+
+.css-topmenu-btnblock,.css-topmenu-toolbar-item,.css-topmenu-hrminfo-item,.css-topmenu-frequse-item,.css-topmenu-frequse-setting,.css-topmenu-item{
+	cursor: pointer;
+}
+.css-topmenu-searchblock>div>*,.css-topmenu-searchblock-text>*{
+	float: left;
+}
+.css-topmenu-hrminfo,.css-topmenu-hrminfo-item,.css-topmenu-hrminfo>.wevicon{
+	line-height: 50px;
+}
+.css-portal-logo,.css-topmenu-btnblock,.css-topmenu-btnblock>.wevicon,.css-topmenu-plugindiv,.css-topmenu-plugindiv *{
+	line-height: 50px;
+}
+.css-topmenu-icon>.wevicon,.css-topmenu-frequse>div>.wevicon,.css-topmenu-searchblock>div .wevicon,.css-topmenu-item>.wevicon,.css-topmenu-morebtn>div>.wevicon,.css-topmenu-morebtn{
+	line-height: 36px;
+}
+.css-topmenu-frequse-item,.css-topmenu-frequse-item>*,.css-topmenu-frequse-setting{
+	line-height: 30px;
+}
+.css-topmenu-icon,.css-topmenu-frequse>div,.css-topmenu-item,.css-topmenu-searchblock *,.css-topmenu-remindinfo-item,.css-topmenu-notice{
+	line-height: 36px;
+}
+.css-topmenu-frequse-pop{
+	max-height: 300px;
+	min-width:0px;
+}
+.css-topmenu-frequse-show .scroll-wrapper > .scroll-content {
+	overflow-x: hidden !important;
+}
+.wevicon-topmenu-Arrow{
+	transform: rotate(0deg);
+	-webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -moz-transform:rotate(0deg);
+	-o-transform:rotate(0deg); 
+	transition-duration: 0.3s;
+	-moz-transition-duration: 0.3s; 
+	-webkit-transition-duration: 0.3s;
+	-o-transition-duration: 0.3s;
+}
+.ant-popover-open .wevicon-topmenu-Arrow{
+	transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -moz-transform:rotate(180deg);
+	-o-transform:rotate(180deg); 
+}
+/*下拉框位置调整，颜色调整--s*/
+.css-topmenu-popover,.css-topmenu-popover-frequse,.css-topmenu-popover-quicksearch,.css-topmenu-toolmore-popover{
+	padding-top: 0px;
+}
+.css-topmenu-popover{
+	top: 42px !important;
+	/*transform-origin: 50% 50% !important;*/
+}
+.css-topmenu-popover-frequse,.css-topmenu-popover-quicksearch{top: 43px !important;
+}
+.css-topmenu-toolmore-popover{
+	top: 50px !important;
+}
+.css-topmenu-popover .ant-popover-arrow,.css-topmenu-popover-frequse .ant-popover-arrow,.css-topmenu-popover-quicksearch .ant-popover-arrow,.css-topmenu-toolmore-popover .ant-popover-arrow{
+	display: none;
+}
+.css-topmenu-popover .ant-popover-inner,.css-topmenu-popover-frequse .ant-popover-inner,.css-topmenu-popover-quicksearch .ant-popover-inner,.css-topmenu-toolmore-popover .ant-popover-inner{
+	border-top: 0;
+	border-radius: 0;
+	min-width: 50px;
+    box-shadow: none;
+    border:0px;
+}
+.ant-popover-inner-content {
+    padding: 0px 0px;
+}
+/*人员名称、分部*/
+.css-topmenu-hrminfo-item{
+	border-bottom: 1px solid;
+}
+.css-topmenu-topmenu-expand .css-topmenu-item-selected,.css-topmenu-show .css-topmenu-item-selected{
+	border-bottom:2px solid;
+}
+/*边框应该不变*/
+.css-topmenu-popover-quicksearch .ant-popover-inner{
+	border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+}
+.css-topmenu-toolmore-popover .ant-popover-inner{
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+}
+/*下拉框位置调整，颜色调整--e*/
+/*下拉框触发按钮，颜色调整--s*/
+.css-topmenu-morebtn-sign .ant-popover-open{
+	opacity: 1;
+	filter:Alpha(opacity=100);
+}
+
+.css-topmenu-topmenu-expand .css-topmenu-portal{
+	height:34px;
+	line-height: 34px;
+}
+/*下拉框触发按钮，颜色调整--e*/
+.css-topmenu-rightblock .css-topmenu-suggest{
+	width:80px;
+}
+.css-topmenu-suggest span{
+	font-size: 12px;
+	padding-left:5px
+}
+.css-topmenu-suggest *{
+	float: left;
+}
