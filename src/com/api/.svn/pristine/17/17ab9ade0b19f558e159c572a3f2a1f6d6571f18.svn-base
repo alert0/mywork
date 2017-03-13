@@ -1,0 +1,45 @@
+package com.api.workflow.bean;
+
+import java.util.List;
+
+public class FieldAttrDynamicCfg {
+
+	private int keyid;
+	private int caltype;
+	private int trifield;
+	private List<String> relatefield;
+	private int assignfield;
+	
+	public int getKeyid() {
+		return keyid;
+	}
+	public void setKeyid(int keyid) {
+		this.keyid = keyid;
+	}
+	public int getCaltype() {
+		return caltype;
+	}
+	public void setCaltype(int caltype) {
+		this.caltype = caltype;
+	}
+	public int getTrifield() {
+		return trifield;
+	}
+	public void setTrifield(int trifield) {
+		this.trifield = trifield;
+	}
+	public List<String> getRelatefield() {
+		return relatefield;
+	}
+	public void setRelatefield(List<String> relatefield) {
+		this.relatefield = relatefield;
+	}
+	public int getAssignfield() {
+		return assignfield;
+	}
+	public void setAssignfield(int assignfield) {
+		this.assignfield = assignfield;
+	}
+	
+	
+}

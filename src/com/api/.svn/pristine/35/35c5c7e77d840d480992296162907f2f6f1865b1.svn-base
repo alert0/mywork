@@ -1,0 +1,377 @@
+package com.api.workflow.service;
+
+import java.util.*;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import weaver.conn.RecordSet;
+import weaver.general.Util;
+import weaver.hrm.User;
+import weaver.workflow.exceldesign.ParseExcelLayout;
+import weaver.workflow.mode.FieldInfo;
+import weaver.workflow.request.WFShareAuthorization;
+import weaver.workflow.workflow.WFManager;
+import weaver.workflow.workflow.WFNodeFieldManager;
+
+/**
+ * Html模板布局信息
+ * @author liuzy 2016/12/28
+ */
+public class LayoutInfoService {
+	
+	private User user;
+	private HashMap<String,String> wfinfo;
+	
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public void setWfinfo(HashMap<String, String> wfinfo) {
+		this.wfinfo = wfinfo;
+	}
+
+	public Map<String,Object> generateLayoutInfo(String layoutid) throws Exception{
+		Map<String,Object> layoutmap = new HashMap<String,Object>();
+		RecordSet rs = new RecordSet();
+		rs.executeSql("select version,syspath,datajson,scripts from workflow_nodehtmllayout where id="+layoutid);
+		if(rs.next()){
+			int version = Util.getIntValue(rs.getString("version"), 0);
+			layoutmap.put("version", version);
+			if(version == 0 || version ==1){
+				WFNodeFieldManager wFNodeFieldManager = new WFNodeFieldManager();
+				String layoutcontent = wFNodeFieldManager.readHtmlFile(Util.null2String(rs.getString("syspath")));
+				layoutmap.put("layoutcontent", layoutcontent);
+			}else if(version == 2){
+				//layoutmap.put("datajson", rs.getString("datajson"));
+				//layoutmap.put("scripts", rs.getString("scripts"));
+			}
+		}/*else
+			throw new Exception("Not ExcelDesign Template");*/
+		return layoutmap;
+	}
+	
+	public String getLayoutDataJson(int layoutid){
+		String datajson = "";
+		RecordSet rs = new RecordSet();
+		rs.executeSql("select datajson from workflow_nodehtmllayout where id="+layoutid);
+		if(rs.next()){
+			datajson = Util.null2String(rs.getString("datajson"));
+		}
+		return datajson;
+	}
+	
+	/**
+	 * 获取解码后代码块内容
+	 */
+	public String getLayoutScripts(int layoutid, boolean usebak){
+		String scripts = "";
+		if(layoutid > 0){
+			RecordSet rs = new RecordSet();
+			rs.executeSql("select scripts,scriptsE9 from workflow_nodehtmllayout where id="+layoutid);
+			if(rs.next()){
+				scripts = usebak ? Util.null2String(rs.getString("scriptsE9")) : Util.null2String(rs.getString("scripts"));
+			}
+		}
+		if(!"".equals(scripts)){
+			scripts = new ParseExcelLayout(new HashMap<String,String>()).decodeStr(scripts);
+		}
+		return scripts;
+	}
+	
+	public void parseLayoutJson(String layoutid, Map<String,Object> cellinfomap, Map<String,String> formatcfgmap) throws Exception{
+		String datajsonstr = "";
+		RecordSet rs = new RecordSet();
+		rs.executeSql("select type,datajson from workflow_nodehtmllayout where id="+layoutid+" and version=2");
+		if(rs.next()){
+			wfinfo.put("type", rs.getString("type"));
+			datajsonstr = rs.getString("datajson");
+		}else
+			return;
+		//计算模板内节点意见相关，参考WFLayoutToHtml
+		int workflowid = Util.getIntValue(wfinfo.get("wfid"),0);
+		int nodeid = Util.getIntValue(wfinfo.get("nodeid"),0);
+		boolean firstinit = true;
+		List<String> nodeidList = null;
+		FieldInfo fieldInfo = null;
+		Map<String,String> noderemarkmap = new HashMap<String,String>();
+		
+		ParseExcelLayout parse = new ParseExcelLayout(wfinfo);
+		JSONObject datajson = JSONObject.parseObject(datajsonstr);
+		JSONObject etables = datajson.getJSONObject("eformdesign").getJSONObject("etables");
+		for(String symbol : etables.keySet()){
+			JSONArray ec = etables.getJSONObject(symbol).getJSONArray("ec");
+			for(int i=0; i<ec.size(); i++){
+				JSONObject cell = ec.getJSONObject(i);
+				String[] cellid = cell.getString("id").split(",");
+				int etype = Util.getIntValue(cell.getString("etype"));
+				String cellkey = symbol+"_"+cellid[0]+"_"+cellid[1];
+				Map<String,Object> cellinfo = new HashMap<String,Object>();
+				//部分单元格接口信息
+				if(etype == 5){
+					int remarknodeid = Util.getIntValue(cell.getString("field"), 0);
+					String nodemark = "";
+					if(firstinit){
+						nodeidList = this.getCanViewNodeIds();
+						fieldInfo = new FieldInfo();
+						fieldInfo.setRequestid(Util.getIntValue(wfinfo.get("requestid"),0));
+					    fieldInfo.setUser(user);
+						fieldInfo.setIsprint(Util.getIntValue(wfinfo.get("isprint"), 0));
+						//fieldInfo.setRequest(request);
+						firstinit = false;
+					}
+					if(nodeidList.indexOf(remarknodeid+"") > -1){
+						if (noderemarkmap.containsKey("node"+remarknodeid)) {
+							nodemark = Util.null2String(noderemarkmap.get("node"+remarknodeid));
+						} else {
+							if (remarknodeid == 999999999) { // 自由流转
+								nodemark = fieldInfo.GetfreeNodeRemark(workflowid, nodeid, 2);
+							} else {
+								nodemark = fieldInfo.GetNodeRemark(workflowid, remarknodeid, nodeid, 2);
+							}
+							// 去掉多余分隔符
+							nodemark = nodemark.replace(String.valueOf(FieldInfo.getNodeSeparator()), "").replace(String.valueOf(Util.getSeparator()), "");
+							if (nodemark.indexOf("<br>") == 0)
+								nodemark = nodemark.substring(4, nodemark.length());
+							if (nodemark.endsWith("<br>"))
+								nodemark = nodemark.substring(0, nodemark.length() - 4);
+							nodemark = convertChar(nodemark);
+							noderemarkmap.put("node"+remarknodeid, nodemark);
+						}
+					}
+					cellinfo.put("nodemark", nodemark);
+				}else if(etype == 12 && cell.containsKey("tab")){		// 标签页
+					JSONObject tab = cell.getJSONObject("tab");
+					int styleid = Util.getIntValue(tab.getString("style"), -1);
+					JSONObject stylejson = this.getStyleJson(styleid, parse);
+					cellinfo.put("stylejson", stylejson);
+				}else if(etype == 15 && cell.containsKey("jsonparam")){	//门户元素
+					org.json.JSONObject jsonparam = new org.json.JSONObject(cell.getString("jsonparam"));
+					String htmlstr = parse.parseHtml_portal(jsonparam);
+					cellinfo.put("htmlstr", convertChar(htmlstr));
+				}else if(etype == 16 && cell.containsKey("jsonparam")){	//iframe区域
+					org.json.JSONObject jsonparam = new org.json.JSONObject(cell.getString("jsonparam"));
+					String htmlstr = parse.parseHtml_iframe(jsonparam);
+					cellinfo.put("htmlstr", convertChar(htmlstr));
+				}else if(etype == 17 && cell.containsKey("jsonparam")){	//二维条形码
+					org.json.JSONObject jsonparam = new org.json.JSONObject(cell.getString("jsonparam"));
+					String htmlstr = parse.parseHtml_scancode(jsonparam);
+					cellinfo.put("htmlstr", convertChar(htmlstr));
+				}
+				if(!cellinfo.isEmpty())
+					cellinfomap.put(cellkey, cellinfo);
+				//单元格格式化配置信息
+				if(etype == 3 && (cell.containsKey("format") || cell.containsKey("financial"))){
+					String formatstr = "";
+					String financial = Util.null2String(cell.getString("financial"));
+					if(financial.startsWith("1") || financial.startsWith("2"))
+						formatstr = "";
+					else if(financial.startsWith("3"))
+						formatstr = "{decimals:-1,formatPattern:-1,thousands:-1,numberType:99}";
+					else if(financial.startsWith("4"))
+						formatstr = "{decimals:2,formatPattern:2,thousands:1,numberType:2}";
+					else
+						formatstr = cell.getJSONObject("format").toString();
+					if(!"".equals(formatstr))
+						formatcfgmap.put(cell.getString("field"), formatstr);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 获取当前节点对应可查看的节点意见
+	 */
+	private List<String> getCanViewNodeIds() throws Exception {
+		String workflowid = wfinfo.get("wfid");
+		String requestid = wfinfo.get("requestid");
+		String iswfshare = wfinfo.get("iswfshare");
+		List<String> nodeidList = new ArrayList<String>();
+		RecordSet rs = new RecordSet();
+		RecordSet rs1 = new RecordSet();
+		RecordSet rs2 = new RecordSet();
+		RecordSet rs3 = new RecordSet();
+		WFShareAuthorization wfShareAuthorization = new WFShareAuthorization();
+		WFManager wfManager = new WFManager();
+		if (!"1".equals(iswfshare)) {
+			String sql = "select nodeid from workflow_flownode,workflow_nodebase where (IsFreeNode is null or IsFreeNode!='1') and nodeid=id and workflowid="
+				+ workflowid + " order by nodetype,nodeid";
+			rs.execute(sql);
+			while (rs.next()) {
+				int nodeid_tmp = Util.getIntValue(rs.getString("nodeid"), 0);
+				if (nodeid_tmp > 0)
+					nodeidList.add("" + nodeid_tmp);
+			}
+			nodeidList.add("" + 999999999); //自由流转的默认id
+		} else {
+			String userids = "";
+			String viewNodeId = "";
+			String singleViewLogIds = "";
+			String tempNodeId = "";
+			userids = wfShareAuthorization.getSignByrstUser(String.valueOf(requestid), user);
+			if("".equals(userids))
+				return nodeidList;
+			// 流程共享的签字意见查看权限与共享人权限一致
+			rs1.executeSql("select workflowid from workflow_requestbase where requestid = " + requestid);
+			if (rs1.next()) {
+				wfManager.setWfid(rs1.getInt("workflowid"));
+				wfManager.getWfInfo();
+			}
+			String issignview = wfManager.getIssignview();
+			if ("1".equals(issignview)) {
+				rs2.executeSql("select  a.nodeid from  workflow_currentoperator a  where a.requestid=" + requestid
+							+ " and  exists (select 1 from workflow_currentoperator b where b.isremark in ('0','2','4') and b.requestid="
+							+ requestid + "  and  a.userid=b.userid) and userid in (" + userids
+							+ ") order by receivedate desc ,receivetime desc");
+				if (rs2.next()) {
+					viewNodeId = rs2.getString("nodeid");
+					rs3.executeSql("select viewnodeids from workflow_flownode where workflowid=" + workflowid + " and nodeid=" + viewNodeId);
+					if (rs3.next()) {
+						singleViewLogIds = rs3.getString("viewnodeids");
+					}
+					if ("-1".equals(singleViewLogIds)) {// 全部查看
+						rs3.executeSql("select nodeid from workflow_flownode where workflowid= " + workflowid
+									+ " and exists(select 1 from workflow_nodebase where id=workflow_flownode.nodeid and (requestid is null or requestid="
+									+ requestid + "))");
+						while (rs3.next()) {
+							tempNodeId = rs3.getString("nodeid");
+							if (!nodeidList.contains(tempNodeId)) {
+								nodeidList.add(tempNodeId);
+							}
+						}
+					} else if (singleViewLogIds == null || "".equals(singleViewLogIds)) {// 全部不能查看
+
+					} else {// 查看部分
+						String tempidstrs[] = Util.TokenizerString2(singleViewLogIds, ",");
+						for (int i = 0; i < tempidstrs.length; i++) {
+							if (!nodeidList.contains(tempidstrs[i])) {
+								nodeidList.add(tempidstrs[i]);
+							}
+						}
+					}
+				}
+			} else {
+				rs2.executeSql("select  distinct a.nodeid from  workflow_currentoperator a  where a.requestid=" + requestid
+							+ " and  exists (select 1 from workflow_currentoperator b where b.isremark in ('0','2','4') and b.requestid="
+							+ requestid + "  and  a.userid=b.userid) and userid in (" + userids + ") ");
+				while (rs2.next()) {
+					viewNodeId = rs2.getString("nodeid");
+					rs3.executeSql("select viewnodeids from workflow_flownode where workflowid=" + workflowid + " and nodeid=" + viewNodeId);
+					if (rs3.next()) {
+						singleViewLogIds = rs3.getString("viewnodeids");
+					}
+					if ("-1".equals(singleViewLogIds)) {// 全部查看
+						rs3.executeSql("select nodeid from workflow_flownode where workflowid= " + workflowid
+									+ " and exists(select 1 from workflow_nodebase where id=workflow_flownode.nodeid and (requestid is null or requestid="
+									+ requestid + "))");
+						while (rs3.next()) {
+							tempNodeId = rs3.getString("nodeid");
+							if (!nodeidList.contains(tempNodeId)) {
+								nodeidList.add(tempNodeId);
+							}
+						}
+					} else if (singleViewLogIds == null || "".equals(singleViewLogIds)) {// 全部不能查看
+
+					} else {	// 查看部分
+						String tempidstrs[] = Util.TokenizerString2(singleViewLogIds, ",");
+						for (int i = 0; i < tempidstrs.length; i++) {
+							if (!nodeidList.contains(tempidstrs[i])) {
+								nodeidList.add(tempidstrs[i]);
+							}
+						}
+					}
+				}
+			}
+			nodeidList.add("" + 999999999); //自由流转的默认id
+		}
+		return nodeidList;
+	}
+	
+	/**
+	 * 根据设计器标签页styleid生成样式信息
+	 */
+	private JSONObject getStyleJson(int styleid, ParseExcelLayout parse) throws Exception{
+		JSONObject stylejson = new JSONObject();
+		if(styleid < 0){	//系统样式
+			stylejson.put("sel_bgleftwidth", "10");
+			stylejson.put("sel_bgrightwidth", "10");
+			stylejson.put("sel_fontsize", "12");
+			stylejson.put("unsel_bgleftwidth", "10");
+			stylejson.put("unsel_bgrightwidth", "10");
+			stylejson.put("unsel_fontsize", "12");
+			if(styleid == -1){
+				stylejson.put("styleid" , "-1");
+				stylejson.put("image_bg" , "/workflow/exceldesign/image/systab/4_image_bg.png");
+				stylejson.put("image_sepwidth" , "1");
+				stylejson.put("sel_bgleft" , "/workflow/exceldesign/image/systab/4_sel_bgleft.png");
+				stylejson.put("sel_bgmiddle" , "/workflow/exceldesign/image/systab/4_sel_bgmiddle.png");
+				stylejson.put("sel_bgright" , "/workflow/exceldesign/image/systab/4_sel_bgright.png");
+				stylejson.put("unsel_bgleft" , "/workflow/exceldesign/image/systab/4_unsel_bgleft.png");
+				stylejson.put("unsel_bgmiddle" , "/workflow/exceldesign/image/systab/4_unsel_bgmiddle.png");
+				stylejson.put("unsel_bgright" , "/workflow/exceldesign/image/systab/4_unsel_bgleft.png");
+			}else if(styleid == -2){
+				stylejson.put("styleid" , "-2");
+				stylejson.put("image_bg" , "/workflow/exceldesign/image/systab/2_image_bg.png");
+				stylejson.put("image_sepwidth" , "1");
+				stylejson.put("sel_bgleft" , "/workflow/exceldesign/image/systab/2_sel_bgleft.png");
+				stylejson.put("sel_bgmiddle" , "/workflow/exceldesign/image/systab/2_sel_bgmiddle.png");
+				stylejson.put("sel_bgright" , "/workflow/exceldesign/image/systab/2_sel_bgright.png");
+				stylejson.put("unsel_bgleft" , "/workflow/exceldesign/image/systab/2_unsel_bgleft.png");
+				stylejson.put("unsel_bgmiddle" , "/workflow/exceldesign/image/systab/2_unsel_bgmiddle.png");
+				stylejson.put("unsel_bgright" , "/workflow/exceldesign/image/systab/2_unsel_bgright.png");
+			}else if(styleid == -3){
+				stylejson.put("styleid" , "-3");
+				stylejson.put("image_bg" , "/workflow/exceldesign/image/systab/3_image_bg.png");
+				stylejson.put("image_sepwidth" , "1");
+				stylejson.put("sel_bgleft" , "/workflow/exceldesign/image/systab/3_sel_bgleft.png");
+				stylejson.put("sel_bgmiddle" , "/workflow/exceldesign/image/systab/3_sel_bgmiddle.png");
+				stylejson.put("sel_bgright" , "/workflow/exceldesign/image/systab/3_sel_bgleft.png");
+				stylejson.put("unsel_bgleft" , "/workflow/exceldesign/image/systab/3_unsel_bgleft.png");
+				stylejson.put("unsel_bgmiddle" , "/workflow/exceldesign/image/systab/3_unsel_bgmiddle.png");
+				stylejson.put("unsel_bgright" , "/workflow/exceldesign/image/systab/3_unsel_bgleft.png");
+			}else if(styleid == -4){
+				stylejson.put("styleid" , "-4");
+				stylejson.put("image_bg" , "/workflow/exceldesign/image/systab/1_image_bg.png");
+				stylejson.put("image_sep" , "/workflow/exceldesign/image/systab/1_image_sep.png");
+				stylejson.put("image_sepwidth" , "1");
+				stylejson.put("sel_bgleft" , "/workflow/exceldesign/image/systab/1_sel_bgleft.png");
+				stylejson.put("sel_bgmiddle" , "/workflow/exceldesign/image/systab/1_sel_bgmiddle.png");
+				stylejson.put("sel_bgright" , "/workflow/exceldesign/image/systab/1_sel_bgright.png");
+				stylejson.put("unsel_bgleft" , "/workflow/exceldesign/image/systab/1_unsel_bgleft.png");
+				stylejson.put("unsel_bgmiddle" , "/workflow/exceldesign/image/systab/1_unsel_bgmiddle.png");
+				stylejson.put("unsel_bgright" , "/workflow/exceldesign/image/systab/1_unsel_bgright.png");
+			}else if(styleid == -5){
+				stylejson.put("styleid" , "-5");
+				stylejson.put("image_bg" , "/workflow/exceldesign/image/systab/5_image_bg.png");
+				stylejson.put("image_sep" , "/workflow/exceldesign/image/systab/5_image_sep.png");
+				stylejson.put("image_sepwidth" , "1");
+				stylejson.put("sel_bgleft" , "/workflow/exceldesign/image/systab/5_sel_bgleft.png");
+				stylejson.put("sel_bgmiddle" , "/workflow/exceldesign/image/systab/5_sel_bgmiddle.png");
+				stylejson.put("sel_bgright" , "/workflow/exceldesign/image/systab/5_sel_bgright.png");
+				stylejson.put("unsel_bgleft" , "/workflow/exceldesign/image/systab/5_unsel_bgleft.png");
+				stylejson.put("unsel_bgmiddle" , "/workflow/exceldesign/image/systab/5_unsel_bgmiddle.png");
+				stylejson.put("unsel_bgright" , "/workflow/exceldesign/image/systab/5_unsel_bgright.png");
+			}else if(styleid == -6){
+				stylejson.put("styleid" , "-6");
+				stylejson.put("image_bg" , "/workflow/exceldesign/image/systab/6_image_bg.png");
+				stylejson.put("image_sepwidth" , "1");
+				stylejson.put("sel_bgleft" , "/workflow/exceldesign/image/systab/6_sel_bgleft.png");
+				stylejson.put("sel_bgmiddle" , "/workflow/exceldesign/image/systab/6_sel_bgmiddle.png");
+				stylejson.put("sel_bgright" , "/workflow/exceldesign/image/systab/6_sel_bgleft.png");
+				stylejson.put("unsel_bgleft" , "/workflow/exceldesign/image/systab/6_unsel_bgleft.png");
+				stylejson.put("unsel_bgmiddle" , "/workflow/exceldesign/image/systab/6_unsel_bgmiddle.png");
+				stylejson.put("unsel_bgright" , "/workflow/exceldesign/image/systab/6_unsel_bgleft.png");
+			}
+		}else{
+			org.json.JSONObject stylejsoncus = parse.getCustomStyle(styleid);
+			stylejson = JSONObject.parseObject(stylejsoncus.toString());
+		}
+		return stylejson;
+	}
+	
+	private String convertChar(String str){
+		str = str.replaceAll("\\\t", "");
+		return str;
+	}
+	
+}

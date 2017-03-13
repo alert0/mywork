@@ -1,0 +1,260 @@
+package com.api.workflow.web;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+
+import weaver.conn.RecordSet;
+import weaver.general.Util;
+import weaver.hrm.HrmUserVarify;
+import weaver.hrm.User;
+import weaver.mobile.webservices.workflow.soa.RequestStatusLog;
+import weaver.systeminfo.SystemEnv;
+import weaver.workflow.request.RequestResources;
+import weaver.workflow.workflow.WorkflowComInfo;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.api.workflow.service.LayoutFormService;
+import com.api.workflow.service.LayoutInfoService;
+import com.api.workflow.service.RequestFormService;
+import com.api.workflow.service.RequestLogService;
+import com.api.workflow.service.RequestOperation;
+import com.api.workflow.service.SignInputService;
+import com.api.workflow.util.PageUidFactory;
+import com.cloudstore.dev.api.util.Util_TableMap;
+
+/**
+ * 流程表单相关接口
+ * @author liuzy 2017/2/22
+ */
+
+@Path("/workflow/request")
+public class RequestFormAction {
+
+	
+	/**
+	 * 表单数据接口
+	 */
+	@GET
+	@Path("/forminfo")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFormInfo(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try{
+			String actiontype = request.getParameter("actiontype");
+			if("formdata".equals(actiontype)){
+				apidatas = new LayoutFormService().generateFormData(request, response);
+			}else if("detaildata".equals(actiontype)){
+				apidatas = new LayoutFormService().generateDetailData(request, response);
+			}else
+				throw new Exception("actiontype unexist");
+		}catch(Exception e){
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSONObject.toJSONString(apidatas);
+	}
+	
+	/**
+	 * 代码块接口
+	 */
+	@GET
+	@Path("/scripts")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getLayoutScripts(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		int layoutid = Util.getIntValue(request.getParameter("layoutid"));
+		boolean usebak = Util.getIntValue(request.getParameter("usebak")) == 1;
+		String scripts = new LayoutInfoService().getLayoutScripts(layoutid, usebak);
+		return scripts;
+	}
+	
+	/**
+	 * 请求相关信息接口(签字意见等)
+	 */
+	@GET
+	@Path("/reqinfo")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getRequestInfo(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			String actiontype = request.getParameter("actiontype");
+			if ("loadRight".equalsIgnoreCase(actiontype)) {
+				//点击列表预加载，当表单请求到时直接返回
+				boolean ispreload = Util.getIntValue(request.getParameter("ispreload")) == 1;
+				String preloadkey = Util.null2String(request.getParameter("preloadkey"));
+				new weaver.general.BaseBean().writeLog("ispreload--"+ispreload+"---preloadkey---"+preloadkey);
+				if(!"".equals(preloadkey)){
+					if(ispreload){
+						Util_TableMap.setVal(preloadkey, "loading");
+					}else{
+						if(Util_TableMap.containsKey(preloadkey)){
+							int i = 0;
+							while(i < 10){
+								if(Util_TableMap.getVal(preloadkey) != null && !"loading".equals(Util_TableMap.getVal(preloadkey))){
+									String preloadvalue = Util_TableMap.getVal(preloadkey);
+									Util_TableMap.clearVal(preloadkey);
+									return preloadvalue;
+								}
+								Thread.sleep(30);
+							}
+						}
+					}
+				}
+				new weaver.general.BaseBean().writeLog("ispreload--loading--"+preloadkey);
+				
+				apidatas = new RequestFormService(request, response).loadCompetence();
+				long start = System.currentTimeMillis();
+				if(apidatas.containsKey("layoutinfo")){
+					Map<String, Object> layoutmap = (Map<String, Object>)apidatas.get("layoutinfo");
+					if(layoutmap.containsKey("datajson")){
+						String datajson = (String)layoutmap.get("datajson");
+						layoutmap.remove("datajson");
+						String apidatastr = JSON.toJSONString(apidatas);
+						apidatastr = apidatastr.substring(0, apidatastr.lastIndexOf("}"));
+						String retstr = apidatastr +",\"datajson\":"+datajson+"}";
+						new weaver.general.BaseBean().writeLog("---------1122-----time:" + (System.currentTimeMillis() - start));
+						//预加载结果处理
+						if(ispreload && !"".equals(preloadkey))
+							Util_TableMap.setVal(preloadkey, retstr);
+						return retstr;
+					}
+				}
+			} else if ("requestLog".equalsIgnoreCase(actiontype)) {
+				apidatas = new RequestLogService(request, response, true).getRequestLogData();
+			} else if ("updateRequestLogPageSize".equalsIgnoreCase(actiontype)){
+				new RequestLogService(request, response, false).updateRequestLogPageSize();
+			} else if ("signInput".equalsIgnoreCase(actiontype)) {
+				apidatas = new SignInputService().loadSignInputInfo(request, response);
+			} else if ("rightMenu".equals(actiontype)) {
+				apidatas = new RequestFormService(request, response).getRightMenu();
+			} else if ("updatereqinfo".equals(actiontype)) {
+				apidatas = new RequestFormService(request, response).updateRequestInfoData();
+			} else if ("addDocReadTag".equals(actiontype)) {
+				apidatas = new RequestLogService(request, response, false).addDocReadTag();
+			} else if ("copycustompagefile".equals(actiontype)){
+				apidatas = new RequestFormService().copyCustompageFile(request, response);
+			} else if ("rejectinfo".equals(actiontype)){
+				apidatas = new RequestOperation().getRejectInfo(request, response);
+			} else
+				throw new Exception("actiontype unexist");
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	/**
+	 * 流程状态接口
+	 */
+	@GET
+	@Path("/wfstatus")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getWfStatus(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try{
+			//String workflowid = request.getParameter("workflowid");
+			String requestid = request.getParameter("requestid");
+			int desrequestid = Util.getIntValue(request.getParameter("desrequestid"), 0);
+			String isurger = Util.null2String(request.getParameter("isurger"));
+			
+			String f_weaver_belongto_userid=Util.null2String(request.getParameter("f_weaver_belongto_userid"));
+			String f_weaver_belongto_usertype=Util.null2String(request.getParameter("f_weaver_belongto_usertype"));
+			User user  = HrmUserVarify.getUser(request, response, f_weaver_belongto_userid, f_weaver_belongto_usertype);
+			
+			String workflowid = "";
+			RecordSet rs = new RecordSet();
+			rs.executeSql("select workflowid from workflow_requestbase where requestid="+requestid);
+			if(rs.next())
+				workflowid = rs.getString("workflowid");
+			
+			RequestStatusLog reqstatusLog = new RequestStatusLog(workflowid, requestid);
+			reqstatusLog.setUser(user);
+			reqstatusLog.setDesrequestid(desrequestid);
+			reqstatusLog.setIsurger(isurger);
+			apidatas = reqstatusLog.getStatusLogResult();
+			//不转JSONObject存在问题，why...
+			net.sf.json.JSONObject apidatasJSON = net.sf.json.JSONObject.fromObject(apidatas);
+			return JSONObject.toJSONString(apidatasJSON);
+		}catch(Exception e){
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSONObject.toJSONString(apidatas);
+	}
+	
+	/**
+	 * 相关资源接口
+	 */
+	@GET
+	@Path("/resources")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String buildResourcesTableString(@Context HttpServletRequest request, @Context HttpServletResponse response) throws Exception{
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try{
+			String f_weaver_belongto_userid=request.getParameter("f_weaver_belongto_userid");
+			String f_weaver_belongto_usertype=request.getParameter("f_weaver_belongto_usertype");
+			User user = HrmUserVarify.getUser(request, response, f_weaver_belongto_userid, f_weaver_belongto_usertype);
+			int userid=user.getUID(); 
+			int requestid = Util.getIntValue(request.getParameter("requestid"));
+			int workflowid = 0;
+			RecordSet rs = new RecordSet();
+			rs.executeSql("select workflowid from workflow_requestbase where requestid="+requestid);
+			if(rs.next())
+				workflowid = Util.getIntValue(rs.getString("workflowid"));
+			WorkflowComInfo wfComInfo = new WorkflowComInfo();
+			int formid = Util.getIntValue(wfComInfo.getFormId(workflowid+""));
+			int isbill = Util.getIntValue(wfComInfo.getIsBill(workflowid+""));
+			
+			String reportid = Util.null2String(request.getParameter("reportid"));
+			String isfromreport = Util.null2String(request.getParameter("isfromreport"));
+			String isfromflowreport = Util.null2String(request.getParameter("isfromflowreport"));
+			int tabindex = Util.getIntValue(request.getParameter("tabindex"), 0);
+			String isshared = Util.null2String(request.getParameter("iswfshare"));
+			RequestResources reqresources = new RequestResources(user, workflowid, requestid, isbill, formid,reportid,isfromreport,isfromflowreport,isshared);
+	
+			String fromSql = " " + reqresources.getReqResSqlByType(tabindex) + " ";
+			String sqlWhere = " where 1=1 ";
+			String backfields = " id, resname, restype, creator, creatortype, createdate, docid ";
+			String orderby = " id ";
+			//String pageid = PageIdConst.WF_REQUEST_REQUESTRESOURCES;
+			String pageUid = PageUidFactory.getWfPageUid("REQUESTRES");
+			
+			String tableString = "<table instanceid=\"workflow_RequestSourceTable\" tabletype=\"none\" pageUid=\""+pageUid+"\" >"+
+			                "	<sql backfields=\""+backfields+"\" sqlform=\""+fromSql+"\" sqlwhere=\""+Util.toHtmlForSplitPage(sqlWhere)+"\" sqlorderby=\"" + orderby + "\" sqlprimarykey=\"id\" sqlsortway=\"ASC\" sqlisdistinct=\"true\" />"+
+			                "	<head>"+
+			                "		<col width=\"5%\" text=\"\" _key=\"imagehtml\" column=\"resname\" orderkey=\"resname\" transmethod=\"weaver.workflow.request.RequestResources.getResImageHtml\" otherpara=\"column:restype\" />"+
+			                "		<col width=\"45%\" text=\""+SystemEnv.getHtmlLabelName(15924,user.getLanguage())+"\" _key=\"reshtml\" column=\"resname\" orderkey=\"resname\" transmethod=\"weaver.workflow.request.RequestResources.getResDisplayHtml\" otherpara=\"column:id+column:restype+" + requestid + "+" +  userid +"\" />"+
+			                "		<col width=\"20%\" text=\""+SystemEnv.getHtmlLabelName(882,user.getLanguage())+"\" column=\"creator\" otherpara=\"0\" orderkey=\"creator\" transmethod=\"weaver.general.WorkFlowTransMethod.getWFSearchResultName\" />"+
+			                "		<col width=\"30%\" text=\""+SystemEnv.getHtmlLabelName(1339,user.getLanguage())+"\" column=\"createdate\" orderkey=\"createdate\" />"+
+			                "	</head>"+
+			                "	<operates>"+
+							"		<popedom transmethod=\"weaver.workflow.request.RequestResources.getResOperaotes\" otherpara=\"column:restype+column:docid+column:resname\"></popedom> " +
+			                "		<operate href=\"javascript:doopenreq();\" text=\""+SystemEnv.getHtmlLabelName(360,user.getLanguage())+"\" target=\"_self\" index=\"0\"/>"+
+			                "		<operate href=\"javascript:doopendoc();\" text=\""+SystemEnv.getHtmlLabelName(360,user.getLanguage())+"\" target=\"_self\" index=\"1\"/>"+
+			                "		<operate href=\"javascript:ondownload();\" text=\""+SystemEnv.getHtmlLabelName(31156,user.getLanguage())+"\" target=\"_self\" index=\"2\"/>"+
+							"	</operates>"+                   
+			                "</table>";
+			String sessionkey = user.getUID()+"_"+pageUid+"_"+requestid+"_"+tabindex;
+			Util_TableMap.setVal(sessionkey, tableString);
+			apidatas.put("sessionkey", sessionkey);
+		}catch(Exception e){
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSONObject.toJSONString(apidatas);
+	}
+	
+}

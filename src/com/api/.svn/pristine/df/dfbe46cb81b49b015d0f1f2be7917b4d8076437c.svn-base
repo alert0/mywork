@@ -1,0 +1,39 @@
+package com.api.workflow.web;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSON;
+import com.api.workflow.service.RequestOperation;
+import com.api.workflow.service.RequestRemarkOperation;
+
+/**
+ * 流程提交接口，暂时还用JSP反射
+ * @author liuzy  2017/2/23
+ *
+ */
+public class RequestSubmitAction implements Action{
+
+	public String execute(HttpServletRequest request, HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			String actiontype = request.getParameter("actiontype");
+			if ("requestOperation".equals(actiontype)){
+				apidatas = new RequestOperation().execute(request, response);
+			} else if ("remarkOperation".equals(actiontype)){
+				apidatas = new RequestRemarkOperation().execute(request, response);
+			} else if ("functionLink".equals(actiontype)){
+				apidatas = new RequestOperation().wfFunctionManageLink(request, response);
+			} else
+				throw new Exception("actiontype unexist");
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+}

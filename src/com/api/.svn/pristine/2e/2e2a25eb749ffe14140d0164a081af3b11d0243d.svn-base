@@ -1,0 +1,785 @@
+package com.api.workflow.service;
+
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.alibaba.fastjson.JSONObject;
+
+import weaver.conn.RecordSet;
+import weaver.docs.category.SecCategoryComInfo;
+import weaver.docs.docs.DocImageManager;
+import weaver.general.AttachFileUtil;
+import weaver.general.Util;
+import weaver.general.browserData.BrowserManager;
+import weaver.hrm.HrmUserVarify;
+import weaver.hrm.User;
+import weaver.systeminfo.SystemEnv;
+import com.api.workflow.bean.*;
+import com.api.workflow.util.DynamicConfigUtil;
+import com.api.workflow.util.ServiceUtil;
+import com.cloudstore.dev.api.util.Util_TableMap;
+
+import weaver.workflow.exceldesign.FormatFieldValue;
+import weaver.workflow.field.BrowserComInfo;
+import weaver.workflow.request.WorkflowJspBean;
+
+/**
+ * Html模板对应表单信息
+ * @author liuzy 2016/12/28
+ */
+public class LayoutFormService {
+
+	private int requestid;
+	private int workflowid;
+	private int nodeid;
+	private int formid;
+	private int isbill;
+	private int isprint;
+	private int desrequestid;
+	private String f_weaver_belongto_userid;
+	private String f_weaver_belongto_usertype;
+	
+	private User user;
+	private RecordSet rs = new RecordSet();
+	
+	private Map<String,TableInfo> tableinfomap = new LinkedHashMap<String,TableInfo>();
+	private Map<String,Integer> detailmap = new HashMap<String,Integer>();
+	private int detailnum = 0;
+	private HttpServletRequest request;
+
+	private void init(HttpServletRequest request, HttpServletResponse response){
+		this.requestid = Util.getIntValue(request.getParameter("requestid"), 0);
+		this.workflowid = Util.getIntValue(request.getParameter("workflowid"), 0);
+		this.nodeid = Util.getIntValue(request.getParameter("nodeid"), 0);
+		this.formid = Util.getIntValue(request.getParameter("formid"), 0);
+		this.isbill = Util.getIntValue(request.getParameter("isbill"), -1);
+		this.isprint = Util.getIntValue(request.getParameter("isprint"), 0);
+		this.desrequestid = Util.getIntValue(request.getParameter("desrequestid"), 0);
+		this.f_weaver_belongto_userid = Util.null2String(request.getParameter("f_weaver_belongto_userid"));
+		this.f_weaver_belongto_usertype = Util.null2String(request.getParameter("f_weaver_belongto_usertype"));
+		this.user = HrmUserVarify.getUser(request, response, f_weaver_belongto_userid, f_weaver_belongto_usertype);
+		this.request = request;
+	}
+	
+	/**
+	 * 生成表单信息、主表数据信息、明细表个数等
+	 */
+	public Map<String,Object> generateFormData(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		this.init(request, response);
+		int ismode = Util.getIntValue(request.getParameter("ismode"));
+		
+		HashMap<String,String> wfinfo = new HashMap<String,String>();
+		Map<String,Object> cellinfomap = new HashMap<String,Object>();
+		Map<String,String> formatcfgmap = new HashMap<String,String>();
+		if(ismode == 2){		//Html模式
+			String layoutid = Util.null2String(request.getParameter("modeid"));
+			wfinfo.put("wfid", this.workflowid+"");
+			wfinfo.put("nodeid", this.nodeid+"");
+			wfinfo.put("formid", this.formid+"");
+			wfinfo.put("isbill", this.isbill+"");
+			wfinfo.put("isprint", this.isprint+"");
+			wfinfo.put("modeid", layoutid);
+			wfinfo.put("requestid", this.requestid+"");
+			wfinfo.put("languageid", user.getLanguage()+"");
+			wfinfo.put("iswfshare", Util.null2String(request.getParameter("iswfshare")));
+			
+			LayoutInfoService layoutinfo = new LayoutInfoService();
+			layoutinfo.setUser(user);
+			layoutinfo.setWfinfo(wfinfo);
+			layoutinfo.parseLayoutJson(layoutid, cellinfomap, formatcfgmap);
+		}
+		this.appendTableAttr();
+		this.appendFieldList(formatcfgmap);
+		if(ismode == 0)			//普通模式
+			this.appendFieldOrderInfo();
+		
+		Map<String,FieldValueBean> maindata = this.buildMainFieldValue();
+		this.buildDetailRecordNum();
+		
+		String sessionkey = requestid+"_"+nodeid+"_"+user.getUID()+"_tableinfomap";
+		//HttpSession session = request.getSession();
+		//session.setAttribute(sessionkey+"_tableinfo", tableinfomap);
+		Util_TableMap.setObjVal(sessionkey, tableinfomap);
+		
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		//result.put("sessionkey", sessionkey);
+		apidatas.put("detailnum", detailnum);
+		apidatas.put("tableinfo", tableinfomap);
+		apidatas.put("cellinfo", cellinfomap);
+		apidatas.put("linkageCfg", this.buildLinkageCfg());
+		apidatas.put("maindata", maindata);
+		return apidatas;
+	}
+	
+	/**
+	 * 扩充表单所有table属性、明细权限等
+	 */
+	private void appendTableAttr(){
+		String sql = "";
+		//生成主表对象
+		TableInfo maintableinfo = new TableInfo();
+		tableinfomap.put("main", maintableinfo);
+		maintableinfo.setTableindex(-1);
+		if(isbill == 0){
+			maintableinfo.setTablename("workflow_form");
+		}else{
+			rs.executeSql("select tablename from workflow_bill where id="+formid);
+			if(rs.next())
+				maintableinfo.setTablename(rs.getString("tablename"));
+		}
+		//生成明细表对象
+		if(isbill == 0)
+			sql = "select distinct groupid as tablename,'' as title from workflow_formfield where formid="+formid+" and isdetail='1' order by groupid";
+		else if(isbill == 1)
+			sql = "select tablename,title from workflow_billdetailtable where billid="+formid+" order by orderid";
+		rs.executeSql(sql);
+		this.detailnum = rs.getCounts();
+		if(detailnum == 0)
+			return;
+		int groupid = 1;
+		while(rs.next()){
+			String tablename = rs.getString("tablename");
+			detailmap.put(tablename, groupid);
+			
+			TableInfo tableinfo = new TableInfo();
+			tableinfomap.put("detail_"+groupid, tableinfo);
+			tableinfo.setTableindex(groupid);
+			if(isbill == 0)
+				tableinfo.setTablename("workflow_formdetail");
+			else
+				tableinfo.setTablename(tablename);
+			DetailTableAttr detailbean = new DetailTableAttr();
+			detailbean.setGroupid(groupid);
+			detailbean.setDetailtable(tablename);
+			detailbean.setDetailtitle(rs.getString("title"));
+			tableinfo.setDetailtableattr(detailbean);
+			groupid++;
+		}
+		String groupcolumn = "isadd,isedit,isdelete,ishidenull,isdefault,isneed,isopensapmul,defaultrows,isprintserial,allowscroll";
+		rs.executeSql("select groupid,"+groupcolumn+" from workflow_nodeformgroup where nodeid="+nodeid+" order by groupid");
+		while(rs.next()){
+			int groupid_tmp = rs.getInt("groupid")+1;	//从0开始需加1
+			if(!tableinfomap.containsKey("detail_"+groupid_tmp))
+				continue;
+			DetailTableAttr detailbean = tableinfomap.get("detail_"+groupid_tmp).getDetailtableattr();
+			detailbean.setIsadd(ServiceUtil.convertInt(rs.getString("isadd")));
+			detailbean.setIsedit(ServiceUtil.convertInt(rs.getString("isedit")));
+			detailbean.setIsdelete(ServiceUtil.convertInt(rs.getString("isdelete")));
+			detailbean.setIshidenull(ServiceUtil.convertInt(rs.getString("ishidenull")));
+			detailbean.setIsdefault(ServiceUtil.convertInt(rs.getString("isdefault")));
+			detailbean.setIsneed(ServiceUtil.convertInt(rs.getString("isneed")));
+			detailbean.setIsopensapmul(ServiceUtil.convertInt(rs.getString("isopensapmul")));
+			detailbean.setDefaultrows(ServiceUtil.convertInt(rs.getString("defaultrows")));
+			detailbean.setIsprintserial(ServiceUtil.convertInt(rs.getString("isprintserial")));
+			detailbean.setAllowscroll(ServiceUtil.convertInt(rs.getString("allowscroll")));
+		}
+	}
+	
+	/**
+	 * 扩充字段信息
+	 */
+	private void appendFieldList(Map<String,String> formatcfgmap){
+		String sql = "";
+		RecordSet rs1 = new RecordSet();
+		//生成系统字段信息
+		Map<String,FieldInfo> mainfieldinfomap = tableinfomap.get("main").getFieldinfomap();
+		rs.executeSql("select fieldid,isview,isedit,ismandatory from workflow_nodeform where nodeid="+this.nodeid+" and fieldid<0");
+		while(rs.next()){
+			FieldInfo sysfieldbean = new FieldInfo();
+			int sysfieldid = Util.getIntValue(rs.getString("fieldid"),0);
+			sysfieldbean.setFieldid(sysfieldid);
+			sysfieldbean.setIsview(ServiceUtil.convertInt(rs.getString("isview")));
+			sysfieldbean.setIsedit(ServiceUtil.convertInt(rs.getString("isedit")));
+			sysfieldbean.setIsmand(ServiceUtil.convertInt(rs.getString("ismandatory")));
+			if(sysfieldid == -1)
+				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(21192,user.getLanguage()));
+			else if(sysfieldid == -2)
+				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(15534,user.getLanguage()));
+			else if(sysfieldid == -3)
+				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(17582,user.getLanguage()));
+			else if(sysfieldid == -4)
+				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(17614,user.getLanguage()));
+			else if(sysfieldid == -5)
+				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(32812,user.getLanguage()));
+			else if(sysfieldid == -9)
+				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(22308,user.getLanguage()));
+			mainfieldinfomap.put(sysfieldid+"", sysfieldbean);
+		}
+		//生成自定义字段信息
+		BrowserComInfo browserComInfo = new BrowserComInfo();
+		BrowserManager browserManager = new BrowserManager();
+		//delete------a.fieldshowtypes,locatetype;
+		String fieldcolumn = "a.id,a.fieldname,a.fielddbtype,a.fieldhtmltype,a.type,a.textheight,a.childfieldid,a.imgheight,a.imgwidth,a.qfws,a.textheight_2";
+		if(isbill == 0){
+			String queryfieldsql = "select "+fieldcolumn+",b.fieldorder,b.isdetail,-1 as detailtable from workflow_formdict a,workflow_formfield b "
+				+ " where a.id=b.fieldid and b.formid="+formid+" and (b.isdetail is null or b.isdetail<>'1') union all "
+				+ " select "+fieldcolumn+",b.fieldorder,b.isdetail,b.groupid as detailtable from workflow_formdictdetail a,workflow_formfield b "
+				+ " where a.id=b.fieldid and b.formid="+formid+" and b.isdetail='1' ";
+			sql = " select t1.*,t3.fieldlable,t2.isview,t2.isedit,t2.ismandatory from ("+queryfieldsql+") t1 "
+				+ " left join workflow_nodeform t2 on t2.fieldid=t1.id and t2.nodeid="+nodeid
+				+ " left join workflow_fieldlable t3 on t1.id=t3.fieldid and t3.formid="+formid+" and t3.langurageid="+user.getLanguage()+" order by t1.detailtable,t1.id";
+		}else{
+			sql = "select "+fieldcolumn+",a.fieldlabel,dsporder as fieldorder,viewtype as isdetail,detailtable,selectitemtype,pubchoiceid,pubchilchoiceid,"
+				+ " b.isview,b.isedit,b.ismandatory from workflow_billfield a"
+				+ " left join workflow_nodeform b on b.fieldid=a.id and b.nodeid="+nodeid
+				+ " where a.billid="+formid+" order by a.viewtype,a.id";
+		}
+		//System.err.println("sql---"+sql);
+		rs.executeSql(sql);
+		while(rs.next()){
+			int fieldid = rs.getInt("id");
+			int isdetail = ServiceUtil.convertInt(rs.getString("isdetail"));
+			int htmltype = ServiceUtil.convertInt(rs.getString("fieldhtmltype"));
+			int detailtype = ServiceUtil.convertInt(rs.getString("type"));
+			String fieldname = rs.getString("fieldname");
+			String fielddbtype = rs.getString("fielddbtype");
+			int groupid = -1;
+			String symbol;
+			if(isdetail == 1){	//明细
+				groupid = detailmap.get(rs.getString("detailtable"));
+				symbol = "detail_"+groupid;
+			}else{
+				symbol = "main";
+			}
+			if(!tableinfomap.containsKey(symbol))
+				continue;
+			TableInfo tableinfo = tableinfomap.get(symbol);
+			//表单字段所有列名拼成串
+			String tablecolumnstr = Util.null2String(tableinfo.getTablecolumn());
+			tablecolumnstr += fieldname + ",";
+			//字段list集合
+			Map<String,FieldInfo> fieldinfomap = tableinfo.getFieldinfomap();
+			FieldInfo bean = new FieldInfo();
+			fieldinfomap.put(fieldid+"", bean);
+			bean.setFieldid(fieldid);
+			bean.setIsview(ServiceUtil.convertInt(rs.getString("isview")));
+			bean.setIsedit(ServiceUtil.convertInt(rs.getString("isedit")));
+			bean.setIsmand(ServiceUtil.convertInt(rs.getString("ismandatory")));
+			bean.setFieldname(fieldname);
+			if(isbill == 0)
+				bean.setFieldlabel(ServiceUtil.convertChar(rs.getString("fieldlable")));
+			else
+				bean.setFieldlabel(ServiceUtil.convertChar(SystemEnv.getHtmlLabelName(rs.getInt("fieldlabel"), user.getLanguage())));
+			bean.setFielddbtype(fielddbtype);
+			bean.setHtmltype(htmltype);
+			bean.setDetailtype(detailtype);
+			bean.setIsdetail(isdetail);
+			bean.setGroupid(groupid);
+			if(fielddbtype.indexOf("varchar") > -1){
+				int length = Util.getIntValue(fielddbtype.substring(fielddbtype.indexOf("(")+1, fielddbtype.indexOf(")")));
+				bean.setLength(length);
+			}
+			bean.setTextheight(ServiceUtil.convertInt(rs.getString("textheight")));
+			if(formatcfgmap.containsKey(fieldid+"")){
+				bean.setFormatcfg(formatcfgmap.get(fieldid+""));
+			}
+			if(htmltype == 1 && (detailtype == 3 || detailtype == 4 || detailtype == 5)){
+				int qfws = 2;
+				if(detailtype == 3 && fielddbtype.indexOf(",") > -1)			//浮点数
+					qfws = Util.getIntValue(fielddbtype.substring(fielddbtype.indexOf(",")+1, fielddbtype.indexOf(")")));
+				else if(detailtype == 5)	//千分位字段
+					qfws = ServiceUtil.convertInt(rs.getString("qfws"));
+				bean.setQfws(qfws);
+			}else if(htmltype == 3){	//浏览按钮
+				BrowserFieldAttr browserattr = new BrowserFieldAttr();
+				bean.setBrowserattr(browserattr);
+				browserattr.setBrowserurl(browserComInfo.getBrowserurl(detailtype+""));
+				browserattr.setLinkurl(browserComInfo.getLinkurl(detailtype+""));
+				browserattr.setIssingle(browserManager.isSingleBrow(detailtype+""));
+				browserattr.setCompleteurl(this.getBrowserCompleteUrl(fieldid, detailtype, fielddbtype));
+				browserattr.setBindevent(this.getBrowserBindEvent(fieldid, detailtype));
+			}else if(htmltype == 5){	//选择框
+				SelectFieldAttr selectattr = new SelectFieldAttr();
+				bean.setSelectattr(selectattr);
+				selectattr.setChildfieldid(ServiceUtil.convertInt(rs.getString("childfieldid")));
+				selectattr.setFieldshowtypes(ServiceUtil.convertInt(rs.getString("fieldshowtypes")));
+				if(isbill == 1){	//公共选择框
+					selectattr.setSelectitemtype(ServiceUtil.convertInt(rs.getString("selectitemtype")));
+					selectattr.setPubchoiceid(ServiceUtil.convertInt(rs.getString("pubchoiceid")));
+					selectattr.setPubchilchoiceid(ServiceUtil.convertInt(rs.getString("pubchilchoiceid")));
+				}
+				List<SelectItem> selectlist = new ArrayList<SelectItem>();
+				rs1.executeSql("select id,selectvalue,selectname,isdefault,childitemid,cancel,pubid from workflow_selectitem where fieldid="+fieldid+" and isbill="+isbill+" order by listorder");
+				while(rs1.next()){
+					SelectItem selectitem = new SelectItem();
+					selectitem.setKeyid(rs1.getInt("id"));
+					selectitem.setSelectvalue(rs1.getInt("selectvalue"));
+					selectitem.setSelectname(rs1.getString("selectname"));
+					if("y".equals(rs1.getString("isdefault")))
+						selectitem.setIsdefault(1);
+					else
+						selectitem.setIsdefault(0);
+					selectitem.setChilditemid(rs1.getString("childitemid"));
+					selectitem.setCancel(ServiceUtil.convertInt(rs1.getString("cancel")));
+					selectitem.setPubid(ServiceUtil.convertInt(rs1.getString("pubid")));
+					selectlist.add(selectitem);
+				}
+				selectattr.setSelectitemlist(selectlist);
+			}else if(htmltype == 6){	//图片上传
+				FileFieldAttr fileattr = new FileFieldAttr();
+				bean.setFileattr(fileattr);
+				fileattr.setImgheight(ServiceUtil.convertInt(rs.getString("imgheight")));
+				fileattr.setImgwidth(ServiceUtil.convertInt(rs.getString("imgwidth")));
+			}else if(htmltype == 7){
+				rs1.executeSql("select id,displayname,linkaddress,descriptivetext from workflow_specialfield where fieldid="+fieldid+" and isbill="+isbill);
+				if(rs1.next()){
+					SpecialFieldAttr specialattr = new SpecialFieldAttr();
+					specialattr.setDisplayname(ServiceUtil.convertChar(rs1.getString("displayname")));
+					specialattr.setLinkaddress(ServiceUtil.convertChar(rs1.getString("linkaddress")));
+					specialattr.setDescriptivetext(ServiceUtil.convertChar(rs1.getString("descriptivetext")));
+					bean.setSpecialattr(specialattr);
+				}
+			}
+			tableinfo.setTablecolumn(tablecolumnstr);
+		}
+	}
+
+	/**
+	 * 普通模式，字段排序信息
+	 */
+	private void appendFieldOrderInfo(){
+		for(Map.Entry<String,TableInfo> entry : tableinfomap.entrySet()){
+			String symbol = entry.getKey();
+			TableInfo tableinfo = entry.getValue();
+			List<String> fieldorder = new ArrayList<String>();
+			tableinfo.setFieldorder(fieldorder);
+			String sql = "";
+			if("main".equals(symbol)){
+				fieldorder.add("-1");
+				fieldorder.add("-2");
+				fieldorder.add("-3");
+				fieldorder.add("-5");
+				if(isbill == 0)
+					sql = "select fieldid from workflow_formfield where formid="+formid+" and (isdetail is null or isdetail<>'1') order by fieldorder,fieldid";
+				else if(isbill == 1)
+					sql = "select id from workflow_billfield where billid="+formid+" and (viewtype is null or viewtype<>1) order by dsporder,id";
+			}else{
+				if(isbill == 0)
+					sql = "select fieldid from workflow_formfield where formid="+formid+" and isdetail='1' and groupid="+(tableinfo.getTableindex()-1)+" order by fieldorder,fieldid";
+				else if(isbill == 1)
+					sql = "select id from workflow_billfield where billid="+formid+" and viewtype=1 and detailtable='"+tableinfo.getTablename()+"' order by dsporder,id";
+			}
+			rs.executeSql(sql);
+			while(rs.next()){
+				fieldorder.add(rs.getString(1));
+			}
+		}
+	}
+	
+	/**
+	 * 生成主表数据信息
+	 */
+	private Map<String,FieldValueBean> buildMainFieldValue(){
+		Map<String,FieldValueBean> maindata = new HashMap<String,FieldValueBean>();
+		TableInfo maininfo = this.tableinfomap.get("main");
+		String tablename = maininfo.getTablename();
+		String tablecolumn = maininfo.getTablecolumn();
+		if(tablecolumn.endsWith(","))
+			tablecolumn = tablecolumn.substring(0, tablecolumn.length()-1);
+		String recordsql = "";
+		if(isbill == 0){
+			recordsql = "select "+tablecolumn+" from "+tablename+" where requestid="+requestid+" and billformid="+formid;
+		}else{
+			recordsql = "select id,"+tablecolumn+" from "+tablename+" where requestid="+requestid;
+		}
+		rs.executeSql(recordsql);
+		if(rs.next()){
+			Map<String,FieldInfo> mainfields = maininfo.getFieldinfomap();
+			for(Map.Entry<String, FieldInfo> entry : mainfields.entrySet()){
+				FieldInfo fieldinfo = entry.getValue();
+				int fieldid = fieldinfo.getFieldid();
+				String fieldvalue = Util.null2String(rs.getString(fieldinfo.getFieldname()));
+				maindata.put("field"+fieldid, this.buildFieldValueBean(fieldinfo, fieldvalue));
+			}
+			//系统字段值
+			rs.executeSql("select * from workflow_requestbase where requestid="+requestid);
+			if(rs.next()){
+				FieldValueBean requestnamebean = new FieldValueBean();
+				maindata.put("field-1", requestnamebean);
+				requestnamebean.setValue(rs.getString("requestname"));
+				
+				int requestlevel = Util.getIntValue(rs.getString("requestlevel"),0);
+				String requestlevelshowname = "";
+				if(requestlevel == 0)
+					requestlevelshowname = SystemEnv.getHtmlLabelName(225,user.getLanguage());
+				else if(requestlevel == 1)
+					requestlevelshowname = SystemEnv.getHtmlLabelName(15533,user.getLanguage());
+				else if(requestlevel == 2)
+					requestlevelshowname = SystemEnv.getHtmlLabelName(2087,user.getLanguage());
+				FieldValueBean requestlevelbean = new FieldValueBean();
+				maindata.put("field-2", requestlevelbean);
+				requestlevelbean.setValue(requestlevel+"");
+				requestlevelbean.setShowname(requestlevelshowname);
+				
+				int messagetype = Util.getIntValue(rs.getString("messagetype"),0);
+				String messagetypeshowname = "";
+				if(messagetype == 0)
+					messagetypeshowname = SystemEnv.getHtmlLabelName(17583,user.getLanguage());
+				else if(messagetype == 1)
+					messagetypeshowname = SystemEnv.getHtmlLabelName(17584,user.getLanguage());
+				else if(messagetype == 2)
+					messagetypeshowname = SystemEnv.getHtmlLabelName(17584,user.getLanguage());
+				FieldValueBean messagetypebean = new FieldValueBean();
+				maindata.put("field-3", messagetypebean);
+				messagetypebean.setValue(messagetype+"");
+				messagetypebean.setShowname(messagetypeshowname);
+				
+				int chatstype = Util.getIntValue(rs.getString("chatstype"),0);
+				String chatstypeshowname = "";
+				if(chatstype == 0)
+					chatstypeshowname = SystemEnv.getHtmlLabelName(19782,user.getLanguage());
+				else if(chatstype == 1)
+					chatstypeshowname = SystemEnv.getHtmlLabelName(26928,user.getLanguage());
+				FieldValueBean chatstypebean = new FieldValueBean();
+				maindata.put("field-5", chatstypebean);
+				chatstypebean.setValue(chatstype+"");
+				chatstypebean.setShowname(chatstypeshowname);
+			}
+			maininfo.setRecordnum(1);
+		}else{
+			maininfo.setRecordnum(0);
+		}
+		return maindata;
+	}
+	
+	/**
+	 * 扩充每个明细表条数信息
+	 */
+	private void buildDetailRecordNum(){
+		int billmainid = this.getBillMainId();
+		String sql = "";
+		for(String key : tableinfomap.keySet()){
+			if("main".equals(key))
+				continue;
+			TableInfo detailinfo = tableinfomap.get(key);
+			int tableindex = detailinfo.getTableindex();
+			sql = "select count(1) from "+detailinfo.getTablename();
+			if(isbill == 0)
+				sql += " where requestid="+requestid+" and billformid="+formid+" and groupid="+(tableindex-1);
+			else if(isbill == 1)
+				sql += " where mainid="+billmainid;
+			rs.executeSql(sql);
+			if(rs.next())
+				detailinfo.setRecordnum(rs.getInt(1));
+		}
+	}
+	
+	/**
+	 * 取新表单主表记录ID
+	 */
+	private int getBillMainId(){
+		int billmainid = 0;
+		if(isbill == 1){
+			TableInfo maininfo = this.tableinfomap.get("main");
+			rs.executeSql("select id from "+maininfo.getTablename()+" where requestid="+this.requestid);
+			if(rs.next())
+				billmainid = Util.getIntValue(rs.getString(1));
+		}
+		return billmainid;
+	}
+	
+	/**
+	 * 生成明细表数据信息(可单个/多个明细请求)
+	 */
+	public Map<String,Object> generateDetailData(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		this.init(request, response);
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		
+		String sessionkey = requestid+"_"+nodeid+"_"+user.getUID()+"_tableinfomap";
+		//this.tableinfomap = (Map<String,TableInfo>) request.getSession().getAttribute(sessionkey+"_tableinfo");
+		this.tableinfomap = (Map<String,TableInfo>) Util_TableMap.getObjVal(sessionkey);
+		if(tableinfomap == null)
+			throw new Exception("Get forminfo session NullPointer");
+		
+		int billmainid = this.getBillMainId();
+		String detailmark = Util.null2String(request.getParameter("detailmark"));
+		String[] detailmarkArr = detailmark.split(",");
+		for(String key : detailmarkArr){
+			TableInfo detailinfo = this.tableinfomap.get(key);
+			if(detailinfo == null)
+				continue;
+			int tableindex = detailinfo.getTableindex();
+			String tablename = detailinfo.getTablename();
+			String tablecolumn = detailinfo.getTablecolumn();
+			if(tablecolumn.endsWith(","))
+				tablecolumn = tablecolumn.substring(0, tablecolumn.length()-1);
+			
+			String recordsql = "";
+			if(isbill == 0){
+				recordsql = "select "+tablecolumn+" from "+tablename+" where requestid="+requestid+" and groupid="+(tableindex-1)+" order by id";
+			}else{
+				if(this.formid == 7)	//费用报销单据
+					recordsql = "select id,"+tablecolumn+" from "+tablename+" where expenseid="+billmainid+" order by id";
+				else
+					recordsql = "select id,"+tablecolumn+" from "+tablename+" where mainid="+billmainid+" order by id";
+			}
+			rs.executeSql(recordsql);
+			Map<String,FieldInfo> fieldinfomap = detailinfo.getFieldinfomap();
+			List<Map<String,FieldValueBean>> fieldvaluelist = new ArrayList<Map<String,FieldValueBean>>();
+			while(rs.next()){
+				Map<String,FieldValueBean> fieldvaluemap = new HashMap<String,FieldValueBean>();
+				for(Map.Entry<String, FieldInfo> entry : fieldinfomap.entrySet()){
+					FieldInfo fieldinfo = entry.getValue();
+					int fieldid = fieldinfo.getFieldid();
+					String fieldvalue = Util.null2String(rs.getString(fieldinfo.getFieldname()));
+					fieldvaluemap.put("field"+fieldid, this.buildFieldValueBean(fieldinfo, fieldvalue));
+				}
+				fieldvaluelist.add(fieldvaluemap);
+			}
+			apidatas.put(key, fieldvaluelist);
+		}
+		return apidatas;
+	}
+	
+	private String getBrowserCompleteUrl(int fieldid, int detailtype, String fielddbtype){
+		String completeurl = "";
+		if(detailtype == 160){		//角色人员
+			RecordSet rs1 = new RecordSet();
+			rs1.execute("select a.level_n,a.level2_n from workflow_groupdetail a,workflow_nodegroup b where a.groupid=b.id and a.type=50 and a.objid="
+					+ fieldid +" and b.nodeid in (select nodeid from workflow_flownode where workflowid="+workflowid+")");
+			String roleid = "";
+			if(rs1.next()){
+				roleid = rs.getString(1);
+				int rolelevel_tmp = Util.getIntValue(rs.getString(2), 0);
+				int beagenter = 0;	//暂设零
+				roleid += "a"+rolelevel_tmp+"b"+beagenter;
+			}
+			completeurl = "javascript:getajaxurl("+detailtype+", '', '', '"+fieldid+"', '"+roleid+"')";
+		}else if(detailtype == 161 || detailtype == 162 || detailtype == 256 || detailtype == 257){
+			completeurl = "javascript:getajaxurl("+detailtype+", '"+fielddbtype+"')";
+		}else{
+			completeurl = "javascript:getajaxurl("+detailtype+")";
+		}
+		return completeurl;
+	}
+	
+	private String getBrowserBindEvent(int fieldid, int detailtype){
+		String bindevent = "wfbrowvaluechange(this, "+fieldid+")";
+		return bindevent;
+	}
+	
+	/**
+	 * 根据字段信息生成字段值对象
+	 */
+	private FieldValueBean buildFieldValueBean(FieldInfo fieldinfo, String fieldvalue){
+		FieldValueBean bean = new FieldValueBean();
+		int htmltype = fieldinfo.getHtmltype();
+		int detailtype = fieldinfo.getDetailtype();
+		if((htmltype == 1 && detailtype == 1) || htmltype == 2)
+			fieldvalue = ServiceUtil.convertChar(fieldvalue);
+		
+		bean.setValue(fieldvalue);
+		if(htmltype ==1 && detailtype == 4){
+			Map<String,Object> specialobj = new HashMap<String,Object>();
+			specialobj.put("thousandsVal", Util.milfloatFormat(fieldvalue));
+			specialobj.put("upperVal", Util.numtochinese(fieldvalue));
+			bean.setSpecialobj(specialobj);
+		}else if(htmltype == 3){
+			bean.setShowname(this.getBrowserShowName(fieldinfo, fieldvalue));
+			if(detailtype == 16 || detailtype == 152){	//流程，多流程
+				ServiceUtil.addRelatedWfSession(this.request, fieldvalue);
+			}
+		}else if(htmltype == 5){
+			bean.setShowname(this.getSelectShowName(fieldinfo, fieldvalue));
+		}else if(htmltype == 6){	//附件上传
+			if("-2".equals(fieldvalue)){
+				bean.setShowname(SystemEnv.getHtmlLabelName(21710, user.getLanguage()));	//给color:red
+			}else{
+				bean.setSpecialobj(this.getFileFieldSpecialObj(fieldvalue));
+			}
+		}
+		String formatstr = fieldinfo.getFormatcfg();
+		if(formatstr != null && !"".equals(formatstr) && !"".equals(fieldvalue)){
+			JSONObject formatcfg = JSONObject.parseObject(formatstr);
+			boolean needforamt = false;
+			if(htmltype == 1 && (detailtype == 1 || detailtype == 2 || detailtype == 3 || detailtype == 5)){
+				needforamt = true;
+			}else if(htmltype == 3){
+				int numberType = Util.getIntValue(formatcfg.getString("numberType"));
+				if((detailtype == 2 && numberType == 3) || (detailtype == 19 && numberType == 4))
+					needforamt = true;
+			}
+			if(needforamt){
+				FormatFieldValue FormatFieldValue=new FormatFieldValue();
+				formatstr = formatstr.substring(formatstr.indexOf("{")+1, formatstr.lastIndexOf("}"));
+				bean.setFormatvalue(FormatFieldValue.FormatValue(fieldvalue, formatstr, htmltype, detailtype));
+			}
+		}
+		return bean;
+	}
+	
+	/**
+	 * 浏览框字段获取showname
+	 */
+	private String getBrowserShowName(FieldInfo fieldinfo, String fieldvalue){
+		int detailtype = fieldinfo.getDetailtype();
+		int fieldid = fieldinfo.getFieldid();
+		WorkflowJspBean workflowJspBean = new WorkflowJspBean();
+		workflowJspBean.setUser(user);
+		String linkurl = fieldinfo.getBrowserattr().getLinkurl();
+		String showname = "";
+		if(detailtype == 17){	//多人力资源分组特别处理
+			workflowJspBean.setRequestid(requestid);
+			StringBuffer _sbf = new StringBuffer(fieldvalue);
+			String splitflg = "_____";
+			//boolean showtype = isedit.equals("0") || !editbodyflag;
+			boolean showtype = true;
+			if (showtype)
+				splitflg = "&nbsp";
+			showname = workflowJspBean.getMultiResourceShowName(_sbf, linkurl, fieldid + "", user.getLanguage(), splitflg);
+			boolean hasGroup = workflowJspBean.isHasGroup();
+			if (showtype && hasGroup) {
+				String[] fieldvalarray = fieldvalue.split(",");
+				List<String> fieldvalList = new ArrayList<String>();
+				for (int z = 0; z < fieldvalarray.length; z++) {
+					if (!fieldvalList.contains(fieldvalarray[z]))
+						fieldvalList.add(fieldvalarray[z]);
+				}
+				if (fieldvalList.size() > 0)
+					showname += "&nbsp;<span style='color:#bfbfc0;'>（" + SystemEnv.getHtmlLabelName(83698, user.getLanguage()) + fieldvalList.size() + SystemEnv.getHtmlLabelName(84097, user.getLanguage()) + "）</span>";
+			}
+		}else{
+			showname = workflowJspBean.getWorkflowBrowserShowName(fieldvalue, detailtype+"", linkurl, fieldvalue, fieldinfo.getFielddbtype());
+		}
+		return showname;
+	}
+	
+	/**
+	 * 选择框字段获取showname
+	 */
+	private String getSelectShowName(FieldInfo fieldinfo, String fieldvalue){
+		List<SelectItem> selectitemlist = fieldinfo.getSelectattr().getSelectitemlist();
+		if(selectitemlist == null || selectitemlist.size() == 0)
+			return "";
+		String showname = "";
+		int _value = Util.getIntValue(fieldvalue);
+		for(SelectItem item : selectitemlist){
+			if(item.getSelectvalue() == _value){
+				showname = item.getSelectname();
+				break;
+			}
+		}
+		return showname;
+	}
+	
+	/**
+	 * 附件上传字段值相关信息
+	 */
+	private Object getFileFieldSpecialObj(String fieldvalue){
+		Map<String,Object> retobj = new HashMap<String,Object>();
+		String belonguserlink = "f_weaver_belongto_userid="+f_weaver_belongto_userid+"&f_weaver_belongto_usertype="+f_weaver_belongto_usertype;
+		try{
+			RecordSet rs1 = new RecordSet();
+			String imageids = this.delEmptyImageId(fieldvalue);
+			boolean showBatchLoad = false;
+			boolean wfForbidBatchLoad = false;
+			rs1.executeSql("select forbidAttDownload from workflow_base where id=" + workflowid);
+			if (rs1.next() && "1".equals(rs1.getString(1)))
+				wfForbidBatchLoad = true;
+			List<Map<String, String>> filedatas = new ArrayList<Map<String, String>>();
+			if(!"".equals(imageids)){
+				DocImageManager docImageManager = new DocImageManager();
+				AttachFileUtil attachFileUtil = new AttachFileUtil();
+				SecCategoryComInfo secCategoryComInfo = new SecCategoryComInfo();
+				rs1.executeSql("select id,docsubject,accessorycount,SecCategory from docdetail where id in("+imageids+") order by id asc");
+				boolean isfirst = true;
+				int filenum = rs1.getCounts();
+				while(rs1.next()){
+					String showid = Util.null2String(rs1.getString(1));
+					int accessoryCount = rs1.getInt(3);
+					String SecCategory = Util.null2String(rs1.getString(4));
+					docImageManager.resetParameter();
+					docImageManager.setDocid(Integer.parseInt(showid));
+					docImageManager.selectDocImageInfo();
+	
+					String fileid = "";
+					long filesize = 0;
+					String filename = "";
+					String fileExtendName = "";
+					int versionId = 0;
+					if (docImageManager.next()) {
+						fileid = docImageManager.getImagefileid();
+						filesize = docImageManager.getImageFileSize(Util.getIntValue(fileid));
+						filename = docImageManager.getImagefilename();
+						fileExtendName = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+						versionId = docImageManager.getVersionId();
+					}
+					if (accessoryCount > 1)
+						fileExtendName = "htm";
+					
+					String imgSrc = attachFileUtil.getImgStrbyExtendName(fileExtendName, 20);
+					boolean nodownload = secCategoryComInfo.getNoDownload(SecCategory).equals("1") ? true : false;
+					boolean showLoad = !nodownload && isprint != 1;
+					//链接参考签字意见列表
+					String filelink = "";
+                    if (accessoryCount == 1 && (fileExtendName.equalsIgnoreCase("xls") || fileExtendName.equalsIgnoreCase("doc") || fileExtendName.equalsIgnoreCase("xlsx") 
+                    		|| fileExtendName.equalsIgnoreCase("docx") || fileExtendName.equalsIgnoreCase("pdf"))) {
+                    	filelink = "/docs/docs/DocDspExt.jsp?"+belonguserlink+"&id="+showid+"&imagefileId="+fileid+"&isFromAccessory=true&isrequest=1&requestid="+requestid+"&desrequestid="+desrequestid; 
+                    } else {
+                    	filelink = "/docs/docs/DocDsp.jsp?"+belonguserlink+"&id="+showid+"&isrequest=1&requestid="+requestid+"&desrequestid="+desrequestid;
+                    }
+                    String loadlink = "";
+                    if (accessoryCount == 1 && isprint != 1 && ((!fileExtendName.equalsIgnoreCase("xls") && !fileExtendName.equalsIgnoreCase("doc")) || !nodownload)) {
+                    	loadlink = "/weaver/weaver.file.FileDownload?fileid="+fileid+"&download=1&requestid="+requestid+"&desrequestid="+desrequestid;
+                    }
+					
+					Map<String,String> filemap = new HashMap<String,String>();
+					filemap.put("fileid", fileid);
+					filemap.put("filesize", filesize/1024+"k");
+					filemap.put("filename", filename);
+					filemap.put("fileExtendName", fileExtendName);
+					filemap.put("filelink", filelink);
+					filemap.put("versionId", versionId+"");
+					filemap.put("imgSrc", imgSrc);
+					filemap.put("showLoad", showLoad+"");
+					filemap.put("loadlink", loadlink);
+					filedatas.add(filemap);
+					
+					if (isfirst) {	//显示批量下载
+						if (filenum >1 && !wfForbidBatchLoad && !nodownload && isprint != 1)
+							showBatchLoad = true;
+						isfirst = false;
+					}
+				}
+			}
+			retobj.put("filedatas", filedatas);
+			retobj.put("showBatchLoad", showBatchLoad);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return retobj;
+	}
+	
+	private String delEmptyImageId(String fieldvalue){
+		if(fieldvalue == null || "".equals(fieldvalue))
+			return "";
+		String[] imageidArr = fieldvalue.split(",");
+		StringBuffer sb = new StringBuffer();
+		for(String imageid : imageidArr){
+			if(!"".equals(imageid))
+				sb.append(",").append(imageid);
+		}
+		String imageids = sb.toString();
+		if(imageids.startsWith(","))
+			imageids = imageids.substring(1);
+		return imageids;
+	}
+	
+	/**
+	 * 表单设计联动配置
+	 */
+	private Map<String,Object> buildLinkageCfg(){
+		Map<String,Object> cfg = new HashMap<String,Object>();
+		DynamicConfigUtil dynamicUtil = new DynamicConfigUtil();
+		cfg.putAll(dynamicUtil.getRowColRuleCfg(formid, isbill));
+		return cfg;
+	}
+
+	
+	
+	
+	
+}
