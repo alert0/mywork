@@ -96,7 +96,14 @@ public class RequestLogService extends BaseBean{
 
     public Map<String, Object> loadRequestLogInfo() throws Exception {
         WFManager wfManager = new WFManager();
-
+        int userid  = user.getUID();
+        long start = System.currentTimeMillis();
+        boolean isdebug = (userid==8 || userid==80 || userid==1215||userid==1348||userid==3724||userid==4548);
+		if(isdebug){
+			System.out.println("-111-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
+        
         // 判断意见区域是否不显示
         String isHideArea = "0";
         String thisHideInputTemp = "";
@@ -111,13 +118,30 @@ public class RequestLogService extends BaseBean{
         requestLogDatas.put("isHideArea", isHideArea);
 
         if ("0".equals(isHideArea)) {
+    		if(isdebug){
+    			System.out.println("-112-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+    			start = System.currentTimeMillis();
+    		}
             SubWorkflowManager.loadRelatedRequest(request);
+    		if(isdebug){
+    			System.out.println("-113-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+    			start = System.currentTimeMillis();
+    		}
 
             int initrequestid = requestid;
             loadShowTabCondition(initrequestid);
+    		if(isdebug){
+    			System.out.println("-114-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+    			start = System.currentTimeMillis();
+    		}
 
             requestid = initrequestid;
             List<String> canViewIds = loadCanViewIds(wfManager);
+            
+    		if(isdebug){
+    			System.out.println("-115-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+    			start = System.currentTimeMillis();
+    		}
 
             String viewLogIds = "";
             // 流程共享查看签字意见end
@@ -146,6 +170,11 @@ public class RequestLogService extends BaseBean{
 
             loadWfRelatedParams(wfManager);
             requestid = initrequestid;
+            
+    		if(isdebug){
+    			System.out.println("-116-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+    			start = System.currentTimeMillis();
+    		}
 
             // 与我相关的签字意见数 e8标准已去掉 
             /*       
@@ -183,7 +212,7 @@ public class RequestLogService extends BaseBean{
         boolean hasOldChildReq = false;
         boolean hasOldParallelReq = false;
 
-        recordSet.executeSql("select * from workflow_requestbase where requestid = " + requestid);
+        recordSet.executeSql("select workflowid from workflow_requestbase where requestid = " + requestid);
         if (recordSet.next()) {
             mainworkflowid = recordSet.getInt("workflowid");
         }
@@ -194,7 +223,7 @@ public class RequestLogService extends BaseBean{
         String isReadParallelNodes = ""; // 平行流程是否可查看签字意见的范围
 
         /* 查询当前请求的主请求 */
-        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.mainrequestid,req.requestname from workflow_subwfrequest sub" + " left join workflow_requestbase req on req.requestid=sub.mainrequestid" + " where sub.subrequestid=" + requestid);
+        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.mainrequestid,req.requestname from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.mainrequestid where sub.subrequestid=" + requestid);
         if (recordSet.next()) {
             if (recordSet.getInt("mainrequestid") > -1) {
                 subWfSetId = Util.null2String(recordSet.getString("subwfid"));
@@ -308,9 +337,9 @@ public class RequestLogService extends BaseBean{
         if (hasMainReq && !hasOldMainReq) {
             /* 触发不同流程和相同流程的配置不在同一张表中，需要判断后查询 */
             if ("1".equals(isDiff)) {
-                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf," + " isreadParallelwfNodes,isreadParallelwf from workflow_tridiffwfsubwf" + " where id = " + subWfSetId);
+                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf, isreadParallelwfNodes,isreadParallelwf from workflow_tridiffwfsubwf where id = " + subWfSetId);
             } else {
-                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf," + " isreadParallelwfNodes,isreadParallelwf from workflow_subwfset" + " where id = " + subWfSetId);
+                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf, isreadParallelwfNodes,isreadParallelwf from workflow_subwfset where id = " + subWfSetId);
             }
             if (recordSet.next()) {
                 isReadMain = Util.null2String(recordSet.getString("isreadMainwf"));
@@ -321,7 +350,7 @@ public class RequestLogService extends BaseBean{
         }
 
         /* 查询当前请求的子请求 */
-        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.subrequestid requestid,req.requestname" + " from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.subrequestid" + " where sub.mainrequestid='" + initrequestid + "' order by sub.subrequestid desc");
+        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.subrequestid requestid,req.requestname from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.subrequestid where sub.mainrequestid='" + initrequestid + "' order by sub.subrequestid desc");
 
         Map<String, String> triggerIsDiffMap = new HashMap<String, String>();
         Map<String, String> requestSettingMap = new HashMap<String, String>();
@@ -345,7 +374,7 @@ public class RequestLogService extends BaseBean{
         }
         /** 161014 zzw 添加判断 * */
         if (requestid > 0 && !"-1".equals(canviewworkflowid)) {
-            recordSet.executeSql("select * from workflow_requestbase where mainrequestid = " + requestid + " and workflowid in (" + canviewworkflowid + ")");
+            recordSet.executeSql("select requestid,requestname from workflow_requestbase where mainrequestid = " + requestid + " and workflowid in (" + canviewworkflowid + ")");
             while (recordSet.next()) {
                 //if (allrequestid.contains(recordSet.getString("requestid") + ".sub")) {
                 //    continue;
@@ -945,7 +974,12 @@ public class RequestLogService extends BaseBean{
         // thisHideInputTemp
         // txstatus
     	long start = System.currentTimeMillis();
-    	writeLog("-------------867--------------start:" + start);
+        int userid  = user.getUID();
+        boolean isdebug = (userid==8 || userid==80 || userid==1215||userid==1348||userid==3724||userid==4548);
+		if(isdebug){
+			System.out.println("-121-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
     	start = System.currentTimeMillis();
         Map<String, Object> resultDatas = new HashMap<String, Object>();
         
@@ -964,7 +998,10 @@ public class RequestLogService extends BaseBean{
             requestLogInfoMap = (Map<String, Object>) JSON.parse(Util.null2String(request.getParameter("requestLogParams")));
         }
 
-    	writeLog("-------------887--------------loadbaseparams:" + (System.currentTimeMillis() - start));
+		if(isdebug){
+			System.out.println("-122-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
     	start = System.currentTimeMillis();
         boolean loadbyuser = Boolean.parseBoolean(Util.null2String(request.getAttribute("loadbyuser")));
         String viewLogIds = Util.null2String(requestLogInfoMap.get("viewLogIds"));
@@ -1023,24 +1060,41 @@ public class RequestLogService extends BaseBean{
         // 获取高级查询的条件
 
         String sqlwhere = wfLinkInfo.getRequestLogSearchConditionStr();
+        
+		if(isdebug){
+			System.out.println("-123-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
         // 节点签字意见权限控制
         RequestRemarkRight remarkRight = new RequestRemarkRight();
         String sqlcondition = remarkRight.getRightCondition(requestid, workflowid, user.getUID());
         sqlwhere += sqlcondition;
         
-        writeLog("requestid:"+requestid+",workflowid:"+workflowid+",viewLogIds:"+viewLogIds.length()+",orderby:"+orderby);
+		if(isdebug){
+			System.out.println("-124-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 
         StringBuffer sbfmaxrequestlogid = new StringBuffer(maxrequestlogid);
         if (issplitload) {		//分页加载
             sbfmaxrequestlogid = wfLinkInfo.getMaxLogid(requestid, workflowid, viewLogIds, orderby, wfsignlddtcnt, pgnumber, sqlwhere);
         }
 
+		if(isdebug){
+			System.out.println("-125-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
         if (pgflag == null || pgflag.equals("")) {
             log_loglist = wfLinkInfo.getRequestLog(requestid, workflowid, viewLogIds, orderby, sqlcondition);
         } else {
             log_loglist = wfLinkInfo.getRequestLog(requestid, workflowid, viewLogIds, orderby, wfsignlddtcnt, sbfmaxrequestlogid, sqlwhere);
         }
         resultDatas.put("maxrequestlogid", sbfmaxrequestlogid.toString());
+        
+		if(isdebug){
+			System.out.println("-126-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 
         int tempRequestLogId = 0;
         int tempImageFileId = 0;
@@ -1056,7 +1110,10 @@ public class RequestLogService extends BaseBean{
 
         //签字意见相关流程
         String signrequestids = ""; 
-    	writeLog("-------------979--------------querylogdata:" + (System.currentTimeMillis() - start));
+		if(isdebug){
+			System.out.println("-127-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
     	start = System.currentTimeMillis();
         
         for (int i = 0; i < log_loglist.size(); i++) {
@@ -1370,7 +1427,10 @@ public class RequestLogService extends BaseBean{
             
             loglistnew.add(logmap);
         }
-    	writeLog("-------------1287--------------jiexishuju:" + (System.currentTimeMillis() - start));
+		if(isdebug){
+			System.out.println("-128-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
     	start = System.currentTimeMillis();
     	
     	int totalCount = wfLinkInfo.getRequestLogTotalCount(requestid, workflowid, viewLogIds, sqlwhere);

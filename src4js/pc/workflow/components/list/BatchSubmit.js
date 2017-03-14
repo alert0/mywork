@@ -45,7 +45,7 @@ class BatchSubmit extends React.Component{
             >
             <div className="wea-workflow-batchsubmit-area">
                 <div>
-                    <Popover placement="bottomLeft" trigger="click" content={phrasesContent} visible={showPhrases} onVisibleChange={this.switchPhrases.bind(this)}>
+                    <Popover overlayClassName="wea-workflow-phrases-popover" placement="bottomLeft" trigger="click" content={phrasesContent} visible={showPhrases} onVisibleChange={this.switchPhrases.bind(this)}>
                         <Button type="ghost">
                             <i className="icon-communication-message" />
                             <span>批示语</span>

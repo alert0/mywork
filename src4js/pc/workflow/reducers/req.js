@@ -132,6 +132,8 @@ export default function req(state = initialState, action) {
     		return state.merge({logList:action.logList});
     	case types.IS_LOADING_LOG:
     		return state.merge({isLoadingLog:action.bool});
+        case types.CLEAR_ALL:
+            return initialState;
         default:
             return state
     }

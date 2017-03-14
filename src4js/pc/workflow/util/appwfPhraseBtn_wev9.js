@@ -48,8 +48,8 @@ const initwfphrasebutton = (editor,uiName) => {
 						"<div id=\"_signinputphraseblock\" class=\"_signinputphraseblockClass\" style='display:none;z-index:999;'>" +
 						"	<div class=\"phrase_arrowsblock\"><img src=\"/images/ecology8/workflow/phrase/addPhrasejt_wev8.png\" width=\"14px\" height=\"14px\"></div>" +
 						"	<div class=\"cg_block\"  style='background:#fff;'>" +
-						"		<div id=\"_signinputphrasecontentblock\">" +
-						"			<ul>" +
+						"		<div id=\"_signinputphrasecontentblock\" style='height:100px;overflow-y:auto;'>" +
+						"			<ul style='height:\"100%\";'>" +
 						"				<li style=\"padding:2px;\"></li>" +
 						"			</ul>" +
 						"	    </div>" +
@@ -84,7 +84,7 @@ const initwfphrasebutton = (editor,uiName) => {
 			
 			var _style = "";			
 	    	if (_ul.children("li").length > 3)  {
-				_style = " style='display:none;' ";
+				//_style = " style='display:none;' ";
 			}
 			_ul.append("<li " + _style + " class=\"cg_item\"><span class='cg_detail'>" + phraseInfo[i].workflowPhrases + "</span><input type='hidden' value='"+phraseInfo[i].workflowPhrasesContent+"'/></li>");
 	    }
@@ -157,9 +157,9 @@ const initwfphrasebutton = (editor,uiName) => {
 				    	jQuery("#phrasedesc").remove();
 				    	var lastli = jQuery("#_signinputphrasecontentblock ul .loaddingli");
 						if (jQuery("#_signinputphrasecontentblock ul li").length > 3)  {
-							jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
-							jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
-							jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
+//							jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
+//							jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
+//							jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
 						}
 						lastli.removeClass("loaddingli");
 						lastli.addClass("cg_item");
@@ -224,17 +224,17 @@ const initwfphrasebutton = (editor,uiName) => {
 			jQuery("#_signinputphraseblock").css({"z-index":"99999","top":py + "px", "left":px+"px"});
 			jQuery("#_signinputphraseblock").show();
 			
-			if (_firstclc) {
-		    	_firstclc = false;
-		    	var _outdiv = jQuery("#_signinputphrasecontentblock");
-		    	var _li = jQuery("#_signinputphrasecontentblock ul li");
-		    	if (_li.length > 3)  {
-					jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
-					jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
-					jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
-					_li.show();
-				}
-		    }
+//			if (_firstclc) {
+//		    	_firstclc = false;
+//		    	var _outdiv = jQuery("#_signinputphrasecontentblock");
+//		    	var _li = jQuery("#_signinputphrasecontentblock ul li");
+//		    	if (_li.length > 3)  {
+//					jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
+//					jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
+//					jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
+//					_li.show();
+//				}
+//		    }
 			
         }
     });

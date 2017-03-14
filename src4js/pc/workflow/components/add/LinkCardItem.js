@@ -72,7 +72,7 @@ class LinkCardItem extends React.Component{
 		return (
 				<div className="centerItem" key={wfid} onMouseLeave={this.hideOperArea.bind(this)} >
 					{iscommon && <span style={{color:colorarray[num%7],fontSize:'30px',float:'left',marginLeft:20}}><i className={'icon-New-Flow-' + (num == 9 ? '10' : ('0' + (num + 1)))} /></span>}
-					<div className="fontItem">
+					<div className="fontItem" style={{'width': iscommon ? '60%':'100%'}}>
 						<a onClick={this.onNewRequest.bind(this,wfid,0,0,0)} target="_blank" title={wfname}>{wfname}</a>
 					</div>
 					
@@ -133,7 +133,7 @@ class LinkCardItem extends React.Component{
 								 			{hasImportDate ? <Menu style={{marginTop:10}}>
 									 			{importDataShow.map((b,i)=>{
 									 				if(i < 5) return <Menu.Item title={b.value}>
-														<a onClick={()=>openwins(b,wfid)}>{b.get("value")}</a>
+														<a style={{'padding':'0 12px 0 20px'}} onClick={()=>openwins(b,wfid)}>{b.get("value")}</a>
 													</Menu.Item>})
 												}
 								 				</Menu> : <div>数据为空</div>

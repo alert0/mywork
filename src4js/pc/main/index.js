@@ -15,6 +15,7 @@ import {routerReducer} from 'react-router-redux/lib/reducer'
 
 import Portal from 'weaPortal';
 const Homepage = Portal.Homepage;
+const PortalAction = Portal.action;
 const portalReducer = Portal.reducer;
 
 import Workflow from 'weaWorkflow'//'../workflow/'
@@ -55,6 +56,7 @@ if(debug && !(window.attachEvent && navigator.userAgent.indexOf('Opera') === -1)
 
 //推向全局调用
 window.store_e9_element = store;
+window.action_e9_element = PortalAction;
 window.store_e9_workflow = store;
 window.action_e9_workflow = WorkflowAction;
 

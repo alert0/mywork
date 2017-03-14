@@ -23,6 +23,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.icon-form-left:before {
+  content: "\e909";
+}
+.icon-form-down:before {
+  content: "\e906";
+}
+.icon-form-right:before {
+  content: "\e907";
+}
+.icon-form-up:before {
+  content: "\e908";
+}
 .icon-Right-menu--search:before {
   content: "\e905";
 }

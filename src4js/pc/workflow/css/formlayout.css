@@ -11,12 +11,6 @@
 	width:100% !important;
 }
 
-.excelMainTable{
-	border:0px; margin:0px; padding:0px; 
-	border-collapse:collapse;
-	table-layout: fixed;
-}
-
 table.excelMainTable ol{
 	padding-left:16px;
 }
@@ -105,7 +99,19 @@ table.excelMainTable ol{
 
 
 /*----------改造有效CSS------*/
-
+.excelMainTable{
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	border-collapse:collapse;
+	table-layout: fixed;
+}
+.excelMainTable td *{
+	box-sizing: content-box !important;
+}
+.excelDetailTableDiv{
+	margin-left: -1px;
+}
 .span_mc{
 	display:inline-block;
 }
@@ -141,9 +147,6 @@ table.excelMainTable ol{
 }
 .fintable .fborder3{
 	border-right:solid 2px blue;
-}
-.excelDetailTableDiv{
-	margin: -1px 0 -1px -1px;
 }
 
 

@@ -11,8 +11,8 @@ class E9Remind extends React.Component {
         const {actions} = this.props;
         actions.loadRemindInfo();
 
-        // 三分钟刷新一次提醒消息
-        this.remindInterval = window.setInterval(() => actions.loadRemindInfo(), 3 * 60 * 1000);
+        // 十五分钟刷新一次提醒消息
+        this.remindInterval = window.setInterval(() => actions.loadRemindInfo(), 15 * 60 * 1000);
     }
 
     componentWillUnmount() {
@@ -31,23 +31,26 @@ class E9Remind extends React.Component {
     }
 
     render() {
-        const {hasRemind, remindList, remindListVisible} = this.props;
-        const remindList4JSON = remindList.toJSON();
+        // const {hasRemind, remindList, remindListVisible} = this.props;
+        // const remindList4JSON = remindList.toJSON();
 
-        const remindTitle = <div className="e9header-remind-title"><i className="wevicon wevicon-e9header-remind-title" /><span>新到达消息</span></div>;
-        const remindContent = <RemindContent hasRemind={hasRemind} remindList={remindList4JSON} onRemindListClick={this.onRemindListClick.bind(this)} />;
+        // const remindTitle = <div className="e9header-remind-title"><i className="wevicon wevicon-e9header-remind-title" /><span>新到达消息</span></div>;
+        // const remindContent = <RemindContent hasRemind={hasRemind} remindList={remindList4JSON} onRemindListClick={this.onRemindListClick.bind(this)} />;
 
-        return (
-            <div className="e9header-remind">
-                <Popover visible={remindListVisible} onVisibleChange={this.onVisibleChange.bind(this)} placement="bottomLeft" title={remindTitle} content={remindContent} trigger="click" overlayClassName="e9header-remind-popover">
-                    <div className="e9header-remind-icon">
-                        <Badge dot={hasRemind} style={{top: '16px', left: '14px'}}>
-                            <i className="wevicon wevicon-e9header-remind" />
-                        </Badge>
-                    </div>
-                </Popover>
-            </div>
-        )
+
+        // return (
+        //     <div className="e9header-remind">
+        //         <Popover visible={remindListVisible} onVisibleChange={this.onVisibleChange.bind(this)} placement="bottomLeft" title={remindTitle} content={remindContent} trigger="click" overlayClassName="e9header-remind-popover">
+        //             <div className="e9header-remind-icon">
+        //                 <Badge dot={hasRemind} style={{top: '16px', left: '14px'}}>
+        //                     <i className="wevicon wevicon-e9header-remind" />
+        //                 </Badge>
+        //             </div>
+        //         </Popover>
+        //     </div>
+        // )
+
+        return <div style={{display: 'none'}}></div>;
     }
 }
 

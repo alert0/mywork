@@ -89,6 +89,13 @@ public class LayoutFormService {
 		int ismode = Util.getIntValue(Util.null2String(reqinfo.get("ismode")));
 		this.ismanagePage = Util.null2String(reqinfo.get("ismanagePage"));
 		
+		long start = System.currentTimeMillis();
+		int userid = user.getUID();
+		boolean isdebug = (userid==8 || userid==80 || userid==1215||userid==1348||userid==3724||userid==4548);
+		if(isdebug){
+			System.out.println("-141-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		HashMap<String,String> wfinfo = new HashMap<String,String>();
 		Map<String,Object> cellinfomap = new HashMap<String,Object>();
 		Map<String,String> formatcfgmap = new HashMap<String,String>();
@@ -104,18 +111,46 @@ public class LayoutFormService {
 			wfinfo.put("languageid", user.getLanguage()+"");
 			wfinfo.put("iswfshare", Util.null2String(reqinfo.get("iswfshare")));
 			
+			if(isdebug){
+				System.out.println("-142-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+				start = System.currentTimeMillis();
+			}
 			LayoutInfoService layoutinfo = new LayoutInfoService();
 			layoutinfo.setUser(user);
 			layoutinfo.setWfinfo(wfinfo);
 			layoutinfo.parseLayoutJson(layoutid, cellinfomap, formatcfgmap);
 		}
+		if(isdebug){
+			System.out.println("-143-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		this.appendTableAttr();
+		if(isdebug){
+			System.out.println("-144-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		this.appendFieldList(formatcfgmap);
+		if(isdebug){
+			System.out.println("-145-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		if(ismode == 0)			//普通模式
 			this.appendFieldOrderInfo();
 		
+		if(isdebug){
+			System.out.println("-146-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		Map<String,FieldValueBean> maindata = this.buildMainFieldValue();
+		if(isdebug){
+			System.out.println("-147-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		this.buildDetailRecordNum();
+		if(isdebug){
+			System.out.println("-148-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		
 		String sessionkey = requestid+"_"+nodeid+"_"+user.getUID()+"_tableinfomap";
 		//HttpSession session = request.getSession();
@@ -245,7 +280,7 @@ public class LayoutFormService {
 				+ " left join workflow_nodeform b on b.fieldid=a.id and b.nodeid="+nodeid
 				+ " where a.billid="+formid+" order by a.viewtype,a.id";
 		}
-		//System.err.println("sql---"+sql);
+		//System.out.println("sql---"+sql);
 		rs.executeSql(sql);
 		while(rs.next()){
 			int fieldid = rs.getInt("id");

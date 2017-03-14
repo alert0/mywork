@@ -17,7 +17,7 @@ export const setNowRouterWfpath = value => {
 
 
 //初始化流程首页待办流程
-export const initDatas = (params = {}) => {
+export const initDatas = params => {
 	return(dispatch, getState) => {
 		const { ls } = WeaTools;
 		const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
@@ -34,7 +34,8 @@ export const initDatas = (params = {}) => {
 				conditioninfo: conditioninfo
 			});
 		});
-		const key = searchParams.wftype ? `type_${searchParams.wftype}` : (searchParams.workflowid ? `wf_${searchParams.workflowid}` : '');
+		const newParams = {...paramsBase, ...searchParams, ...params};
+		const key = newParams.method==="reqeustbytype" ? `type_${newParams.wftype}` : (newParams.method==="reqeustbywfid" ? `wf_${newParams.workflowid}` : '');
 		API_LIST.getWfRequestList({ ...paramsBase, ...{ actiontype: "countinfo" } }).then((data) => {
 			dispatch({
 				type: `${viewScope}_` + types.INIT_COUNT,
@@ -52,7 +53,7 @@ export const doSearch = (params = {}) => {
 		const {paramsBase, searchParams, searchParamsAd, leftTreeCount } = getState()['workflow' + viewScope].toJS();
 		
 		const newParams = {...paramsBase, ...searchParams, ...searchParamsAd, ...params, ...{ actiontype: "splitpage" } };
-		const key = newParams.wftype ? `type_${newParams.wftype}` : (newParams.workflowid ? `wf_${newParams.workflowid}` : '');
+		const key = newParams.method==="reqeustbytype" ? `type_${newParams.wftype}` : (newParams.method==="reqeustbywfid" ? `wf_${newParams.workflowid}` : '');
 		key && dispatch({
 			type: `${viewScope}_` + types.INIT_TOPTABCOUNT,
 			topTabCount: leftTreeCount[key]

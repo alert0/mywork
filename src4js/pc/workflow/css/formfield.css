@@ -2,6 +2,7 @@
 
 .field-filearea{
     margin-top: 4px;
+    max-width: 600px;
 }
 .field-file-img{
     float: left;

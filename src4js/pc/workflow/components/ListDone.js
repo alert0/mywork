@@ -36,7 +36,7 @@ class ListDone extends React.Component {
     componentDidMount() {
     	const {actions} = this.props;
     	actions.setNowRouterWfpath('listDone');
-        actions.initDatas();
+        actions.initDatas({method:"all"});
         actions.doSearch();
     }
     componentWillReceiveProps(nextProps) {
@@ -48,7 +48,7 @@ class ListDone extends React.Component {
             actions.isClearNowPageStatus(false);
 
             actions.setNowRouterWfpath('listDone');
-            actions.initDatas();
+            actions.initDatas({method:"all"});
             actions.doSearch();
         }
 
@@ -195,7 +195,7 @@ class ListDone extends React.Component {
                 	actions.setShowSearchAd(false);
                 	actions.setSelectedTreeKeys([]);
                     actions.saveOrderFields();
-                    actions.initDatas();
+                    actions.initDatas({method:"all"});
                     actions.doSearch({
                     	method:'all',
                         viewcondition:0,
@@ -293,10 +293,16 @@ class MyErrorHandler extends React.Component {
 ListDone = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(ListDone);
 
 ListDone = createForm({
-	onFieldsChange(props, fields){
-		const orderFields = objectAssign({},props.orderFields.toJS(),fields);
-		props.actions.saveOrderFields(orderFields);
-	},
+	onFieldsChange(props, fields) {
+    	let _fields = {...fields};
+    	for(let k in fields){
+    		if(fields[k].value.indexOf('_@_') >= 0){
+    			let newValue =  fields[k].value.split('_@_');
+	    		_fields[k].value = newValue[0];
+    		}
+    	}
+        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields,..._fields});
+    },
 	mapPropsToFields(props) {
 		return props.orderFields.toJS();
   	}

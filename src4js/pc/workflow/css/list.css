@@ -18,6 +18,12 @@
 	justify-content: center;
 }
 
+.wea-workflow-phrases-popover .ant-popover-inner{
+	min-width: 120px;
+}
+.wea-workflow-phrases-popover .ant-popover-inner-content{
+	padding: 0px;
+}
 .wea-workflow-batchsubmit .ant-modal {
 	top: 0;
 }

@@ -488,8 +488,10 @@ public class RequestOperation {
 
 						// String isShowPrompt = "true";
 						if (docFlags.equals("1")) {
+							resultInfo.put("type", ExecuteType.SUCCESS);
 						} else {
 							if (fromPDA.equals("1")) {
+								resultInfo.put("type", ExecuteType.SUCCESS);
 								// response.sendRedirect("/workflow/search/WFSearchResultPDA.jsp?workflowid="+workflowid);
 								// if(needoutprint.equals(""))
 								// out.print("<script>"+prefix+"wfforward('/workflow/search/WFSearchResultPDA.jsp?workflowid="+workflowid+"');</script>");

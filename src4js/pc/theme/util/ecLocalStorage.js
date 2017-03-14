@@ -139,7 +139,25 @@ export default class ECLocalStorage {
             moduleObj[key] = value;
             moduleStr = JSON.stringify(moduleObj);
 
-            localStorage.setItem(moduleKey, moduleStr);
+            try {
+                localStorage.setItem(moduleKey, moduleStr);
+            } catch (ex) {
+                if (ex.name == 'QuotaExceededError') {
+                    console.warn('本地存储已达上限，将清除部分缓存数据！');
+                    let cacheAccount = this.getCacheAccount();
+                    if (cacheAccount != null) {
+                        this.clearByAccount(cacheAccount);
+                    }
+                    try {
+                        localStorage.setItem(moduleKey, moduleStr);
+                    } catch (ex) {
+                        if (ex.name == 'QuotaExceededError') {
+                            console.warn('缓存数据清除失败，将清空全部缓存数据！');
+                            localStorage.clear();
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -149,7 +167,16 @@ export default class ECLocalStorage {
      * @returns {string}
      */
     static getCacheAccount() {
-        return localStorage.getItem('account');
+        let cacheAccount = localStorage.getItem('account');
+        if (cacheAccount == null) {
+            let reg = new RegExp('(^| )loginidweaver=([^;]*)(;|$)');
+            let result = document.cookie.match(reg);
+            if (result && result.length == 4) {
+                cacheAccount = unescape(result[2]);
+            }
+        }
+
+        return cacheAccount;
     }
 
     /**

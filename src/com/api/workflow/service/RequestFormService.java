@@ -137,6 +137,11 @@ public class RequestFormService extends BaseBean {
 	 */
 	public Map<String,Object> loadCompetence() throws Exception {
 		long start = System.currentTimeMillis();
+		boolean isdebug = (userid==8 || userid==80 || userid==1215||userid==1348||userid==3724||userid==4548);
+		if(isdebug){
+			System.out.println("-131-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		Map<String, Object> resultDatas = new HashMap<String, Object>();
 		WFLinkInfo wfLinkInfo = new WFLinkInfo();
 		RecordSet rs = new RecordSet();
@@ -238,6 +243,10 @@ public class RequestFormService extends BaseBean {
 		int groupdetailid = 0;
 		int takisremark = -1;
 
+		if(isdebug){
+			System.out.println("-132-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		recordSet.executeSql("select isremark,isreminded,preisremark,id,groupdetailid,nodeid,takisremark,(CASE WHEN isremark=9 THEN '7.5'  WHEN (isremark = 4 ) THEN '1.5'"
 				+ "WHEN (isremark=1 and takisremark=2) THEN '0.9' WHEN (preisremark=1 and takisremark=2) "
 				+ "THEN '0.9' ELSE isremark END) orderisremark from workflow_currentoperator where requestid=" + requestid + " and userid=" + userid + " and usertype=" + usertype
@@ -272,6 +281,10 @@ public class RequestFormService extends BaseBean {
 				nodeid = tmpnodeid;
 				nodetype = wfLinkInfo.getNodeType(nodeid);
 			}
+		}
+		if(isdebug){
+			System.out.println("-133-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
 		}
 
 
@@ -322,6 +335,10 @@ public class RequestFormService extends BaseBean {
 			}
 			session.setAttribute(requestid + "wflinkno", wflinkno + "");// 解决相关流程，不是流程操作人无权限打印的问题
 		}
+		if(isdebug){
+			System.out.println("-134-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 
 		// 只有是主子流程查看时，才去验证权限
 		if (isrequest.equals("2") || isrequest.equals("3") || isrequest.equals("4")) {
@@ -363,8 +380,16 @@ public class RequestFormService extends BaseBean {
 		String requestmark = ""; // 请求编号
 		int currentstatus = -1;
 
+		if(isdebug){
+			System.out.println("-135-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		// 查询请求的相关工作流基本信息
 		recordSet.executeProc("workflow_Requestbase_SByID", requestid + "");
+		if(isdebug){
+			System.out.println("-136-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		if (recordSet.next()) {
 			status = Util.null2String(recordSet.getString("status"));
 			requestname = Util.null2String(recordSet.getString("requestname"));
@@ -390,6 +415,10 @@ public class RequestFormService extends BaseBean {
 		} else {
 			resultDatas.put("sendPage", "/notice/Deleted.jsp?showtype=wf");
 			return resultDatas;
+		}
+		if(isdebug){
+			System.out.println("-137-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
 		}
 
 		// 判断当前工作流的当前节点，是否需要默认打开正文tab页
@@ -517,6 +546,10 @@ public class RequestFormService extends BaseBean {
 		session.removeAttribute(userid + "_" + requestid + "currentusercanview");
 		String iswfshare = "0";
 
+		if(isdebug){
+			System.out.println("-138-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		if (!canview && !isurger && !wfmonitor && !coworkDAO.haveRightToViewWorkflow(Integer.toString(userid), Integer.toString(requestid))) {
 			//writeLog("---------503-----time:" + (System.currentTimeMillis() - start));
 			//start = System.currentTimeMillis();
@@ -600,6 +633,10 @@ public class RequestFormService extends BaseBean {
 				}
 			}
 		}
+		if(isdebug){
+			System.out.println("-139-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		resultDatas.put("iswfshare", iswfshare);
 
 		//writeLog("---------582-----time:" + (System.currentTimeMillis() - start));
@@ -673,8 +710,10 @@ public class RequestFormService extends BaseBean {
 			}
 		}
 
-		//writeLog("---------643-----time:" + (System.currentTimeMillis() - start));
-		//start = System.currentTimeMillis();
+		if(isdebug){
+			System.out.println("-1391-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 
 		// 有查看流程权限时，加入主子流程相关的查看权限
 		// if(canview){
@@ -747,6 +786,10 @@ public class RequestFormService extends BaseBean {
 			// TODO JHY
 		}
 
+		if(isdebug){
+			System.out.println("-1392-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		wfForwardManager.init();
 		wfForwardManager.setWorkflowid(workflowid);
 		wfForwardManager.setNodeid(nodeid);
@@ -856,7 +899,11 @@ public class RequestFormService extends BaseBean {
 		//start = System.currentTimeMillis();
 
 		session.setAttribute(userid + "_" + requestid + "canForwd", "" + canForwd);
-
+		if(isdebug){
+			System.out.println("-1393-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
+		
 		boolean isPendingRemark = false;
 		if ("0".equals(isremarkForRM))
 			isPendingRemark = true;
@@ -944,8 +991,10 @@ public class RequestFormService extends BaseBean {
 		resultDatas.put("isbill", isbill);
 		resultDatas.put("isprint", isprint ? "1" : "0");
 
-		//writeLog("---------902-----time:" + (System.currentTimeMillis() - start));
-		//start = System.currentTimeMillis();
+		if(isdebug){
+			System.out.println("-1394-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 
 		// 标识当前流程在待办
 		Map<String, Object> layoutmap = new HashMap<String, Object>();
@@ -1025,6 +1074,10 @@ public class RequestFormService extends BaseBean {
         }
         resultDatas.put("signListType", signListType);
 		
+		if(isdebug){
+			System.out.println("-1395-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+		}
 		if (istoManagePage && !isprint && !wfmonitor && isonlyview != 1 && !"1".equals(isworkflowhtmldoc) && !islock) {
 			int isremark = -1;
 			isSignInput = "1";
@@ -1093,6 +1146,10 @@ public class RequestFormService extends BaseBean {
 			resultDatas.put("signinputinfo", new SignInputService().loadSignInputInfo(request, response));
 			
 			return resultDatas;
+		}
+		if(isdebug){
+			System.out.println("-1396-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
 		}
 
 		if ("8".equals(isremarkForRM)) {

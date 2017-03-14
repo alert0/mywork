@@ -64,8 +64,16 @@ public class RequestFormAction {
 			User user = HrmUserVarify.getUser(request, response);
 			String actiontype = request.getParameter("actiontype");
 			if ("loadRight".equalsIgnoreCase(actiontype)) {
+				long start = System.currentTimeMillis();
+				int userid = user.getUID();
+				boolean isdebug = (userid==8 || userid==80 || userid==1215||userid==1348||userid==3724||userid==4548);
+				String requestid = Util.null2String(request.getParameter("requestid"));
 				//点击列表预加载，当表单请求到时直接返回
 				boolean ispreload = Util.getIntValue(request.getParameter("ispreload")) == 1;
+				if(isdebug){
+					System.out.println("-11-requestid-"+requestid+"-userid-"+userid+"-ispreload-"+ispreload+"-"+ (System.currentTimeMillis() - start));
+					start = System.currentTimeMillis();
+				}
 				String preloadkey = Util.null2String(request.getParameter("preloadkey"));
 				//获取预加载的内容的token
 				String preloadValKey = preloadkey;
@@ -89,6 +97,11 @@ public class RequestFormAction {
 							while (i < 100) {
 								cacheVal = Util_TableMap.getVal(preloadValKey);
 								if (cacheVal != null) {
+									if(isdebug){
+										System.out.println("-12-requestid-"+requestid+"-preloadValKey-"+preloadValKey+"-i-"+i);
+										System.out.println("-12-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+										start = System.currentTimeMillis();
+									}
 									Util_TableMap.clearVal(preloadValKey);
 									return cacheVal;
 								}
@@ -99,10 +112,26 @@ public class RequestFormAction {
 				}
 				//new weaver.general.BaseBean().writeLog("ispreload--loading--"+preloadkey);
 
+				if(isdebug){
+					System.out.println("-13-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+					start = System.currentTimeMillis();
+				}
 				apidatas = new RequestFormService(request, response).loadCompetence();
+				if(isdebug){
+					System.out.println("-14-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+					start = System.currentTimeMillis();
+				}
 				new LayoutFormService().generateFormData(request, response, apidatas);
+				if(isdebug){
+					System.out.println("-15-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+					start = System.currentTimeMillis();
+				}
 
 				String apidatastr = JSON.toJSONString(apidatas);
+				if(isdebug){
+					System.out.println("-16-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+					start = System.currentTimeMillis();
+				}
 				int ismode = Util.getIntValue(Util.null2String(apidatas.get("ismode")), 0);
 				int layoutid = Util.getIntValue(Util.null2String(apidatas.get("modeid")), 0);
 				String retstr = "";
@@ -112,6 +141,10 @@ public class RequestFormAction {
 					retstr = apidatastr + ",\"datajson\":" + datajson + "}";
 				} else {
 					retstr = apidatastr;
+				}
+				if(isdebug){
+					System.out.println("-17-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+					start = System.currentTimeMillis();
 				}
 				//预加载结果处理
 				if (ispreload && !"".equals(preloadkey)) {

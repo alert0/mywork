@@ -86,23 +86,24 @@ class FormField extends React.Component {
             return <span id={"field"+fieldid+"span"}>{showname}</span>
         }else if(htmltype == "6"){      //附件上传
             return <FileField fieldObj={fieldObj} fieldValueObj={fieldValueObj} />
-        }else if(htmltype == "7"){      //特殊字符
+        }
+        else if(htmltype == "7"){      //特殊字符
             if(detailtype == "1"){
                 const displayname = fieldObj&&fieldObj.get("specialattr") ? fieldObj.getIn(["specialattr","displayname"]) : "";
                 const linkaddress = fieldObj&&fieldObj.get("specialattr") ? fieldObj.getIn(["specialattr","linkaddress"]) : "";
                 return (
-                    <a href={linkaddress} target="_blank">{displayname}</a>
+                    <a href={linkaddress} target="_blank" dangerouslySetInnerHTML={{__html: displayname}}></a>
                 )
-            }else if(detailtype == "2"){
+            }else if(detailtype == "0" || detailtype == "2"){   //老表单有type为0的描述性文字
                 const descriptivetext = fieldObj&&fieldObj.get("specialattr") ? fieldObj.getIn(["specialattr","descriptivetext"]) : "";
                 return (
                     <div dangerouslySetInnerHTML={{__html: descriptivetext}} />
                 )
             }
-        }else{
-            fieldValueObj && fieldValueObj.has("showname") && (theValue = fieldValueObj.get("showname"));
-            return <div dangerouslySetInnerHTML={{__html: theValue}} />
         }
+        
+        fieldValueObj && fieldValueObj.has("showname") && (theValue = fieldValueObj.get("showname"));
+        return <div dangerouslySetInnerHTML={{__html: theValue}} />
     }
 }
 

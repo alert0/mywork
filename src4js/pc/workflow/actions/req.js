@@ -25,12 +25,13 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			preloadkey: preloadkey,
 			comemessage:comemessage
 		}).then((data)=>{
+			//console.log("data:",data);
 			const params = data;
 			const dispatchStart = new Date().getTime();
 			const apiDuration = dispatchStart - apiLoadStart;
 //			dispatch({type: types.INIT_FORMLAYOUT,});
 			dispatch({type: types.INIT_FORMVALUE,params:params,formLayout:data.datajson,formValue:data.maindata,cellInfo:data.cellinfo,tableInfo:data.tableinfo,linkageCfg:data.linkageCfg});
-			
+			//console.log("data.datajson:",data.datajson);
 			//性能测试
 			dispatch({type: 'TEST_PAGE_LOAD_DURATION',
 				reqLoadDuration:(new Date().getTime() - (window.REQ_PAGE_LOAD_START ? window.REQ_PAGE_LOAD_START : 0)),
@@ -134,6 +135,15 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			// 		}
 			// 	});
 			// }
+			
+			//刷待办
+			try{
+	 			window.opener._table.reLoad();
+	 		}catch(e){}
+	 		try{
+	 			//刷新门户流程列表
+	 			jQuery(window.opener.document).find('#btnWfCenterReload').click();
+	 		}catch(e){}
 		});
 	}
 }
@@ -193,6 +203,14 @@ export const setReqTabKey = key => {
 export const setMarkInfo = () => {
 	return (dispatch, getState) => {
 		let logParams = getState().workflowReq.get('logParams').merge(getState().workflowReq.get('logSearchParams')).toJS();
+		//第二次加载签字意见时会导致参数过长报错问题
+		let requestLogParams = logParams.requestLogParams;
+		if(requestLogParams){
+			requestLogParams = JSON.parse(requestLogParams);
+			requestLogParams.allrequestInfos = [];
+			requestLogParams.viewnodes = [];
+			logParams.requestLogParams = JSON.stringify(requestLogParams);
+		}
 		let logCount = getState().workflowReq.get('logCount');
 		API_REQ.getFormReqInfo(logParams).then(data=>{
 			let value = data;
@@ -563,22 +581,32 @@ export const doSubmitE9Api = (actiontype,src,needwfback,formdatas) => {
 			});
 		}else{
 			dispatch({type:types.CONTROLL_SIGN_INPUT,bool:true});
+			message.warning('"签字意见"未填写',2);
 			signmustinputtips();
 		}
 	}
 }
 
 export const signmustinputtips = () =>{
-	message.warning('"签字意见"未填写',2);
-	let  scrollTop = parseInt(jQuery("#remark").offset().top);
-	if(scrollTop == 0){
-		scrollTop = parseInt(jQuery("#remarkShadowDiv").offset().top);
+	let  remarktop = parseInt(jQuery("#remark").offset().top);
+	if(remarktop == 0){
+		remarktop = parseInt(jQuery("#remarkShadowDiv").offset().top);
+	}
+	let scrolltop = 0;
+	//判断意见框是否在可视区域
+	
+	const isVisual = remarktop > 0 && (remarktop - jQuery('.wea-new-top-req').height() + 200 <  jQuery('.wea-new-top-req-content').height());
+	if(!isVisual) {
+		if(remarktop - jQuery('.wea-new-top-req').height() + 200 > jQuery('.wea-new-top-req-content').height()){
+			scrolltop = remarktop - 185;
+		}
+		if(remarktop <  (jQuery('.wea-new-top-req').height())){
+			if(remarktop < 0) remarktop = remarktop * -1;	
+			scrolltop = jQuery('.wea-new-top-req-content').scrollTop() - remarktop - jQuery('.wea-new-top-req').height() -100;
+		}
+		jQuery('.wea-new-top-req-content').animate({ scrollTop: scrolltop + "px" }, 500);
 	}
 	
-	if(scrollTop <  (jQuery('.wea-new-top-req').height() + 185 ) || 
-		(scrollTop - jQuery('.wea-new-top-req').height() +185) > jQuery('.wea-new-top-req-content').height()){
-		jQuery('.wea-new-top-req-content').animate({ scrollTop: scrollTop - 185 + "px" }, 500)
-	}
 	UE.getEditor('remark').focus(true);
 }
 
@@ -588,12 +616,40 @@ export const setOperateInfo = (updateinfo) =>{
 
 //设置表单tabkey
 export const reqIsSubmit = bool => {
-	return {type:types.REQ_IS_SUBMIT,bool:bool}
+	return (dispatch, getState) => {
+		dispatch({type:types.REQ_IS_SUBMIT,bool:bool});
+		if(bool){
+	 		try{
+	 			window.opener._table.reLoad();
+	 		}catch(e){}
+	 		try{
+	 			//刷新门户流程列表
+	 			jQuery(window.opener.document).find('#btnWfCenterReload').click();
+	 		}catch(e){}
+	 		window.close();
+		}
+	}
 }
 
 //重新加载
 export const reqIsReload = bool => {
-	return {type:types.REQ_IS_RELOAD,bool:bool}
+	return (dispatch, getState) => {
+		dispatch({type:types.REQ_IS_RELOAD,bool:bool});
+		if(bool) {
+			//window.location.reload();
+			const {routing,workflowReq} = getState();
+			const {search} = routing.locationBeforeTransitions;
+			const params = workflowReq.get("params");
+			if(params.get("ismanagePage") == "1") {
+				//console.log("is de:",params.get("ismanagePage") == "1");
+				//console.log("UEUtil:",UE.getEditor("remark"));
+				UE.getEditor("remark").destroy();
+			}
+			dispatch({type:types.CLEAR_ALL});
+			weaWfHistory && weaWfHistory.push("/main/workflow/ReqReload"+search);
+			//console.log("weaWfHistory:",weaWfHistory," pathname:",pathname," search:",search);
+		}
+	}
 }
 
 export const controlSignInput = bool =>{
@@ -757,6 +813,7 @@ export const doingDrawBack = (hiddenparams) => {
 			});
 		}else{
 			dispatch({type:types.CONTROLL_SIGN_INPUT,bool:true});
+			message.warning('"签字意见"未填写',2);
 			signmustinputtips();
 		}
 	}
@@ -950,6 +1007,13 @@ export const scrollLoadSign = (params) => {
 		}else{
 			dispatch({type:types.SET_LOG_PARAMS,logParams:params});		
 			logParams = getState().workflowReq.get('logParams').merge(getState().workflowReq.get('logSearchParams')).toJS();
+			let requestLogParams = logParams.requestLogParams;
+			if(requestLogParams){
+				requestLogParams = JSON.parse(requestLogParams);
+				requestLogParams.allrequestInfos = [];
+				requestLogParams.viewnodes = [];
+				logParams.requestLogParams = JSON.stringify(requestLogParams);
+			}
 		}
 		API_REQ.getFormReqInfo(logParams).then(data=>{
 			let value = data;

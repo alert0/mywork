@@ -35,6 +35,7 @@ export const UPDATE_SHOW_USER_LOGID = 'update_show_user_logid' //更新需要显
 export const SET_REL_REQ_LOG_PARAMS = 'set_rel_req_log_params' //设置相关流程签字意见加载参数
 export const SET_SCROLL_MARK_INFO = 'set_scroll_mark_info' //设置滚动签字意见
 export const IS_LOADING_LOG = 'is_loading_log' //正在加载滚动签字意见
+export const CLEAR_ALL = 'clear_all' //清除所有
 
 /*
     待办事宜、已办、我的请求(原)

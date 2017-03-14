@@ -60,8 +60,8 @@ class Resources extends React.Component {
         </div>
     }
     doChange(key){
-    	const {actions,current,pageSize} = this.props;
-    	actions.getResourcesDatas(key, current, pageSize, false);
+    	const {actions,pageSize} = this.props;
+    	actions.getResourcesDatas(key, 1, pageSize, false);
     }
     getColumns(columns) {
         let newColumns = cloneDeep(columns);

@@ -4,6 +4,7 @@ import ListDoing from './components/ListDoing.js'
 import ListDone from './components/ListDone.js'
 import ListMine from './components/ListMine.js'
 import Req from './components/Req.js'
+import ReqReload from './components/ReqReload.js'
 import Add from './components/Add.js'
 import QueryFlow from './components/QueryFlow.js'
 
@@ -49,6 +50,7 @@ const WorkflowRoute = (
         <Route name="listMine" path="listMine" component={ListMine} />
         <Route name="add" path="add" component={Add} />
         <Route name="req" path="req" component={Req} />
+        <Route name="reqReload" path="reqReload" component={ReqReload} />
         <Route name="queryFlow" path="queryFlow" component={QueryFlow} />
     </Route>
 )

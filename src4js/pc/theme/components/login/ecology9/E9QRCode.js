@@ -39,6 +39,7 @@ class E9QRCode extends React.Component {
                 background: 'none',
                 fill: '#424345'
             });
+            window.clearInterval(this.scanInterval);
             this.scanInterval = window.setInterval(this.scanQRCode.bind(this), 1000);
         }
     }

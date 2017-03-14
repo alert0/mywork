@@ -310,6 +310,8 @@ function leftMenuFormat(data, type) {
     let menu = [];
 
     for (let i = 0; i < data.length; i++) {
+        // 屏蔽流程督办菜单
+        if ((data[i].infoId ? (data[i].parentId || '0') + '-' + data[i].infoId : (data[i].parentId || '0') + '-' + data[i].id) == '1-235') continue;
         let obj = {
             // 格式化后的id由父级菜单id加上菜单本身的id
             id: data[i].infoId ? (data[i].parentId || '0') + '-' + data[i].infoId : (data[i].parentId || '0') + '-' + data[i].id,

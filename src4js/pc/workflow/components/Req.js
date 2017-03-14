@@ -67,29 +67,29 @@ class Req extends React.Component {
 			jQuery('#edui_fixedlayer>div').css('display','none');
 		});
     }
-	componentDidUpdate(){
-		const {reqIsSubmit,reqIsReload,actions,requestid,pathBack} = this.props;
-		const {router} = this.context;
-		this.resetHeight()
-		if(reqIsSubmit){
-			//window.opener.reLoad();
-			try{
-				window.opener._table.reLoad();
-			}catch(e){}
-			try{
-				//刷新门户流程列表
-				jQuery(window.opener.document).find('#btnWfCenterReload').click();
-			}catch(e){}
+	// componentDidUpdate(){
+	// 	const {reqIsSubmit,reqIsReload,actions,requestid,pathBack} = this.props;
+	// 	const {router} = this.context;
+	// 	this.resetHeight()
+	// 	if(reqIsSubmit){
+	// 		//window.opener.reLoad();
+	// 		try{
+	// 			window.opener._table.reLoad();
+	// 		}catch(e){}
+	// 		try{
+	// 			//刷新门户流程列表
+	// 			jQuery(window.opener.document).find('#btnWfCenterReload').click();
+	// 		}catch(e){}
 			
-			window.close();
-			//router.push(`/main/workflow/${pathBack}`);
-		}
+	// 		window.close();
+	// 		//router.push(`/main/workflow/${pathBack}`);
+	// 	}
 	
-		if(reqIsReload){
-			actions.initFormLayout(requestid);
-			actions.reqIsReload(false);
-		}
-	}
+	// 	if(reqIsReload){
+	// 		actions.initFormLayout(requestid);
+	// 		actions.reqIsReload(false);
+	// 	}
+	// }
     shouldComponentUpdate(nextProps,nextState) {
         return this.props.loading!==nextProps.loading||
         !is(this.props.params,nextProps.params)||
@@ -365,7 +365,7 @@ class Req extends React.Component {
     
     gobackpage(router,ismanagePage){
     	if(ismanagePage == '1'){
-    		getUEInstance('remark').destroy();
+    		UEUtil.getUEInstance('remark').destroy();
     	}
     	router.goBack();
     }

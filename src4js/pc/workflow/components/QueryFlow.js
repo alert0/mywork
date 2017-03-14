@@ -32,7 +32,7 @@ import {
     WeaNewTree
 } from 'weaCom'
 
-import {Button, Form, Modal} from 'antd'
+import {Button, Form, Modal,message} from 'antd'
 const createForm = Form.create;
 const FormItem = Form.Item;
 
@@ -64,6 +64,7 @@ class QueryFlow extends React.Component {
     	let hasQuery = !isEmpty(obj);
     	for(let k in obj){
     		newFields[k] = {name:k,value:`${obj[k]}`,dirty:false}
+    		newFields[`_${k}`] = {name:`_${k}`,value:`${obj[k]}`,dirty:false}
     		if(k === 'jsonstr') {
     			isJSONStr = true
     		}
@@ -219,7 +220,7 @@ class QueryFlow extends React.Component {
     }
     // 0 常用条件，1 其他条件
     getFields(index = 0,bool = false) {
-        const {condition, showTable} = this.props;
+        const {condition, showTable, fields} = this.props;
         const fieldsData = !isEmpty(condition.toJS()) && condition.toJS()[index].items;
         let items = [];
         forEach(fieldsData, (field) => {
@@ -229,7 +230,7 @@ class QueryFlow extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {switchComponent(this.props, field.key, domkeys, field)}
+                        {switchComponent(this.props, field.key, domkeys, field, fields.toJS()[domkeys[0]] && fields.toJS()[domkeys[0]].showName)}
                     </FormItem>),
                 colSpan:1
             })
@@ -255,9 +256,19 @@ class QueryFlow extends React.Component {
 
                 	const workflowid = key.indexOf("wf_")===0 ? key.substring(3) : '';
                 	const typeid = key.indexOf("type_")===0 ? key.substring(5) : '';
+                	let workflowidShowName = '';
+                	let typeidShowName = '';
+                	leftTree && leftTree.map(l=>{
+                		if(l.get('domid') == key) typeidShowName = l.get('name');
+                		l.get('childs') && l.get('childs').map(c=>{
+                			if(c.get('domid') == key) workflowidShowName = c.get('name');
+                		})
+                	})
                 	const fieldsObj = {
-                		workflowid:{name:'workflowid',value:workflowid},
-                		typeid:{name:'typeid',value:typeid}
+                		workflowid:{name:'workflowid',value:workflowid,showName:workflowidShowName},
+                		_workflowid:{name:'_workflowid',value:workflowid,showName:workflowidShowName},
+                		typeid:{name:'typeid',value:typeid,showName:typeidShowName},
+                		_typeid:{name:'_typeid',value:typeid,showName:typeidShowName}
                 	};
                 	actions.saveFields(fieldsObj);
                     actions.doSearch();
@@ -268,7 +279,7 @@ class QueryFlow extends React.Component {
         const {actions,searchParamsAd} = this.props;
         return [
             (<Button type="primary" onClick={()=>{actions.doSearch();actions.setShowSearchAd(false)}}>搜索</Button>),
-            (<Button type="ghost" onClick={()=>{actions.saveFields()}}>重置</Button>),
+            (<Button type="ghost" onClick={()=>{actions.saveFields();actions.setSelectedTreeKeys();}}>重置</Button>),
             (<Button type="ghost" onClick={()=>{actions.setShowSearchAd(false)}}>取消</Button>)
         ]
     }
@@ -290,8 +301,7 @@ class QueryFlow extends React.Component {
     	let btns = [];
     	btns.push(<a onClick={()=>{actions.doSearch();actions.updateDisplayTable(true);;actions.setShowSearchAd(false)}}><i className='icon-Right-menu--search' style={{marginRight:10,verticalAlign:'middle'}} />搜索</a>)
     	if(showTable){
-        	btns.push(<a onClick={()=>{selectedRowKeys && `${selectedRowKeys.toJS()}` ? actions.batchShareWf(`${selectedRowKeys.toJS()}`) :Modal.warning({
-                title: '请至少选择一项'})}}  ><i className='icon-Right-menu-batch' style={{marginRight:10,verticalAlign:'middle'}} />批量共享</a>);
+        	btns.push(<a onClick={()=>{selectedRowKeys && `${selectedRowKeys.toJS()}` ? actions.batchShareWf(`${selectedRowKeys.toJS()}`) : message.warning('请至少选择一项',3)}}  ><i className='icon-Right-menu-batch' style={{marginRight:10,verticalAlign:'middle'}} />批量共享</a>);
     		btns.push(<a onClick={()=>{actions.setColSetVisible(true);actions.tableColSet(true);actions.setShowSearchAd(false)}}><i className='icon-Right-menu-Custom' style={{marginRight:10,verticalAlign:'middle'}} />显示定制列</a>)
     	}
     	return btns
@@ -350,13 +360,21 @@ QueryFlow = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(QueryFlow);
 
 QueryFlow = createForm({
     onFieldsChange(props, fields) {
+    	let _fields = {...fields};
     	let __fields = {};
     	for(let k in fields){
     		let __obj = {...fields[k]};
-    		__obj.name = fields[k].name.indexOf('_') < 0 ? `_${fields[k].name}` : fields[k].name.substring(1);
+    		if(fields[k].value.indexOf('_@_') >= 0){
+    			let newValue =  fields[k].value.split('_@_');
+	    		_fields[k].value = newValue[0];
+	    		_fields[k].showName = newValue[1];
+    		}
+    		__obj.name = _fields[k].name.indexOf('_') < 0 ? `_${_fields[k].name}` : _fields[k].name.substring(1);
+    		__obj.value = _fields[k].value;
+    		__obj.showName = _fields[k].showName;
     		__fields[k.indexOf('_') < 0 ? `_${k}` : k.substring(1)] = {...__obj};
     	}
-        props.actions.saveFields({...props.fields.toJS(), ...fields, ...__fields});
+        props.actions.saveFields({...props.fields.toJS(), ...fields,..._fields, ...__fields});
     },
     mapPropsToFields(props) {
         return props.fields.toJS();

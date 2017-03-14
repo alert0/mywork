@@ -4,6 +4,8 @@ export const getCellAttr = (cellObj,cellColAttrs,rowHeight) =>{
     let innerStyleObj = {};
     let className = "";
 
+    //单元格边框
+    appendBorder(cellObj, styleObj);
     //单元格样式
     appendStyle(cellObj, styleObj, innerStyleObj, false);
     const financial = cellObj && cellObj.get("financial");
@@ -12,10 +14,6 @@ export const getCellAttr = (cellObj,cellColAttrs,rowHeight) =>{
         styleObj["height"] = rowHeight + "px";
         innerStyleObj["height"] = "100%";
     }
-    //边框
-    const eBorder = cellObj.get("eborder");
-    if(eBorder && eBorder.size>0) 
-        styleObj = getBorder(styleObj,eBorder);
     //列自定义属性
     if(cellColAttrs && cellColAttrs.get("hide")==="y")
         styleObj["display"] = "none";
@@ -66,37 +64,41 @@ export const getRowAttr = (rowHeight, rowCusAttr) =>{
 }
 
 
-
-const getBorder = (obj,datas)=>{
-    datas.map((v,k)=>{
+const appendBorder = (cellObj, styleObj)=>{
+    const eBorder = cellObj.get("eborder");
+    const etype = cellObj && cellObj.get("etype");
+    eBorder && eBorder.map((v,k)=>{
+        const kind = v.get("kind");
+        if(etype === "7" && (kind === "top" || kind === "bottom"))  //明细所在区域不解析上下边框
+            return true;
         if(v.get("color"))
-            obj["border-"+v.get("kind")+"-color"] = v.get("color");
+            styleObj["border-"+kind+"-color"] = v.get("color");
         const borderstyle = v.get("style") ? parseInt(v.get("style")) : 0;
         if(borderstyle === 0){
         }else if(borderstyle === 2){
-            obj["border-"+v.get("kind")+"-width"] = "2px";
-            obj["border-"+v.get("kind")+"-style"] = "solid";
+            styleObj["border-"+kind+"-width"] = "2px";
+            styleObj["border-"+kind+"-style"] = "solid";
         }else if(borderstyle === 3){
-            obj["border-"+v.get("kind")+"-width"] = "1px";
-            obj["border-"+v.get("kind")+"-style"] = "dashed";
+            styleObj["border-"+kind+"-width"] = "1px";
+            styleObj["border-"+kind+"-style"] = "dashed";
         }else if(borderstyle === 5){
-            obj["border-"+v.get("kind")+"-width"] = "3px";
-            obj["border-"+v.get("kind")+"-style"] = "solid";
+            styleObj["border-"+kind+"-width"] = "3px";
+            styleObj["border-"+kind+"-style"] = "solid";
         }else if(borderstyle === 6){
-            obj["border-"+v.get("kind")+"-width"] = "3px";
-            obj["border-"+v.get("kind")+"-style"] = "double";
+            styleObj["border-"+kind+"-width"] = "3px";
+            styleObj["border-"+kind+"-style"] = "double";
         }else if(borderstyle === 7){
-            obj["border-"+v.get("kind")+"-width"] = "1px";
-            obj["border-"+v.get("kind")+"-style"] = "dotted";
+            styleObj["border-"+kind+"-width"] = "1px";
+            styleObj["border-"+kind+"-style"] = "dotted";
         }else if(borderstyle === 8){
-            obj["border-"+v.get("kind")+"-width"] = "2px";
-            obj["border-"+v.get("kind")+"-style"] = "dashed";
+            styleObj["border-"+kind+"-width"] = "2px";
+            styleObj["border-"+kind+"-style"] = "dashed";
         }else{
-            obj["border-"+v.get("kind")+"-width"] = "1px";
-            obj["border-"+v.get("kind")+"-style"] = "solid";
+            styleObj["border-"+kind+"-width"] = "1px";
+            styleObj["border-"+kind+"-style"] = "solid";
         }
     })
-    return obj;
+    return styleObj;
 }
 
 const appendStyle = (cellObj, styleObj, innerStyleObj, isMc) => {

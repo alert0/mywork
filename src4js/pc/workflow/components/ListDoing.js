@@ -37,7 +37,7 @@ class ListDoing extends React.Component {
     componentDidMount() {
     	const {actions} = this.props;
         actions.setNowRouterWfpath('listDoing');
-        actions.initDatas();
+        actions.initDatas({method:"all"});
         actions.doSearch();
     }
     componentWillReceiveProps(nextProps) {
@@ -49,7 +49,7 @@ class ListDoing extends React.Component {
             actions.isClearNowPageStatus(false);
 
             actions.setNowRouterWfpath('listDoing');
-            actions.initDatas();
+            actions.initDatas({method:"all"});
             actions.doSearch();
         }
 
@@ -203,7 +203,7 @@ class ListDoing extends React.Component {
                 	actions.setShowSearchAd(false);
                 	actions.setSelectedTreeKeys([]);
                     actions.saveOrderFields();
-                    actions.initDatas();
+                    actions.initDatas({method:"all"});
                     actions.doSearch({
                     	method:'all',
                         viewcondition:0,
@@ -273,9 +273,7 @@ class ListDoing extends React.Component {
     	let btns = [];
     	btns.push(<a onClick={()=>{actions.doSearch();actions.setShowSearchAd(false)}}><i className='icon-Right-menu--search' style={{marginRight:8,verticalAlign:'middle'}} />搜索</a>)
         if(hasBatchBtn == "true"){
-            btns.push(<a onClick={()=>{selectedRowKeys && `${selectedRowKeys.toJS()}` ? actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`}) : Modal.warning({
-                title: '请至少选择一项'
-            })}}><i className='icon-Right-menu-batch' style={{marginRight:8,verticalAlign:'middle'}} />批量提交</a>)
+            btns.push(<a onClick={()=>{selectedRowKeys && `${selectedRowKeys.toJS()}` ? actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`}) : message.warning('请至少选择一项',3)}}><i className='icon-Right-menu-batch' style={{marginRight:8,verticalAlign:'middle'}} />批量提交</a>)
         }
     	btns.push(<a onClick={()=>{actions.setColSetVisible(true);actions.tableColSet(true)}}><i className='icon-Right-menu-Custom' style={{marginRight:8,verticalAlign:'middle'}} />显示定制列</a>)
     	return btns
@@ -331,14 +329,6 @@ let s;
 // if(Sys.safari) document.write('Safari: '+Sys.safari);
 
 window.openSPA4Single = function(routeUrl,id) {
-    function gotourl(url){
-        var a = $('<a href="'+ url +'" target="_blank">链接</a>');  //生成一个临时链接对象
-        var d = a.get(0);
-        var e = document.createEvent('MouseEvents');
-        e.initEvent( 'click', true, true );  //模拟点击操作
-        d.dispatchEvent(e);
-        a.remove();   // 点击后移除该对象
-    }
     const preLoadReqInfo = routeUrl =>{
         let url = "/api/workflow/request/reqinfo?actiontype=loadRight&ispreload=1&";
         url += routeUrl.split("?")[1];
@@ -352,7 +342,6 @@ window.openSPA4Single = function(routeUrl,id) {
         $(window).mousedown(function(){});
         jQuery("#hiddenPreLoader").attr("src","");
         jQuery("#hiddenPreLoader").attr("src","/spa/workflow/index.jsp");
-        //spaWin = window.open("/spa/workflow/index.jsp","_blank");
     }
 
     const _timekey = new Date().getTime();
@@ -371,17 +360,11 @@ window.openSPA4Single = function(routeUrl,id) {
 	szFeatures += "scrollbars=yes,";
 	szFeatures += "resizable=yes";
     if(Sys.chrome) {
-        //let isOpen = false;
         jQuery("#hiddenPreLoader").on("load",function(){
-            //if(!isOpen) {
-                //spaWin.location = "/spa/workflow/index.jsp#"+routeUrl;
-                //gotourl("/spa/workflow/index.jsp#"+routeUrl);
-                let spaWin = window.open("/spa/workflow/index.jsp#"+routeUrl, "", szFeatures);
-                if(!spaWin) message.warning("对不起，流程表单弹窗被chrome阻止，请点击浏览器地址栏尾部开启例外！",5);
-                //isOpen = true;
-                $(window).unbind("mousedown");
-                jQuery("#hiddenPreLoader").unbind("load");
-            //}
+            let spaWin = window.open("/spa/workflow/index.jsp#"+routeUrl, "", szFeatures);
+            if(!spaWin) message.warning("对不起，流程表单弹窗被chrome阻止，请点击浏览器地址栏尾部配置例外！",5);
+            $(window).unbind("mousedown");
+            jQuery("#hiddenPreLoader").unbind("load");
         });
     }
     else {
@@ -401,10 +384,16 @@ class MyErrorHandler extends React.Component {
 ListDoing = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(ListDoing);
 
 ListDoing = createForm({
-	onFieldsChange(props, fields){
-		const orderFields = objectAssign({},props.orderFields.toJS(),fields);
-		props.actions.saveOrderFields(orderFields);
-	},
+	onFieldsChange(props, fields) {
+    	let _fields = {...fields};
+    	for(let k in fields){
+    		if(fields[k].value.indexOf('_@_') >= 0){
+    			let newValue =  fields[k].value.split('_@_');
+	    		_fields[k].value = newValue[0];
+    		}
+    	}
+        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields,..._fields});
+    },
 	mapPropsToFields(props) {
 		return props.orderFields.toJS();
   	}

@@ -131,7 +131,6 @@
 
 .wea-workflow-req-sign-list-content .content-right-remark-html {
 	min-height: 24px;
-	line-height: 24px;
 }
 
 .wea-workflow-req-sign-list-content .content-right-docs>i {
@@ -320,4 +319,9 @@
 
 .req_load_duration_test:hover p{
 	visibility: visible;
+}
+
+
+.wea-workflow-req-sign .wea-tab .wea-search-container{
+	z-index:999;
 }

@@ -320,16 +320,17 @@ const quoteClick = (data) => {
 	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.controlSignInput(true));
 
 	try {
-		let remarktop  = parseInt(jQuery("#remark").offset().top);
-		if(remarktop == 0){
-			remarktop = parseInt(jQuery("#remarkShadowDiv").offset().top);
-		}
-		let scrolltop = 0;
-		if(remarktop  < 200){
-			if(remarktop < 0) remarktop = remarktop * -1;
-			scrolltop = jQuery('.wea-new-top-req-content').scrollTop() - remarktop - jQuery('.wea-new-top-req').height() -100;
-			jQuery('.wea-new-top-req-content').animate({ scrollTop: scrolltop + "px" }, 500);
-		}
+//		let remarktop  = parseInt(jQuery("#remark").offset().top);
+//		if(remarktop == 0){
+//			remarktop = parseInt(jQuery("#remarkShadowDiv").offset().top);
+//		}
+//		let scrolltop = 0;
+//		if(remarktop  < 200){
+//			if(remarktop < 0) remarktop = remarktop * -1;
+//			scrolltop = jQuery('.wea-new-top-req-content').scrollTop() - remarktop - jQuery('.wea-new-top-req').height() -100;
+//			jQuery('.wea-new-top-req-content').animate({ scrollTop: scrolltop + "px" }, 500);
+//		}
+		window.action_e9_workflow.WorkflowReqAction.signmustinputtips();
 	} catch(e) {}
 }
 

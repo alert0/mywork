@@ -1059,7 +1059,7 @@ public class RequestListService {
 		//String sessionkey = Util.getEncrypt(Util.getRandom());
 		//session.setAttribute(sessionkey, tableString);
 		
-		String sessionkey = user.getUID()+"_"+pageUid;
+		String sessionkey = pageUid+"_"+Util.getEncrypt(Util.getRandom());
 		Util_TableMap.setVal(sessionkey, tableString);
 		
 		//批量提交是否需要签字意见

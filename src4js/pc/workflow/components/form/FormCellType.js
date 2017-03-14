@@ -40,22 +40,27 @@ class FormCellType extends React.Component {
         const fieldid = cellObj.get("field");
         const evalue = cellObj.get("evalue");
         //console.log("etype:",etype);
-        if(etype==="1" || etype==="4" || etype==="6") { //文本、节点名称、图片
+        if(etype==="" || etype==="0" || etype==="1" || etype==="4" || etype==="6") { //文本、节点名称、图片
             return this.rendSpanHtml(this.transCellText(evalue));
         }
         else if(etype==="2" || etype==="3") { //字段名、字段值
             const tablekey = symbol.indexOf("detail_")>-1 ? symbol : "main";
             const fieldInfo = tableInfo ? tableInfo.getIn([tablekey,"fieldinfomap"]) : null;
+            //console.log("0 fieldid:",fieldid," fieldInfo:",fieldInfo.toJS());
+            //console.log("1 fieldInfo:",fieldInfo && fieldInfo.get(fieldid));
             const fieldObj = fieldInfo && fieldInfo.get(fieldid);
+            //console.log("2 fieldObj:",fieldObj);
             if(etype==="2"){
                 return (
                     <FormLabel cellObj={cellObj} fieldObj={fieldObj} />
                 );
-            }else if(etype==="3"){
+            }
+            else if(etype==="3"){
                 return (
                     <FormField cellObj={cellObj} fieldObj={fieldObj} formValue={formValue} />
                 );
             }
+            //return <div></div>
         }
         else if(etype==="5") { //流转意见
             const nodemark = cellInfo?cellInfo.getIn([cellmark,"nodemark"]):"";
@@ -150,11 +155,11 @@ class FormCellType extends React.Component {
         else if(etype==="22") { //序号
             return <span id={"serialnum_"+drowIndex}>{parseInt(drowIndex)+1}</span>;
         }
-        else { //其它
-            return this.renderSpan(evalue);
-        }
+        return this.renderSpan(evalue);
     }
     transCellText(content){
+        if(content === null || typeof content === "undefined")
+            return "";
         return content.replace(/(\r\n|\r|\n)/g, "</br>").replace(/ /g,"&nbsp;");
     }
     renderSpan(content){
