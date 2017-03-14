@@ -1,0 +1,327 @@
+.wea-new-top-req-wapper .wea-new-top-req-content{
+	background-color: #f4f4f4;
+}
+.wea-req-workflow-wrapper{
+	padding: 30px 50px;
+}
+.wea-req-workflow-form,.wea-req-workflow-loglist,.wea-req-workflow-status,.wea-workflow-resources{
+	background-color: #fff;
+}
+.wea-req-workflow-form,.wea-req-workflow-loglist,.wea-workflow-resources{
+	box-shadow: 0 0 5px #ddd;
+}
+
+/*表单签字意见样式*/
+
+.wea-workflow-req-sign {
+	margin: 20px auto 30px;
+	box-sizing: border-box;
+}
+
+.wea-workflow-req-sign>div {
+	border: 1px solid #d0d0d0;
+	border-top-width: 0px;
+}
+
+.wea-workflow-req-sign .wea-tab {
+	background-color: #f4f4f4;
+	border-left: 0;
+	border-right: 0;
+	height: 48px;
+}
+
+.wea-workflow-req-sign .wea-search-tab span>i {
+	font-size: 18px;
+	cursor: pointer;
+	position: relative;
+	top: 3px;
+}
+
+.wea-workflow-req-sign .wea-tab .ant-tabs-tab-inner {
+	height: 49px;
+}
+
+.wea-workflow-req-sign .wea-tab .ant-tabs-nav .ant-tabs-tab {
+	margin: 0 20px;
+}
+
+
+/*签字意见*/
+
+.wea-workflow-req-sign-input {
+	cursor: pointer;
+	font-size: 12px;
+	line-height: 36px;
+	padding-left: 20px;
+	color: #9b9b9b;
+	margin-left: -1px;
+	border: 1px solid #d0d0d0;
+}
+
+.wea-workflow-req-sign-input:hover{
+	border:1px solid #7FBBF2;
+	border-left-color:#7FBBF2 !important;
+}
+
+#edui1_iframeholder{
+	border-bottom: 1px solid #d0d0d0;
+}
+
+#edui1_toolbarbox{
+	border-top:1px solid #d0d0d0;
+}
+
+/*签字意见列表*/
+
+.wea-workflow-req-sign-list {
+	padding: 11px 5px;
+}
+
+.wea-workflow-req-sign-list:after,
+.wea-workflow-req-sign-list-content:after {
+	clear: both;
+	content: ".";
+	display: block;
+	font-size: 0;
+	height: 0;
+	visibility: hidden;
+	_zoom: 1;
+}
+
+.wea-workflow-req-sign-list .ant-pagination {
+	float: right;
+	margin: 20px;
+}
+
+.wea-workflow-req-sign-list-content {
+	position: relative;
+	padding: 15px 21px 15px 185px;
+	border-bottom: 1px dashed #e4e4e4;
+}
+
+.wea-workflow-req-sign-list-content .content-left {
+	float: left;
+	line-height: 36px;
+	width: 180px;
+	margin-left: -169px;
+	padding-left: 48px;
+}
+
+.wea-workflow-req-sign-list-content .content-right {
+	overflow: hidden;
+}
+
+.wea-workflow-req-sign-list-content .content-left>img {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	float: left;
+	margin: 5px 0 0 -48px;
+}
+
+.wea-workflow-req-sign-list-content .content-left>div {
+	line-height: 24px;
+	padding-right: 10px;
+}
+
+.wea-workflow-req-sign-list-content .content-text-right-open-btn {
+	cursor: pointer;
+	margin-left: 15px;
+}
+
+.wea-workflow-req-sign-list-content .content-right-remark-html {
+	min-height: 24px;
+}
+
+.wea-workflow-req-sign-list-content .content-right-docs>i {
+	color: #9b9b9b;
+	font-size: 16px;
+	margin-right: 5px;
+	position: relative;
+	top: 5px;
+}
+
+.wea-workflow-req-sign-list-content .content-right-docs>div {
+	display: inline-block;
+	vertical-align: top;
+	line-height: 2;
+}
+
+.wea-workflow-req-sign-list-content .content-right a {
+	color: #2777c1!important;
+}
+
+.wea-workflow-req-sign-list-content a:hover {
+	color: #003a70 !important;
+}
+
+.wea-workflow-req-sign-list-content .wea-workflow-req-sign-list-users {
+	padding: 5px;
+	background-color: #f4f4f4;
+	border-radius: 3px;
+	line-height: 20px;
+	color: #c0c0c0;
+	position: relative;
+}
+
+.wea-workflow-req-sign-list-content .wea-workflow-req-sign-list-users .content-text-right-open-btn {
+	position: absolute;
+	right: 10px;
+	top: 6px;
+}
+
+
+/*流程状态*/
+.wea-workflow-status-card-wapper {
+	background-color: #f4f4f4;
+	/*display: flex;
+	justify-content: space-between;*/
+}
+
+.wea-workflow-status-card {
+	float:left;
+	background-color: #fff;
+	width: 19%;
+	height: 80px;
+	border: 1px solid #d5d5d5;
+	cursor: pointer;
+	line-height: 78px;
+	font-size: 50px;
+	padding-left: 2%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	box-shadow: 0 0 5px #ddd;
+}
+
+.wea-workflow-status-card>div {
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+}
+
+.wea-workflow-status-card>div>i {
+	margin-right: 6%;
+}
+
+.wea-workflow-status-card>div>div {
+	display: inline-block;
+	line-height: 1.2;
+}
+
+.wea-workflow-status-content{
+	box-shadow: 0 0 5px #ddd;
+}
+
+.wea-workflow-status .ant-table,
+.wea-workflow-status .ant-table table {
+	border-radius: 0;
+}
+
+.wea-workflow-status-table-main .ant-table-thead>tr>th {
+	background-color: #fff;
+	border-bottom: 1px solid #e9e9e9;
+}
+
+.wea-workflow-status-table-main .ant-table-row-level-0,
+.wea-workflow-status-table-main .ant-table-row-level-0:hover {
+	background-color: #f8fcff;
+	cursor: pointer;
+}
+
+.wea-workflow-status-table-main .ant-table-row-level-1,
+.wea-workflow-status-table-main .ant-table-row-level-1:hover {
+	background-color: #f7f7f7;
+}
+
+.wea-workflow-status-table-main span.ant-table-row-expand-icon {
+	display: none;
+}
+.wea-workflow-status .wea-hrm-card{
+	color: #242424;
+}
+.wea-workflow-status .wea-hrm-card:hover{
+	color: #018efb !important;
+}
+
+/*相关资源*/
+
+.wea-workflow-resources {
+	border: 1px solid #d6d6d6;
+}
+
+.wea-workflow-resources-tab {
+	height: 50px;
+	padding-left: 28px;
+}
+
+.wea-workflow-resources-tab-item {
+	float: left;
+	height: 24px;
+	line-height: 24px;
+	padding: 0 12px;
+	border-radius: 12px;
+	margin: 13px 8px 0 0;
+	cursor: pointer;
+}
+
+.back_to_old_req{
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+}
+
+.back_to_old_req>div{
+	width: 40px;
+	height: 40px;
+	padding-top: 2px;
+	margin: 5px auto;
+	line-height: 18px;
+	text-align: center;
+	font-size: 12px;
+	color: #fff;
+	background-color: #57c5f7;
+	cursor: pointer;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+
+.reqlogbtn>span>span:hover{
+	color:#30383b;
+}
+
+.wea-workflow-req-sign-list .ant-table-placeholder{
+	z-index: 1;
+}
+
+.wea-workflow-main-sub-req{
+	background: #f4f9ff;
+	height: 40px;
+	width: 100%;
+	border-bottom: 1px solid #d4e8f4;
+	padding: 10px 10px
+}
+
+/*性能测试显示*/
+.req_load_duration_test{
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	padding: 10px 20px;
+	text-align: right;
+	cursor: pointer;
+}
+.req_load_duration_test p{
+	visibility: hidden;
+}
+
+.req_load_duration_test:hover p{
+	visibility: visible;
+}
+
+
+.wea-workflow-req-sign .wea-tab .wea-search-container{
+	z-index:999;
+}
