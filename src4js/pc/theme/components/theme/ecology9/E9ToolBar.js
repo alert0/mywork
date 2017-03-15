@@ -16,7 +16,6 @@ class E9ToolBar extends React.Component {
         let title = item.name;
         let url = item.url;
         let opentype = item.opentype;
-        console.log(item);
 
         if (opentype == '1') {
             showDialog(title, url, 700, 600, () => {

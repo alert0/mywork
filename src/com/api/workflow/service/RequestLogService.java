@@ -199,7 +199,6 @@ public class RequestLogService extends BaseBean{
         List<String> canviewwf = new ArrayList<String>();
         List<SignRequestInfo> allrequestInfos =  new ArrayList<SignRequestInfo>();
         int mainrequestid = 0;
-        int mainworkflowid = 0;
         String subWfSetId = "0";
         String isDiff = "";
 
@@ -212,32 +211,25 @@ public class RequestLogService extends BaseBean{
         boolean hasOldChildReq = false;
         boolean hasOldParallelReq = false;
 
-        recordSet.executeSql("select workflowid from workflow_requestbase where requestid = " + requestid);
-        if (recordSet.next()) {
-            mainworkflowid = recordSet.getInt("workflowid");
-        }
-
         String isReadMain = "0"; // 子流程是否可查看主流程签字意见
         String isReadMainNodes = ""; // 子流程可查看主流程签字意见的范围
         String isReadParallel = "0"; // 平行流程是否可查看签字意见
         String isReadParallelNodes = ""; // 平行流程是否可查看签字意见的范围
 
         /* 查询当前请求的主请求 */
-        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.mainrequestid,req.requestname from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.mainrequestid where sub.subrequestid=" + requestid);
+        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.mainrequestid,req.requestname,req.workflowid from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.mainrequestid where sub.subrequestid=" + requestid);
         if (recordSet.next()) {
             if (recordSet.getInt("mainrequestid") > -1) {
                 subWfSetId = Util.null2String(recordSet.getString("subwfid"));
                 isDiff = Util.null2String(recordSet.getString("isSame"));
                 mainrequestid = recordSet.getInt("mainrequestid");
-                //allrequestid.add(mainrequestid + ".main");
-                //allrequestname.add(recordSet.getString("requestname"));
-                
                 SignRequestInfo _srequestinfo  = new SignRequestInfo();
                 _srequestinfo.setRequestid(String.valueOf(mainrequestid));
                 _srequestinfo.setRequestname(recordSet.getString("requestname"));
+                _srequestinfo.setRelwfid(recordSet.getString("workflowid"));
+                
                 _srequestinfo.setType("main");
                 allrequestInfos.add(_srequestinfo);
-
                 hasMainReq = true;
             }
         }
@@ -249,20 +241,23 @@ public class RequestLogService extends BaseBean{
             if (recordSet.next()) {
                 if (recordSet.getInt("mainrequestid") > -1) {
                     mainrequestid = recordSet.getInt("mainrequestid");
-                    recordSet.executeSql("select * from workflow_requestbase where requestid = " + mainrequestid);
+                    recordSet.executeSql("select workflowid,requestname from workflow_requestbase where requestid = " + mainrequestid);
                     if (recordSet.next()) {
                         mainworkflowid_temp = recordSet.getString("workflowid");
                         String reqname2 = recordSet.getString("requestname");
+                        int mainworkflowid = -1;
+                        recordSet.executeSql("select workflowid from workflow_requestbase where requestid = " + requestid);
+                        if (recordSet.next()) {
+                            mainworkflowid = recordSet.getInt("workflowid");
+                        }
                         recordSet.executeSql("select 1 from Workflow_SubwfSet where mainworkflowid = " + mainworkflowid_temp + " and subworkflowid =" + workflowid
                                 + " and isread = 1 union select 1 from Workflow_TriDiffWfDiffField a, Workflow_TriDiffWfSubWf b where a.id=b.triDiffWfDiffFieldId and b.isRead=1 and a.mainworkflowid=" + mainworkflowid + " and b.subWorkflowId=" + workflowid);
                         if (recordSet.next()) {
-                            //allrequestid.add(mainrequestid + ".main");
-                            //allrequestname.add(reqname2);
-                            
                             SignRequestInfo _srequestinfo  = new SignRequestInfo();
                             _srequestinfo.setRequestid(String.valueOf(mainrequestid));
                             _srequestinfo.setRequestname(reqname2);
                             _srequestinfo.setType("main");
+                            _srequestinfo.setRelwfid(mainworkflowid_temp);
                             allrequestInfos.add(_srequestinfo);
                             
                             hasMainReq = true;
@@ -289,15 +284,13 @@ public class RequestLogService extends BaseBean{
         /* 如果当前请求拥有主请求，则才会拥有平行请求。平行请求是指：同一个主请求在同一触发设置中触发的其他请求 */
         /* 查询当前请求的平行请求 */
         if (hasMainReq) {
-            recordSet.executeSql(" select sub.subrequestid requestid,req.requestname from workflow_subwfrequest sub" + " left join workflow_requestbase req on req.requestid=sub.subrequestid" + " where sub.mainrequestid=" + mainrequestid + " and sub.subwfid=" + subWfSetId
+            recordSet.executeSql(" select sub.subrequestid requestid,req.requestname,req.workflowid from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.subrequestid where sub.mainrequestid=" + mainrequestid + " and sub.subwfid=" + subWfSetId
                     + " and sub.subrequestid <> " + initrequestid);
             while (recordSet.next()) {
-                //allrequestid.add(recordSet.getString("requestid") + ".parallel");
-                //allrequestname.add(recordSet.getString("requestname"));
-                
                 SignRequestInfo _srequestinfo  = new SignRequestInfo();
                 _srequestinfo.setRequestid(recordSet.getString("requestid"));
                 _srequestinfo.setRequestname(recordSet.getString("requestname"));
+                _srequestinfo.setRelwfid(recordSet.getString("workflowid"));
                 _srequestinfo.setType("parallel");
                 allrequestInfos.add(_srequestinfo);
                 
@@ -308,22 +301,17 @@ public class RequestLogService extends BaseBean{
             //recordSet.executeSql("select requestid,requestname,workflowid from workflow_requestbase where mainrequestid = " + mainworkflowid_temp + " and workflowid in (" + canviewworkflowid + ")");
             recordSet.executeSql("select requestid,requestname,workflowid from workflow_requestbase where mainrequestid = " + mainworkflowid_temp);
             while (recordSet.next()) {
-                //if (allrequestid.contains(recordSet.getString("requestid") + ".parallel")) {
-                //    continue;
-                //}
-            	
             	if((","+canviewworkflowid+",").contains(recordSet.getString("workflowid"))){
             		SignRequestInfo _srequestinfo  = new SignRequestInfo();
             		_srequestinfo.setRequestid(recordSet.getString("requestid"));
             		_srequestinfo.setRequestname(recordSet.getString("requestname"));
+            		_srequestinfo.setRelwfid(recordSet.getString("workflowid"));
             		_srequestinfo.setType("parallel");
             		if(allrequestInfos.contains(_srequestinfo)){
             			continue;
             		}
             		allrequestInfos.add(_srequestinfo);
             		
-            		//allrequestid.add(recordSet.getString("requestid") + ".parallel");
-            		//allrequestname.add(recordSet.getString("requestname"));
             		canviewwf.add(recordSet.getString("requestid"));
             		if (!(initrequestid + "").equals(recordSet.getString("requestid"))) {
             			hasParallelReq = true;
@@ -337,32 +325,39 @@ public class RequestLogService extends BaseBean{
         if (hasMainReq && !hasOldMainReq) {
             /* 触发不同流程和相同流程的配置不在同一张表中，需要判断后查询 */
             if ("1".equals(isDiff)) {
-                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf, isreadParallelwfNodes,isreadParallelwf from workflow_tridiffwfsubwf where id = " + subWfSetId);
+                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf, isreadParallelwfNodes,isreadParallelwf,subworkflowid from workflow_tridiffwfsubwf where id = " + subWfSetId);
             } else {
-                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf, isreadParallelwfNodes,isreadParallelwf from workflow_subwfset where id = " + subWfSetId);
+                recordSet.executeSql("select isreadMainWfNodes,isreadMainwf, isreadParallelwfNodes,isreadParallelwf,subworkflowid from workflow_subwfset where id = " + subWfSetId);
             }
             if (recordSet.next()) {
                 isReadMain = Util.null2String(recordSet.getString("isreadMainwf"));
                 isReadMainNodes = Util.null2String(recordSet.getString("isreadMainWfNodes"));
                 isReadParallel = Util.null2String(recordSet.getString("isreadParallelwf"));
                 isReadParallelNodes = Util.null2String(recordSet.getString("isreadParallelwfNodes"));
+                String subworkflowid = Util.null2String(recordSet.getString("subworkflowid"));
+                if("all".equals(isReadParallelNodes)){
+                	recordSet.executeSql("select nodeid from workflow_flownode where workflowid  = " +subworkflowid );
+                	String subworkflownodeids  = "-1";
+                	while(recordSet.next()){
+                		subworkflownodeids += ","+recordSet.getString("nodeid");
+                	}
+                	isReadParallelNodes = subworkflownodeids;
+                }
             }
         }
 
         /* 查询当前请求的子请求 */
-        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.subrequestid requestid,req.requestname from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.subrequestid where sub.mainrequestid='" + initrequestid + "' order by sub.subrequestid desc");
-
+        recordSet.executeSql("select sub.subwfid,sub.isSame,sub.subrequestid requestid,req.requestname,req.workflowid from workflow_subwfrequest sub left join workflow_requestbase req on req.requestid=sub.subrequestid where sub.mainrequestid='" + initrequestid + "' order by sub.subrequestid desc");
         Map<String, String> triggerIsDiffMap = new HashMap<String, String>();
         Map<String, String> requestSettingMap = new HashMap<String, String>();
         while (recordSet.next()) {
         	SignRequestInfo _srequestinfo  = new SignRequestInfo();
             _srequestinfo.setRequestid(recordSet.getString("requestid"));
             _srequestinfo.setRequestname(recordSet.getString("requestname"));
+            _srequestinfo.setRelwfid(recordSet.getString("workflowid"));
             _srequestinfo.setType("sub");
             allrequestInfos.add(_srequestinfo);
         	
-            //allrequestid.add(recordSet.getString("requestid") + ".sub");
-            //allrequestname.add(recordSet.getString("requestname"));
             canviewwf.add(recordSet.getString("requestid"));
             hasChildReq = true;
 
@@ -374,24 +369,18 @@ public class RequestLogService extends BaseBean{
         }
         /** 161014 zzw 添加判断 * */
         if (requestid > 0 && !"-1".equals(canviewworkflowid)) {
-            recordSet.executeSql("select requestid,requestname from workflow_requestbase where mainrequestid = " + requestid + " and workflowid in (" + canviewworkflowid + ")");
+            recordSet.executeSql("select requestid,requestname,workflowid from workflow_requestbase where mainrequestid = " + requestid + " and workflowid in (" + canviewworkflowid + ")");
             while (recordSet.next()) {
-                //if (allrequestid.contains(recordSet.getString("requestid") + ".sub")) {
-                //    continue;
-                //}
-                
                 SignRequestInfo _srequestinfo  = new SignRequestInfo();
                 _srequestinfo.setRequestid(recordSet.getString("requestid"));
                 _srequestinfo.setRequestname(recordSet.getString("requestname"));
+                _srequestinfo.setRelwfid(recordSet.getString("workflowid"));
                 _srequestinfo.setType("sub");
-                
                 if(allrequestInfos.contains(_srequestinfo)){
                 	continue;
                 }
                 allrequestInfos.add(_srequestinfo);
 
-                //allrequestid.add(recordSet.getString("requestid") + ".sub");
-                //allrequestname.add(recordSet.getString("requestname"));
                 canviewwf.add(recordSet.getString("requestid"));
                 hasChildReq = true;
                 hasOldChildReq = true;
@@ -410,9 +399,9 @@ public class RequestLogService extends BaseBean{
 
                 /* 触发不同流程和相同流程的配置不在同一张表中，需要判断后查询 */
                 if ("1".equals(_isDiff)) {
-                    recordSet.executeSql("select id,isreadNodes,isread from workflow_tridiffwfsubwf  where id = " + _triggerSettingId);
+                    recordSet.executeSql("select id,isreadNodes,isread,subworkflowid from workflow_tridiffwfsubwf  where id = " + _triggerSettingId);
                 } else {
-                    recordSet.executeSql("select id,isreadNodes,isread from workflow_subwfset where id = " + _triggerSettingId);
+                    recordSet.executeSql("select id,isreadNodes,isread,subworkflowid from workflow_subwfset where id = " + _triggerSettingId);
                 }
 
                 if (recordSet.next()) {
@@ -421,7 +410,17 @@ public class RequestLogService extends BaseBean{
                     String _isRead = Util.null2String(recordSet.getString("isread"));
                     // 主流程可查看子流程签字意见的范围
                     String _isReadNodes = Util.null2String(recordSet.getString("isreadNodes"));
-
+                    // 子流程id
+                    String subworkflowid = Util.null2String(recordSet.getString("subworkflowid"));
+                    
+                    if("all".equals(_isReadNodes)){
+                    	recordSet.executeSql("select nodeid from workflow_flownode where workflowid  = " +subworkflowid );
+                    	_isReadNodes = "-1";
+                    	while(recordSet.next()){
+                    		_isReadNodes += ","+recordSet.getString("nodeid");
+                    	}
+                    }
+                    
                     TriggerSetting _triggerSetting = new TriggerSetting();
                     _triggerSetting.setSettingId(_settingId);
                     _triggerSetting.setIsRead(_isRead);
@@ -439,88 +438,6 @@ public class RequestLogService extends BaseBean{
             }
         }
         
-        //加载主子流程相关信息
-        for(SignRequestInfo signRequestInfo:allrequestInfos){
-		      int temprequestid = Util.getIntValue(signRequestInfo.getRequestid());
-		      String type = signRequestInfo.getType();
-		      String signshowname = "";
-		      
-		      String canReadNodes = "-1";
-		      
-		      recordSet.executeSql("select distinct nodeid from workflow_requestlog where requestid = "+temprequestid);
-		      String tempviewLogIds = "";
-		      while(recordSet.next()){
-		          tempviewLogIds += recordSet.getString("nodeid")+",";
-		      }
-		      tempviewLogIds +="-1";
-		      if("main".equals(type)){
-		    	  signshowname = SystemEnv.getHtmlLabelName(21254,user.getLanguage());
-		    	  signshowname += (" " + "<a href=javaScript:openFullWindowHaveBar('/workflow/request/ViewRequest.jsp");
-		    	  signshowname += ("?requestid="+temprequestid+"&relaterequest="+initrequestid+"&isrequest=3&isovertime=0&desrequestid="+requestid+"')>");
-		    	  signshowname +=" " + signRequestInfo.getRequestname() +"</a>";
-		    	  signshowname +=" "+SystemEnv.getHtmlLabelName(504,user.getLanguage())+":";
-		          
-		    	  if(isReadMain.equals("1")){
-		              if(isReadMainNodes.equals("all")){
-		              	  canReadNodes = tempviewLogIds;
-		              }else{
-		              	  canReadNodes = isReadMainNodes;
-		              }
-		          }
-		          if (hasOldMainReq) {
-		              canReadNodes = tempviewLogIds;
-		          }
-		      }else if("sub".equals(type)){
-			      String _triggerSettingId = requestSettingMap.get("" + temprequestid);   
-			      if (_triggerSettingId != null && !"".equals(_triggerSettingId)) {
-			          TriggerSetting _triggerSetting = triggerSettingMap.get(_triggerSettingId);
-			          if(_triggerSetting != null && _triggerSetting.getIsRead().equals("1")){
-			        	  /*可读时才显示列表*/
-			              if(_triggerSetting.getIsReadNodes().equals("all")){
-			              	  canReadNodes = tempviewLogIds;
-			              }else{
-			              	  canReadNodes = _triggerSetting.getIsReadNodes();
-			              }
-			              signshowname = SystemEnv.getHtmlLabelName(19344,user.getLanguage());
-			              signshowname += (" " + "<a href=javaScript:openFullWindowHaveBar('/workflow/request/ViewRequest.jsp");
-			              signshowname += ("?requestid="+temprequestid+"&relaterequest="+initrequestid+"&isrequest=2&isovertime=0&desrequestid="+requestid+"')>");
-			              signshowname +=" " + signRequestInfo.getRequestname().toString()+"</a>";
-			              signshowname +=" " + SystemEnv.getHtmlLabelName(504,user.getLanguage());
-			          }
-			      } else {
-			    	  /*可读时才显示列表*/
-		              canReadNodes = tempviewLogIds;
-		              signshowname = SystemEnv.getHtmlLabelName(19344,user.getLanguage());
-		              signshowname += (" " + "<a href=javaScript:openFullWindowHaveBar('/workflow/request/ViewRequest.jsp");
-			          signshowname += ("?requestid="+temprequestid+"&relaterequest="+initrequestid+"&isrequest=2&isovertime=0&desrequestid="+requestid+"')>");
-			          signshowname +=" " + signRequestInfo.getRequestname()+"</a>";
-			          signshowname +=" " + SystemEnv.getHtmlLabelName(504,user.getLanguage());
-			      }
-		    	  
-		      }else if("parallel".equals(type)){
-		    	  signshowname = SystemEnv.getHtmlLabelName(21255,user.getLanguage());
-		    	  signshowname += (" " + "<a href=javaScript:openFullWindowHaveBar('/workflow/request/ViewRequest.jsp");
-		    	  signshowname += ("?requestid="+temprequestid+"&relaterequest="+initrequestid+"&isrequest=4&isovertime=0&desrequestid="+requestid+"')>");
-		    	  signshowname +=" " + signRequestInfo.getRequestname()+"</a>";
-		    	  signshowname +=" " + SystemEnv.getHtmlLabelName(504,user.getLanguage());
-		          
-		          if(isReadParallel.equals("1")){
-		              if(isReadParallelNodes.equals("all")){
-		              	  canReadNodes = tempviewLogIds;
-		              }else{
-		              	  canReadNodes = isReadParallelNodes;
-		              }
-		          }
-		      }
-		      
-		      signRequestInfo.setRelviewlogs(canReadNodes);
-		      signRequestInfo.setSignshowname(signshowname);
-		      
-		      recordSet.executeSql("select workflowid from workflow_requestbase where requestid = "+ temprequestid);
-		      if(recordSet.next()){
-		    	  signRequestInfo.setRelwfid(recordSet.getString("workflowid"));
-		      }
-        }
         // 签字意见tab页控制
         // 与我相关
         boolean isRelatedTome = !(isprint || isworkflowhtmldoc);
@@ -530,6 +447,81 @@ public class RequestLogService extends BaseBean{
         boolean hasChildWfRight = (hasChildReq && !(isprint || isworkflowhtmldoc)) && canreadsubreqsign;
         // 平行流程
         boolean hasParallelWfRight = hasParallelReq && ("1".equals(isReadParallel) || hasOldParallelReq) && !(isprint || isworkflowhtmldoc);
+        //加载主子流程相关信息
+        
+        Iterator<SignRequestInfo> it =  allrequestInfos.iterator();
+        while(it.hasNext()){
+        	  SignRequestInfo signRequestInfo = it.next();
+		      int temprequestid = Util.getIntValue(signRequestInfo.getRequestid());
+		      String type = signRequestInfo.getType();
+		      String signshowname = "";
+		      String canReadNodes = "-1";
+		      if(("main".equals(type) && !hasMainWfRight) || ("sub".equals(type) && !hasChildWfRight) || ("parallel".equals(type) && !hasParallelWfRight)){
+		    	  it.remove();
+		      }else{
+			      if("main".equals(type)){
+			    	  signshowname = SystemEnv.getHtmlLabelName(21254,user.getLanguage());
+			    	  signshowname += (" " + "<a href=javaScript:openFullWindowHaveBar('/workflow/request/ViewRequest.jsp");
+			    	  signshowname += ("?requestid="+temprequestid+"&relaterequest="+initrequestid+"&isrequest=3&isovertime=0&desrequestid="+requestid+"')>");
+			    	  signshowname +=" " + signRequestInfo.getRequestname() +"</a>";
+			    	  signshowname +=" "+SystemEnv.getHtmlLabelName(504,user.getLanguage())+":";
+			          
+			    	  if(isReadMain.equals("1")){
+			              if(isReadMainNodes.equals("all")){
+			    		      recordSet.executeSql("select distinct nodeid from workflow_requestlog where requestid = "+temprequestid);
+			    		      String tempviewLogIds = "";
+			    		      while(recordSet.next()){
+			    		          tempviewLogIds += recordSet.getString("nodeid")+",";
+			    		      }
+			    		      tempviewLogIds +="-1";
+			              	  canReadNodes = tempviewLogIds;
+			              }else{
+			              	  canReadNodes = isReadMainNodes;
+			              }
+			          }
+			          if (hasOldMainReq) {
+					      recordSet.executeSql("select distinct nodeid from workflow_requestlog where requestid = "+temprequestid);
+					      String tempviewLogIds = "";
+					      while(recordSet.next()){
+					          tempviewLogIds += recordSet.getString("nodeid")+",";
+					      }
+					      tempviewLogIds +="-1";
+			              canReadNodes = tempviewLogIds;
+			          }
+			      }else if("sub".equals(type)){
+				      String _triggerSettingId = requestSettingMap.get("" + temprequestid);   
+				      if (_triggerSettingId != null && !"".equals(_triggerSettingId)) {
+				          TriggerSetting _triggerSetting = triggerSettingMap.get(_triggerSettingId);
+				          if(_triggerSetting != null && _triggerSetting.getIsRead().equals("1")){
+				        	  /*可读时才显示列表*/
+				              canReadNodes = _triggerSetting.getIsReadNodes();
+				              signshowname = SystemEnv.getHtmlLabelName(19344,user.getLanguage());
+				              signshowname += (" " + "<a href=javaScript:openFullWindowHaveBar('/workflow/request/ViewRequest.jsp");
+				              signshowname += ("?requestid="+temprequestid+"&relaterequest="+initrequestid+"&isrequest=2&isovertime=0&desrequestid="+requestid+"')>");
+				              signshowname +=" " + signRequestInfo.getRequestname().toString()+"</a>";
+				              signshowname +=" " + SystemEnv.getHtmlLabelName(504,user.getLanguage());
+				          }
+				      } else {
+				    	  	it.remove();
+				    	  	continue;
+				      }
+			    	  
+			      }else if("parallel".equals(type)){
+			    	  signshowname = SystemEnv.getHtmlLabelName(21255,user.getLanguage());
+			    	  signshowname += (" " + "<a href=javaScript:openFullWindowHaveBar('/workflow/request/ViewRequest.jsp");
+			    	  signshowname += ("?requestid="+temprequestid+"&relaterequest="+initrequestid+"&isrequest=4&isovertime=0&desrequestid="+requestid+"')>");
+			    	  signshowname +=" " + signRequestInfo.getRequestname()+"</a>";
+			    	  signshowname +=" " + SystemEnv.getHtmlLabelName(504,user.getLanguage());
+			          
+			          if(isReadParallel.equals("1")){
+		              	  canReadNodes = isReadParallelNodes;
+			          }
+			      }
+			      
+			      signRequestInfo.setRelviewlogs(canReadNodes);
+			      signRequestInfo.setSignshowname(signshowname);
+		      }
+        }
 
         requestLogDatas.put("isRelatedTome", isRelatedTome);
         requestLogDatas.put("hasMainWfRight", hasMainWfRight);
@@ -1076,9 +1068,9 @@ public class RequestLogService extends BaseBean{
 		}
 
         StringBuffer sbfmaxrequestlogid = new StringBuffer(maxrequestlogid);
-        if (issplitload) {		//分页加载
-            sbfmaxrequestlogid = wfLinkInfo.getMaxLogid(requestid, workflowid, viewLogIds, orderby, wfsignlddtcnt, pgnumber, sqlwhere);
-        }
+        //if (issplitload) {		//分页加载
+            //sbfmaxrequestlogid = wfLinkInfo.getMaxLogid(requestid, workflowid, viewLogIds, orderby, wfsignlddtcnt, pgnumber, sqlwhere);
+        //}
 
 		if(isdebug){
 			System.out.println("requestlog-125-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));

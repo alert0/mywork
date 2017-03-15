@@ -8,15 +8,21 @@ import './css/fancyboc.css';
 //门户设置样式
 import './css/esetting.css';
 
-//门户相关js
-import './util/home.js';
+
+/*//门户相关js
+import './util/esetting.js';*/
 
 import Portal from './components/Portal';
 import Synergy from './components/Synergy';
 import reducer from './reducers/';
 
+import * as ElementAction from './actions/element'
+
 module.exports = {
 	reducer,
 	Homepage: Portal,
-	Synergy
+	Synergy,
+	action:{
+		ElementAction
+	}
 };

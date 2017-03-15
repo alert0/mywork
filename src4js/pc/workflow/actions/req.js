@@ -95,13 +95,15 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 				isurger:params.isurger
 			}).then(data=>{});
 			
+			//判断是否是滚动加载
+			const loadmethod = data.signListType ? 'scroll' : 'split';
 			let logParamsInit = {
 				actiontype:"requestLog",
 				requestid:reqId,
 				pgnumber:1,
 				firstload:true,
 				maxrequestlogid:0,
-				loadmethod:'split',
+				loadmethod:loadmethod,
 				submit:params.ismanagePage,
 				workflowid:params.workflowid,
 				nodeid:params.nodeid
@@ -203,6 +205,7 @@ export const setReqTabKey = key => {
 export const setMarkInfo = () => {
 	return (dispatch, getState) => {
 		let logParams = getState().workflowReq.get('logParams').merge(getState().workflowReq.get('logSearchParams')).toJS();
+		
 		//第二次加载签字意见时会导致参数过长报错问题
 		let requestLogParams = logParams.requestLogParams;
 		if(requestLogParams){
@@ -212,12 +215,16 @@ export const setMarkInfo = () => {
 			logParams.requestLogParams = JSON.stringify(requestLogParams);
 		}
 		let logCount = getState().workflowReq.get('logCount');
+		dispatch(setIsLoadingLog(true));
 		API_REQ.getFormReqInfo(logParams).then(data=>{
 			let value = data;
-			dispatch({type:types.SET_MARK_INFO,logList:value.log_loglist,logCount:value.totalCount ? value.totalCount : logCount,logParams: value.requestLogParams ? {requestLogParams: JSON.stringify(value.requestLogParams),logpagesize: value.requestLogParams.wfsignlddtcnt} : {}});
+			let templogparams  = value.requestLogParams ? {requestLogParams: JSON.stringify(value.requestLogParams),logpagesize: value.requestLogParams.wfsignlddtcnt} : {};
+			templogparams.maxrequestlogid = value.maxrequestlogid;
+			dispatch({type:types.SET_MARK_INFO,logList:value.log_loglist,logCount:value.totalCount ? value.totalCount : logCount,logParams:templogparams});
 			{!logParams.requestLogParams &&
 				dispatch(setIsShowUserheadimg(value.requestLogParams.txStatus == '1'));
 			}
+			dispatch(setIsLoadingLog(false));
 		});
 	}
 }
@@ -253,6 +260,7 @@ export const setlogParams = params => {
 //设置签字意见tabkey
 export const setLoglistTabKey = (key,reqRequestId) => {
 	return {type:types.SET_LOGLIST_TABKEY,logListTabKey:key,reqRequestId:reqRequestId}
+	
 }
 
 //设置签字意见输入框信息
@@ -992,13 +1000,23 @@ export const loadRefReqSignInfo = (params) =>{
 		API_REQ.getFormReqInfo(logParams).then(data=>{
 			let value = data;
 			dispatch({type:types.SET_MARK_INFO,logList:value.log_loglist,logCount:value.totalCount ? value.totalCount : 0});
+			dispatch(setmaxrequestlogid(value.maxrequestlogid,true));
 		});
+	}
+}
+
+export const setmaxrequestlogid = (maxrequestlogid,isrefreqtab) =>{
+	if(isrefreqtab){
+		return {type:types.SET_REL_REQ_LOG_PARAMS,relLogParams:{maxrequestlogid:maxrequestlogid}};
+	}else{
+		return {type:types.SET_LOG_PARAMS,logParams:{maxrequestlogid:maxrequestlogid}};
 	}
 }
 
 //滚动加载签字意见
 export const scrollLoadSign = (params) => {
 	return (dispatch, getState) => {
+		dispatch(setIsLoadingLog(true));
 		const logListTabKey = getState().workflowReq.get('logListTabKey');
 		let logParams = {};
 		if(logListTabKey > 2 ) {
@@ -1020,6 +1038,8 @@ export const scrollLoadSign = (params) => {
 			let logList = getState().workflowReq.get('logList').toJS();
 			logList = logList.concat(value.log_loglist);
 			dispatch({type:types.SET_SCROLL_MARK_INFO,logList:logList});
+			const maxrequestlogid = value.maxrequestlogid;
+			dispatch(setmaxrequestlogid(maxrequestlogid,logListTabKey > 2));
 			dispatch(setIsLoadingLog(false));
 		});
 	}
@@ -1039,4 +1059,12 @@ export const aboutVersion  = (versionid) =>{
 	    	return;
 	    }
 	});
+}
+
+export const clearLogData = () => {
+	return (dispatch, getState) => {
+		const logListTabKey = getState().workflowReq.get('logListTabKey');
+		dispatch(setmaxrequestlogid(0,logListTabKey > 2));
+		dispatch({type:types.CLEAR_LOG_DATA});
+	}
 }

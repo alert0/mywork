@@ -14,28 +14,21 @@ constructor(props) {
     actions.initSEDatas(eid, data.tabids[0], data.data);
 }
 render() {
-    const { eid, ebaseid, data, toolbar, actions, currenttab } = this.props;
+    const { eid, ebaseid, data, toolbar, actions } = this.props;
     const { titles, tabids, counts } = data;
+    let currenttab = this.props.currenttab;
+    if(!currenttab) currenttab = tabids[0];
     let list = this.props.list;
     if (list) list = list.toJSON();
     if (_isEmpty(list)) list = data.data[currenttab];
     let html = null;
-    if (!_isEmpty(list)) {
-        switch (ebaseid) {
-            case MAIL:
-                html = <Mail list = { list }
-                currTab = { currenttab }
-                esetting = { data.esetting }
-                olist = { data.data.oplist }
-                />
-                break;
-            case BLOGSTATUS:
-                html = <BlogStatus list = { list }
-                currTab = { currenttab }
-                esetting = { data.esetting }
-                />
-                break;
-        }
+    switch (ebaseid) {
+        case MAIL:
+            html = <Mail list = { list } currTab = { currenttab } esetting = { data.esetting } olist = { data.data.oplist }/>
+            break;
+        case BLOGSTATUS:
+            html = <BlogStatus list = { list } currTab = { currenttab } esetting = { data.esetting }/>
+            break;
     }
     return <div>{
         ebaseid === CONTACTS ? null : <TitleContainer ebaseid = { ebaseid }
@@ -54,8 +47,7 @@ import { WeaErrorPage, WeaTools } from 'weaCom';
 class MyErrorHandler extends React.Component {
     render() {
         const hasErrorMsg = this.props.error && this.props.error !== "";
-        return ( <WeaErrorPage msg = { hasErrorMsg ? this.props.error : "对不起，该页面异常，请联系管理员！" }
-            />
+        return ( <WeaErrorPage msg = { hasErrorMsg ? this.props.error : "对不起，该页面异常，请联系管理员！" }/>
         );
     }
 }

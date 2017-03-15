@@ -19,7 +19,6 @@ const initwfatbutton = (editor,uiName) =>{
 	jQuery.ajax({
 		url:'/workflow/request/WorkflowRequestPictureForJson.jsp',
 		type:'POST', //GET
-	    async:false,    //或false,是否异步
 	    data:{
 	        requestid:requestid,
 	        workflowid:workflowid,
@@ -31,65 +30,66 @@ const initwfatbutton = (editor,uiName) =>{
 	     	atitems = response;
 	     	window.__atdataready = true;
 	     	window.__atdata = atitems;
+	     	
+     	    editor.registerCommand(uiName,{
+		        execCommand:function() {
+		        	 var el = jQuery(".edui-for-wfatbutton");
+		             var px=el.offset().left;
+					 var py=el.offset().top;
+		            
+		             var allatids = ",";
+		             try{
+		                 atitems = atitems;
+		             }catch(e){
+		                 atitems =[];
+		             }
+		             var names = jQuery.map(atitems, function(value, i) {
+			        	if (allatids.indexOf("," + value.uid + ",") == -1) { 
+				        	allatids += value.uid + ",";
+				            return value;
+			            }
+			         });
+		             atitems = names;
+					 var setting= {
+					        isfromuedit:1,
+		                    itemmaxlength:4,
+		                    positionx:px,
+		                    positiony:py,
+		                    autoitems:atitems,
+		                    relativeItem:el,
+		                    entercallback:function() {
+		                      var  itemdata=this.find(".data").html();
+		                      var str="<a href='/hrm/HrmTab.jsp?_fromURL=HrmResource&id=" + this.attr("uid")+"' target='_new' atsome='@"+this.attr("uid")+"' contenteditable='false'  style='cursor:pointer;color:#000000;text-decoration:none !important;margin-right:8px;' target='_blank'>@"+itemdata+"</a>&nbsp;";
+					          // editor.insertElement(new CKEDITOR.dom.element.createFromHtml(str, editor.document));
+		                       //FCKEditorExt.insertHtml(str,"remark");
+		                       //插入编辑器
+						  		editor.execCommand('inserthtml', str); 
+		                    },muticheckcallback:function() {
+		                       var checkitems=this;
+		                       var astr="";
+		                       var itemvalue="";
+							   var  liitem;
+		                       for(var i= 0,length=checkitems.length;i<length;i++)
+		                       {
+		                           liitem=jQuery(checkitems[i]).parent();
+		                           //contenteditable="false"
+		                           var _citem = jQuery(checkitems[i]);
+		                           astr=astr+"<a href='/hrm/HrmTab.jsp?_fromURL=HrmResource&id=" + _citem.attr("_uid") + "' contenteditable='false' atsome='@"+_citem.attr("_uid")+"' style='cursor:pointer;text-decoration:none !important;margin-right:8px;' target='_blank'>@"+_citem.attr("_uname")+"</a>&nbsp;";
+								   //editor.insertElement(new CKEDITOR.dom.element.createFromHtml(astr, editor.document));
+		                    
+		                       }
+							   //FCKEditorExt.insertHtml(astr, "remark");
+							   //插入编辑器
+						  		editor.execCommand('inserthtml', astr); 
+		                     }
+		                   }
+		                new WeaverAutoComplete(setting).init();
+		        }
+		    });
 	    }
 	});
 	
     //注册按钮执行时的command命令，使用命令默认就会带有回退操作
-    editor.registerCommand(uiName,{
-        execCommand:function() {
-        	 var el = jQuery(".edui-for-wfatbutton");
-             var px=el.offset().left;
-			 var py=el.offset().top;
-            
-             var allatids = ",";
-             try{
-                 atitems = atitems;
-             }catch(e){
-                 atitems =[];
-             }
-             var names = jQuery.map(atitems, function(value, i) {
-	        	if (allatids.indexOf("," + value.uid + ",") == -1) { 
-		        	allatids += value.uid + ",";
-		            return value;
-	            }
-	         });
-             atitems = names;
-			 var setting= {
-			        isfromuedit:1,
-                    itemmaxlength:4,
-                    positionx:px,
-                    positiony:py,
-                    autoitems:atitems,
-                    relativeItem:el,
-                    entercallback:function() {
-                      var  itemdata=this.find(".data").html();
-                      var str="<a href='/hrm/HrmTab.jsp?_fromURL=HrmResource&id=" + this.attr("uid")+"' target='_new' atsome='@"+this.attr("uid")+"' contenteditable='false'  style='cursor:pointer;color:#000000;text-decoration:none !important;margin-right:8px;' target='_blank'>@"+itemdata+"</a>&nbsp;";
-			          // editor.insertElement(new CKEDITOR.dom.element.createFromHtml(str, editor.document));
-                       //FCKEditorExt.insertHtml(str,"remark");
-                       //插入编辑器
-				  		editor.execCommand('inserthtml', str); 
-                    },muticheckcallback:function() {
-                       var checkitems=this;
-                       var astr="";
-                       var itemvalue="";
-					   var  liitem;
-                       for(var i= 0,length=checkitems.length;i<length;i++)
-                       {
-                           liitem=jQuery(checkitems[i]).parent();
-                           //contenteditable="false"
-                           var _citem = jQuery(checkitems[i]);
-                           astr=astr+"<a href='/hrm/HrmTab.jsp?_fromURL=HrmResource&id=" + _citem.attr("_uid") + "' contenteditable='false' atsome='@"+_citem.attr("_uid")+"' style='cursor:pointer;text-decoration:none !important;margin-right:8px;' target='_blank'>@"+_citem.attr("_uname")+"</a>&nbsp;";
-						   //editor.insertElement(new CKEDITOR.dom.element.createFromHtml(astr, editor.document));
-                    
-                       }
-					   //FCKEditorExt.insertHtml(astr, "remark");
-					   //插入编辑器
-				  		editor.execCommand('inserthtml', astr); 
-                     }
-                   }
-                new WeaverAutoComplete(setting).init();
-        }
-    });
 
     //创建一个button
     var btn = new UE.ui.Button({

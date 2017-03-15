@@ -1,6 +1,6 @@
 import {WeaNewTop,WeaTab,WeaNewTableOld,WeaNewTree,WeaLayoutR11,WeaSearchGroup,WeaRightMenu} from 'weaCom'
 import {WeaInput,WeaInput4ProjectNew,WeaInput4DocsNew,WeaInput4CustomNew,WeaInput4WfNew,WeaInput4WtNew,WeaNewDate,WeaInput4Hrm,WeaInput4HrmNew,WeaInput4DepNew,WeaInput4ComNew,WeaNewSelect} from 'weaCom'
-import {Row, Col, Icon, Pagination, Menu, Form, Button} from 'antd';
+import {Row, Col, Icon, Pagination, Menu, Form, Button,Spin} from 'antd';
 
 import objectAssign from 'object-assign'
 
@@ -28,7 +28,8 @@ class Sign extends React.Component {
 	        !is(this.props.isShowUserheadimg,nextProps.isShowUserheadimg)||
 	        this.props.showuserlogids !== nextProps.showuserlogids||
 	        this.props.reqRequestId !== nextProps.reqRequestId||
-	        this.props.pagesize !== nextProps.pagesize;
+	        this.props.pagesize !== nextProps.pagesize||
+	        this.props.isLoadingLog !== nextProps.isLoadingLog;
     }
 	componentDidMount() {
 		const {actions,ismanagePage} = this.props;
@@ -48,7 +49,7 @@ class Sign extends React.Component {
 	}
     render() {
     	const {actions,params,signinputinfo,logList,current,total,pagesize,forward,showuserlogids,
-    		logListTabKey,requestLogParams,ismanagePage,isShowSignInput,isShowUserheadimg,signFields,showSearchDrop,reqRequestId} = this.props;
+    		logListTabKey,requestLogParams,ismanagePage,isShowSignInput,isShowUserheadimg,signFields,showSearchDrop,reqRequestId,isLoadingLog} = this.props;
     	const markInfo = ismanagePage == '1' ? signinputinfo.toJS():'';
     	let tabDatas = [{title:'流转意见',key:"1"}];
     	const isRelatedTome = requestLogParams.get('isRelatedTome');
@@ -150,8 +151,13 @@ class Sign extends React.Component {
 		            		onShowSizeChange={this.onPageSizeChange.bind(this)}
 		            		showTotal={total => `共 ${total} 条`}
 		            	/>}
-		            	{listShow && !signListType && listShow.length == 0 &&
+		            	{listShow && !isLoadingLog && listShow.length == 0 &&
 		            		<div className='ant-table-placeholder' style={{borderBottom:0}}>暂时没有数据</div>
+		            	}
+		            	{isLoadingLog && 
+		            		<div className='ant-table-placeholder' style={{borderBottom:0}}>
+		            			<Spin tip="正在读取数据..."></Spin>
+		            		</div>
 		            	}
 		            </div>
             	</div>
@@ -190,7 +196,7 @@ class Sign extends React.Component {
     		}   		
     	});
     	actions.setLoglistTabKey(tmpkey,key);
-    	let params = {pgnumber:1};
+    	let params = {pgnumber:1,maxrequestlogid:0};
     	if(key == '2') params.atmet = userId;
     	if(key == '1') params.atmet = '';
     	if(key == '1' || key == '2'){
@@ -225,7 +231,7 @@ class Sign extends React.Component {
     getTabButtonsDrop(){
     	const {actions} = this.props;
         return [
-            (<Button type="primary" onClick={()=>{actions.setMarkInfo();actions.setShowSearchDrop(false)}}>搜索</Button>),
+            (<Button type="primary" onClick={()=>{actions.clearLogData();actions.setMarkInfo();actions.setShowSearchDrop(false)}}>搜索</Button>),
             (<Button type="ghost" onClick={()=>{actions.saveSignFields({})}}>重置</Button>),
             (<Button type="ghost" onClick={()=>{actions.setShowSearchDrop(false)}}>取消</Button>)
         ]

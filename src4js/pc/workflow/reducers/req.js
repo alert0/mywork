@@ -41,7 +41,7 @@ const initialState = Immutable.fromJS({
     showBackToE8: false,
     relLogParams:{},
     shareList: [],
-    
+    isLoadingLog:false
 });
 
 export default function req(state = initialState, action) {
@@ -105,7 +105,7 @@ export default function req(state = initialState, action) {
         case types.SET_REQ_TABKEY:
             return state.merge({reqTabKey:action.reqTabKey});
         case types.SET_LOGLIST_TABKEY:
-            return state.merge({logListTabKey:action.logListTabKey,reqRequestId:action.reqRequestId});
+            return state.merge({logListTabKey:action.logListTabKey,reqRequestId:action.reqRequestId,logCount:0,logList:[]});
         case types.REQ_IS_SUBMIT:
             return state.merge({reqIsSubmit:action.bool});
         case types.REQ_IS_RELOAD:
@@ -134,6 +134,8 @@ export default function req(state = initialState, action) {
     		return state.merge({isLoadingLog:action.bool});
         case types.CLEAR_ALL:
             return initialState;
+        case types.CLEAR_LOG_DATA:
+        	return state.merge({logCount:0,logList:[]});
         default:
             return state
     }

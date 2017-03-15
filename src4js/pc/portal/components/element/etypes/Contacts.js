@@ -21,7 +21,7 @@ class Contacts extends React.Component {
 		cdata = cdata.toJSON();
 		if (_isEmpty(cdata)) cdata = data.data;
 		return <div>
-			<SearchInput placeholder="搜索姓名/首字母/手机号" type="contacts" onSearch={value => actions.getContactsData(value,data.url,currtab)} style={{width:'300px',marginTop:'5px'}} />
+			<SearchInput placeholder="搜索姓名/首字母/手机号" type="contacts" onSearch={value => actions.getContactsData(value,data.params,currtab)} style={{width:'300px',marginTop:'5px'}} />
 			<ContactsTitle eid={eid} currenttab={currtab} tabids={tabids} titles={titles} handleChangeTab={this.handleChangeTab.bind(this)} toolbar={toolbar}/>
 			{_isEmpty(cdata.data) ? null: <ContactsContent list={ cdata.data} esetting={data.esetting}/>}
 		</div>

@@ -346,7 +346,7 @@ window.readCookie = readCookie;
 //重新load签字意见
 const e9signReload = () => {
 	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setLoglistTabKey(1,''));
-	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setlogParams({pgnumber:1,firstload:false,atmet:''}));
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setlogParams({pgnumber:1,firstload:false,atmet:'',maxrequestlogid:0}));
 }
 
 window.e9signReload = e9signReload;

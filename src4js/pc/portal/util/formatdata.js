@@ -43,7 +43,13 @@ const formatData = (obj, esetting) => {
       colObj = {
         dataIndex: k,
         key: k,
-        render: (text) => <font className="font">{text}</font>
+        render: (text) => {
+         if(isHtml(text)){
+          return <font className="font" dangerouslySetInnerHTML={{__html:text}}></font>
+        }else{
+            return <font className="font">{text}</font>
+          }
+        }
       }
     }
     if (titles) {
@@ -100,6 +106,7 @@ const loadRemind = (obj, linkmode, isremind) => {
   var nametitle = obj.name;
   if (obj.pretitle) nametitle = obj.pretitle + nametitle;
   if (obj.lasttitle) nametitle = nametitle + obj.lasttitle;
+  var showName = <font dangerouslySetInnerHTML={{__html:obj.name}}></font>
   if (obj.img) {
     if (isremind) {
       var style = {};
@@ -120,14 +127,14 @@ const loadRemind = (obj, linkmode, isremind) => {
         style['color'] = color + ' !important';
       }
       if (tempremind.indexOf("0") === -1) {
-        return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font" style={style}>{obj.pretitle ? obj.pretitle:''}{obj.name}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font></a></span>
+        return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font" style={style}>{obj.pretitle ? obj.pretitle:''}{showName}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font></a></span>
       } else {
-        return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font" style={style}>{obj.pretitle ? obj.pretitle:''}{obj.name}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font>&nbsp;</a><img className="wfremindimg" src={obj.img}/></span>
+        return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font" style={style}>{obj.pretitle ? obj.pretitle:''}{showName}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font>&nbsp;</a><img className="wfremindimg" src={obj.img}/></span>
       }
     }
-    return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font">{obj.pretitle ? obj.pretitle:''}{obj.name}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font>&nbsp;</a><img className="wfremindimg" src={obj.img}/></span>
+    return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font">{obj.pretitle ? obj.pretitle:''}{showName}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font>&nbsp;</a><img className="wfremindimg" src={obj.img}/></span>
   }
-  return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font">{obj.pretitle ? obj.pretitle:''}{obj.name}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font></a></span>
+  return <span className={spanClass}><a href={`javascript:${href};`} onClick={openUrlWin} title={nametitle}><font className="font">{obj.pretitle ? obj.pretitle:''}{showName}{obj.lasttitle ? <b style={{fontWeight:'bold'}}>{obj.lasttitle}</b>:null}</font></a></span>
 }
 
 module.exports = {

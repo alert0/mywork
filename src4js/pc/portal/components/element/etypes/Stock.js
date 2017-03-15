@@ -1,9 +1,9 @@
 //股票元素
 class Stock extends React.Component {
 	render() {
-		const { list, esetting } = this.props;
+		const { data, esetting } = this.props;
 		const { linkmode, width, height } = esetting;
-		let html = list.map(item => <div>
+		let html = data.map(item => <div>
 		      <a href="javascript:void(0);" onClick={openLinkUrl.bind(this,item.linkUrl,linkmode)}>
 		        <img style={{ width: width, height: height }} src={item.imgUrl} border='0'/>
 		      </a>

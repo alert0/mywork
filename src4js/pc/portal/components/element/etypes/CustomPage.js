@@ -17,7 +17,7 @@ class CustomPage extends React.Component {
             });
         }
     }
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(nextProps) {
         if (this.props.data.url != nextProps.data.url || window.ifCustomPageRefresh) {
             const { actions } = nextProps;
             actions.setFrameData(nextProps);

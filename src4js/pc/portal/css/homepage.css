@@ -10,7 +10,34 @@
 .homepage .ant-table-body table {table-layout:fixed;}
 .homepage .layouttable {width:100%;table-layout:fixed;border-collapse:collapse;}
 .homepage .layouttable td {vertical-align:top;}
-.homepage .toolbar {height:auto!important;line-height:inherit!important;}
+
+
+.homepage .titlecontainer{border: 0px; height:32px;width: 100%; overflow: hidden; position: relative; background-image: url("/page/resource/userfile/image/ecology8/tabbg1_wev8.png");}
+.homepage .movestyle{ width: auto; position: relative; cursor: move;}
+
+.homepage .tabcontainer{width:100%;overflow:hidden;float: left;}
+.homepage .picturebackhp {
+    cursor:hand;position:relative;float: left;left:0px;top:-7px; display: none;
+   
+    width: 18px;
+    height: 32px;
+    background: transparent url(/page/element/Picture/resource/image/scroll_left_wev8.gif) no-repeat 0 0;
+}
+.homepage .picturenexthp {
+    cursor:hand; position: absolute;float: right;top:-8px;bottom:0;right: 0px;display:none;padding-top: 6px;
+    width: 18px;
+    height: 32px;
+    background: transparent url(/page/element/Picture/resource/image/scroll_right_wev8.gif) no-repeat 0 0;
+}
+
+/* ---------- 影藏标题工具栏显示样式 ----------- */
+.homepage .optoolbar{position: absolute; float: right; top: 0px; bottom: 0px; right: 0px; padding-top: 6px;} 
+.homepage .optoolbar ul{list-style:none;overflow:hidden;} 
+.homepage .optoolbar ul li{overflow: hidden; float: left; margin-right: 5px;} 
+.homepage .optoolbar ul li a{display:block;float: left;} 
+.homepage .toolbar ul li a{display:block;float: left;} 
+ 
+
 .homepage .valign{vertical-align: top;}
 .homepage .item {position:relative;box-shadow:0 0 5px #ddd;height:100%;}
 .homepage .item .header {box-sizing:content-box;}
@@ -92,7 +119,7 @@
 .homepage .item .custompage-iframe {border:0 !important;}
 /**--------多图元素相关css---------**/
 .homepage .item .imgslide {overflow:auto;}
-.homepage .item .imgslide .carousel {width:95%;float:left;text-align:center;margin:0 auto;}
+.homepage .item .imgslide .slide-carousel {width:95%;text-align:center;margin:0 auto;}
 .homepage .item .imgslide .setting {width:5%;float:left;cursor:pointer;display:none;}
 .homepage .item .imgslide .slick-dots .li-class {width:20%;list-style:none;}
 /**--------图片元素相关css---------**/
@@ -101,3 +128,20 @@
 .homepage .clear {clear:both;display:block;}
 .homepage .picturenext {width:32px;height:32px;float:right;background:transparent url(/page/element/Picture/resource/image/next-horizontal_wev8.png) no-repeat 0 0;}
 .homepage .pictureback {width:32px;height:32px;float:left;background:transparent url(/page/element/Picture/resource/image/prev-horizontal_wev8.png) no-repeat 0 0;}
+
+
+/**--------多土元素相关css---------**/
+.homepage .slidebox_block {position:relative;width:100%;height:100%;overflow:hidden;}
+.homepage .slidebox_list_item {width:100%;height:100%;position:absolute;left:0px;}
+.homepage .slidebox_list img {border:0px;}
+.homepage .slidebox_btbg {position:absolute;bottom:0;background-color:#000;height:50px;filter:Alpha(Opacity=30);opacity:0.3;z-index:1000;cursor:pointer;width:100%;}
+.homepage .slidebox_info {position:absolute;bottom:0;width:100%;height:50px;color:#fff;z-index:1001;cursor:pointer}
+.homepage .slidebox_block ul {position:absolute;list-style-type:none;filter:Alpha(Opacity=80);opacity:0.8;z-index:1002;margin:0;padding:0;bottom:3px;left:50%;}
+.homepage .slidebox_block ul li {float:left;display:block;color:#FFF;cursor:pointer;background:url('/page/element/imgSlide/resource/image/p.png') 0 0 no-repeat;width:8px;height:8px;margin:0px 5px;}
+.homepage .slidebox_block ul li.on {background:url('/page/element/imgSlide/resource/image/p_slt.png') 0 0 no-repeat;}
+.homepage .slidebox_list {width:100%;height:100%;}
+.homepage .slidebox_list a {position:absolute;width:100%;height:100%;left:0;}
+.homepage .slidebox_info_item {text-align:center;line-height:50px;font-size:16px;height:100%;width:100%;background-color:#fff;cursor:pointer;overflow:hidden;opacity:0.7;z-index:1000;color:#4d4d4d;filter:Alpha(Opacity=70);}
+.homepage .slidebox_info_item_slt {background-color:#213d7d;color:#fff;}
+
+

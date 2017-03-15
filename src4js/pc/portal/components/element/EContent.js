@@ -60,18 +60,11 @@ class EContent extends React.Component {
             contentHtml = <Spin>{ contentHtml }</Spin>
         }
         return <div>
-            <TitleContainer params = { data.params }
-        ebaseid = { ebaseid }
-        more = { more }
-        currCount = { currCount }
-        counts = { counts }
-        toolbar = { toolbar }
-        currenttab = { currtab }
-        titles = { titles }
-        tabids = { tabids }
-        eid = { eid }
-        /><div className = "tabContant"
-        id = { `tabcontant_${eid}` }>{ contentHtml }</div></div>;
+            <TitleContainer params = {data.params} ebaseid={ebaseid} more={ more } currCount = { currCount } counts = { counts } toolbar = { toolbar } currenttab = { currtab } titles = { titles } tabids = { tabids }eid = { eid } />
+            <div className = "tabContant" id = { `tabcontant_${eid}` } >
+            { contentHtml }
+            </div>
+         </div>;
     }
 }
 

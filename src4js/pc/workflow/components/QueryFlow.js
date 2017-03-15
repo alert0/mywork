@@ -82,7 +82,7 @@ class QueryFlow extends React.Component {
     componentWillReceiveProps(nextProps) {
         const keyOld = this.props.location.key;
         const keyNew = nextProps.location.key;
-    	if(window.location.pathname == '/spa/workflow/index.jsp' && nextProps.title && document.title !== nextProps.title)
+    	if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.title && document.title !== nextProps.title)
     		document.title = nextProps.title
         if(keyOld!==keyNew) {
             const {actions} = this.props;
@@ -151,8 +151,18 @@ class QueryFlow extends React.Component {
         return (
             <div className='wea-workflow-query'>
             	{isSingle && <WeaPopoverHrm />}
-            	<WeaRightMenu btns={this.getRightMenu()} >
-                <WeaNewTop showDropIcon={true} title={title} loading={loading} icon={<i className='icon-portal-workflow'/>} iconBgcolor='#55D2D4' buttonSpace={10} buttons={this.getButtons()} hideButtons={this.getRightMenu()}>
+            	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
+                <WeaNewTop 
+                	title={title} 
+                	loading={loading} 
+                	icon={<i className='icon-portal-workflow' />} 
+                	iconBgcolor='#55D2D4' 
+                	buttons={this.getButtons()} 
+                	buttonSpace={10}
+                	showDropIcon={true} 
+                	dropMenuDatas={this.getRightMenu()} 
+                	onDropMenuClick={this.onRightMenuClick.bind(this)}
+                >
                    {showTable ? <div style={{height: '100%'}}>
                     	<WeaLayoutR11 leftCom={this.getTree()} leftWidth={25} >
 	                        <WeaTab
@@ -202,6 +212,39 @@ class QueryFlow extends React.Component {
                 <Synergy pathname='/workflow/queryFlow' requestid="-1" />
             </div>
         )
+    }
+    onRightMenuClick(key){
+    	const {actions,selectedRowKeys} = this.props;
+    	if(key == '0'){
+    		actions.doSearch();
+    		actions.setShowSearchAd(false);
+    		actions.updateDisplayTable(true);
+    	}
+    	if(key == '1'){
+    		actions.batchShareWf(`${selectedRowKeys.toJS()}`)
+    	}
+    	if(key == '2'){
+    		actions.setColSetVisible(true);
+    		actions.tableColSet(true)
+    	}
+    }
+    getRightMenu(){
+    	const {selectedRowKeys,actions,showTable} = this.props;
+    	let btns = [];
+    	btns.push({
+    		icon: <i className='icon-Right-menu--search'/>,
+    		content:'搜索'
+    	});
+        showTable && btns.push({
+         	icon: <i className='icon-Right-menu-batch'/>,
+			content:'批量共享',
+			disabled: !selectedRowKeys || !`${selectedRowKeys.toJS()}`
+        })
+    	showTable && btns.push({
+    		icon: <i className='icon-Right-menu-Custom'/>,
+    		content:'显示定制列'
+    	})
+    	return btns
     }
     getSearchs(bool) {
     	const {showTable} = this.props;
@@ -296,17 +339,6 @@ class QueryFlow extends React.Component {
             (<Button type="ghost" style={btnStyle} onClick={()=>{actions.saveFields();actions.setShowSearchAd(false)}}>重置</Button>)
         ]
     }
-	getRightMenu(){
-    	const {searchParamsAd,actions,showTable,selectedRowKeys} = this.props;
-    	let btns = [];
-    	btns.push(<a onClick={()=>{actions.doSearch();actions.updateDisplayTable(true);;actions.setShowSearchAd(false)}}><i className='icon-Right-menu--search' style={{marginRight:10,verticalAlign:'middle'}} />搜索</a>)
-    	if(showTable){
-        	btns.push(<a onClick={()=>{selectedRowKeys && `${selectedRowKeys.toJS()}` ? actions.batchShareWf(`${selectedRowKeys.toJS()}`) : message.warning('请至少选择一项',3)}}  ><i className='icon-Right-menu-batch' style={{marginRight:10,verticalAlign:'middle'}} />批量共享</a>);
-    		btns.push(<a onClick={()=>{actions.setColSetVisible(true);actions.tableColSet(true);actions.setShowSearchAd(false)}}><i className='icon-Right-menu-Custom' style={{marginRight:10,verticalAlign:'middle'}} />显示定制列</a>)
-    	}
-    	return btns
-    }
-
     getButtons() {
         const {actions,showTable,selectedRowKeys} = this.props;
         let btns =[];

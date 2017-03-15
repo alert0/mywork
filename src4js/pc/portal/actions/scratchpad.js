@@ -2,14 +2,9 @@ import { INIT_SCRATCHPAD_TEXT } from '../constants/ActionTypes';
 
 import { reqSaveContent } from '../apis/req';
 
-const saveContent = (params, eid) => {
-    return (dispatch, getState) => {
-        reqSaveContent(params).then(() => {
-            $("#scratchpadarea_" + eid).attr("disabled", false);
-        });
-    }
-}
+
 const saveScratchpad = (eid, userid, e) => {
+
     return (dispatch, getState) => {
         var obj = e.target;
         $(obj).attr("disabled", true);
@@ -47,7 +42,20 @@ const saveScratchpad = (eid, userid, e) => {
 
     }
 }
-
+const saveContent = (params, eid) => {
+     $.ajax({
+        type: "GET",
+        url: "/page/element/scratchpad/ScratchpadOperation.jsp",
+        data:params,
+        success: function() {
+            //判断返回的数据是否有变化，有的话更新缓存并重新渲染
+            $("#scratchpadarea_" + eid).attr("disabled", false);
+        },
+        error: function(xhr) {
+            $("#scratchpadarea_" + eid).attr("disabled", false);
+        }
+    });
+}
 const initContent = (text) => {
     return (dispatch, getState) => {
         dispatch({

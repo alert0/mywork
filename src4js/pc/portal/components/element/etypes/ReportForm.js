@@ -1,9 +1,17 @@
+import Immutable from 'immutable';
 //图表元素
 class ReportForm extends React.Component {
 	componentDidMount() {
 		//加载图标
 		const { eid, data } = this.props;
 		this.checkonLoad(eid, data);
+	}
+	componentDidUpdate(preProps) {
+		const { eid, data } = this.props;
+		if(!Immutable.is(data,preProps.data)){
+			//加载图标
+			this.checkonLoad(eid, data);
+		}
 	}
 	checkonLoad(eid, data) {
 		try {
@@ -13,9 +21,7 @@ class ReportForm extends React.Component {
 			container.css("overflow", "hidden");
 			generatorSimpechart(eid, data);
 		} catch (e) {
-			setTimeout(() => {
-				this.checkonLoad.bind(this, eid, data);
-			}, 500);
+
 		}
 	}
 	render() {

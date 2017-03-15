@@ -3,16 +3,20 @@ import { connect } from 'react-redux';
 import * as ScratchpadAction from '../../../actions/scratchpad';
 //便签元素
 class Scratchpad extends React.Component {
-	constructor(props) {
-		super(props)
-		const { actions, data } = props;
-		actions.initContent(data.text);
+	shouldComponentUpdate(nextProps){
+		return nextProps.data.text !== this.props.data.text
+	}
+	componentDidUpdate(preProps){
+		const { eid,data } = this.props;
+		if(preProps.data.text !== data.text){
+			$("#scratchpadarea_"+eid).text(data.text);
+		}
 	}
 	render() {
-		const { eid, data, text, actions } = this.props;
+		const { eid, data, actions } = this.props;
 		return <div id={`scratchpad_${eid}`}>
 	           	 <textarea id={`scratchpadarea_${eid}`} style={{width: '100%',height: data.height,fontSize: '9pt',margin: '0px',fontFamily: 'Verdana'}} onBlur={actions.saveScratchpad.bind(this,eid,'1')}>
-            		{text}
+            		{data.text}
 	           	 </textarea>
 			  </div>
 	}

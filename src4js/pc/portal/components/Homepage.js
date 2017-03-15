@@ -20,8 +20,7 @@
              };
              //将style标签转成字符串，解决ie8下出错的问题
              styleStr = "<style type='text/css'>" + hpdata.hpCss.replace(/\"/g, "") + "</style>";
-             hpHtml = hpdata.hasRight === 'true' ? <LayoutFlags layoutObj = { layoutObj }
-            /> : <NoRightPage/>;
+             hpHtml = hpdata.hasRight === 'true' ? <LayoutFlags layoutObj = { layoutObj }/> : <NoRightPage/>;
          }
          return <div className = 'homepage'>
 	             <div dangerouslySetInnerHTML = { { __html: styleStr } }></div>

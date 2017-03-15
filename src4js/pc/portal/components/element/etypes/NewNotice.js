@@ -3,7 +3,7 @@ class NewNotice extends React.Component {
 	render() {
 		const { eid, data, esetting } = this.props;
 		let html = data.map(item => {
-			return <tr style={{cursor:'pointer',verticalAlign: 'middle'}} name={`newnoticeitem_${eid}`}>
+			return <tr style={{cursor:'pointer',verticalAlign: 'middle',marginBottom:'5px'}} onClick={showNewNotice.bind(this,eid,item.id)} name={`newnoticeitem_${eid}`}>
 				<td>
 					<div style={{height:'66px',width:'97px',position:'relative',border:'1px solid #d7d8e0',background:'url('+item.imgUrl+') center center no-repeat',backgroundSize:'100% 100%'}}>
 					</div>

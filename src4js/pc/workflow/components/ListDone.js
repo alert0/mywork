@@ -89,14 +89,24 @@ class ListDone extends React.Component {
     }
     render() {
         let that = this;
-        const isSingle = window.location.pathname == '/spa/workflow/index.jsp';
+        const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
         const {pageSize,pageAutoWrap,topTab,topTabCount,columns,datas,actions,title,count,loading,operates,searchParams,
         	showSearchAd,tableCheck,searchParamsAd,sortParams,current,colSetVisible,colSetdatas,colSetKeys} = this.props;
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
-            	<WeaRightMenu btns={this.getRightMenu()} >
-                <WeaNewTop showDropIcon={true} title={title} loading={loading} icon={<i className='icon-portal-workflow' />} iconBgcolor='#55D2D4' buttons={this.getButtons()} buttonSpace={10} hideButtons={this.getRightMenu()} >
+            	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
+            	<WeaNewTop 
+                	title={title} 
+                	loading={loading} 
+                	icon={<i className='icon-portal-workflow' />} 
+                	iconBgcolor='#55D2D4' 
+                	buttons={this.getButtons()} 
+                	buttonSpace={10}
+                	showDropIcon={true} 
+                	dropMenuDatas={this.getRightMenu()} 
+                	onDropMenuClick={this.onRightMenuClick.bind(this)}
+                >
                 <WeaLayoutR11 defaultShowLeft={true} leftCom={this.getTree()} leftWidth={25}>
                     <WeaTab
                         buttonsAd={this.getTabButtonsAd()}
@@ -141,6 +151,31 @@ class ListDone extends React.Component {
                 <Synergy pathname='/workflow/listDone' requestid="-1" />
             </div>
         )
+    }
+    onRightMenuClick(key){
+    	const {actions,selectedRowKeys} = this.props;
+    	if(key == '0'){
+    		actions.doSearch();
+    		actions.setShowSearchAd(false)
+    	}
+    	if(key == '1'){
+    		actions.setColSetVisible(true);
+    		actions.tableColSet(true)
+    	}
+    }
+    getRightMenu(){
+    	const {selectedRowKeys,sharearg,actions} = this.props;
+        const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
+    	let btns = [];
+    	btns.push({
+    		icon: <i className='icon-Right-menu--search'/>,
+    		content:'搜索'
+    	});
+    	btns.push({
+    		icon: <i className='icon-Right-menu-Custom'/>,
+    		content:'显示定制列'
+    	})
+    	return btns
     }
     getSearchs() {
         return [
@@ -253,13 +288,6 @@ class ListDone extends React.Component {
     	const {selectedRowKeys,actions} = this.props;
     	let btns = [];
         return btns
-    }
-    getRightMenu(){
-    	const {selectedRowKeys,actions} = this.props;
-    	let btns = [];
-    	btns.push(<a onClick={()=>{actions.doSearch();actions.setShowSearchAd(false)}}><i className='icon-Right-menu--search' style={{marginRight:10,verticalAlign:'middle'}} />搜索</a>)
-    	btns.push(<a onClick={()=>{actions.setColSetVisible(true);actions.tableColSet(true)}}><i className='icon-Right-menu-Custom' style={{marginRight:10,verticalAlign:'middle'}} />显示定制列</a>)
-    	return btns
     }
     getColumns(columns) {
         const {isSpaForm} = this.props;

@@ -1,5 +1,9 @@
 //天气元素
 class Weather extends React.Component {
+	componentDidMount(){
+		$("#weather_"+this.props.eid).attr("align","center");
+		$("#asdad").attr("align","center");
+	}
 	render() {
 		const { eid, data, esetting } = this.props;
 		const { width, autoScroll } = esetting;
@@ -19,17 +23,17 @@ class Weather extends React.Component {
 			let tdHtml = data.map((item, i) => <td width="80" style={{textAlign:'center'}}>
               <div className="wetCityName" style={{height:'20px'}}>{item.city}
               </div>
-              <div className="wetCityName" id="curConditionDiv" style={{width:'80px',cursor:'pointer'}}>
+              <div className="wetCityName" id="curConditionDiv" style={{width:'80px',cursor:'pointer',height:'40px',lineHeight:'40px'}}>
                 <p title={item.weather}>{item.weather}</p></div>
               <div style={{width: '80px',bottom:'10px'}}>
                 {item.img === '' ? null : <img src={item.img} title={item.weather}/>}
               </div>
               <br/>{item.temperature}</td>);
 
-			var wHtml = <table style={{textAlign:'center'}} cellpadding="0" cellspace="0" border="0">
+			var wHtml = <table style={{textAlign:'center',margin:'0 auto'}} cellpadding="0" cellspace="0" border="0">
 	                <tbody>
 	                  <tr>
-	                    <td id={`weather_${eid}_1`} valign="top" style={{float: 'left'}}>
+	                    <td id={`weather_${eid}_1`} className="valign" style={{float: 'left'}}>
 	                      <table>
 	                        <tbody>
 	                          <tr>
@@ -38,7 +42,7 @@ class Weather extends React.Component {
 	                        </tbody>
 	                      </table>
 	                    </td>
-	                    <td id={`weather_${eid}_2`} valign="top"></td>
+	                    <td id={`weather_${eid}_2`} className="valign"></td>
 	                  </tr>
 	                </tbody>
 	              </table>;
@@ -48,12 +52,12 @@ class Weather extends React.Component {
 				</marquee>
 			}
 			trHtml = <tr>
-			      <td valign="middle" style={{verticalAlign:'middle',width:'35px'}}>
+			      <td style={{verticalAlign:'middle',width:'35px'}}>
 			        <div id={`weatherback_${eid}`} style={{cursor:'hand'}} className="" onClick={backWeatherMarquee(eid)}></div>
-			      </td>
-			      <td style={{textAlign:'center'}}>
-			        <div id={`weather_${eid}`} style={{textAlign:'center'}}>
-			          <div id={`weather_${eid}_0`} style={{overflow:'hidden',width:width+'px'}}>
+			      </td> 
+			      <td id="asdad" style={{textAlign:'center'}}>
+			        <div id={`weather_${eid}`} style={{textAlign:'center !important'}}>
+			          <div id={`weather_${eid}_0`} style={{margin:'0 auto',overflow:'hidden',width:width+'px',textAlign:'center'}}>
 			           	{wHtml}
 			          </div>
 			        </div>

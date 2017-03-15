@@ -80,11 +80,21 @@ class Error extends React.Component {
 	}
 }
 
+class NullPage extends React.Component {
+	render() {
+		return (
+			<div></div>
+		)
+	}
+}
+
 class Root extends React.Component {
     render() {
 		return (
             <Provider store={store}>
 				<Router history={history}>
+					<Route path="/" component={NullPage}>
+					</Route>
                     <Route path="/main" component={Home}>
                         {WorkflowRoute}
                     </Route>

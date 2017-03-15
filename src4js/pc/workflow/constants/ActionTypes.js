@@ -36,6 +36,7 @@ export const SET_REL_REQ_LOG_PARAMS = 'set_rel_req_log_params' //设置相关流
 export const SET_SCROLL_MARK_INFO = 'set_scroll_mark_info' //设置滚动签字意见
 export const IS_LOADING_LOG = 'is_loading_log' //正在加载滚动签字意见
 export const CLEAR_ALL = 'clear_all' //清除所有
+export const CLEAR_LOG_DATA ='clear_log_data' //清除意见问题
 
 /*
     待办事宜、已办、我的请求(原)

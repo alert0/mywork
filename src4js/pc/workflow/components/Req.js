@@ -35,7 +35,7 @@ class Req extends React.Component {
         jQuery(".req-workflow-map").height(height-5);
 	}
     componentWillReceiveProps(nextProps,nextState){
-    	if(window.location.pathname == '/spa/workflow/index.jsp' && nextProps.formValue && nextProps.formValue.getIn(['field-1','value']) && document.title !== nextProps.formValue.getIn(['field-1','value']))
+    	if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.formValue && nextProps.formValue.getIn(['field-1','value']) && document.title !== nextProps.formValue.getIn(['field-1','value']))
     		document.title = nextProps.formValue.getIn(['field-1','value'])
     }
     componentDidMount() {
@@ -45,7 +45,6 @@ class Req extends React.Component {
 		actions.reqIsReload(false);
 		actions.isClickBtnReview(false);
 		actions.setShowUserlogid('');
-		actions.setIsLoadingLog(false);
 		const that = this;
 		
 		//滚动加载
@@ -59,11 +58,10 @@ class Req extends React.Component {
 				const bodyheight = jQuery('.wea-popover-hrm-relative-parent').height();
 				const pgnumber = logParams.get('pgnumber');
 				if((top + windowheight) == bodyheight && !isLoadingLog && logList.size < logCount){
-					actions.setIsLoadingLog(true);
-					actions.scrollLoadSign({pgnumber:parseInt(pgnumber)+1,firstload:false});
+					console.log("logList.size" + logList.size +"，logCount"+logCount);
+					actions.scrollLoadSign({pgnumber:parseInt(pgnumber)+1,firstload:false,maxrequestlogid:logParams.get('maxrequestlogid')});
 				}
 			}
-			
 			jQuery('#edui_fixedlayer>div').css('display','none');
 		});
     }
@@ -130,7 +128,8 @@ class Req extends React.Component {
         this.props.dispatchDuration !== nextProps.dispatchDuration ||
         
         this.props.showuserlogids !== nextProps.showuserlogids||
-        this.props.reqRequestId !== nextProps.reqRequestId;
+        this.props.reqRequestId !== nextProps.reqRequestId||
+        this.props.isLoadingLog !== nextProps.isLoadingLog;
     }
     
     componentWillUnmount() {
@@ -142,7 +141,7 @@ class Req extends React.Component {
         const {reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
         	signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,workflowStatus,actions,logParams,resourcesDatas,
             resourcesOperates,resourcesCount,resourcesColumns,resourcesCurrent,resourcesPageSize,resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
-            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,isclickbtnreview,rightMenu,showBackToE8,showuserlogids,reqRequestId,relLogParams} = this.props;
+            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,isclickbtnreview,rightMenu,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
         const titleName = params?params.get("titlename"):"";
         const isshared = params?params.get("isshared"):"";
@@ -196,17 +195,20 @@ class Req extends React.Component {
         });
         return (
             <div>
-            	<WeaRightMenu btns={this.getHideButtons()} >
+            	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
  				<WeaNewTopReq 
                 	title={<div dangerouslySetInnerHTML={{__html: titleName}} />} 
                 	loading={loading} 
                 	icon={<i className='icon-portal-workflow' />} 
                 	iconBgcolor='#55D2D4' 
                 	buttons={this.getButtons()} 
-                	hideButtons={this.getHideButtons()} 
                 	tabDatas={tabDatas} 
                     selectedKey={reqTabKey}
-                    onChange={this.changeData.bind(this)}>
+                    onChange={this.changeData.bind(this)}
+                	showDropIcon={true} 
+                	dropMenuDatas={this.getRightMenu()} 
+                	onDropMenuClick={this.onRightMenuClick.bind(this)}    
+ 				>
  					<WeaPopoverHrm>
                     	<div className='wea-req-workflow-wrapper'>
                     		{reqTabKey == '1' &&
@@ -255,6 +257,7 @@ class Req extends React.Component {
 	                    			params={params}
 	                    			showuserlogids={showuserlogids}
 	                    			reqRequestId={reqRequestId}
+	                    			isLoadingLog={isLoadingLog}
 	                            />}
 			                </div>
                     	{
@@ -285,7 +288,7 @@ class Req extends React.Component {
                     		reqTabKey == '5' && false && 
 	                    		<Share />
                     	}
-		                { reqTabKey == '1' && etables && window.location.pathname == '/spa/workflow/index.jsp' && 
+		                { reqTabKey == '1' && etables && window.location.pathname.indexOf('/spa/workflow/index') >= 0 && 
 		                	<Popover trigger="click" content={
 		                		<div>
 				                	<p>js加载耗时: {jsLoadDuration} 毫秒</p>
@@ -320,6 +323,36 @@ class Req extends React.Component {
             </div>
         )
     }
+    onRightMenuClick(key){
+    	const {rightMenu} = this.props;
+    	rightMenu && !is(rightMenu,Immutable.fromJS({})) && rightMenu.get('rightMenus').map((m,i)=>{
+        	let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
+        	Number(key) == i && eval(fn)
+        });
+    	if(key == '0'){
+    		actions.doSearch();
+    		actions.setShowSearchAd(false)
+    	}
+    	if(key == '1'){
+    		actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`})
+    	}
+    	if(key == '2'){
+    		actions.setColSetVisible(true);
+    		actions.tableColSet(true)
+    	}
+    }
+    getRightMenu(){
+    	const {rightMenu} = this.props;
+        let btnArr = [];
+        rightMenu && !is(rightMenu,Immutable.fromJS({})) && rightMenu.get('rightMenus').map(m=>{
+        	let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
+	        btnArr.push({
+	        	icon: <i className={m.get('menuIcon')} />,
+    			content: m.get('menuName')
+	        })
+        });
+        return btnArr
+    }
     changeData(key){
     	const {actions,location,workflowStatus,resourcesKey,params} = this.props
     	const {requestid} = location.query;
@@ -344,7 +377,7 @@ class Req extends React.Component {
         	let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
         	m.get('isTop') == '1' && btnArr.length < 4 && btnArr.push(<Button type="primary" disabled={loading} onClick={()=>{eval(fn)}}>{m.get('menuName')}</Button>)
         });
-       	window.location.pathname != '/spa/workflow/index.jsp' && btnArr.push(<Button type="ghost" onClick={this.gobackpage.bind(this,router,ismanagePage)}>返回</Button>)
+       	window.location.pathname.indexOf('/spa/workflow/index') < 0 && btnArr.push(<Button type="ghost" onClick={this.gobackpage.bind(this,router,ismanagePage)}>返回</Button>)
 //      btnArr.push(<Button type="ghost" onClick={()=>{router.push(`/main/workflow/${pathBack}`)}}>返回</Button>)
 
         return btnArr

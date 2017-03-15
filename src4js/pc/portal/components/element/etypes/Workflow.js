@@ -1,20 +1,12 @@
 import { Table } from 'antd';
 import { formatData } from '../../../util/formatdata';
 class WorkFlow extends React.Component {
-	componentDidMount() {
-		const { eid, esetting, data } = this.props;
-		const { scolltype } = esetting;
-		if (scolltype) loadMarqueeAttrs(eid, scolltype, data.tabsetting.height);
-	}
 	render() {
 		let html = null;
 		const { eid, data, esetting } = this.props;
 		const list = data.data;
 		if (!_isEmpty(list)) {
 			html = <Table columns={formatData(list[0], esetting)} showHeader={false} pagination={false} dataSource={list} size="small" />
-			if (esetting.scolltype) {
-				html = <marquee id={`MARQUEE_${eid}`}>{html}</marquee>
-			}
 		}
 		return <div>{html}</div>;
 	}

@@ -9,14 +9,9 @@
          window.global_bLayoutid = layoutObj.bLayoutid;
          if (layoutObj.layoutHtml !== undefined) {
              window.ifCustomLayoutRender = true;
-             return <CustomLayoutFlags
-             hpid = { window.global_hpid }
-             layoutObj = { layoutObj }
-             />
+             return <CustomLayoutFlags hpid = { window.global_hpid } layoutObj = { layoutObj }/>
          } else {
-             return <CommonLayoutFlags
-             layoutObj = { layoutObj }
-             />
+             return <CommonLayoutFlags layoutObj = { layoutObj }/>
          }
      }
  }
@@ -26,8 +21,7 @@
  class MyErrorHandler extends React.Component {
      render() {
          const hasErrorMsg = this.props.error && this.props.error !== "";
-         return ( <WeaErrorPage msg = { hasErrorMsg ? this.props.error : "对不起，该页面异常，请联系管理员！" }
-             />
+         return ( <WeaErrorPage msg = { hasErrorMsg ? this.props.error : "对不起，该页面异常，请联系管理员！" }/>
          );
      }
  }

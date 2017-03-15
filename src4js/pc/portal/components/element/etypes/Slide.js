@@ -10,7 +10,6 @@ class Slide extends React.Component {
 	render() {
 		const { eid, data, esetting } = this.props;
 		const { values } = esetting;
-		
 		const sposition = _isEmpty(values) ? '0' : values['slide_t_position'];
 		var sdStyle = {
 			background: 'url(\"\") no-repeat',
@@ -144,7 +143,11 @@ const loadSlideCss = (eid, iconImgList, iconImg_overList, values) => {
 		if (values['slide_t_position'] === '3') {
 			var s = idx > 3 ? ' style="display:true"' : '';
 		} else {}
-		return '<div ' + s + ' class="slidnavtitle"  style="background:url(' + iconImgList[idx] + ') no-repeat;">&nbsp;</div>';
+		var className = "";
+		if(idx === 0){
+			className="activeSlide";
+		}
+		return '<div ' + s + ' class="slidnavtitle '+className+'"  style="background:url(' + iconImgList[idx] + ') no-repeat;">&nbsp;</div>';
 	};
 
 	if (values['slide_t_position'] === '3') {
@@ -187,7 +190,7 @@ const loadSlideCss = (eid, iconImgList, iconImg_overList, values) => {
 
 	var slidnavtitle = $('#slideArea_' + eid + '  .slideTitleFloat');
 	slidnavtitle.css("position", "absolute");
-	slidnavtitle.css("display", "none");
+	slidnavtitle.css("display", "block");
 
 	if (values['slide_t_position'] === '3') {
 		slidnavtitle.css("height", "40px");

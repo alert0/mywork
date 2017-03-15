@@ -6,6 +6,13 @@ const REQ_URLS = {
     WORKFLOW_MORE_SPA_URL: "/spa/workflow/index.jsp#/main/workflow/queryFlow?jsonstr="
 }
 
+const REQ_URLS_bak = {
+    HOMEPAGE_URL: "/api/portal/homepage/hpdata",
+    ELEMENT_URL: "/api/portal/element/edata",
+    ELEMENTTABCONTENTDATA_URL: "/api/portal/element/tabdata",
+    SCRATCHPAD_URL: "/page/element/scratchpad/ScratchpadOperation.jsp",
+    WORKFLOW_MORE_SPA_URL: "/spa/workflow/index.jsp#/main/workflow/queryFlow?jsonstr="
+}
 // 协同区Url
 const SYNERGY_URL = '/page/interfaces/synergyInfoToJson.jsp'; //初始化门户配置信息
 const SYNERGY_ROUTER_MAPPING_URL = {
@@ -39,6 +46,7 @@ const SYNERGY_ROUTER_MAPPING_URL = {
 // 门户相关
 const INIT_HP_DATA = "init_hp_data"; //初始化门户配置信息
 const INIT_E_DATA = "init_e_data"; //初始化元素信息
+const INIT_E_ElECONF = "init_e_eleconf"; //初始化元素信息
 const REFRESH_E_DATA = "refresh_e_data"; //刷新元素数据
 const GET_E_TAB_DATA = "get_e_tab_data"; //获取默认tab页的数据
 const GET_E_CURRENT_TABID = "get_e_current_tabid"; //刷新元素tab页的数据
@@ -109,6 +117,7 @@ module.exports = {
     ELEMENT_TYPES,
     INIT_HP_DATA,
     INIT_E_DATA,
+    INIT_E_ElECONF,
     REFRESH_E_DATA,
     GET_E_TAB_DATA,
     GET_E_CURRENT_TABID,

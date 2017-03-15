@@ -633,12 +633,12 @@ public class LayoutFormService {
 		}else if(htmltype == 2 && detailtype == 2){	//图片懒加载
 			bean.setValue(ServiceUtil.manageImgLazyLoad(fieldvalue));
 		}else if(htmltype == 3){
-			bean.setShowname(this.getBrowserShowName(fieldinfo, fieldvalue));
+			bean.setShowname(ServiceUtil.convertChar(this.getBrowserShowName(fieldinfo, fieldvalue)));
 			if(detailtype == 16 || detailtype == 152){	//流程，多流程
 				ServiceUtil.addRelatedWfSession(this.request, this.requestid, fieldvalue);
 			}
 		}else if(htmltype == 5){
-			bean.setShowname(this.getSelectShowName(fieldinfo, fieldvalue));
+			bean.setShowname(ServiceUtil.convertChar(this.getSelectShowName(fieldinfo, fieldvalue)));
 		}else if(htmltype == 6){	//附件上传
 			if("-2".equals(fieldvalue)){
 				bean.setShowname(SystemEnv.getHtmlLabelName(21710, user.getLanguage()));	//给color:red

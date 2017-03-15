@@ -4,10 +4,10 @@ import { WorkFlow, News, Picture, Stock, AddWf, Slide, ReportForm, OutterSys, Au
 
 import { ELEMENT_TYPES } from '../../constants/ActionTypes';
 
-const { RSS, NEWS, WORKFLOW, CUSTOMPAGE, REPORTFORM, OUTDATA, FORMMODECUSTOMSEARCH, MAIL, ADDWF, TASK, BLOGSTATUS, CONTACTS, UNREAD_DOCS, MESSAGE_REMINDING, MY_PROJECTS, NEW_CUSTOMERS, NEW_MEETING, UNREAD_COOPERATION, MONTH_TARGET, DAY_PLAN, SUBSCRIBE_KONWLEDG, MORE_NEWS, MAGEZINE, STOCK, DOC_CONTENT, AUDIO, FAVOURITE, FLASH, PICTURE, MYCALENDAR, IMGSLIDE, NEWNOTICE, OUTTERSYS, SCRATCHPAD, WEATHER, VIDEO, SLIDE, DATACENTER, JOBSINFO, SEARCHENGINE, NOTICE, PLAN, MENU, WORKTASK } = ELEMENT_TYPES;
+const { RSS, NEWS, WORKFLOW, CUSTOMPAGE, REPORTFORM, OUTDATA, FORMMODECUSTOMSEARCH,  ADDWF, TASK, BLOGSTATUS, CONTACTS, UNREAD_DOCS, MESSAGE_REMINDING, MY_PROJECTS, NEW_CUSTOMERS, NEW_MEETING, UNREAD_COOPERATION, MONTH_TARGET, DAY_PLAN, SUBSCRIBE_KONWLEDG, MORE_NEWS, MAGEZINE, STOCK, DOC_CONTENT, AUDIO, FAVOURITE, FLASH, PICTURE, MYCALENDAR, IMGSLIDE, NEWNOTICE, OUTTERSYS, SCRATCHPAD, WEATHER, VIDEO, SLIDE, DATACENTER, JOBSINFO, SEARCHENGINE, NOTICE, PLAN, MENU, WORKTASK } = ELEMENT_TYPES;
 
 import { formatData } from '../../util/formatdata';
-
+import MarqueeCom from './MarqueeCom';
 class EType extends React.Component {
     render() {
         let EleType = null;
@@ -17,16 +17,9 @@ class EType extends React.Component {
         const currenttab = this.props.currenttab;
         const esetting = this.props.esetting;
         if (ebaseid === NEWNOTICE) ////公告元素
-            return <div className = "tabContant"
-        id = { `tabcontant_${eid}` }><NewNotice eid = { eid }
-        data = { data }
-        esetting = { esetting }
-        /></div>
+            return <div className = "tabContant" id = { `tabcontant_${eid}` }><NewNotice eid = { eid } data = { data } esetting = { esetting } /></div>
         if (ebaseid === PICTURE) ////公告元素
-            return <Picture eid = { eid }
-        data = { data }
-        esetting = { esetting }
-        />
+            return <Picture eid = { eid }  data = { data } esetting = { esetting } />
         if (!_isEmpty(data)) {
             //后台获取数据集合
             let list = new Array;
@@ -37,6 +30,7 @@ class EType extends React.Component {
                     list = data.data;
                 }
             }
+            const { tabsetting } = data;
             switch (ebaseid) {
                 case UNREAD_DOCS: //未读文档
                 case MESSAGE_REMINDING: //消息提醒
@@ -60,10 +54,8 @@ class EType extends React.Component {
                     size = "small" />
                         break;
                 case NEWS: //文档中心
-                    EleType = <News eid = { eid }
-                    data = { data }
-                    esetting = { esetting }
-                    />
+                    const {rollDirection} = tabsetting
+                    EleType = <MarqueeCom eid={eid} scolltype={rollDirection}><News eid = { eid } data = { data } esetting = {esetting}/></MarqueeCom>
                     break;
                 case WORKFLOW: //流程中心
                     EleType = <WorkFlow eid = { eid }
@@ -93,7 +85,8 @@ class EType extends React.Component {
                     />
                     break;
                 case MAGEZINE: //期刊中心
-                    EleType = <Magazine data = { data }
+                    EleType = <Magazine eid = { eid }
+                    data = { data }
                     esetting = { esetting }
                     />;
                     break;
@@ -191,8 +184,8 @@ class EType extends React.Component {
                     />
                     break;
                 case IMGSLIDE:
-                    EleType = <ImgSlide data = { data }
-                    eid = { eid }
+                    EleType = <ImgSlide eid = { eid }
+                    data = { data }
                     />
                     break;
                 default:

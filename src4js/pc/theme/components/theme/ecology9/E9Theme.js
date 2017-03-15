@@ -40,7 +40,7 @@ class E9Theme extends React.Component {
     render() {
         return (
             <div className="e9theme-layout-container">
-                <iframe id="hiddenPreLoader" name="hiddenPreLoader" style={{display: "none"}} width="0" height="0" border="0" frameborder="0" src="/spa/workflow/index.jsp"></iframe>
+                <iframe id="hiddenPreLoader" name="hiddenPreLoader" style={{display: "none"}} width="0" height="0" border="0" frameborder="0" src="/spa/workflow/index.html"></iframe>
                 <WeaPopoverHrm />
                 <Birthday />
                 <div className="e9theme-layout-header">

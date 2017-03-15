@@ -9,9 +9,7 @@ class ElementIndex extends React.Component {
         actions.getEDatas(ele);
     }
     render() {
-        return <Element ele = { this.props.ele }
-        key = { _uuid() }
-        />
+        return <Element ele = { this.props.ele } key = { _uuid() } />
     }
 }
 

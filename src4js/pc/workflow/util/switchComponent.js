@@ -54,7 +54,7 @@ export const switchComponent = (props, key, FieldProps, field = {},showName='') 
                 	initialValue: getSelectDefaultValue(field.options)
                 })} datas={formatSelectOptions(field.options)} form={props.form} domkey={FieldProps} />)
         case KEY_9:
-            return (<WeaInput4HrmNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaInput4HrmNew {...getFieldProps(FieldProps[0])} getShowName={name => {console.log('-------',name)} }/>)
         case KEY_10:
             return (<WeaInput4DocsNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
         case KEY_11:

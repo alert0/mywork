@@ -14,21 +14,25 @@ import { ELEMENT_TYPES } from '../../constants/ActionTypes';
 const { WORKFLOW, MAIL, BLOGSTATUS, CONTACTS, CUSTOMPAGE } = ELEMENT_TYPES;
 
 import * as ElementAction from '../../actions/element';
-
+import Immutable from 'immutable';
 //元素组件
 class Element extends React.Component {
     componentDidMount() {
         const { ele, actions ,edata} = this.props;
         const { eid, ebaseid } = ele.item;
+        actions.initEle(eid,ele);   
         if (ebaseid === WORKFLOW)
             window.ifWorkFlowRefrash = actions.handleRefresh.bind(this, ele);
         if(!_isRE(ebaseid)){
           jQuery("#no_react_element_"+eid).html(edata);
         }
     }
-    componentDidUpdate() {
-        const { ele, edata } = this.props;
+    componentDidUpdate(prevProps) {
+        const { ele, edata, actions } = this.props;
         const { eid, ebaseid } = ele.item;
+        if(!Immutable.is(prevProps.ele,ele)){
+            actions.initEle(eid,ele);   
+        }
         if(!_isRE(ebaseid)){
           jQuery("#no_react_element_"+eid).html(edata);
         }
@@ -59,65 +63,46 @@ class Element extends React.Component {
                 }
                 if (specialEArr.contains(ebaseid)) {
                     if (ebaseid === CONTACTS) {
-                        EContentHtml = <Contacts eid = { eid }
-                        ebaseid = { ebaseid }
-                        data = { edata }
-                        toolbar = { toolbar }
-                        />
+                        EContentHtml = <Contacts eid = { eid } ebaseid = { ebaseid } data = { edata } toolbar = { toolbar } />
                     } else {
-                        EContentHtml = <SpecialElement eid = { eid }
-                        ebaseid = { ebaseid }
-                        data = { edata }
-                        toolbar = { toolbar }
-                        />
+                        EContentHtml = <SpecialElement eid = { eid } ebaseid = { ebaseid } data = { edata } toolbar = { toolbar } />
                     }
                 } else {
                     if (undefined !== edata.tabids) {
-                        EContentHtml = isHasRight ? <EContent eid = { eid }
-                        ebaseid = { ebaseid }
-                        data = { edata }
-                        toolbar = { toolbar }
-                        /> : <NoRight/>;
+                        EContentHtml = isHasRight ? <EContent eid = { eid } ebaseid = { ebaseid } data = { edata } toolbar = { toolbar } /> : <NoRight/>;
                     } else {
-                        EContentHtml = edata.isHasRight === undefined ? <EType eid = { eid }
-                        ebaseid = { ebaseid }
-                        data = { edata.data }
-                        esetting = { edata.esetting }
-                        /> : <NoRight/>;
+                        EContentHtml = edata.isHasRight === undefined ? <EType eid = { eid } ebaseid = { ebaseid } data = { edata.data } esetting = { edata.esetting } /> : <NoRight/>;
                     }
                 }
             } else {
-
                 EContentHtml = <div id={"no_react_element_" + eid}></div>;
             }
         }
         if (isEReFresh && ebaseid !== CUSTOMPAGE) {
             EContentHtml = <Spin>{ EContentHtml }</Spin>
         }
+        const ostyle = contentview.style;
+        if(!_isEmpty(ostyle) && _isTabE(ebaseid)){
+            let height = ostyle.height;
+            if(height){
+                height = height.replace("px","");
+                let nherght = parseInt((parseInt(height) -32 +1 )/25) * 31 + 32;
+                var cvStyle = {
+                    overflow:'auto',
+                    height:nherght+'px'
+                }
+            }
+        }
         // let style = item.style;
-        return <div className = "item"
-        style = { { marginTop: '10px' } }
-        id = { `item_${eid}` }
-        data-eid = { eid }
-        data-ebaseid = { ebaseid }
-        data-needRefresh = { item.needRefresh }
-        data-cornerTop = { item.cornerTop }
-        data-cornerTopRadian = { item.cornerTopRadian }
-        data-cornerBottom = { item.cornerBottom }
-        data-cornerBottomRadian = { item.cornerBottomRadian }>
-            <EHeader header = { header }
-        eid = { eid }
-        ebaseid = { ebaseid }
-        ele = { ele }
-        /><div className = "content"
-        id = { `content_${eid}` }
-        style = { { width: 'auto', _width: '100%' } }>
-            <div className = "content_view"
-        id = { `content_view_id_${eid}` }
-        style = { contentview.style }>{ EContentHtml }</div>
-        <div style = { { textAlign: 'right' }}
-        id = { `footer_${eid}` }>
-        </div></div></div>;
+        return <div className = "item" style = { { marginTop: '10px' } } id = { `item_${eid}` } data-eid = { eid } data-ebaseid = { ebaseid } data-needRefresh = { item.needRefresh } data-cornerTop = { item.cornerTop } data-cornerTopRadian = { item.cornerTopRadian } data-cornerBottom = { item.cornerBottom } data-cornerBottomRadian = { item.cornerBottomRadian }>
+            <EHeader header = { header } eid = { eid } ebaseid = { ebaseid } ele = { ele } />
+            <div className = "content" id = { `content_${eid}` } style = { { width: 'auto', _width: '100%' } }>
+                <div className = "content_view" id = { `content_view_id_${eid}` } style = { cvStyle }>
+                    {EContentHtml }
+                </div>
+                <div style = { { textAlign: 'right' }} id = { `footer_${eid}` }></div>
+            </div>
+            </div>;
     }
 }
 
@@ -142,7 +127,8 @@ const mapStateToProps = state => {
     const { element } = state;
     return ({
         edata: element.get("edata"),
-        isEReFresh: element.get("isEReFresh")
+        isEReFresh: element.get("isEReFresh"),
+        eleconf: element.get("eleconf")
     })
 }
 
@@ -152,13 +138,13 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-
 function mergeProps(stateProps, dispatchProps, ownProps) {
     return {
         isEReFresh: stateProps.isEReFresh.get(ownProps.ele.item.eid),
         edata: stateProps.edata.get(ownProps.ele.item.eid),
         actions: dispatchProps.actions,
-        ele: ownProps.ele
+        ele:ownProps.ele,
+        eleconf: stateProps.eleconf.get(ownProps.ele.item.eid)
     };
 }
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Element);

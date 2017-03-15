@@ -8,15 +8,15 @@ class AddWf extends React.Component {
         const list = data.data;
         const columns = formatData(list[0], esetting);
         var dlist = new Array;
-        for (var i; i < list.length; i++) {
-            if (i < 6) dlist.push(list[i]);
+        for (var i = 0; i < list.length; i++) {
+            if (i < 5) {
+                dlist.push(list[i]);
+            }else{
+                break;
+            }
         }
         if ("1" === esetting.displayLayout) 
-            return <Table columns = { columns }
-            showHeader = { false }
-            pagination = { false }
-            dataSource = { dlist }
-            size = "small" />
+            return <Table columns = { columns } showHeader = { false } pagination = { false } dataSource = { dlist } size = "small" />
     
         const evenData = new Array;
         const oddData = new Array;

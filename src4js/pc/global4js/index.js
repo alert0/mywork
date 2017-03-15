@@ -23,6 +23,7 @@ require('./swfupload.queue_wev8.js')
 require('./wordtohtml_wev8.js')
 require('./zDialog_wev8.js')
 require('./jquery.nicescroll_wev8.js');
+require('./custommethod_wev8.js');
 
 
 require('../global4css/default_wev8.css');

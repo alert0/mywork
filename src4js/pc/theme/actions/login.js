@@ -220,14 +220,15 @@ export function checkHasDynamicPassword(account) {
  *
  * @param isRemember   是否记住
  *
- * @returns {function(*)}
+ * @returns {function(*, *)}
  */
 export function changeRememberAccount(isRemember) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         dispatch({
             type: LOGIN.LOGIN_FORM,
             value: {
-                isRememberAccount: isRemember
+                isRememberAccount: isRemember,
+                isRememberPassword: !isRemember ? isRemember : getState().login.get('isRememberPassword')
             }
         });
     }
@@ -238,13 +239,14 @@ export function changeRememberAccount(isRemember) {
  *
  * @param isRemember   是否记住
  *
- * @returns {function(*)}
+ * @returns {function(*, *)}
  */
 export function changeRememberPassword(isRemember) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         dispatch({
             type: LOGIN.LOGIN_FORM,
             value: {
+                isRememberAccount: isRemember ? isRemember : getState().login.get('isRememberAccount'),
                 isRememberPassword: isRemember
             }
         });

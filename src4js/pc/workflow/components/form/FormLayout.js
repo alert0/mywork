@@ -27,7 +27,8 @@ class FormLayout extends React.Component {
             return parseInt(a.id.substring(4))-parseInt(b.id.substring(4));
         });
         let _colheads = colheads.map((v,k)=>{
-            return {id:k,w:v}
+            let colwidth = v==="0%" ? "*": v;
+            return {id:k,w:colwidth}
         }).toArray();
         _colheads = _colheads.sort((a,b)=>{
             return parseInt(a.id.substring(4))-parseInt(b.id.substring(4));

@@ -1,4 +1,5 @@
 import { formatData } from '../../../util/formatdata';
+import {Table} from 'antd';
 //我的邮件
 class Mail extends React.Component {
 	render() {

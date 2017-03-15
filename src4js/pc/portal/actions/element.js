@@ -1,8 +1,8 @@
-import { INIT_E_DATA, ELEMENT_TYPES } from '../constants/ActionTypes';
+import { INIT_E_DATA, INIT_E_ElECONF, ELEMENT_TYPES } from '../constants/ActionTypes';
 import ecLocalStorage from '../util/ecLocalStorage.js';
 import { reqEDatas, reqEHtml } from '../apis/req';
 import Immutable from 'immutable';
-const { CUSTOMPAGE } = ELEMENT_TYPES;
+const { CUSTOMPAGE,SCRATCHPAD } = ELEMENT_TYPES;
 const getEDatas = (ele, isEReFresh) => {
     if (!isEReFresh) isEReFresh = false;
     return (dispatch, getState) => {
@@ -22,7 +22,9 @@ const getEDatas = (ele, isEReFresh) => {
                 let idata = Immutable.fromJS(data);
                 //存储元素数据
                 if (!Immutable.is(iolddata, idata) || isEReFresh) {
-                    ecLocalStorage.set("homepage-" + window.global_hpid, "edata-" + eid, data, true);
+                    if(ebaseid !== SCRATCHPAD){
+                        ecLocalStorage.set("homepage-" + window.global_hpid, "edata-" + eid, data, true);
+                    }
                     if (data.tabids) {
                         let currenttab = data.currenttab ? data.currenttab : data.tabids[0];
                         //存储元素当前tab数据
@@ -73,8 +75,18 @@ const handleRefresh = ele => {
     }
 }
 
+const initEle = (eid,ele) => {
+    return (dispatch, getState) => {
+        const iele = getState().element.get("eleconf");
+        dispatch({
+            type: INIT_E_ElECONF,
+            eleconf: getImmutableData(eid, ele, iele)
+        });
+    }
+}
 
 module.exports = {
     getEDatas,
-    handleRefresh
+    handleRefresh,
+    initEle
 };

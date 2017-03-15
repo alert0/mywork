@@ -3,7 +3,18 @@ const Option = Select.Option;
 //期刊中心
 class Magazine extends React.Component {
 	render() {
-		return <div>{props.data.map(item => <MagazineItem item={item} esetting={props.esetting}/>)}</div>
+		const { eid, data, esetting } = this.props;
+		return <table id={`_contenttable_${eid}`} className="Econtent"  width="100%" cellPadding='0' cellSpacing='0'>
+			   <tr>	
+				<td width="1px"></td>
+				 <td width='*' className="valign">
+					<table width="100%"  cellPadding='0' cellSpacing='0'>
+					{data.map(item => <MagazineItem item={item} esetting={esetting}/>)}
+					</table>
+				</td>    
+				<td width="1px"></td>
+			  </tr>
+			</table>
 	}
 }
 class MagazineItem extends React.Component {
@@ -23,27 +34,41 @@ class MagazineItem extends React.Component {
 		const { width, height, linkmode } = esetting; 
 		const { selList, linkUrl, isselect, img, strBrief, strImg, title } = item;
 		let selHtml = selList.map(sel => <Option value={sel.id}>{sel.label}</Option>);
-		return <div>
-			      {strImg === '' ? null : <div style={{float:'left',width:parseInt(width)+2,height:parseInt(height)+2,border:'1px solid #000000'}}>
-			        <img style={{width:width,height:height}} src={strImg}/>
-			      </div>}
-			      <div style={{float:'left'}}>
-			        <div style={{margin:'5px 0 0 10px'}}>
-			          <span><a href="javascript:void(0);" onClick={openLinkUrl.bind(this,linkUrl+isselect,linkmode)}>{title}</a></span>
-			        </div>
-			        <div style={{margin:'5px 0 0 10px'}}>
-			          <span>{strBrief}</span>
-			        </div>
-			        <div style={{margin:'5px 0 0 10px'}}>
-			        	<Select id="bbbbbbbbb" defaultValue={isselect} style={{width:400}} onChange={this.handleChange.bind(this)}>
+		const style = {tableLayout:'fixed'};
+		const tstyle = {tableLayout:'fixed',paddingBottom:'15px'};
+		return <tr>
+				<td>
+				<table width="100%" className="valign" style={style} >
+				<tr>
+					<td className="valign" width={parseInt(width)+5}>
+					 {strImg === '' ? null :<img style={{width:width,height:height}} src={strImg}/>}
+					</td>
+					<td  width="*" className="valign">
+						<table width="100%" className="magzine" style={tstyle}>
+						<tr>
+							<td><a href="javascript:void(0);" style={{color:'#666'}} onClick={openLinkUrl.bind(this,linkUrl+isselect,linkmode)}>{title}</a></td>
+						</tr>
+						<tr className='sparator' style={{height:'1px'}}><td style={{padding:'0px'}}></td></tr>
+						<tr>
+							<td>{strBrief}</td>
+						</tr>						
+						</table>						
+						<table  width="100%" cellPadding='0' cellSpacing='0' style={tstyle}>
+						<tr>
+							<td><Select defaultValue={isselect} style={{width:400}} onChange={this.handleChange.bind(this)}>
 			        		{selHtml}
 			        	</Select>&nbsp;
-			        	<a href="javascript:void(0);" onClick={openLinkUrl.bind(this,linkUrl+this.state.id,linkmode)}>
-			        		<img style={{marginBottom:'-5px'}} src={img}/>
-			        	</a>
-			        </div>
-			      </div>
-		      </div>
+			        		<a href="javascript:void(0);" onClick={openLinkUrl.bind(this,linkUrl+this.state.id,linkmode)}>
+				        		<img style={{marginBottom:'-5px'}} src={img}/>
+				        	</a>
+			        	</td>
+						</tr>
+						</table>					
+					</td>
+				</tr>				
+				</table>
+			</td>
+		</tr>
 	}
 }
 

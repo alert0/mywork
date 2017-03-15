@@ -93,14 +93,24 @@ class ListDoing extends React.Component {
     }
     render() {
         let that = this;
-        const isSingle = window.location.pathname == '/spa/workflow/index.jsp';
+        const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
         const {pageSize,pageAutoWrap,topTab,topTabCount,columns,datas,actions,title,count,loading,operates,searchParams,
         	showSearchAd,tableCheck,searchParamsAd,showBatchSubmit,phrasesObj,selectedRowKeys,sortParams,current,colSetVisible,colSetdatas,colSetKeys} = this.props;
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
-            	<WeaRightMenu btns={this.getRightMenu()} >
-                <WeaNewTop showDropIcon={true} title={title} loading={loading} icon={<i className='icon-portal-workflow' />} iconBgcolor='#55D2D4' buttons={this.getButtons()} buttonSpace={10} hideButtons={this.getRightMenu()} >
+            	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
+                <WeaNewTop 
+                	title={title} 
+                	loading={loading} 
+                	icon={<i className='icon-portal-workflow' />} 
+                	iconBgcolor='#55D2D4' 
+                	buttons={this.getButtons()} 
+                	buttonSpace={10}
+                	showDropIcon={true} 
+                	dropMenuDatas={this.getRightMenu()} 
+                	onDropMenuClick={this.onRightMenuClick.bind(this)}
+                >
                 <WeaLayoutR11 defaultShowLeft={true} leftCom={this.getTree()} leftWidth={25}>
                     <WeaTab
                         buttonsAd={this.getTabButtonsAd()}
@@ -149,6 +159,41 @@ class ListDoing extends React.Component {
                 <Synergy pathname='/workflow/listDoing' requestid="-1" />
             </div>
         )
+    }
+    onRightMenuClick(key){
+    	const {actions,selectedRowKeys} = this.props;
+    	if(key == '0'){
+    		actions.doSearch();
+    		actions.setShowSearchAd(false)
+    	}
+    	if(key == '1'){
+    		actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`})
+    	}
+    	if(key == '2'){
+    		actions.setColSetVisible(true);
+    		actions.tableColSet(true)
+    	}
+    }
+    getRightMenu(){
+    	const {selectedRowKeys,sharearg,actions} = this.props;
+        const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
+    	let btns = [];
+    	btns.push({
+    		icon: <i className='icon-Right-menu--search'/>,
+    		content:'搜索'
+    	});
+        if(hasBatchBtn == "true"){
+            btns.push({
+             	icon: <i className='icon-Right-menu-batch'/>,
+    			content:'批量提交',
+    			disabled: !selectedRowKeys || !`${selectedRowKeys.toJS()}`
+            })
+        }
+    	btns.push({
+    		icon: <i className='icon-Right-menu-Custom'/>,
+    		content:'显示定制列'
+    	})
+    	return btns
     }
     getSearchs() {
         return [
@@ -267,17 +312,6 @@ class ListDoing extends React.Component {
         }
         return btns;
     }
-    getRightMenu(){
-    	const {selectedRowKeys,sharearg,actions} = this.props;
-        const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
-    	let btns = [];
-    	btns.push(<a onClick={()=>{actions.doSearch();actions.setShowSearchAd(false)}}><i className='icon-Right-menu--search' style={{marginRight:8,verticalAlign:'middle'}} />搜索</a>)
-        if(hasBatchBtn == "true"){
-            btns.push(<a onClick={()=>{selectedRowKeys && `${selectedRowKeys.toJS()}` ? actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`}) : message.warning('请至少选择一项',3)}}><i className='icon-Right-menu-batch' style={{marginRight:8,verticalAlign:'middle'}} />批量提交</a>)
-        }
-    	btns.push(<a onClick={()=>{actions.setColSetVisible(true);actions.tableColSet(true)}}><i className='icon-Right-menu-Custom' style={{marginRight:8,verticalAlign:'middle'}} />显示定制列</a>)
-    	return btns
-    }
     getColumns(columns) {
         const {isSpaForm} = this.props;
         let newColumns = cloneDeep(columns);
@@ -329,6 +363,8 @@ let s;
 // if(Sys.safari) document.write('Safari: '+Sys.safari);
 
 window.openSPA4Single = function(routeUrl,id) {
+    let obj = jQuery("#hiddenPreLoader").length>0?jQuery("#hiddenPreLoader"):jQuery("#hiddenPreLoaderSingle");
+
     const preLoadReqInfo = routeUrl =>{
         let url = "/api/workflow/request/reqinfo?actiontype=loadRight&ispreload=1&";
         url += routeUrl.split("?")[1];
@@ -340,8 +376,8 @@ window.openSPA4Single = function(routeUrl,id) {
     let spaWin = null;
     if(Sys.chrome) {
         $(window).mousedown(function(){});
-        jQuery("#hiddenPreLoader").attr("src","");
-        jQuery("#hiddenPreLoader").attr("src","/spa/workflow/index.jsp");
+        obj.attr("src","");
+        obj.attr("src","/spa/workflow/index.html");
     }
 
     const _timekey = new Date().getTime();
@@ -360,15 +396,15 @@ window.openSPA4Single = function(routeUrl,id) {
 	szFeatures += "scrollbars=yes,";
 	szFeatures += "resizable=yes";
     if(Sys.chrome) {
-        jQuery("#hiddenPreLoader").on("load",function(){
-            let spaWin = window.open("/spa/workflow/index.jsp#"+routeUrl, "", szFeatures);
+        obj.on("load",function(){
+            let spaWin = window.open("/spa/workflow/index.html#"+routeUrl, "", szFeatures);
             if(!spaWin) message.warning("对不起，流程表单弹窗被chrome阻止，请点击浏览器地址栏尾部配置例外！",5);
             $(window).unbind("mousedown");
-            jQuery("#hiddenPreLoader").unbind("load");
+            obj.unbind("load");
         });
     }
     else {
-        window.open("/spa/workflow/index.jsp#"+routeUrl, "", szFeatures);
+        window.open("/spa/workflow/index.html#"+routeUrl, "", szFeatures);
     }
 }
 

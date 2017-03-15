@@ -23,6 +23,39 @@ Array.prototype.contains = function(element) {
     return false;
 }
 
+import { ELEMENT_TYPES } from '../constants/ActionTypes';
+
+
+global.isTabE = function(ebaseid){
+    var arr = new Array;
+    arr.push(ELEMENT_TYPES.UNREAD_DOCS);
+    arr.push(ELEMENT_TYPES.MESSAGE_REMINDING);
+    arr.push(ELEMENT_TYPES.MY_PROJECTS);
+    arr.push(ELEMENT_TYPES.NEW_CUSTOMERS);
+    arr.push(ELEMENT_TYPES.NEW_MEETING);
+    arr.push(ELEMENT_TYPES.UNREAD_COOPERATION);
+    arr.push(ELEMENT_TYPES.DAY_PLAN);
+    arr.push(ELEMENT_TYPES.SUBSCRIBE_KONWLEDG);
+    arr.push(ELEMENT_TYPES.JOBSINFO);
+    arr.push(ELEMENT_TYPES.FAVOURITE);
+    arr.push(ELEMENT_TYPES.WORKTASK);
+    arr.push(ELEMENT_TYPES.RSS);
+    arr.push(ELEMENT_TYPES.OUTDATA);
+    arr.push(ELEMENT_TYPES.NEWS);
+    arr.push(ELEMENT_TYPES.WORKFLOW);
+    arr.push(ELEMENT_TYPES.FORMMODECUSTOMSEARCH);
+    arr.push(ELEMENT_TYPES.ADDWF);
+    arr.push(ELEMENT_TYPES.BLOGSTATUS);
+    arr.push(ELEMENT_TYPES.CONTACTS);
+    return arr.contains(ebaseid)
+}
+
+
+global.isHtml = function(htmlStr) {  
+    if(!htmlStr) return false;
+    var reg = /<[^>]+>/g;  
+    return reg.test(htmlStr) || htmlStr.indexOf("&")>-1;  
+} 
 // 获取当前时间戳(以s为单位)
 Date.prototype.format = function(format) {
     var date = {
@@ -164,7 +197,10 @@ global.openLinkUrl = function(url, linkmode, event) {
     }
     if (!url) return;
     var index = url.indexOf("/main/workflow/req");
-
+    if(index !== -1){
+        openSPA4Single(url);
+        return;
+    }
     if (index === -1) {
         linkmode = '2';
     }
@@ -178,7 +214,6 @@ global.openLinkUrl = function(url, linkmode, event) {
                 window.location.href = url;
             break;
         case '2':
-            if (index !== -1) url = '/spa/workflow/index.jsp#' + url;
             var redirectUrl = url;
             var width = screen.availWidth;
             var height = screen.availHeight;
@@ -204,12 +239,7 @@ global.openLinkUrl = function(url, linkmode, event) {
             break;
     }
     if (index !== -1) {
-        ifWorkFlowRefrash();
-    }
-}
-
-global.openMoreWin = function(eid, event) {
-    var dom = event.currentTarget;
+        ifWorkFlowRefrash(); var dom = event.currentTarget;
     var moreurl = $("#more_" + eid).attr("data-morehref");
     if (!moreurl) return;
     if (moreurl.indexOf('/main/workflow/queryFlow') === -1) {
@@ -218,6 +248,11 @@ global.openMoreWin = function(eid, event) {
             moreurl += '&tabid=' + tabid
     }
     openLinkUrl(moreurl, '2');
+    }
+}
+
+global.openMoreWin = function(eid, event) {
+   
 }
 
 global.elmentReLoad = function(ebaseid) {
@@ -873,11 +908,9 @@ function showHrmChat() {
 /** --------- 元素收缩/展开功能 -----------**/
 //homepage_js.jsp
 window.onShowOrHideE = function(eid) {
-        $("#content_" + eid).toggle();
-    }
+    $("#content_" + eid).toggle();
+}
     /** --------- 元素收缩/展开功能 -----------**/
-
-
 
 /** --------- 元素拖动功能js函数 -----------**/
 window.addEvent = function(obj, type, handle) {
@@ -1218,60 +1251,58 @@ global.onLockOrUn = function(eid, e) {
 
 /** ---------- 元素设置相关js start ---------- */
 global.onSetting = function(eid, ebaseid) {
-    jsAsyncLoading('esetting', ['/spa/portal/esetting.js'], function() {
-        // 获取设置页面内容
-        var settingUrl = "/page/element/setting.jsp" + "?eid=" + eid + "&ebaseid=" + ebaseid + "&hpid=" + global_hpid + "&subcompanyid=" + global_subCompanyId;
+    // 获取设置页面内容
+    var settingUrl = "/page/element/setting.jsp" + "?eid=" + eid + "&ebaseid=" + ebaseid + "&hpid=" + global_hpid + "&subcompanyid=" + global_subCompanyId;
 
-        $.post(settingUrl, null, function(data) {
-            if ($.trim(data) != "") {
-                $("#setting_" + eid).hide();
-                $("#setting_" + eid).remove();
-                $("#content_" + eid).prepend($.trim(data));
+    $.post(settingUrl, null, function(data) {
+        if ($.trim(data) != "") {
+            $("#setting_" + eid).hide();
+            $("#setting_" + eid).remove();
+            $("#content_" + eid).prepend($.trim(data));
 
-                $(".tabs").PortalTabs({
-                    getLine: 1,
-                    topHeight: 40
+            $(".tabs").PortalTabs({
+                getLine: 1,
+                topHeight: 40
+            });
+            $(".tab_box").height(0);
+
+            $("#setting_" + eid).show();
+            $("#weavertabs-content-" + eid).show();
+
+            var urlContent = $.trim($("#weavertabs-content-" + eid).attr("url")).replace(/&amp;/g, "&");
+            var urlStyle = $.trim($("#weavertabs-style-" + eid).attr("url")).replace(/&amp;/g, "&");
+            var urlShare = $.trim($("#weavertabs-share-" + eid).attr("url")).replace(/&amp;/g, "&");
+
+            if (urlContent != "") {
+                var randomValue = new Date().getTime();
+
+                if (ebaseid == 7 || ebaseid == 8 || ebaseid == 1 || ebaseid == 'news' || ebaseid == 29 || ebaseid == 'reportForm') {
+                    $("#setting_" + eid).attr("randomValue", randomValue);
+                }
+
+                urlContent = urlContent + "&random=" + randomValue;
+
+                $("#weavertabs-content-" + eid).html("")
+                $("#weavertabs-content-" + eid).html("<img src=/images/loading2_wev8.gif> loading...");
+                $("#weavertabs-content-" + eid).load(urlContent, {}, function() {
+                    jscolor.init();
+                    // 初始化layout组件
+                    initLayout();
                 });
-                $(".tab_box").height(0);
-
-                $("#setting_" + eid).show();
-                $("#weavertabs-content-" + eid).show();
-
-                var urlContent = $.trim($("#weavertabs-content-" + eid).attr("url")).replace(/&amp;/g, "&");
-                var urlStyle = $.trim($("#weavertabs-style-" + eid).attr("url")).replace(/&amp;/g, "&");
-                var urlShare = $.trim($("#weavertabs-share-" + eid).attr("url")).replace(/&amp;/g, "&");
-
-                if (urlContent != "") {
-                    var randomValue = new Date().getTime();
-
-                    if (ebaseid == 7 || ebaseid == 8 || ebaseid == 1 || ebaseid == 'news' || ebaseid == 29 || ebaseid == 'reportForm') {
-                        $("#setting_" + eid).attr("randomValue", randomValue);
-                    }
-
-                    urlContent = urlContent + "&random=" + randomValue;
-
-                    $("#weavertabs-content-" + eid).html("")
-                    $("#weavertabs-content-" + eid).html("<img src=/images/loading2_wev8.gif> loading...");
-                    $("#weavertabs-content-" + eid).load(urlContent, {}, function() {
-                        jscolor.init();
-                        // 初始化layout组件
-                        initLayout();
-                    });
-                }
-                if (urlStyle != "") {
-                    $("#weavertabs-style-" + eid).load(urlStyle, {}, function() {
-                        // 初始化layout组件
-                        initLayout();
-                        $("#weavertabs-style-" + eid).hide();
-                    });
-                }
-                if (urlShare != "") {
-                    $("#weavertabs-share-" + eid).load(urlShare, {}, function() {
-                        $("#weavertabs-share-" + eid).hide();
-                    });
-                }
             }
-        });
+            if (urlStyle != "") {
+                $("#weavertabs-style-" + eid).load(urlStyle, {}, function() {
+                    // 初始化layout组件
+                    initLayout();
+                    $("#weavertabs-style-" + eid).hide();
+                });
+            }
+            if (urlShare != "") {
+                $("#weavertabs-share-" + eid).load(urlShare, {}, function() {
+                    $("#weavertabs-share-" + eid).hide();
+                });
+            }
+        }
     });
 }
 
