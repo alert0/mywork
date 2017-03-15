@@ -694,7 +694,7 @@ public class RequestListService {
 
 				tableString += "<col width=\"8%\" display=\"" + hasstatus + "\"  text=\""+ SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += "<col width=\"15%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += "<col width=\"10%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\" otherpara=\""
 					+ para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
@@ -745,7 +745,7 @@ public class RequestListService {
 
 				tableString += "<col width=\"8%\" display=\"" + hasstatus + "\"  text=\""+ SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += "<col width=\"15%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += "<col width=\"10%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\" otherpara=\""
 					+ para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
@@ -794,7 +794,7 @@ public class RequestListService {
 					+ "\" column=\"currentnodeid\" orderkey=\"t1.currentnodeid\" transmethod=\"weaver.general.WorkFlowTransMethod.getCurrentNode\"/>";
 				tableString += " <col width=\"8%\" display=\"" + hasstatus + "\" text=\""+ SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += " <col width=\"15%\" display=\"" + hasreceivedpersons + "\"   text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += " <col width=\"10%\" display=\"" + hasreceivedpersons + "\"   text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\"  otherpara=\""
 					+ para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
@@ -843,7 +843,7 @@ public class RequestListService {
 
 				tableString += " <col width=\"8%\" display=\"" + hasstatus + "\"    text=\""+ SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += " <col width=\"15%\" display=\"" + hasreceivedpersons + "\"   text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += " <col width=\"10%\" display=\"" + hasreceivedpersons + "\"   text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\"  otherpara=\""
 					+ para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
@@ -930,7 +930,7 @@ public class RequestListService {
 
 				tableString += "<col width=\"8%\" display=\"" + hasstatus + "\"  text=\"" + SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += "<col width=\"15%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += "<col width=\"10%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\" otherpara=\""
 					+ para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
@@ -970,7 +970,7 @@ public class RequestListService {
 					+ "\" column=\"currentnodeid\" orderkey=\"t1.currentnodeid\" transmethod=\"weaver.general.WorkFlowTransMethod.getCurrentNode\"/>";
 				tableString += "<col width=\"8%\" display=\"" + hasstatus + "\"  text=\""+ SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += "<col width=\"15%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += "<col width=\"10%\" display=\"" + hasreceivedpersons + "\"  text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\" otherpara=\""
 					+ para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
@@ -1008,7 +1008,7 @@ public class RequestListService {
 
 				tableString += " <col width=\"8%\" display=\"" + hasstatus + "\" text=\""+ SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += " <col width=\"15%\" display=\"" + hasreceivedpersons + "\" text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += " <col width=\"10%\" display=\"" + hasreceivedpersons + "\" text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\"  otherpara=\"" + para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
 					+ "\" _key=\"subwflink\" column=\"requestid\" orderkey=\"t1.requestid\"  linkkey=\"requestid\" linkvaluecolumn=\"requestid\" target=\"_self\" transmethod=\"weaver.general.WorkFlowTransMethod.getSubWFLink\"  otherpara=\""
@@ -1043,7 +1043,7 @@ public class RequestListService {
 
 				tableString += " <col width=\"8%\" display=\"" + hasstatus + "\"    text=\""+ SystemEnv.getHtmlLabelName(1335, user.getLanguage())
 					+ "\" column=\"status\" orderkey=\"t1.status\" />";
-				tableString += " <col width=\"15%\" display=\"" + hasreceivedpersons + "\"   text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
+				tableString += " <col width=\"10%\" display=\"" + hasreceivedpersons + "\"   text=\""+ SystemEnv.getHtmlLabelName(16354, user.getLanguage()) 
 					+ "\" _key=\"unoperators\" column=\"requestid\"  otherpara=\""
 					+ para4 + "\" transmethod=\"weaver.general.WorkFlowTransMethod.getUnOperators\"/>";
 				tableString += "<col width=\"6%\" display=\"false\"  text=\""+ SystemEnv.getHtmlLabelName(19363, user.getLanguage())
