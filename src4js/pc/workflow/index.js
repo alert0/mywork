@@ -18,6 +18,7 @@ import './css/tab.css'
 import './css/form_wev9.css'
 import './css/signInput_wev9.css'
 import './css/worflowmessage_wev8.css'
+import './css/forward.css'
 
 import reducer from './reducers/'
 import * as WorkflowListAction from './actions/list'

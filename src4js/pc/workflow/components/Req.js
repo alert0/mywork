@@ -9,6 +9,7 @@ import ImgZoom from './sign/ImgZoom'
 import Status from './status/Status'
 import Resources from './resources/Resources'
 import Share from './share/Share'
+import RightMenuEvent from './menu/RightMenuEvent'
 
 
 import {WeaNewTop,WeaNewTopReq,WeaRightMenu,WeaLoading} from 'weaCom'
@@ -43,7 +44,6 @@ class Req extends React.Component {
 		this.resetHeight()
 		actions.reqIsSubmit(false);
 		actions.reqIsReload(false);
-		actions.isClickBtnReview(false);
 		actions.setShowUserlogid('');
 		const that = this;
 		
@@ -118,7 +118,7 @@ class Req extends React.Component {
         this.props.scriptcontent !== nextProps.scriptcontent||
         this.props.custompagehtml !== nextProps.custompagehtml||
         this.props.reqsubmiterrormsghtml !== nextProps.reqsubmiterrormsghtml||
-        !is(this.props.isclickbtnreview,nextProps.isclickbtnreview)||
+        !is(this.props.rightMenuStatus,nextProps.rightMenuStatus)||
         this.props.signFields !== nextProps.signFields||
         this.props.showBackToE8 !== nextProps.showBackToE8||
         this.props.showSearchDrop !== nextProps.showSearchDrop||
@@ -143,7 +143,7 @@ class Req extends React.Component {
         const {reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
         	signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,workflowStatus,actions,logParams,resourcesDatas,
             resourcesOperates,resourcesCount,resourcesColumns,resourcesCurrent,resourcesPageSize,resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
-            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,isclickbtnreview,rightMenu,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
+            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
         const titleName = params?params.get("titlename"):"";
         const isshared = params?params.get("isshared"):"";
@@ -311,6 +311,7 @@ class Req extends React.Component {
                 	{hiddenarea}
                 	{formarea}
                 </form>
+                <RightMenuEvent rightMenuStatus={rightMenuStatus} actions={actions}/>
                 <div className='back_to_old_req' 
                 	onMouseEnter={()=>actions.setShowBackToE8(true)} 
                 	onMouseLeave={()=>actions.setShowBackToE8(false)}
@@ -393,11 +394,6 @@ class Req extends React.Component {
         });
         return btnArr
     }
-    
-    doReviewE9(actions){
-		actions.isClickBtnReview(true);
-    }
-    
     gobackpage(router,ismanagePage){
     	if(ismanagePage == '1'){
     		UEUtil.getUEInstance('remark').destroy();
@@ -457,7 +453,7 @@ function mapStateToProps(state) {
         custompagehtml:workflowReq.get('custompagehtml'),
         isShowUserheadimg:workflowReq.get('isShowUserheadimg'),
         reqsubmiterrormsghtml:workflowReq.getIn(['dangerouslyhtml','reqsubmiterrormsghtml']),
-        isclickbtnreview:workflowReq.getIn(['btnStatus','isclickbtnreview']),
+        rightMenuStatus:workflowReq.get('rightMenuStatus'),
         signFields:workflowReq.get('signFields'),
         showSearchDrop:workflowReq.get('showSearchDrop'),
         showBackToE8:workflowReq.get('showBackToE8'),

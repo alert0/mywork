@@ -932,9 +932,9 @@ export const updateHiddenSysFieldname = (fieldname) => {
 	}
 }
 
-export const isClickBtnReview = bool =>{
+export const setShowForward = bool =>{
 	return(dispatch, getState) => {
-		dispatch({type:types.IS_CLICK_BTN_REVIEW,bool:bool});
+		dispatch({type:types.SET_SHOW_FORWARD,bool:bool});
 	}
 }
 

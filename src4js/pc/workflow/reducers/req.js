@@ -41,7 +41,8 @@ const initialState = Immutable.fromJS({
     showBackToE8: false,
     relLogParams:{},
     shareList: [],
-    isLoadingLog:false
+    isLoadingLog:false,
+    rightMenuStatus:{'showForward':false}
 });
 
 export default function req(state = initialState, action) {
@@ -120,8 +121,8 @@ export default function req(state = initialState, action) {
     		return state.merge({isShowUserheadimg:action.bool});
     	case types.SET_REQ_SUBMIT_ERROR_MSG_HTML:
     		return state.merge({dangerouslyhtml:{reqsubmiterrormsghtml:action.msghtml}});
-    	case types.IS_CLICK_BTN_REVIEW:
-    		return state.merge({btnStatus:{isclickbtnreview:action.bool}});
+    	case types.SET_SHOW_FORWARD:
+    		return state.merge({rightMenuStatus:{showForward:action.bool}});
     	case types.SET_OPERATE_INFO:
     		return state.mergeDeep({params:{hiddenarea:action.updateinfo}});
     	case types.UPDATE_SHOW_USER_LOGID:

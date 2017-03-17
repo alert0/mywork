@@ -78,7 +78,6 @@ const initwfphrasebutton = (editor,uiName) => {
 		jQuery('.wea-popover-hrm-relative-parent').append(comboxobj);
 		
 		//从隐藏的select中获取常用批示语
-		
 		var _ul = comboxobj.find("#_signinputphrasecontentblock ul");
 	    for (var i=0; i<phraseInfo.length; i++) {
 			
@@ -113,22 +112,12 @@ const initwfphrasebutton = (editor,uiName) => {
 			jQuery("#cg_splitline").hide();
 			jQuery("#addphraseblock").show();
 			jQuery("#phraseinput")[0].focus();
-			
 		});
 		
 		jQuery("#_signinputphrasecontentblock ul li").live("click", function () {
-			var liarray = jQuery("#_signinputphrasecontentblock ul li");
-			var j = 0;
-			for (j=0; j<liarray.length; j++) {
-				if (liarray[j] == this) {
-					break;
-				}
-			}
 			try {
             	_onAddPhrase(jQuery(this).find("input").val());
-            } catch (e) {
-            	//console.log(e);
-            }
+            } catch (e) {}
             jQuery("#_signinputphraseblock").hide();
             jQuery("#_addPhrasebtn").show()
 			jQuery("#cg_splitline").show();
@@ -156,27 +145,15 @@ const initwfphrasebutton = (editor,uiName) => {
 				    	jQuery("#phraseinput").val("");
 				    	jQuery("#phrasedesc").remove();
 				    	var lastli = jQuery("#_signinputphrasecontentblock ul .loaddingli");
-						if (jQuery("#_signinputphrasecontentblock ul li").length > 3)  {
-//							jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
-//							jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
-//							jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
-						}
 						lastli.removeClass("loaddingli");
 						lastli.addClass("cg_item");
 						lastli.html("<span class='cg_detail'>" + phrasetext + "</span><input type='hidden' value='"+phrasetext+"'/>");
-						//jQuery("#_signinputphrasecontentblock ul").append("<li class=\"cg_item\"><span class='cg_detail'>" + phrasetext + "</span></li>");
-						//var phraseselect = jQuery("#phraseselect").append("<option value=\"" + phrasetext + "\">" + phrasetext + "</option>");
-						
-						//jQuery("#_signinputphrasecontentblock").scrollTop(999);
-						//jQuery("#_signinputphrasecontentblock").scrollTop(jQuery("#_signinputphrasecontentblock ul").height());
 				    }
 				});
 				
 			}
 			jQuery("#_addPhrasebtn").show()
 			jQuery("#cg_splitline").show();
-	
-			
 			jQuery("#addphraseblock").hide();
 		    
 		});
@@ -185,7 +162,6 @@ const initwfphrasebutton = (editor,uiName) => {
 	//加常用短语
 	var _onAddPhrase = function (phrase){
 		if(phrase!=null && phrase!=""){
-			//$GetEle("remarkSpan").innerHTML = "";
 			try{
 				var curContent = UE.getEditor("remark").getContent();
 				var setFlag = true;		//true 追加内容，false清空再追加内容
@@ -197,9 +173,6 @@ const initwfphrasebutton = (editor,uiName) => {
 		}
 	}
 	
-	var _firstclc = true;
-	
-
     //注册按钮执行时的command命令，使用命令默认就会带有回退操作
     editor.registerCommand(uiName,{
         execCommand:function() {
@@ -207,35 +180,15 @@ const initwfphrasebutton = (editor,uiName) => {
     });
     //创建一个button
     var btn = new UE.ui.Button({
-        //按钮的名字
         name:uiName,
         labelname:SystemEnv.getHtmlNoteName(3452,language),
-        //提示
         title:SystemEnv.getHtmlNoteName(3452,language),
-        //需要添加的额外样式，指定icon图标，这里默认使用一个重复的icon
-        /*cssRules :"background-image: url('/ueditor/custbtn/images/phraselist_wev8.png') !important;background-position: -990px 1px!important;",*/
-        //点击时执行的命令
         onclick:function () {
-            //这里可以不用执行命令,做你自己的操作也可
-			//editor.execCommand(uiName);
             var el = jQuery(".edui-for-wfphrasebutton");
             var px=el.offset().left;
 		    var py=jQuery(".edui-for-wfphrasebutton").offset().top - 69 + jQuery('.wea-new-top-req-content').scrollTop();
 			jQuery("#_signinputphraseblock").css({"z-index":"99999","top":py + "px", "left":px+"px"});
 			jQuery("#_signinputphraseblock").show();
-			
-//			if (_firstclc) {
-//		    	_firstclc = false;
-//		    	var _outdiv = jQuery("#_signinputphrasecontentblock");
-//		    	var _li = jQuery("#_signinputphrasecontentblock ul li");
-//		    	if (_li.length > 3)  {
-//					jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
-//					jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
-//					jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
-//					_li.show();
-//				}
-//		    }
-			
         }
     });
 	
@@ -251,11 +204,6 @@ const initwfphrasebutton = (editor,uiName) => {
         }
     });
     
-    jQuery("#mainsupports").hide();
-    
-    setTimeout(function(){initphrase();},1000);
-    	
-
-    //因为你是添加button,所以需要返回这个button
+    initphrase();
     return btn;
 }

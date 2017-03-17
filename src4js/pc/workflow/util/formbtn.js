@@ -67,10 +67,11 @@ window.doSupervise = doSupervise;
 
 //表单---转发，zdialog
 const doReviewE9 = () => {
-	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
-	const requestid = formstate.get('requestid');
-	const userid = formstate.get('f_weaver_belongto_userid');
-	doReview(requestid, userid);
+//	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
+//	const requestid = formstate.get('requestid');
+//	const userid = formstate.get('f_weaver_belongto_userid');
+//	doReview(requestid, userid);
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(true));
 }
 
 window.doReviewE9 = doReviewE9;
@@ -414,6 +415,14 @@ const doFreeWorkflow = () =>{
 }
 
 window.doFreeWorkflow = doFreeWorkflow;
+
+//触发子流程
+const triSubwf2 = (subwfid,workflowNames) =>{
+	
+}
+
+window.triSubwf2 = triSubwf2;
+
 //
 const openDialog = (title, url) => {　
 	var dlg = new window.top.Dialog();
@@ -427,3 +436,4 @@ const openDialog = (title, url) => {　
 	dlg.show();
 	window.dialog = dlg;
 }
+

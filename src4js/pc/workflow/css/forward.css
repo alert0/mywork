@@ -1,0 +1,34 @@
+.wea-req-forward-modal {}
+
+.wea-req-forward-modal .ant-modal-header {
+	padding: 0px 0px;
+	background: #f9f9f9;
+	border-bottom-color: #eee;
+}
+
+.wea-req-forward-modal .ant-modal-header .ant-row span {
+	color: #484848;
+	font-size: 14px;
+}
+
+.wea-req-forward-modal .ant-modal-footer {
+	text-align: center;
+	height: 80px;
+	padding: 24px 0px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content{
+	margin: 0px 20px;
+	height: 300px;
+}
+
+.wea-req-forward-modal .ant-modal-body{
+	padding: 0px;
+	margin: 0px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive{
+	margin-top: 30px;	
+}
+
+

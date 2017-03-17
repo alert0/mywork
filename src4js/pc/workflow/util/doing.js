@@ -164,7 +164,7 @@ const showallreceived = (requestid, returntdid) => {
 		success : function(res) {
 			try {
 				jQuery("#" + returntdid).html(jQuery.trim(res));
-				jQuery("#" + returntdid).parent().attr("title", jQuery.trim(res).replace(/[\r\n]/gm, ""))
+				// $GetEle(returntdid).parentElement.title = ajax.responseText.replace(/[\r\n]/gm, "");
 			} catch (e) {}
 		}
 	});
