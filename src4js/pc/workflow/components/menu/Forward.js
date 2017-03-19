@@ -22,17 +22,19 @@ class Forward extends React.Component {
 			>
 				<div className="wea-req-forward-content">
 					<div className="wea-req-forward-content-receive">
-						<div>
+						<div className='label'>
 							<span style={{'color':'red'}}>*</span>
 							<span>转发接收人</span>
 						</div>
-						<div></div>
-						<div></div>
+						<div calssName='input'></div>
+						<div className='btns'></div>
 					</div>
 					<div className="wea-req-forward-content-remark">
-						<div>
-							<span>*</span>
+						<div className='label'>
+							<span style={{'color':'red'}}>*</span>
 							<span>签字意见</span>
+						</div>
+						<div className='remark'>
 						</div>
 					</div>
 				</div>
