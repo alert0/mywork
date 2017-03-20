@@ -1,0 +1,187 @@
+
+.wea-workflow-radio {
+  /*display: flex;
+  align-items: center;
+  justify-content: center;*/
+    position: absolute;
+    top: 50%;
+    margin: 0 auto;
+    margin-top: -275px;
+}
+.wea-workflow-radio .ant-modal {
+  top: 0;
+}
+/*.wea-workflow-radio .wea-input-focus>.ant-input-wrapper>.ant-input{
+	width: 92%;
+}*/
+.wea-workflow-radio .scroll-wrapper{
+	width: 100%;
+}
+.wea-workflow-radio .wea-scroll {
+	height: 375px;
+}
+
+.wea-workflow-radio .ant-spin-container{
+	width: 100%;
+	/*overflow: hidden!important;*/
+}
+.wea-workflow-radio .ant-modal-body{
+	padding: 0;
+}
+.wea-workflow-radio .ant-modal-body .ant-tabs-bar {
+     border-bottom: 0px solid transparent;
+     margin-bottom: 0px;
+}
+.wea-workflow-radio .ant-modal-content{
+	overflow: hidden;
+}
+.wea-workflow-radio .ant-modal-content .ant-modal-header{
+	padding: 0;
+}
+.wea-workflow-radio .ant-modal-content .ant-modal-header .ant-row{
+	height: 48px;
+}
+.wea-workflow-radio-icon-circle{
+	display: inline-block;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    color: #fff;
+}
+
+.wea-workflow-radio .ant-modal-content .ant-modal-footer{
+	text-align: center;
+}
+.wea-workflow-radio .ant-table-tbody td a{
+	color: #484848;
+}
+.wea-workflow-radio .ant-modal-footer button{
+    padding: 4px 30px 5px;
+    border-radius: 3px;
+}
+.wea-workflow-radio .ant-modal-footer>button:first-child{
+    margin-right: 10px;
+}
+.wea-workflow-radio .ant-modal-body .wea-workflow-serch-condition {
+	/*width: 105px;*/
+	height: 35px;
+	/*margin-left: -16px;*/
+    border-radius:0;
+    border-left: 0 solid transparent;
+    border-right: 0 solid transparent;
+    vertical-align: middle;
+}
+.wea-workflow-radio .wea-input-focus{
+	width: 100%;
+	height: 35px!important;
+}
+.wea-workflow-radio .wea-input-focus>span{
+	width: 100%;
+}
+.wea-workflow-radio .wea-input-focus>span>input{
+	/*width: 94%;*/
+	height: 100%!important;
+	/*border-left: none;*/
+}
+.wea-workflow-radio .wea-input-focus>button{
+	height: 100%!important;
+}
+.wea-workflow-radio .wea-input-focus .ant-input-wrapper{
+    width: 100%;
+}
+
+
+/*定位下拉开始*/
+.wea-workflow-radio .ant-modal-body .ant-tabs{/*显示被隐藏的下拉菜单*/
+	overflow: inherit;;
+}
+
+.wea-workflow-radio .wea-workflow-radio-drop-btn{
+	display: inline-block;
+	padding: 0 14px 0 20px;
+	line-height: 30px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+.wea-workflow-radio .wea-workflow-radio-drop-menu {
+    min-width: 120px;
+    background-color: #fff;
+	max-width: 200px;
+	position: absolute;
+	right: 0;
+	top: 35px;
+	border: 1px solid #dadada;
+    box-shadow: 0 0 2px #dadada;
+    z-index: 99;
+	box-sizing: border-box;
+}
+.wea-workflow-radio .wea-workflow-radio-drop-menu .wea-workflow-radio-drop-btn{
+	display: block;
+	height: 30px;
+	line-height: 30px;
+	position: absolute;
+	right: 0;
+	top: -30px;
+	padding: 0 13px;
+	border: 1px solid #dadada;
+	border-bottom: 0;
+	box-shadow: 0px -1px 2px -1px #dadada;
+	background-color: #fff;
+	box-sizing: border-box;
+}
+
+.wea-workflow-radio .wea-workflow-radio-drop-menu .ant-menu {
+    margin: 10px 0;
+    border: 0;
+    text-align: left;
+}
+
+.wea-workflow-radio .wea-workflow-radio-drop-menu .ant-menu-item {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 8px 0 12px;
+}
+
+.wea-workflow-radio .wea-workflow-radio-drop-menu .ant-menu-item-active {
+    color: #fff;
+    background-color: #57c5f7;
+}
+
+.wea-workflow-radio .wea-workflow-radio-drop-menu .ant-menu-item:hover {
+    color: #fff;
+}
+
+.wea-workflow-radio .wea-workflow-radio-drop-menu .ant-menu-item>a:hover {
+    color: #fff;
+}
+
+/*定位下拉结束*/
+
+
+
+
+/*.wea-workflow-radio .wea-workflow-dataList>div{
+	height: 61px;
+	padding: 15px 19px;
+	border-bottom: 1px solid rgb(241,241,241);
+	border-top: 1px solid rgb(241,241,241);
+
+}
+.wea-workflow-radio .wea-workflow-dataList .ant-col-24{
+	font-size: 14px;
+	color: rgb(75,75,75);
+	cursor: pointer;;
+}
+.wea-workflow-radio .wea-workflow-dataList .ant-col-2,
+.wea-workflow-radio .wea-workflow-dataList .ant-col-3
+{
+	color: rgb(187,187,187);
+	cursor: pointer;;
+
+}*/
+
