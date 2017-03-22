@@ -311,7 +311,7 @@ class Req extends React.Component {
                 	{hiddenarea}
                 	{formarea}
                 </form>
-                <RightMenuEvent rightMenuStatus={rightMenuStatus} actions={actions}/>
+                <RightMenuEvent rightMenuStatus={rightMenuStatus} actions={actions} titleName={titleName} requestid={requestid}/>
                 <div className='back_to_old_req' 
                 	onMouseEnter={()=>actions.setShowBackToE8(true)} 
                 	onMouseLeave={()=>actions.setShowBackToE8(false)}
