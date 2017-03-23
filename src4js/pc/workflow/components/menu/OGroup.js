@@ -1,23 +1,30 @@
-import {Icon} from 'antd'
+import { Icon } from 'antd'
+import { WeaTools } from 'weaCom'
 
 export default class OGroup extends React.Component {
-	constructor(props){
+	constructor(props) {
 		super(props);
 		this.state = {
-			showall:false
-		}
+			showall: false,
+			hrmgroups: []
+		};
+
+		const _this = this;
+		WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', {}).then(data => {
+			_this.setState({ hrmgroups: data.datas });
+		});
 	}
-	
-	shouldComponentUpdate(nextProps,nextState){
-		return this.props.hrmgroups !== nextProps.hrmgroups||
-			   this.state.showall !== nextState.showall;
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return this.state.hrmgroups !== nextState.hrmgroups ||
+			this.state.showall !== nextState.showall;
 	}
-	
+
 	//添加常用组
-	addgroup(handleVisibleChange){
+	addgroup(handleVisibleChange) {
 		handleVisibleChange(false);
-		const languageid=readCookie("languageidweaver");
-		const title = SystemEnv.getHtmlNoteName(4672,languageid);
+		const languageid = readCookie("languageidweaver");
+		const title = SystemEnv.getHtmlNoteName(4672, languageid);
 		const dialog = new window.top.Dialog();
 		dialog.currentWindow = window;
 		dialog.Title = title;
@@ -28,16 +35,16 @@ export default class OGroup extends React.Component {
 		dialog.URL = "/hrm/HrmDialogTab.jsp?_fromURL=hrmGroup&method=HrmGroupAdd&isdialog=1";
 		dialog.show();
 	}
-	
-	add(setOperatorIds,ids,handleVisibleChange){
+
+	add(setOperatorIds, ids, handleVisibleChange) {
 		setOperatorIds(ids);
 		handleVisibleChange(false);
 	}
-	
-	render(){
-		const {hrmgroups,handleVisibleChange,setOperatorIds} = this.props;
-		const {showall} = this.state;
-		
+
+	render() {
+		const { handleVisibleChange, setOperatorIds } = this.props;
+		const { showall, hrmgroups } = this.state;
+
 		return(
 			<div className="wea-req-operate-group">
 				<div className="wea-req-all-operators">

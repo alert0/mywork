@@ -8,7 +8,7 @@ import Immutable from 'immutable'
  */
 UE.registerUI('wfdocbutton',function(editor,uiName){
 	return initwfdocbutton(editor,uiName);
-}, 34, 'remark');
+}, 34, 'remark,forwardremark');
 
 const initwfdocbutton = (editor,uiName) => {
 	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
@@ -26,7 +26,7 @@ const initwfdocbutton = (editor,uiName) => {
     editor.registerCommand(uiName,{
         execCommand:function() {
             //showSignResourceCenter('signAnnexuploadCount')
-            onShowSignBrowser4signinput('/docs/docs/MutiDocBrowser.jsp','/docs/docs/DocDsp.jsp?isrequest=1&id=','signdocids','signdocspan',37, 'signDocCount')
+            onShowSignBrowser4signinput('/docs/docs/MutiDocBrowser.jsp','/docs/docs/DocDsp.jsp?isrequest=1&id=','signdocids','signdocspan',37, 'signDocCount',editor.key)
         }
     });
 

@@ -8,7 +8,7 @@ import Immutable from 'immutable'
  */
 UE.registerUI('wfwfbutton', function(editor, uiName) {
 	return initwfwfbutton(editor,uiName);
-}, 34, ['remark']);
+}, 34, 'remark,forwardremark');
 
 const initwfwfbutton = (editor,uiName) => {
 	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
@@ -26,7 +26,7 @@ const initwfwfbutton = (editor,uiName) => {
 	//注册按钮执行时的command命令，使用命令默认就会带有回退操作
 	editor.registerCommand(uiName, {
 		execCommand: function() {
-			onShowSignBrowser4signinput('/workflow/request/MultiRequestBrowser.jsp', '/workflow/request/ViewRequest.jsp?isrequest=1&requestid=', 'signworkflowids', 'signworkflowspan', 152, 'signWorkflowCount')
+			onShowSignBrowser4signinput('/workflow/request/MultiRequestBrowser.jsp', '/workflow/request/ViewRequest.jsp?isrequest=1&requestid=', 'signworkflowids', 'signworkflowspan', 152, 'signWorkflowCount',editor.key)
 		}
 	});
 

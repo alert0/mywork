@@ -6,7 +6,7 @@
  */
 UE.registerUI('wfatbutton',function(editor,uiName){
 	return initwfatbutton(editor,uiName);
-}, 27, ['remark']);
+}, 27, 'remark,forwardremark');
 
 const initwfatbutton = (editor,uiName) =>{
 	var language = readCookie("languageidweaver");
@@ -33,7 +33,7 @@ const initwfatbutton = (editor,uiName) =>{
 	     	
      	    editor.registerCommand(uiName,{
 		        execCommand:function() {
-		        	 var el = jQuery(".edui-for-wfatbutton");
+		        	 var el = jQuery('#'+editor.key).find(".edui-for-wfatbutton");
 		             var px=el.offset().left;
 					 var py=el.offset().top;
 		            

@@ -1,24 +1,31 @@
 import { Tabs, Button, Checkbox } from 'antd'
+import { WeaTools } from 'weaCom'
 import NodeItem from './NodeItem'
 const TabPane = Tabs.TabPane;
 
 class NodeOperator extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
+			alldatas: [],
 			allitems: [],
 			unsubmititems: [],
 			submititems: [],
 			selectids: '',
 			selectTabKey: '1',
 			selectAll: false
-		}
+		};
+
+		const { requestid } = this.props;
+		const _this = this;
+		WeaTools.callApi('/api/workflow/reqforward/' + requestid, 'GET', {}).then(data => {
+			_this.setState({ alldatas: data });
+		});
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		if(this.props.datas !== nextProps.datas) {
-			this.initData(nextProps.datas);
+		if(this.state.alldatas !== nextState.alldatas) {
+			this.initData(nextState.alldatas);
 		}
 		return true;
 	}
@@ -65,13 +72,13 @@ class NodeOperator extends React.Component {
 		)
 	}
 
-	btnOnClick(setOperatorIds,handleShowNodeOperator) {
+	btnOnClick(setOperatorIds, handleShowNodeOperator) {
 		setOperatorIds(this.state.selectids);
 		handleShowNodeOperator(false);
 	}
 
 	changeTab(key) {
-		this.setState({ selectTabKey: key, selectAll: false ,selectids :''});
+		this.setState({ selectTabKey: key, selectAll: false, selectids: '' });
 	}
 
 	selectAll(e) {

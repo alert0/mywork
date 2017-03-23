@@ -10,11 +10,29 @@ class Forward extends React.Component {
 			isshowoperategroup: false,
 			isshownodeoperators: false,
 			showForward: false,
-			hrmgroups: [],
-			alldatas: [],
-			allitems: [],
-			operatorids:''
+			operatorids: '',
+			signinput:{},
+			hasinitremark:false
+	
 		};
+
+		const { requestid } = this.props;
+		let params = { actiontype: 'signInput', requestid: requestid }
+		const _this = this;
+		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', params).then(data => {
+			_this.setState({ signinput: data });
+		});
+	}
+	
+	componentDidUpdate(){
+		const {hasinitremark} = this.state;
+		if(jQuery('#forwardremark').length > 0 && !hasinitremark){
+			var _ue = UEUtil.initRemark('forwardremark', false);
+			bindRemark(_ue);
+			this.setState({hasinitremark:true});
+			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index','105');
+			jQuery('.wea-req-forward-modal').css('z-index','105');
+		}
 	}
 
 	//控制常用组显示、及数据
@@ -23,14 +41,6 @@ class Forward extends React.Component {
 			isshowoperategroup: bool,
 			isshownodeoperators: false
 		});
-
-		const { hrmgroups } = this.state;
-		if(hrmgroups.length == 0) {
-			const _this = this;
-			WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', {}).then(data => {
-				_this.setState({ hrmgroups: data.datas });
-			});
-		}
 	}
 
 	//控制
@@ -39,31 +49,32 @@ class Forward extends React.Component {
 			isshowoperategroup: false,
 			isshownodeoperators: bool
 		});
-
-		const { alldatas } = this.state;
-		if(alldatas.length == 0) {
-			const { requestid } = this.props;
-			const _this = this;
-			WeaTools.callApi('/api/workflow/reqforward/' + requestid, 'GET', {}).then(data => {
-				let allitems = [];
-				_this.setState({ alldatas: data, allitems: allitems });
-			});
-		}
 	}
-	
-	setOperatorIds(ids){
-		this.setState({operatorids:ids});
+
+	setOperatorIds(ids) {
+		const { operatorids } = this.state;
+		let operatoridarr = operatorids.split(',').concat(ids.split(','));
+		let result = [];
+		operatoridarr.filter(o => {
+			if(o == '')
+				return false;
+			if(result.contains(o))
+				return false;
+			result.push(o);
+			return true;
+		});
+		this.setState({ operatorids: result.join(',') });
 	}
 
 	render() {
-		const { showForward, titleName } = this.props;
-		const { hrmgroups, isshownodeoperators, isshowoperategroup, allitems, submitItems, unSubmitItems, alldatas } = this.state;
-
+		const { showForward, titleName, requestid } = this.props;
+		const { isshownodeoperators, isshowoperategroup, signinput } = this.state;
+		
 		return(
 			<Modal title={this.getTopTitle(titleName)} 
 				visible ={showForward}	
 				wrapClassName = "wea-req-forward-modal"
-				style={{'min-width':'1000px'}}
+				style={{'min-width':'1100px'}}
 				maskClosable={false}
 				onCancel={this.cancelEvent.bind(this)}
 				footer={[
@@ -81,7 +92,7 @@ class Forward extends React.Component {
 							<WeaInput4HrmNew />
 						</div>
 						<div className='btns'>
-							<Popover placement="bottomLeft" title="" content={<OGroup hrmgroups={hrmgroups} handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
+							<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
 									 trigger="click"
 									 onVisibleChange={this.handleVisibleChange.bind(this)}
 									 visible={isshowoperategroup}
@@ -90,7 +101,7 @@ class Forward extends React.Component {
 									<i className='icon-customer-me'/>
 								</div>
 							</Popover>
-							<Popover placement="bottomLeft" title="" content={<NodeOperator datas={alldatas} setOperatorIds={this.setOperatorIds.bind(this)} handleShowNodeOperator={this.handleShowNodeOperator.bind(this)}/>} 
+							<Popover placement="bottomLeft" title="" content={<NodeOperator requestid={requestid} setOperatorIds={this.setOperatorIds.bind(this)} handleShowNodeOperator={this.handleShowNodeOperator.bind(this)}/>} 
 									 trigger="click"
 									 onVisibleChange={this.handleShowNodeOperator.bind(this)}
 									 visible={isshownodeoperators}

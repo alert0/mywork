@@ -7,7 +7,7 @@ import Immutable from 'immutable'
  */
 UE.registerUI('wfannexbutton',function(editor,uiName){
 	return initwfannexbutton(editor,uiName);
-}, 34, ['remark']);
+}, 34, 'remark,forwardremark');
 
 const initwfannexbutton = (editor,uiName) => {
 	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
@@ -87,11 +87,13 @@ const initwfannexbutton = (editor,uiName) => {
 	};
 
 	var splitchar = "////~~weaversplit~~////";
-	initphrase();
-	cfileupload();
+	if(jQuery('#_fileuploadphraseblock').length == 0){
+		initphrase();
+	}
+	cfileupload(editor.key);
     //注册按钮执行时的command命令，使用命令默认就会带有回退操作
 	function addli(){
-		var el = jQuery(".edui-for-wfannexbutton");
+		var el = jQuery('#'+editor.key).find(".edui-for-wfannexbutton");
         var px=el.offset().left;
 	    var py=el.offset().top -69  + jQuery('.wea-new-top-req-content').scrollTop();
 	    jQuery("#_fileuploadphraseblock").css("z-index","999");
@@ -187,7 +189,7 @@ var queuednames = "";
 var splitchar = "////~~weaversplit~~////";
 var x=0;
 var fQError = "";
-function cfileupload() {
+function cfileupload(editorid) {
 	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
 	const annexmainId = markInfo.get('annexmainId');
 	const annexsubId = markInfo.get('annexsubId');
@@ -268,11 +270,11 @@ function cfileupload() {
 			if (numFilesSelected > 0) {		
 				//for(var m=0;m<numFilesSelected;m++){
 				if(fQError == ""){
-					jQuery(".edui-for-wfannexbutton").css("visibility","visible");
-					jQuery(".edui-for-wfannexbutton").css("cursor","pointer");
-					jQuery(".edui-for-wfannexbutton").css("z-index","101");
+					var el = jQuery('#'+editorid).find(".edui-for-wfannexbutton");
+					el.css("visibility","visible");
+					el.css("cursor","pointer");
+					el.css("z-index","101");
 					jQuery("#promptinformation").html("");
-					var el = jQuery(".edui-for-wfannexbutton");
 					var px=el.offset().left;
 					var py=el.offset().top - 69  + jQuery('.wea-new-top-req-content').scrollTop();
 					jQuery("#fsUploadProgressfileuploaddiv").css({"top":py + "px", "left":px+"px"});
@@ -334,7 +336,7 @@ function cfileupload() {
 				jQuery("#fsUploadProgressfileuploaddiv").css("top","-500px");
 				//jQuery("#_fileuploadphraseblock").hide();
 				try {
-		   			var _targetobj = jQuery(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
+		   			var _targetobj = jQuery('#'+editorid).find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
 		        	if (document.getElementById("field-annexupload").value != '') {
 		        		_targetobj.addClass("wfres_1_slt");
 		        		_targetobj.removeClass("wfres_1");
@@ -344,7 +346,7 @@ function cfileupload() {
 		        	}
 		        } catch (e) {}
 		        jQuery("#fsUploadProgressfileuploaddiv").attr("banfold","0");
-		        addlinew();
+		        addlinew(editorid);
 		        //jQuery("#_fsarrowsblock").css("display","none");
 				//jQuery("#_fscgblock").css("display","none");
 				x = 0;
@@ -399,7 +401,7 @@ function deletefile(id,names){
 		}
 
 		try {
-   			var _targetobj = jQuery(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
+   			var _targetobj = jQuery('#'+editorid).find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
         	if (document.getElementById("field-annexupload").value != '') {
         		_targetobj.addClass("wfres_1_slt");
         		_targetobj.removeClass("wfres_1");
@@ -415,7 +417,7 @@ function deletefile(id,names){
 
 window.deletefile = deletefile;
 
-function onAddUploadFile(ids,names){
+function onAddUploadFile(ids,names,editorid){
 	var showfor = jQuery("#_fileuploadphraseblock").attr("showfor");
 	if(showfor != 2){
 		var fieldannexuploadrequest = jQuery("#field-annexupload-request").val();
@@ -423,7 +425,7 @@ function onAddUploadFile(ids,names){
 		if(phrase!=null && phrase!=""){
 			$GetEle("remarkSpan").innerHTML = "";
 			try{
-				UE.getEditor("remark").setContent(phrase, true);
+				UE.getEditor(editorid).setContent(phrase, true);
 			}catch(e){
 			}
 		}
@@ -461,8 +463,8 @@ function hiddenBt(id){
 
 window.hiddenBt = hiddenBt;
 
-function addlinew(){
-	var el = jQuery(".edui-for-wfannexbutton");
+function addlinew(editorid){
+	var el = jQuery('#'+editorid).find(".edui-for-wfannexbutton");
     var px=el.offset().left;
     var py=el.offset().top -69  + jQuery('.wea-new-top-req-content').scrollTop();
     jQuery("#_fileuploadphraseblock").css("z-index","999");
@@ -482,13 +484,13 @@ function addlinew(){
 	                var curname = jQuery.trim(nameArray[i]);
 	                if(!checkliid(jQuery.trim(curid))){
 	                	//continue;
-	                	_ul.append("<li id='li_"+curid+"' onclick=\"onAddUploadFile("+curid+",'"+curname+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + curname + "' >" + curname + "</span><a onmouseover=\"showBt("+curid+")\" onmouseout=\"hiddenBt("+curid+")\" onclick=\"deletefile("+curid+",'"+curname+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
+	                	_ul.append("<li id='li_"+curid+"' onclick=\"onAddUploadFile("+curid+",'"+curname+"','"+editorid+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + curname + "' >" + curname + "</span><a onmouseover=\"showBt("+curid+")\" onmouseout=\"hiddenBt("+curid+")\" onclick=\"deletefile("+curid+",'"+curname+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 	                }
 			    }
 			}else{
 				if(!checkliid(jQuery.trim(ids))){
                 	//return;
-                	_ul.append("<li id='li_"+ids+"' onclick=\"onAddUploadFile("+ids+",'"+names+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + names + "'>" + names + "</span><a onmouseover=\"showBt("+ids+")\" onmouseout=\"hiddenBt("+ids+")\" onclick=\"deletefile("+ids+",'"+names+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
+                	_ul.append("<li id='li_"+ids+"' onclick=\"onAddUploadFile("+ids+",'"+names+"','"+editorid+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + names + "'>" + names + "</span><a onmouseover=\"showBt("+ids+")\" onmouseout=\"hiddenBt("+ids+")\" onclick=\"deletefile("+ids+",'"+names+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 				}
 			}
 		}

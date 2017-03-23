@@ -3,6 +3,7 @@ import Immutable from 'immutable'
 const bindRemark = (_uEditor) => {
 	var remarkHide = function(e) {
 
+		console.log("_uEditor",_uEditor);
 		//转发页面不隐藏
 		if(window.__isremarkPage == true) {
 			return;
@@ -19,8 +20,9 @@ const bindRemark = (_uEditor) => {
 					//jQuery("html").unbind('mouseup', remarkHide);
 					//jQuery(".remarkDiv").hide();
 					//jQuery("#remarkShadowDiv").show();
-
-					window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.controlSignInput(false))
+					if(_uEditor.key == 'remark'){
+						window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.controlSignInput(false))
+					}
 				}
 			} catch(e) {}
 			e.stopPropagation();
@@ -28,15 +30,15 @@ const bindRemark = (_uEditor) => {
 	};
 	jQuery(".wea-new-top-req-content").live('mousedown', remarkHide);
 	_uEditor.ready(function() {
-		jQuery(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_1");
-		jQuery(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_2");
-		jQuery(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_3");
+		jQuery('#'+_uEditor.key).find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_1");
+		jQuery('#'+_uEditor.key).find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_2");
+		jQuery('#'+_uEditor.key).find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_3");
 	});
 }
 
 window.bindRemark = bindRemark;
 
-const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, countEleID) => {
+const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, countEleID,editorykey) => {
 	//关闭表单签章显示,防止某些IE版本下,表单签章显示白色和弹窗冲突
 	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
 	const requestid = formstate.get('requestid');
@@ -91,19 +93,18 @@ const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, c
 					}
 				}
 				jQuery("#" + countEleID).html(sHtml);
-				var editorid = "remark";
 				try {
-					UE.getEditor(editorid).setContent(" &nbsp;" + sHtml, true);
+					UE.getEditor(editorykey).setContent(" &nbsp;" + sHtml, true);
 				} catch(e) {}
 				try {
 					var _targetobj;
 					var _targetobjimg = "";
 					var _targetobjClass = "";
 					if(type1 == 152) { //相关流程
-						_targetobj = jQuery(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_3";
 					} else {
-						_targetobj = jQuery(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_2";
 					}
 					//alert(_targetobj.css("background"));
@@ -127,10 +128,10 @@ const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, c
 					var _targetobjimg = "";
 					var _targetobjClass = "";
 					if(type1 == 152) { //相关流程
-						_targetobj = jQuery(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_3";
 					} else {
-						_targetobj = jQuery(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_2";
 					}
 					//alert(_targetobj.css("background"));

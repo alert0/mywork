@@ -306,7 +306,7 @@
 				autocontainer.append(btngroup);
 				jQuery('.wea-popover-hrm-relative-parent').append(autocontainer);
 
-				autocontainer.css("top", jQuery('.edui-for-wfatbutton').offset().top - 86  + jQuery('.wea-new-top-req-content').scrollTop());
+				autocontainer.css("top", settings.relativeItem.offset().top - 86  + jQuery('.wea-new-top-req-content').scrollTop());
 				searchinput.focus();
 			},
 			//销毁容器
