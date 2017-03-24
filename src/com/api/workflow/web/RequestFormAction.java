@@ -229,13 +229,12 @@ public class RequestFormAction {
 		Map<String,Object> apidatas = new HashMap<String,Object>();
 		try{
 			String requestid = request.getParameter("requestid");
-			int pageSize = Util.getIntValue(request.getParameter("pageSize"), 30);
 			int desrequestid = Util.getIntValue(request.getParameter("desrequestid"), 0);
-			String isfirst = Util.null2String(request.getParameter("isfirst"));
 			String isurger = Util.null2String(request.getParameter("isurger"));
-			String desremark = Util.null2String(request.getParameter("desremark"));
-			String parameter = Util.null2String(request.getParameter("parameter"));
-			
+			int pageSize = Util.getIntValue(request.getParameter("pageSize"), 30);
+			int currentMaxId = Util.getIntValue(request.getParameter("currentMaxId"), 0);
+			int desremark = Util.getIntValue(request.getParameter("desremark"), 0);
+			String viewlogids = Util.null2String(request.getParameter("viewlogids"));
 			String f_weaver_belongto_userid=Util.null2String(request.getParameter("f_weaver_belongto_userid"));
 			String f_weaver_belongto_usertype=Util.null2String(request.getParameter("f_weaver_belongto_usertype"));
 			User user  = HrmUserVarify.getUser(request, response, f_weaver_belongto_userid, f_weaver_belongto_usertype);
@@ -250,7 +249,7 @@ public class RequestFormAction {
 			reqstatusLog.setUser(user);
 			reqstatusLog.setDesrequestid(desrequestid);
 			reqstatusLog.setIsurger(isurger);
-			apidatas = reqstatusLog.getStatusLogNew(desremark,pageSize,isfirst,parameter);
+			apidatas = reqstatusLog.getStatusLogNew(viewlogids,pageSize,currentMaxId,desremark);
 			//不转JSONObject存在问题，why...
 			net.sf.json.JSONObject apidatasJSON = net.sf.json.JSONObject.fromObject(apidatas);
 			return JSONObject.toJSONString(apidatasJSON);

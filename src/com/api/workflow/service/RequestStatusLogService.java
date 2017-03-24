@@ -10,9 +10,6 @@ import weaver.workflow.monitor.Monitor;
 
 import java.util.*;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 /**
  * Created by CC on 2017-03-07.
  */
@@ -36,101 +33,82 @@ public class RequestStatusLogService {
 	
     public static Map<Integer, String> nodeNameCominfo = new HashMap<Integer, String>();
 
-    public Map<String, Object> getStatusLogNew(String desremark,int pageSize,String isfirst,String parameter) throws Exception {
-    	Map<String, String> data = new HashMap<String, String>();
-        // 将json字符串转换成jsonObject
-    	int currentMaxId = 0;
-    	int currentMinId = 0;
-    	int currentId = 0;
-    	String viewlogids = "";
-    	int index = 0;
-    	try{
-    		Map<String,String> parameterMap = JSON.parseObject(parameter, Map.class);//Weibo类在下边定义  
-    		currentMaxId = Util.getIntValue(parameterMap.get("currentMaxId"), 0);
-    		currentMinId = Util.getIntValue(parameterMap.get("currentMinId"), 0);
-    		currentId = Util.getIntValue(parameterMap.get("currentId"), 0);
-    		viewlogids = Util.null2String(parameterMap.get("viewlogids"));
-    		index = Util.getIntValue(parameterMap.get("nodeindex"), 0);
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    	Map<String,String> putpara = new HashMap<String,String>();
-		
+    public Map<String, Object> getStatusLogNew(String viewlogids, int pageSize, int currentid,int desremark) throws Exception {
         Monitor monitor = new Monitor();
         RecordSet rs = new RecordSet();
-        RecordSet rs1 = new RecordSet();
-//        if (isurger.equals("true") || monitor.hasMonitor(requestid+"", user.getUID() + "")) {
-//            StringBuffer sqlsb = new StringBuffer();
-//            sqlsb.append(" select a.id,a.nodeid, ");
-//            sqlsb.append("                 b.nodename, ");
-//            sqlsb.append("              a.userid, ");
-//            sqlsb.append("              a.isremark, ");
-//            sqlsb.append("              a.lastisremark, ");
-//            sqlsb.append("              a.usertype, ");
-//            sqlsb.append("             a.agentorbyagentid, ");
-//            sqlsb.append("             a.agenttype, ");
-//            sqlsb.append("             a.receivedate, ");
-//            sqlsb.append("             a.receivetime, ");
-//            sqlsb.append("             a.operatedate, ");
-//            sqlsb.append("             a.operatetime, ");
-//            sqlsb.append("             a.viewtype, ");
-//            sqlsb.append("             a.nodetype ");
-//            sqlsb.append("             ,a.operator ");
-//            sqlsb.append("        from (SELECT distinct top ").append(pageSize);
-//            sqlsb.append("				o.id, " );
-//            sqlsb.append("				o.requestid, " );
-//            sqlsb.append("                              o.userid, ");
-//            sqlsb.append("                              o.workflowid, ");
-//            sqlsb.append("                              o.workflowtype, ");
-//            sqlsb.append("                              o.isremark, ");
-//            sqlsb.append("                              o.lastisremark, ");
-//            sqlsb.append("                              o.usertype, ");
-//            sqlsb.append("                              o.nodeid, ");
-//            sqlsb.append("                              o.agentorbyagentid, ");
-//            sqlsb.append("                              o.agenttype, ");
-//            sqlsb.append("                              o.receivedate, ");
-//            sqlsb.append("                              o.receivetime, ");
-//            sqlsb.append("                              o.viewtype, ");
-//            sqlsb.append("                              o.iscomplete, ");
-//            sqlsb.append("                              o.operatedate, ");
-//            sqlsb.append("                              o.operatetime, ");
-//            sqlsb.append("                              nodetype ");
-//            sqlsb.append("                              ,wr.operator ");
-//            sqlsb.append("                FROM workflow_currentoperator o ");
-//
-//            sqlsb.append("                left join workflow_requestlog wr");
-//            sqlsb.append("                on wr.requestid=o.requestid");
-//            sqlsb.append("                and wr.nodeid=o.nodeid");
-//            sqlsb.append("                and wr.operator = o.userid");
-//            sqlsb.append("                and wr.logtype <> '1'");
-//
-//            sqlsb.append("                , workflow_flownode ");
-//
-//            sqlsb.append("               where o.nodeid = ");
-//            sqlsb.append("                     workflow_flownode.nodeid ");
-//            if(desremark ==1){//1:已提交
-//            	sqlsb.append(" AND o.isremark='2' AND wr.operator IS NOT null ");
-//            }else if(desremark == 2){//2：未提交
-//            	sqlsb.append(" and ((o.isremark = '0' and (o.takisremark is null or o.takisremark=0)) or o.isremark in ('1','5','7','8','9') )");
-//            }else if(desremark == 3){//3:已查看
-//            	sqlsb.append(" and (((o.isremark = '2' AND wr.operator IS NULL) or o.isremark in ('0','1','4','5','7','8','9')) AND o.viewtype IN (-1,-2)) ");
-//            }else if(desremark == 4){//4:未查看
-//            	sqlsb.append(" AND o.viewtype = 0 ");
-//            }
-//            sqlsb.append(" 			and o.id > ").append(currentId);
-//            sqlsb.append("                 and o.requestid = " + requestid + ") a, ");
-//            sqlsb.append("             workflow_nodebase b ");
-//            sqlsb.append("       where a.nodeid = b.id ");
-//            sqlsb.append("         and a.requestid = " + requestid + " ");
-//            sqlsb.append("         and a.agenttype <> 1 ");
-//            sqlsb.append("         order by  a.id ");
-//            //System.out.println("20170309 =====> sqlsb.toString() = "+sqlsb.toString());
-//            rs.executeSql(sqlsb.toString());
-//
-//        } else {
+        int currentMaxId = 0;
+        if (isurger.equals("true") || monitor.hasMonitor(requestid+"", user.getUID() + "")) {
+            StringBuffer sqlsb = new StringBuffer();
+            sqlsb.append(" select a.id,a.nodeid, ");
+            sqlsb.append("                 b.nodename, ");
+            sqlsb.append("              a.userid, ");
+            sqlsb.append("              a.isremark, ");
+            sqlsb.append("              a.lastisremark, ");
+            sqlsb.append("              a.usertype, ");
+            sqlsb.append("             a.agentorbyagentid, ");
+            sqlsb.append("             a.agenttype, ");
+            sqlsb.append("             a.receivedate, ");
+            sqlsb.append("             a.receivetime, ");
+            sqlsb.append("             a.operatedate, ");
+            sqlsb.append("             a.operatetime, ");
+            sqlsb.append("             a.viewtype, ");
+            sqlsb.append("             a.nodetype ");
+            sqlsb.append("             ,a.operator ");
+            sqlsb.append("        from (SELECT distinct top ").append(pageSize);
+            sqlsb.append("				o.id, " );
+            sqlsb.append("				o.requestid, " );
+            sqlsb.append("                              o.userid, ");
+            sqlsb.append("                              o.workflowid, ");
+            sqlsb.append("                              o.workflowtype, ");
+            sqlsb.append("                              o.isremark, ");
+            sqlsb.append("                              o.lastisremark, ");
+            sqlsb.append("                              o.usertype, ");
+            sqlsb.append("                              o.nodeid, ");
+            sqlsb.append("                              o.agentorbyagentid, ");
+            sqlsb.append("                              o.agenttype, ");
+            sqlsb.append("                              o.receivedate, ");
+            sqlsb.append("                              o.receivetime, ");
+            sqlsb.append("                              o.viewtype, ");
+            sqlsb.append("                              o.iscomplete, ");
+            sqlsb.append("                              o.operatedate, ");
+            sqlsb.append("                              o.operatetime, ");
+            sqlsb.append("                              nodetype ");
+            sqlsb.append("                              ,wr.operator ");
+            sqlsb.append("                FROM workflow_currentoperator o ");
+
+            sqlsb.append("                left join workflow_requestlog wr");
+            sqlsb.append("                on wr.requestid=o.requestid");
+            sqlsb.append("                and wr.nodeid=o.nodeid");
+            sqlsb.append("                and wr.operator = o.userid");
+            sqlsb.append("                and wr.logtype <> '1'");
+
+            sqlsb.append("                , workflow_flownode ");
+
+            sqlsb.append("               where o.nodeid = ");
+            sqlsb.append("                     workflow_flownode.nodeid ");
+            if(desremark ==1){//1:已提交
+            	sqlsb.append(" AND o.isremark='2' AND wr.operator IS NOT null ");
+            }else if(desremark == 2){//2：未提交
+            	sqlsb.append(" and ((o.isremark = '0' and (o.takisremark is null or o.takisremark=0)) or o.isremark in ('1','5','7','8','9') )");
+            }else if(desremark == 3){//3:已查看
+            	sqlsb.append(" and (((o.isremark = '2' AND wr.operator IS NULL) or o.isremark in ('0','1','4','5','7','8','9')) AND o.viewtype IN (-1,-2)) ");
+            }else if(desremark == 4){//4:未查看
+            	sqlsb.append(" AND o.viewtype = 0 ");
+            }
+            sqlsb.append(" 			and o.id > ").append(currentid);
+            sqlsb.append("                 and o.requestid = " + requestid + ") a, ");
+            sqlsb.append("             workflow_nodebase b ");
+            sqlsb.append("       where a.nodeid = b.id ");
+            sqlsb.append("         and a.requestid = " + requestid + " ");
+            sqlsb.append("         and a.agenttype <> 1 ");
+            sqlsb.append("         order by  a.id ");
+            //System.out.println("20170309 =====> sqlsb.toString() = "+sqlsb.toString());
+            rs.executeSql(sqlsb.toString());
+
+        } else {
             // 处理相关流程的查看权限
             if ("".equals(viewlogids)) {
-            	viewlogids = this.getViewLogids();
+                this.getViewLogids();
             }
             StringBuffer sqlsb = new StringBuffer();
             sqlsb.append("		select a.id,a.nodeid, ");
@@ -148,11 +126,7 @@ public class RequestStatusLogService {
             sqlsb.append("             a.viewtype, ");
             sqlsb.append("             a.nodetype ");
             sqlsb.append("             ,a.operator ");
-            //if("true".equals(isfirst)){
-            	sqlsb.append("        from (SELECT distinct top ").append(pageSize);
-//            }else{
-//            	sqlsb.append("        from (SELECT distinct ");
-//            }
+            sqlsb.append("        from (SELECT distinct top ").append(pageSize);
             sqlsb.append("				o.id, " );
             sqlsb.append("				o.requestid, " );
             sqlsb.append("                              o.userid, ");
@@ -183,38 +157,34 @@ public class RequestStatusLogService {
 
             sqlsb.append("               where o.nodeid = ");
             sqlsb.append("                     workflow_flownode.nodeid ");
-            if("submit".equals(desremark)){//1:已提交
+            if(desremark ==1){//1:已提交
             	sqlsb.append(" AND o.isremark='2' AND wr.operator IS NOT null ");
-            }else if("nosubmit".equals(desremark)){//2：未提交
+            }else if(desremark == 2){//2：未提交
             	sqlsb.append(" and ((o.isremark = '0' and (o.takisremark is null or o.takisremark=0)) or o.isremark in ('1','5','7','8','9') )");
-            }else if("view".equals(desremark)){//3:已查看
+            }else if(desremark == 3){//3:已查看
             	sqlsb.append(" and (((o.isremark = '2' AND wr.operator IS NULL) or o.isremark in ('0','1','4','5','7','8','9')) AND o.viewtype IN (-1,-2)) ");
-            }else if("noview".equals(desremark)){//4:未查看
+            }else if(desremark == 4){//4:未查看
             	sqlsb.append(" AND o.viewtype = 0 ");
             }
-            sqlsb.append(" 			and o.id > ").append(currentId);
+            sqlsb.append(" 			and o.id > ").append(currentid);
             sqlsb.append("                 and o.requestid = " + requestid + ") a, ");
             sqlsb.append("             workflow_nodebase b ");
             sqlsb.append("       where a.nodeid = b.id ");
             sqlsb.append("         and a.requestid = " + requestid + " ");
             sqlsb.append("         and a.agenttype <> 1 ");
-            if (!"".equals(viewlogids)) {
-            	sqlsb.append("         and a.nodeid in (" + viewlogids + ") ");
-            }
-            sqlsb.append("         order by a.id ,a.receivedate, a.receivetime, a.nodetype");
+            sqlsb.append("         and a.nodeid in (" + viewlogids + ") ");
+            sqlsb.append("         order by a.id ");
             
             //System.out.println("20170309 =====> sqlsb.toString() = "+sqlsb.toString());
             rs.executeSql(sqlsb.toString());
-//        }
+        }
         List<Map<String, String>> statuslist = new ArrayList<Map<String, String>>();
-        int tmpnodeid = 0;
         while (rs.next()) {
-        	currentId = rs.getInt("id");
-            tmpnodeid = rs.getInt("nodeid");
+        	currentMaxId = rs.getInt("id");
+            int tmpnodeid = rs.getInt("nodeid");
             String tmpnodename = rs.getString("nodename");
             Map<String, String> nodekv = null;
             if (statuslist.size() == 0) {
-            	currentMinId = currentId;
                 nodekv = new HashMap<String, String>();
                 statuslist.add(nodekv);
             } else {
@@ -223,7 +193,6 @@ public class RequestStatusLogService {
                 if (tnodeid == tmpnodeid) {
                     nodekv = temmap;
                 } else {
-                	currentMinId = currentId;
                     nodekv = new HashMap<String, String>();
                     statuslist.add(nodekv);
                 }
@@ -231,139 +200,87 @@ public class RequestStatusLogService {
             nodekv.put("nodeid", tmpnodeid + "");
             nodekv.put("nodename", tmpnodename + "");
         }
-        int nextlistcount = 0;
-    	int nextsubmitCount = 0;
-    	int nextviewCount = 0;
-    	int nextnoviewCount = 0;
-        if("all".equals(desremark)){
-        	currentMaxId = currentId;
-        	String maxsql = " select a.id,a.nodeid from workflow_currentoperator a where a.id > "+currentId +" and a.requestid="+requestid +" order by a.id ,a.receivedate, a.receivetime";
-        	rs1.executeSql(maxsql);
-        	while (rs1.next()) {
-        		int currentid = rs1.getInt("id");
-        		int currentnodeid = rs1.getInt("nodeid");
-        		if(currentnodeid == tmpnodeid){
-        			currentMaxId = currentid;
-        		}else{
-        			break;
-        		}
-        	}
-        	String listcountsql = " select count(id) num from workflow_currentoperator where id > "+currentId +" and id <= "+currentMaxId+" and requestid="+requestid +" and nodeid="+tmpnodeid +" and agenttype <> 1 and usertype <> 1 ";
-        	String submitCountsql = " select count(id) num from workflow_currentoperator where id > "+currentId +" and id <= "+currentMaxId+" and requestid="+requestid +" and nodeid="+tmpnodeid +" and agenttype <> 1 and usertype <> 1 and isremark = 2 and exists (select 1 from workflow_requestlog where workflow_requestlog.requestid = workflow_currentoperator.requestid and workflow_currentoperator.nodeid=workflow_requestlog.nodeid and workflow_requestlog.operator=workflow_currentoperator.userid )";
-        	String viewCountsql = " select count(id) num from workflow_currentoperator where id > "+currentId +" and id <= "+currentMaxId+" and requestid="+requestid +" and nodeid="+tmpnodeid + " and agenttype <> 1 and usertype <> 1 and (viewtype = -1 or viewtype=-2) and ((isremark = '0' and (takisremark is null or takisremark=0)) or isremark in ('1','5','7','8','9') or (isremark = '2' and exists (select 1 from workflow_requestlog where workflow_requestlog.requestid = workflow_currentoperator.requestid and workflow_currentoperator.nodeid=workflow_requestlog.nodeid and (workflow_requestlog.operator is null or workflow_requestlog.operator ='' )))) ";
-        	String noviewCountsql = " select count(id) num from workflow_currentoperator where id > "+currentId +" and id <= "+currentMaxId+" and requestid="+requestid +" and nodeid="+tmpnodeid + " and agenttype <> 1 and usertype <> 1 and viewtype = 0 ";
-        	
-        	rs1.executeSql(listcountsql);
-        	while (rs1.next()) {
-        		nextlistcount = rs1.getInt("num");
-        	}
-        	rs1.executeSql(submitCountsql);
-        	while (rs1.next()) {
-        		nextsubmitCount = rs1.getInt("num");
-        	}
-        	rs1.executeSql(viewCountsql);
-        	while (rs1.next()) {
-        		nextviewCount = rs1.getInt("num");
-        	}
-        	rs1.executeSql(noviewCountsql);
-        	while (rs1.next()) {
-        		nextnoviewCount = rs1.getInt("num");
-        	}
-        }
-        
-        //判断是否已完成加载
-//        String finishsql = " select max(id) from workflow_currentoperator  where requestid="+requestid;
-//    	rs1.executeSql(finishsql);
-//    	int maxid = 0;
-//    	while (rs1.next()) {
-//    		maxid = rs1.getInt("id");
-//    	}
         
         Map<String, Object> result = new HashMap<String, Object>();
-        Map<String, Object> allstatusmap = new HashMap<String, Object>();
-        Map<String, Object> submitstatusmap = new HashMap<String, Object>();
-        Map<String, Object> nosubmitstatusmap = new HashMap<String, Object>();
-        Map<String, Object> viewstatusmap = new HashMap<String, Object>();
-        Map<String, Object> noviewstatusmap = new HashMap<String, Object>();
-        //提交节点信息--滚动加载到当前currentoperator对应最大id
         
+        List<Map<String, Object>> allstatuslist = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> submitstatuslist = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> nosubmitstatuslist = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> viewstatuslist = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> noviewstatuslist = new ArrayList<Map<String, Object>>();
+        //提交节点信息--滚动加载到当前currentoperator对应最大id
+        result.put("currentMaxId", currentMaxId);
+        result.put("viewlogids", viewlogids);
+        if(desremark ==1){//1:已提交
+        	//提交节点信息
+        	result.put("submit", submitstatuslist);
+        }else if(desremark == 2){//2：未提交
+        	result.put("nosubmit", nosubmitstatuslist);
+        }else if(desremark == 3){//3:已查看
+        	result.put("view", viewstatuslist);
+        }else if(desremark == 4){//4:未查看
+        	result.put("noview", noviewstatuslist);
+        }else{
+        	//所有节点信息
+        	result.put("all", allstatuslist);
+        }
         //数字统计转到新接口count中
+        
         ResourceComInfo resourceComInfo = new ResourceComInfo();
         CustomerInfoComInfo customerInfoComInfo = new CustomerInfoComInfo();
-        Map<String, Object> all_nodemap = new HashMap<String, Object>();
-        Map<String, Object> submit_nodemap = new HashMap<String, Object>();
-        Map<String, Object> nosubmit_nodemap = new HashMap<String, Object>();
-        Map<String, Object> view_nodemap = new HashMap<String, Object>();
-        Map<String, Object> noview_nodemap = new HashMap<String, Object>();
 
         rs.beforFirst();
-        int currentnum = 0;
-        for (Iterator<Map<String, String>> it = statuslist.iterator(); it.hasNext();index++) {
+        for (Iterator<Map<String, String>> it = statuslist.iterator(); it.hasNext();) {
 
             Map<String, String> nodekv = it.next();
             int fnodeid = Util.getIntValue(nodekv.get("nodeid"));
             String namename = nodekv.get("nodename");
-            int submitCount = 0;
-            int viewCount = 0;
-            int noviewCount = 0;
-            int listcount = 0;
-            if("false".equals(isfirst) && currentnum == 0){
-            	index -= 1;
-            }
-            if(tmpnodeid==fnodeid){
-            	submitCount = nextsubmitCount;
-            	viewCount = nextviewCount;
-            	noviewCount = nextnoviewCount;
-            	listcount = nextlistcount;
-            }
-            currentnum ++;
-            Map<String, Object> all_nodemap_in = new HashMap<String, Object>();
-            all_nodemap_in.put("nodeid", fnodeid);
-            all_nodemap_in.put("nodename", namename);
-            Map<String, Object> submit_nodemap_in = new HashMap<String, Object>();
-            Map<String, Object> nosubmit_nodemap_in = new HashMap<String, Object>();
-            Map<String, Object> view_nodemap_in = new HashMap<String, Object>();
-            Map<String, Object> noview_nodemap_in = new HashMap<String, Object>();
             
+            Map<String, Object> all_nodemap = new HashMap<String, Object>();
+            all_nodemap.put("nodeid", fnodeid);
+            all_nodemap.put("nodename", namename);
+            
+            Map<String, Object> submit_nodemap = new HashMap<String, Object>();
+            Map<String, Object> nosubmit_nodemap = new HashMap<String, Object>();
+            Map<String, Object> view_nodemap = new HashMap<String, Object>();
+            Map<String, Object> noview_nodemap = new HashMap<String, Object>();
             List<Map<String, String>> nodeallstatuslist = new ArrayList<Map<String, String>>();
             List<Map<String, String>> nodesubmitstatuslist = new ArrayList<Map<String, String>>();
             List<Map<String, String>> nodenosubmitstatuslist = new ArrayList<Map<String, String>>();
             List<Map<String, String>> nodeviewstatuslist = new ArrayList<Map<String, String>>();
             List<Map<String, String>> nodenoviewstatuslist = new ArrayList<Map<String, String>>();
-
-            if("submit".equals(desremark)){//1:已提交
+            
+            if(desremark ==1){//1:已提交
             	//提交节点信息
-            	submit_nodemap_in.putAll(all_nodemap_in);
-            	submitstatusmap.put("datas",submit_nodemap);
-            	submit_nodemap.put("key"+index, submit_nodemap_in);
-            	submit_nodemap_in.put("list", nodesubmitstatuslist);
-            }else if("nosubmit".equals(desremark)){//2：未提交
-            	nosubmit_nodemap_in.putAll(all_nodemap_in);
-            	nosubmitstatusmap.put("datas",nosubmit_nodemap);
-            	nosubmit_nodemap.put("key"+index, nosubmit_nodemap_in);
-            	nosubmit_nodemap_in.put("list", nodenosubmitstatuslist);
-            }else if("view".equals(desremark)){//3:已查看
-            	view_nodemap_in.putAll(all_nodemap_in);
-            	viewstatusmap.put("datas",view_nodemap);
-            	view_nodemap.put("key"+index, view_nodemap_in);
-            	view_nodemap_in.put("list", nodeviewstatuslist);
-            }else if("noview".equals(desremark)){//4:未查看
-            	noview_nodemap_in.putAll(all_nodemap_in);
-            	noviewstatusmap.put("datas",noview_nodemap);
-            	noview_nodemap.put("key"+index, noview_nodemap_in);
-            	noview_nodemap_in.put("list", nodenoviewstatuslist);
+            	submit_nodemap.putAll(all_nodemap);
+            	submitstatuslist.add(submit_nodemap);
+            	submit_nodemap.put("list", nodesubmitstatuslist);
+            }else if(desremark == 2){//2：未提交
+            	nosubmit_nodemap.putAll(all_nodemap);
+            	nosubmitstatuslist.add(nosubmit_nodemap);
+            	nosubmit_nodemap.put("list", nodenosubmitstatuslist);
+            }else if(desremark == 3){//3:已查看
+            	view_nodemap.putAll(all_nodemap);
+            	viewstatuslist.add(view_nodemap);
+            	view_nodemap.put("list", nodeviewstatuslist);
+            }else if(desremark == 4){//4:未查看
+            	noview_nodemap.putAll(all_nodemap);
+            	noviewstatuslist.add(noview_nodemap);
+            	noview_nodemap.put("list", nodenoviewstatuslist);
             }else{
             	//所有节点信息
-            	allstatusmap.put("datas",all_nodemap);
-            	all_nodemap.put("key"+index, all_nodemap_in);
-            	all_nodemap_in.put("list", nodeallstatuslist);
+            	allstatuslist.add(all_nodemap);
+            	all_nodemap.put("list", nodeallstatuslist);
             }
-
+            int submitCount = 0;
+            int viewCount = 0;
+            int noviewCount = 0;
+            int listcount = 0;
             boolean islight = false;
             while (rs.next()) {
-                int tmpnodeid1 = rs.getInt("nodeid");
+                int tmpnodeid = rs.getInt("nodeid");
 
-                if (tmpnodeid1 != fnodeid) {
+                if (tmpnodeid != fnodeid) {
                     rs.previous();
                     break;
                 }
@@ -428,12 +345,12 @@ public class RequestStatusLogService {
                     }
                 }
                 listcount++;
-                String _receivedate = "";
+                String _reveivedate = "";
                 String _operatedate = "";
                 String _intervel = "";
 
                 if (!tmpisremark.equals("s") && !tmpisremark.equals("c") && !tmpisremark.equals("r")) {
-                	_receivedate = Util.toScreen(tmpreceivedate, user.getLanguage()) + " " + Util.toScreen(tmpreceivetime, user.getLanguage());
+                    _reveivedate = Util.toScreen(tmpreceivedate, user.getLanguage()) + " " + Util.toScreen(tmpreceivetime, user.getLanguage());
                 }
                 _operatedate = Util.toScreen(tmpoperatedate, user.getLanguage()) + " " + Util.toScreen(tmpoperatetime, user.getLanguage());
 
@@ -443,11 +360,12 @@ public class RequestStatusLogService {
                 _statusmap.put("statuscode", String.valueOf(_statusCode));
                 _statususername = _statususername.replaceAll("\\\t", "");
                 _statusmap.put("operator", _statususername);
-                _statusmap.put("receivedate", _receivedate);
+                _statusmap.put("reveivedate", _reveivedate);
                 _statusmap.put("operatedate", _operatedate);
                 _statusmap.put("intervel", _intervel);
                 _statusmap.put("operatorid", _operatorid);
                 _statusmap.put("operatortype", _operatortype);
+                
                 
                 //所有节点
                 nodeallstatuslist.add(_statusmap);
@@ -469,38 +387,26 @@ public class RequestStatusLogService {
                 }
             }
             
-            //--已提交、已查看、未查看
-            all_nodemap_in.put("submitCount", submitCount);//--已提交
-            all_nodemap_in.put("viewCount", viewCount);//--已查看
-            all_nodemap_in.put("noviewCount", noviewCount);//--未查看
-            if("submit".equals(desremark)){//1:已提交
+            if(desremark ==1){//1:已提交
             	//提交节点信息
-            	submit_nodemap_in.put("listcount", listcount);
-            	result.putAll(submitstatusmap);
-            }else if("nosubmit".equals(desremark)){//2：未提交
-            	nosubmit_nodemap_in.put("listcount", listcount);
-            	result.putAll(nosubmitstatusmap);
-            }else if("view".equals(desremark)){//3:已查看
-            	view_nodemap_in.put("listcount", listcount);
-            	result.putAll(viewstatusmap);
-            }else if("noview".equals(desremark)){//4:未查看
-            	noview_nodemap_in.put("listcount", listcount);
-            	result.putAll(noviewstatusmap);
+            	submit_nodemap.put("listcount", listcount);
+            }else if(desremark == 2){//2：未提交
+            	nosubmit_nodemap.put("listcount", listcount);
+            }else if(desremark == 3){//3:已查看
+            	view_nodemap.put("listcount", listcount);
+            }else if(desremark == 4){//4:未查看
+            	noview_nodemap.put("listcount", listcount);
             }else{
             	//所有节点信息
-            	all_nodemap_in.put("listcount", listcount);
-            	result.putAll(allstatusmap);
+            	all_nodemap.put("listcount", listcount);
             }
+            
+            //--已提交、已查看、未查看
+			all_nodemap.put("submitCount", submitCount);//--已提交
+			all_nodemap.put("viewCount", viewCount);//--已查看
+            all_nodemap.put("noviewCount", noviewCount);//--未查看
+            
         }
-//        if(maxid == currentMaxId){
-//        	isfinish = 1;
-//        }
-        putpara.put("nodeindex", index+"");
-        putpara.put("currentMaxId", currentMaxId+"");
-        putpara.put("currentMinId", currentMinId+"");
-        putpara.put("currentId", currentId+"");
-        putpara.put("viewlogids", viewlogids+"");
-        result.put("parameter", putpara);
         
         return result;
     }
@@ -547,7 +453,6 @@ public class RequestStatusLogService {
 	        if (!"".equals(viewlogids)) {
 	            stssql.append(" and o.nodeid in (" + viewlogids + ") ");
 	        }
-	        stssql.append(" AND o.agenttype <> '1'  ");
 	        if(desremark == 1){//1:已提交
 	        	stssql.append(" AND o.isremark='2' AND wr.operator IS NOT null ");
 	        }else if(desremark == 2){//2：未提交
@@ -652,7 +557,7 @@ public class RequestStatusLogService {
         return workflowid;
     }
 
-    private String getViewLogids() {
+    private void getViewLogids() {
         int userid = user.getUID();
         RecordSet rs = new RecordSet();
         RecordSet rs1 = new RecordSet();
@@ -745,6 +650,5 @@ public class RequestStatusLogService {
         } else {
             viewLogIds = "-1";
         }
-        return viewLogIds;
     }
 }

@@ -82,6 +82,22 @@ public class SignInputService {
         workflowid = Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "workflowid"), 0);
         nodeid = Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "nodeid"), 0);
         currentnodeid = Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "currentnodeid"), 0);
+        if(workflowid == 0 || nodeid == 0){
+        	String sql = "select t.nodeid,t.workflowid from workflow_currentoperator t left join workflow_nodebase t1 on t.nodeid  = t1.id  where t.requestid=? and t.userid=? and t.usertype=? order by t.id desc";
+        	rs.executeQuery(sql, requestid, userid, usertype);
+        	if (rs.next()) {
+        		nodeid = Util.getIntValue(rs.getString(1), 0);
+        		workflowid = Util.getIntValue(rs.getString(2),0);
+        	}
+        	if (nodeid < 1) {
+        		sql = "select t.currentnodeid,t.workflowid from workflow_requestbase t left join workflow_nodebase t1 on t.currentnodeid = t1.id  where t.requestid= ?";
+        		rs.executeQuery(sql, requestid);
+        		if (rs.next()) {
+        			nodeid = Util.getIntValue(rs.getString(1), 0);
+        			workflowid = Util.getIntValue(rs.getString(2),0);
+        		}
+        	}
+        }
         
         //判断是否显示签字意见输入框
         /**

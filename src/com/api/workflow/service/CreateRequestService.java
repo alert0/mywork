@@ -459,8 +459,11 @@ public class CreateRequestService extends BaseBean {
 		this.user = user;
 	}
 
-	public String manageWfColl(HttpServletRequest request, HttpServletResponse response) {
-		int userid = user.getUID();
+	@GET
+	@Path("/managewfcoll")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String manageWfColl(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+		int userid = HrmUserVarify.getUser(request,response).getUID();
 		String worktypeid = request.getParameter("worktypeid");
 		String workflowid = request.getParameter("workflowid");
 		String needall = request.getParameter("needall");// 1：添加自定义；0：删除自定义
@@ -469,11 +472,12 @@ public class CreateRequestService extends BaseBean {
 		String sql = "select selectedworkflow , isuserdefault from workflow_RequestUserDefault where userid=" + userid;
 		String selectedworkflow = "";
 		String isuserdefault = "0";// 自定义流程是否启动
-		rs.executeSql(sql);
-		while (rs.next()) {
+		RecordSet recordSet = new RecordSet();
+		recordSet.executeSql(sql);
+		while (recordSet.next()) {
 			style = "update";
-			selectedworkflow = rs.getString("selectedworkflow");
-			isuserdefault = rs.getString("isuserdefault");
+			selectedworkflow = recordSet.getString("selectedworkflow");
+			isuserdefault = recordSet.getString("isuserdefault");
 		}
 		if (needall.equals("1")) {
 			String[] swfs = selectedworkflow.split("\\|");
@@ -503,10 +507,10 @@ public class CreateRequestService extends BaseBean {
 			}
 			if (style.equals("insert")) {
 				sql = "insert into workflow_RequestUserDefault(userid,selectedworkflow,isuserdefault) values(?,?,1)";
-				rs.executeUpdate(sql, userid, worktypeid + "|" + workflowid);
+				recordSet.executeUpdate(sql, userid, worktypeid + "|" + workflowid);
 			} else if (style.equals("update")) {
 				sql = "update workflow_RequestUserDefault set isuserdefault=1,selectedworkflow=? where userid=?";
-				rs.executeUpdate(sql, selectedworkflow, userid);
+				recordSet.executeUpdate(sql, selectedworkflow, userid);
 			}
 		} else if (needall.equals("0")) {
 			// 删除自定义
@@ -527,12 +531,12 @@ public class CreateRequestService extends BaseBean {
 				// 工作流程类型删除
 				String tid = worktypeid.substring(worktypeid.indexOf("T") + 1);
 				sql = "select id from workflow_base where workflowtype=" + tid;
-				rs.executeSql(sql);
+				recordSet.executeSql(sql);
 				boolean b = true;
 				String[] swfs = selectedworkflow.split("\\|");
-				while (rs.next()) {
+				while (recordSet.next()) {
 					for (String swf : swfs) {
-						if (swf.equalsIgnoreCase("W" + rs.getString("id"))) {
+						if (swf.equalsIgnoreCase("W" + recordSet.getString("id"))) {
 							b = false;
 							break;
 						}
@@ -556,12 +560,12 @@ public class CreateRequestService extends BaseBean {
 			}
 			if (selectedworkflow.length() == 0) {
 				sql = "delete from workflow_RequestUserDefault where userid=" + userid;
-				rs.execute(sql);
+				recordSet.execute(sql);
 			} else {
 				sql = "update workflow_RequestUserDefault set isuserdefault=1,selectedworkflow=? where userid=?";
-				rs.executeUpdate(sql, selectedworkflow, userid);
+				recordSet.executeUpdate(sql, selectedworkflow, userid);
 			}
 		}
-		return "";
+		return "1";
 	}
 }

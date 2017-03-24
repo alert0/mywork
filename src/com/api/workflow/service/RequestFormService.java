@@ -541,6 +541,7 @@ public class RequestFormService extends BaseBean {
 		//start = System.currentTimeMillis();
 		session.setAttribute(userid + "_" + requestid + "isintervenor", "" + isintervenor);
 		session.setAttribute(userid + "_" + requestid + "intervenorright", "" + intervenorright);
+		resultDatas.put("intervenorright", intervenorright);
 		poppupRemindInfoUtil.updatePoppupRemindInfo(userid, 10, (logintype).equals("1") ? "0" : "1", requestid);
 		poppupRemindInfoUtil.updatePoppupRemindInfo(userid, 14, (logintype).equals("1") ? "0" : "1", requestid);
 		session.removeAttribute(userid + "_" + requestid + "currentusercanview");
@@ -1237,7 +1238,7 @@ public class RequestFormService extends BaseBean {
 		RightMenu rightMenu = new RightMenu();
 		rightMenu.setMenuName(menuName);
 		rightMenu.setMenuType(menuType);
-		rightMenu.setTarget(target);
+		//rightMenu.setTarget(target);
 		rightMenu.setMenuFun(menuFun);
 		rightMenu.setIsTop(topmenus.contains(menuType)?"1":"0");
 		rightMenu.setMenuIcon(menuIcon);
