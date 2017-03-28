@@ -1,0 +1,35 @@
+/**表单字段相关CSS**/
+
+.field-filearea{
+    margin-top: 4px;
+    max-width: 600px;
+}
+.field-file-img{
+    float: left;
+    height: 34px;
+    padding-top: 4px;
+    padding-left: 4px;
+}
+.field-file-name{
+    padding-left: 4px;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.field-file-size{
+    padding-left: 4px;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+}
+.field-file-btn{
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+}
+.field-file-btnarea{
+    padding-left:4px;
+    padding-bottom:2px;
+}
