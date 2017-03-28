@@ -32,11 +32,6 @@ const apps = {
 		output: "../spa/workflow/global.js",
 		styleUrl: "../spa/workflow/global.css",
 	},
-	"portablglobal4js":{
-		entry: "./pc/global4js/portalindex.js",
-		output: "../wui/global.js",
-		styleUrl: "../wui/global.css",
-	},
 	"ecology9wf": {
 		entry: "./pc/workflow/index.js",
 		output: "../spa/workflow/index.js",

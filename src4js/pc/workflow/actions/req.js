@@ -613,13 +613,13 @@ export const signmustinputtips = () =>{
 	const isVisual = remarktop > 0 && (remarktop - jQuery('.wea-new-top-req').height() + 200 <  jQuery('.wea-new-top-req-content').height());
 	if(!isVisual) {
 		if(remarktop - jQuery('.wea-new-top-req').height() + 200 > jQuery('.wea-new-top-req-content').height()){
-			scrolltop = remarktop - 185;
+			scrolltop = remarktop - 185 + jQuery('.wea-new-top-req-content').scrollTop();
 		}
 		if(remarktop <  (jQuery('.wea-new-top-req').height())){
 			if(remarktop < 0) remarktop = remarktop * -1;	
 			scrolltop = jQuery('.wea-new-top-req-content').scrollTop() - remarktop - jQuery('.wea-new-top-req').height() -100;
 		}
-		jQuery('.wea-new-top-req-content').animate({ scrollTop: scrolltop + "px" }, 500);
+		jQuery('.wea-new-top-req-content').animate({ scrollTop: scrolltop + "px" }, 0);
 	}
 	
 	UE.getEditor('remark').focus(true);

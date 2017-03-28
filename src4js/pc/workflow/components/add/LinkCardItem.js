@@ -155,11 +155,13 @@ class LinkCardItem extends React.Component{
 	onNewRequest(wfid,beagenter,f_weaver_belongto_userid,isagent,e){
 		//计数
 		jQuery.post('/workflow/request/AddWorkflowUseCount.jsp',{wfid:wfid});
-		jQuery('#workflowid').val(wfid);
-		jQuery('#isagent').val(isagent);
-		jQuery('#beagenter').val(beagenter);
-		jQuery('#subform').prop("action","/workflow/request/AddRequest.jsp");
-		jQuery('#subform').submit();
+//		jQuery('#workflowid').val(wfid);
+//		jQuery('#isagent').val(isagent);
+//		jQuery('#beagenter').val(beagenter);
+//		jQuery('#subform').prop("action","/workflow/request/AddRequest.jsp");
+//		jQuery('#subform').submit();
+		
+		openFullWindowHaveBar('/workflow/request/AddRequest.jsp?workflowid='+wfid+'&isagent'+isagent+'&beagenter'+beagenter);
 	}
 	//添加收藏
 	addWorkflow(colected){

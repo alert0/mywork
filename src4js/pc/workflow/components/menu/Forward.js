@@ -119,6 +119,24 @@ class Forward extends React.Component {
 						</div>
 						<div className='remark'>
 							<textarea name='forwardremark' id="forwardremark"/>
+							<input type="hidden" id="signdocids" name="signdocids" value={markInfo.signdocids}/>
+		            		 <input type="hidden" id="signworkflowids"name="signworkflowids" value={markInfo.signworkflowids}/>
+		            		 <input type="hidden" name="remarkLocation" id="remarkLocation" value={markInfo.remarkLocation}></input>
+		            		 <div class="signDoc_span" id="signDocCount" ></div> 
+        		             <input className="InputStyle" type="hidden" id="field-annexupload" name="field-annexupload" value={markInfo.annexdocids}/>
+                             <input type="hidden" id="field_annexupload_del_id" value=""/>
+                             <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={markInfo.fieldannexuploadname}/>
+                             <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value=""/>
+                             <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value={markInfo.requestid}/>
+                             <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
+                             <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
+                             <input type="hidden" name='annexmainId' id='annexmainId' value={markInfo.annexmainId}/>
+                             <input type="hidden" name='annexsubId' id='annexsubId' value={markInfo.annexsubId}/>
+                             <input type="hidden" name='annexsecId' id='annexsecId' value={markInfo.annexsecId}/>
+                             <input type="hidden" name='fileuserid' id='fileuserid' value={markInfo.fileuserid}/>
+                             <input type="hidden" name='fileloginyype' id='fileloginyype' value={markInfo.fileloginyype}/>
+                             <input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value={markInfo.annexmaxUploadImageSize}/>
+                             <span id="remarkSpan"></span>
 						</div>
 					</div>
 				</div>
