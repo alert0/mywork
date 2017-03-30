@@ -11,9 +11,7 @@ UE.registerUI('wfwfbutton', function(editor, uiName) {
 }, 34, 'remark,forwardremark');
 
 const initwfwfbutton = (editor,uiName) => {
-	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
-	const isSignWorkflow_edit = markInfo.get('isSignWorkflow_edit');
-	
+	const isSignWorkflow_edit = jQuery('#' + editor.key + "_div").find('#isSignWorkflow_edit_param').val();
 	if(isSignWorkflow_edit != '1'){
 		return;
 	}

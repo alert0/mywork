@@ -1,4 +1,4 @@
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 
 export const getTableSet = params => {
 	return WeaTools.callApi('/api/ec/dev/table/set', 'POST', params);

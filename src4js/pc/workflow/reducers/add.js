@@ -1,6 +1,6 @@
 import * as types from '../constants/ActionTypes'
 import objectAssign from 'object-assign'
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 const {ls} = WeaTools;
 
 import Immutable from 'immutable'
@@ -22,7 +22,9 @@ const initialState = Immutable.fromJS({
 	importValue:"",
 	curOperWfid:0,
 	showBeagenters:false,
-	showImportWf:false
+	showImportWf:false,
+	commonuse:'',
+	user:{}
 });
 
 export default function list(state = initialState, action) {
@@ -31,6 +33,8 @@ export default function list(state = initialState, action) {
 			return state.merge({loading:action.data});
         case types.SET_WFTYPES:
 			return state.merge({wftypes:action.data,loading:false});
+		case types.SET_COMMONUSE:
+			return state.merge({commonuse:action.commonuse,user:action.user});
         case types.SET_SEARCH_VALUE:
 			return state.merge({value:action.data});
         case types.SET_TABKEY:
@@ -90,7 +94,7 @@ export default function list(state = initialState, action) {
 				const typesShow = state.get("typesShow");
         		const docWidth = document.documentElement.clientWidth;
 	   			let typesCols = docWidth > 1400 ? [[],[],[],[]] : (docWidth > 1100 ? [[],[],[]] : (docWidth > 600 ? [[],[]] : [[]]));
-	   			let colHeight = docWidth > 1400 ? [0,0,0,0] : (docWidth > 1100 ? [0,0,0] : (docWidth > 600 ? [0,0] : [0])); 
+	   			let colHeight = docWidth > 1400 ? [0,0,0,0] : (docWidth > 1100 ? [0,0,0] : (docWidth > 600 ? [0,0] : [0]));
 	   			!!typesShow && typesShow.size !== 0 && typesShow.map(t=>{
 					const wfsize = t.get("wfbeans").size;
 	   				if(wfsize >= 0){

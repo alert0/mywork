@@ -1,7 +1,9 @@
-import { Modal, Row, Col, Button, Popover } from 'antd'
-import { WeaInput4HrmNew, WeaTools } from 'weaCom'
+import { Modal, Row, Col, Button, Popover, message } from 'antd'
+import { WeaHrmInput, WeaTools } from 'ecCom'
 import OGroup from './OGroup'
 import NodeOperator from './NodeOperator'
+import Immutable from 'immutable'
+import objectAssign from 'object-assign'
 
 class Forward extends React.Component {
 	constructor(props) {
@@ -11,9 +13,9 @@ class Forward extends React.Component {
 			isshownodeoperators: false,
 			showForward: false,
 			operatorids: '',
-			signinput:{},
-			hasinitremark:false
-	
+			signinput: {},
+			hasinitremark: false,
+			forwardflag: ''
 		};
 
 		const { requestid } = this.props;
@@ -23,15 +25,15 @@ class Forward extends React.Component {
 			_this.setState({ signinput: data });
 		});
 	}
-	
-	componentDidUpdate(){
-		const {hasinitremark} = this.state;
-		if(jQuery('#forwardremark').length > 0 && !hasinitremark){
+
+	componentDidUpdate() {
+		const { hasinitremark } = this.state;
+		if(jQuery('#forwardremark').length > 0 && !hasinitremark) {
 			var _ue = UEUtil.initRemark('forwardremark', false);
 			bindRemark(_ue);
-			this.setState({hasinitremark:true});
-			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index','105');
-			jQuery('.wea-req-forward-modal').css('z-index','105');
+			this.setState({ hasinitremark: true });
+			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index', '105');
+			jQuery('.wea-req-forward-modal').css('z-index', '105');
 		}
 	}
 
@@ -69,7 +71,16 @@ class Forward extends React.Component {
 	render() {
 		const { showForward, titleName, requestid } = this.props;
 		const { isshownodeoperators, isshowoperategroup, signinput } = this.state;
-		
+
+		let signInputHiddebArea = [];
+		signinput && Immutable.fromJS(signinput).mapEntries(o => {
+			let _value = o[1];
+			if(o[0] == 'phraseInfo' && _value){
+				_value = JSON.stringify(_value.toJS());
+			}
+			signInputHiddebArea.push(<input type="hidden" id={o[0]+"_param"} value={_value}/>)
+		});
+
 		return(
 			<Modal title={this.getTopTitle(titleName)} 
 				visible ={showForward}	
@@ -89,7 +100,7 @@ class Forward extends React.Component {
 							<span>转发接收人</span>
 						</div>
 						<div className='input'>
-							<WeaInput4HrmNew />
+							<WeaHrmInput />
 						</div>
 						<div className='btns'>
 							<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
@@ -117,26 +128,26 @@ class Forward extends React.Component {
 							<span>*</span>
 							<span>签字意见</span>
 						</div>
-						<div className='remark'>
-							<textarea name='forwardremark' id="forwardremark"/>
-							<input type="hidden" id="signdocids" name="signdocids" value={markInfo.signdocids}/>
-		            		 <input type="hidden" id="signworkflowids"name="signworkflowids" value={markInfo.signworkflowids}/>
-		            		 <input type="hidden" name="remarkLocation" id="remarkLocation" value={markInfo.remarkLocation}></input>
-		            		 <div class="signDoc_span" id="signDocCount" ></div> 
-        		             <input className="InputStyle" type="hidden" id="field-annexupload" name="field-annexupload" value={markInfo.annexdocids}/>
-                             <input type="hidden" id="field_annexupload_del_id" value=""/>
-                             <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={markInfo.fieldannexuploadname}/>
-                             <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value=""/>
-                             <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value={markInfo.requestid}/>
-                             <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
-                             <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
-                             <input type="hidden" name='annexmainId' id='annexmainId' value={markInfo.annexmainId}/>
-                             <input type="hidden" name='annexsubId' id='annexsubId' value={markInfo.annexsubId}/>
-                             <input type="hidden" name='annexsecId' id='annexsecId' value={markInfo.annexsecId}/>
-                             <input type="hidden" name='fileuserid' id='fileuserid' value={markInfo.fileuserid}/>
-                             <input type="hidden" name='fileloginyype' id='fileloginyype' value={markInfo.fileloginyype}/>
-                             <input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value={markInfo.annexmaxUploadImageSize}/>
-                             <span id="remarkSpan"></span>
+						<div className='remark' id="forwardremark_div">
+							 <textarea name='forwardremark' id="forwardremark"/>
+							 <input type="hidden" id="signdocids" name="signdocids" value=""/>
+							 <input type="hidden" id="signworkflowids"name="signworkflowids" value=""/>
+							 <input type="hidden" name="remarkLocation" id="remarkLocation" value=""></input>
+							 <input type="hidden" id="field-annexupload" name="field-annexupload" value=""/>
+							 <input type="hidden" id="field_annexupload_del_id" value=""/>
+							 <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value=""/>
+							 <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value=""/>
+							 <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value=""/>
+							 <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
+							 <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
+							 <input type="hidden" name='annexmainId' id='annexmainId' value=""/>
+							 <input type="hidden" name='annexsubId' id='annexsubId' value=""/>
+							 <input type="hidden" name='annexsecId' id='annexsecId' value=""/>
+							 <input type="hidden" name='fileuserid' id='fileuserid' value=""/>
+							 <input type="hidden" name='fileloginyype' id='fileloginyype' value=""/>
+							 <input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value=""/>
+							 <input type="hidden" id="requestid_param" value={requestid} />
+							 {signInputHiddebArea}
 						</div>
 					</div>
 				</div>
@@ -156,8 +167,61 @@ class Forward extends React.Component {
 		)
 	}
 
+	//提交
 	submitEvent() {
+		const { operatorids, forwardflag } = this.state;
+		let forwardremarkcontent = FCKEditorExt.getText("forwardremark");
+		//验证签字意见必填
+		const flag = chekcremark(forwardremarkcontent);
 
+		if(!flag || '' == operatorids) {
+			message.warning('"转发人、签字意见"未填写', 2);
+			return;
+		}
+		let forwardremarkInfo = this.getSignInputInfo();
+
+		const { actions, requestid } = this.props;
+		let params = objectAssign({}, forwardremarkInfo, { 
+			operate: 'save', 
+			field5: operatorids, 
+			forwardflag: forwardflag, 
+			actiontype: 'remarkOperate', 
+			requestid: requestid 
+		});
+		console.log("params", params);
+		const _this = this;
+		WeaTools.callApi('/workflow/core/ControlServlet.jsp?action=RequestSubmitAction', 'POST', params).then(data => {
+			const forwardflag = data.forwardflag;
+			if(forwardflag == '1') {
+				e9signReload();
+				actions.setShowForward(false);
+			} else {
+				try {
+					window.opener._table.reLoad();
+				} catch(e) {}
+				try {
+					//刷新门户流程列表
+					jQuery(window.opener.document).find('#btnWfCenterReload').click();
+				} catch(e) {}
+				actions.reqIsSubmit(true);
+			}
+		});
+	}
+
+	getSignInputInfo() {
+		const remarkDiv = jQuery('#forwardremark_div');
+		const { requestid } = this.props;
+		return {
+			signworkflowids: remarkDiv.find('#signworkflowids').val(),
+			signdocids: remarkDiv.find('#signdocids').val(),
+			remarkLocation: remarkDiv.find('#remarkLocation').val(),
+			'field-annexupload': remarkDiv.find('#field-annexupload').val(),
+			'field_annexupload_del_id': remarkDiv.find('#field_annexupload_del_id').val(),
+			'field-annexupload-name': remarkDiv.find('#field-annexupload-name').val(),
+			'field-annexupload-count': remarkDiv.find('#field-annexupload-count').val(),
+			'field-annexupload-request': requestid,
+			remark: FCKEditorExt.getHtml('forwardremark')
+		};
 	}
 
 	cancelEvent() {
@@ -167,6 +231,10 @@ class Forward extends React.Component {
 
 		const { actions } = this.props;
 		actions.setShowForward(false);
+
+		//清空签字意见内容
+		let ue = UE.getEditor('forwardremark');
+		ue.setContent('');
 	}
 }
 

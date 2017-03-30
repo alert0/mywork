@@ -11,9 +11,7 @@ UE.registerUI('wfdocbutton',function(editor,uiName){
 }, 34, 'remark,forwardremark');
 
 const initwfdocbutton = (editor,uiName) => {
-	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
-	const isSignDoc_edit = markInfo.get('isSignDoc_edit');
-	
+	const isSignDoc_edit = jQuery('#' + editor.key + "_div").find('#isSignDoc_edit_param').val();
 	if(isSignDoc_edit != '1'){
 		return;
 	}

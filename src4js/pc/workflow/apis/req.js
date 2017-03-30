@@ -1,4 +1,4 @@
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 
 export const getFormReqInfo = params => {
 	return WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', params);
@@ -12,8 +12,12 @@ export const getFormLayout = params => {
 	return WeaTools.callApi('/api/workflow/request/forminfo', 'GET', params);
 }
 
-export const getWorkflowStatus = params => {
-	return WeaTools.callApi('/api/workflow/request/wfstatus', 'GET', params);
+export const getWfStatus = params => {
+	return WeaTools.callApi('/api/workflow/request/wfstatusnew', 'GET', params);
+}
+
+export const getWfStatusCount = params => {
+	return WeaTools.callApi('/api/workflow/request/wfstatuscount', 'GET', params);
 }
 
 export const getResourcesKey = params => {

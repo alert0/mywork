@@ -24,14 +24,26 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-Right-menu-Batch-sharing:before {
+  content: "\e90a";
+}
+.icon-Right-menu-Need-feedback:before {
+  content: "\e90b";
+}
+.icon-Right-menu-Print-log2:before {
+  content: "\e90c";
+}
+.icon-Right-menu-Turn-to-do-need-feedback:before {
+  content: "\e90d";
+}
 .icon-form-left:before {
+  content: "\e907";
+}
+.icon-form-right:before {
   content: "\e909";
 }
 .icon-form-down:before {
   content: "\e906";
-}
-.icon-form-right:before {
-  content: "\e907";
 }
 .icon-form-up:before {
   content: "\e908";

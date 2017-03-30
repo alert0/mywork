@@ -7,9 +7,10 @@ import {message} from 'antd';
 export const initDatas = params => {
 	return dispatch => {
 		dispatch({type:types.SET_ADD_LOADING,data:true});
-		API_ADD.doWfInfoGet(params).then((datas)=>{
-			dispatch({type:types.SET_WFTYPES,data:datas})
+		API_ADD.doWfInfoGet(params).then((data)=>{
+			dispatch({type:types.SET_WFTYPES,data:data.datas})
 			//dispatch({type:types.SET_ADD_LOADING,data:false});
+			dispatch({type:types.SET_COMMONUSE,commonuse:data.commonuse,user:data.user});
 			dispatch(setUpdate());
 		});
 	}

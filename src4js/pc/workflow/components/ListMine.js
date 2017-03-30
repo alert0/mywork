@@ -6,11 +6,18 @@ import isEmpty from 'lodash/isEmpty'
 import {switchComponent} from '../util/switchComponent'
 import {Synergy} from 'weaPortal';
 
-import {WeaNewTop,WeaTab,WeaNewTableOld,WeaNewTree,WeaLayoutR11,WeaSearchGroup,WeaRightMenu,WeaPopoverHrm} from 'weaCom'
+import {
+    WeaTop,
+    WeaTab,
+    WeaTable,
+    WeaLeftTree,
+    WeaLeftRightLayout,
+    WeaSearchGroup,
+    WeaRightMenu,
+    WeaPopoverHrm
+} from 'ecCom'
 
-import {WeaErrorPage,WeaTools} from 'weaCom'
-
-import {WeaInput,WeaInput4ProjectNew,WeaInput4DocsNew,WeaInput4CustomNew,WeaInput4WfNew,WeaInput4WtNew,WeaNewDate,WeaInput4Hrm,WeaInput4HrmNew,WeaInput4DepNew,WeaInput4ComNew,WeaNewSelect} from 'weaCom'
+import {WeaErrorPage,WeaTools} from 'ecCom'
 
 import {Button,Form} from 'antd'
 const createForm = Form.create;
@@ -51,7 +58,8 @@ class ListMine extends React.Component {
             actions.initDatas({method:"all"});
             actions.doSearch();
         }
-
+        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.datas && document.title !== nextProps.title)
+            document.title = nextProps.title;
     }
     shouldComponentUpdate(nextProps,nextState) {
         return !is(this.props.title,nextProps.title)||
@@ -96,18 +104,18 @@ class ListMine extends React.Component {
             <div>
             	{isSingle && <WeaPopoverHrm />}
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
-            	<WeaNewTop 
-                	title={title} 
-                	loading={loading} 
-                	icon={<i className='icon-portal-workflow' />} 
-                	iconBgcolor='#55D2D4' 
-                	buttons={this.getButtons()} 
+            	<WeaTop
+                	title={title}
+                	loading={loading}
+                	icon={<i className='icon-portal-workflow' />}
+                	iconBgcolor='#55D2D4'
+                	buttons={this.getButtons()}
                 	buttonSpace={10}
-                	showDropIcon={true} 
-                	dropMenuDatas={this.getRightMenu()} 
+                	showDropIcon={true}
+                	dropMenuDatas={this.getRightMenu()}
                 	onDropMenuClick={this.onRightMenuClick.bind(this)}
                 >
-                <WeaLayoutR11 defaultShowLeft={true} leftCom={this.getTree()} leftWidth={25}>
+                <WeaLeftRightLayout defaultShowLeft={true} leftCom={this.getTree()} leftWidth={25}>
                     <WeaTab
                         buttonsAd={this.getTabButtonsAd()}
                     	searchType={['base','advanced']}
@@ -124,7 +132,7 @@ class ListMine extends React.Component {
                         keyParam="viewcondition"  //主键
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
-                    <WeaNewTableOld
+                    <WeaTable
                     	current={current}
                         tableCheck={tableCheck}
                         operates={operates && operates.toJS()}
@@ -145,8 +153,8 @@ class ListMine extends React.Component {
                         pageAutoWrap={pageAutoWrap}
                         loading={loading}
                         count={count} />
-                </WeaLayoutR11>
-                </WeaNewTop>
+                </WeaLeftRightLayout>
+                </WeaTop>
                 </WeaRightMenu>
                 <Synergy pathname='/workflow/listMine' requestid="-1" />
             </div>
@@ -220,7 +228,7 @@ class ListMine extends React.Component {
     getTree() {
         const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys,loading} = this.props;
         return (
-            <WeaNewTree
+            <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 counts={leftTreeCount && leftTreeCount.toJS()}
                 countsType={leftTreeCountType && leftTreeCountType.toJS()}

@@ -1,5 +1,5 @@
 import { Icon } from 'antd'
-import { WeaTools } from 'weaCom'
+import { WeaTools } from 'ecCom'
 
 export default class OGroup extends React.Component {
 	constructor(props) {

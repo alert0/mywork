@@ -15,26 +15,27 @@ UE.registerUI('wfphrasebutton',function(editor,uiName){
 const initwfphrasebutton = (editor,uiName) => {
 	var language = readCookie("languageidweaver");
 	var msg = SystemEnv.getHtmlNoteName(3449,language);
+	const paramDiv = jQuery('#' + editor.key + "_div");
 	var labelname = "@";
 	var initphrase = function () {
 		//点击其他地方，隐藏常用批示语选择框
 		jQuery("html").live('mouseup', function (e) {
-			if (jQuery("#_signinputphraseblock").is(":visible") && !!!jQuery(e.target).closest("#_signinputphraseblock")[0]) {
-				jQuery("#_signinputphraseblock").hide();
-				jQuery("#_addPhrasebtn").show()
-				jQuery("#cg_splitline").show();
-				jQuery("#addphraseblock").hide();
+			if (paramDiv.find("#_signinputphraseblock").is(":visible") && !!!jQuery(e.target).closest("#_signinputphraseblock")[0]) {
+				paramDiv.find("#_signinputphraseblock").hide();
+				paramDiv.find("#_addPhrasebtn").show()
+				paramDiv.find("#cg_splitline").show();
+				paramDiv.find("#addphraseblock").hide();
 			}
 			e.stopPropagation();
 		});
 		try {
-			jQuery("html", jQuery("#remark").find("iframe")[0].contentWindow.document).live('mouseup', function (e) {
-				if (jQuery("#_signinputphraseblock").is(":visible") && !!!jQuery(e.target).closest("#_signinputphraseblock")[0]) {
-					jQuery("#_signinputphraseblock").hide();
+			jQuery("html", paramDiv.find("#"+editor.key).find("iframe")[0].contentWindow.document).live('mouseup', function (e) {
+				if (paramDiv.find("#_signinputphraseblock").is(":visible") && !!!jQuery(e.target).closest("#_signinputphraseblock")[0]) {
+					paramDiv.find("#_signinputphraseblock").hide();
 					
-					jQuery("#_addPhrasebtn").show()
-					jQuery("#cg_splitline").show();
-					jQuery("#addphraseblock").hide();
+					paramDiv.find("#_addPhrasebtn").show()
+					paramDiv.find("#cg_splitline").show();
+					paramDiv.find("#addphraseblock").hide();
 					
 				}
 				e.stopPropagation();
@@ -42,10 +43,11 @@ const initwfphrasebutton = (editor,uiName) => {
 		} catch (e) {}
 		//combox html
 		
-		const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
-		const _hasPrivateRight = markInfo.get('hasAddWfPhraseRight');
-		const phraseInfo 	= markInfo.get('phraseInfo').toJS();
-		
+		const _hasPrivateRight = paramDiv.find('#hasAddWfPhraseRight_param').val();
+		let phraseInfo 	= paramDiv.find('#phraseInfo_param').val();
+		if(phraseInfo){
+			phraseInfo = JSON.parse(phraseInfo);
+		}
 		var comboxHtml = "" +
 						"<div id=\"_signinputphraseblock\" class=\"_signinputphraseblockClass\" style='display:none;z-index:999;'>" +
 						"	<div class=\"phrase_arrowsblock\"><img src=\"/images/ecology8/workflow/phrase/addPhrasejt_wev8.png\" width=\"14px\" height=\"14px\"></div>" +
@@ -77,11 +79,11 @@ const initwfphrasebutton = (editor,uiName) => {
 						"</div>";
 		var comboxobj = jQuery(comboxHtml);
 		//插入dom对象
-		jQuery('.wea-popover-hrm-relative-parent').append(comboxobj);
+		paramDiv.append(comboxobj);
 		
 		//从隐藏的select中获取常用批示语
 		
-		var _ul = comboxobj.find("#_signinputphrasecontentblock ul");
+		var _ul = paramDiv.find("#_signinputphrasecontentblock ul");
 	    for (var i=0; i<phraseInfo.length; i++) {
 			
 			var _style = "";			
@@ -91,18 +93,18 @@ const initwfphrasebutton = (editor,uiName) => {
 			_ul.append("<li " + _style + " class=\"cg_item\"><span class='cg_detail'>" + phraseInfo[i].workflowPhrases + "</span><input type='hidden' value='"+phraseInfo[i].workflowPhrasesContent+"'/></li>");
 	    }
 	    //删除‘添加常用批示语’ 文字
-		if (comboxobj.find("#_signinputphrasecontentblock ul li").length > 1) {
-	    	jQuery(comboxobj).find("#cg_splitline").show();
+		if (paramDiv.find("#_signinputphrasecontentblock ul li").length > 1) {
+	    	jQuery(paramDiv).find("#cg_splitline").show();
 	    } else {
 	    	if(_hasPrivateRight){
-	    		comboxobj.find("#_signinputphrasecontentblock ul").append("<li style=\"text-align:center;\" id='phrasedesc'><span class='cg_detail'>"+SystemEnv.getHtmlNoteName(3450,language)+"</span></li>");	
+	    		paramDiv.find("#_signinputphrasecontentblock ul").append("<li style=\"text-align:center;\" id='phrasedesc'><span class='cg_detail'>"+SystemEnv.getHtmlNoteName(3450,language)+"</span></li>");	
 	    	}else{
-	    		comboxobj.find("#_signinputphrasecontentblock ul").append("<li style=\"text-align:center;\" id='phrasedesc'><span class='cg_detail'>"+SystemEnv.getHtmlNoteName(4096,language)+"</span></li>");
+	    		paramDiv.find("#_signinputphrasecontentblock ul").append("<li style=\"text-align:center;\" id='phrasedesc'><span class='cg_detail'>"+SystemEnv.getHtmlNoteName(4096,language)+"</span></li>");
 	    	}
 	    }
 		
 		//添加按钮 鼠标交互时事件
-		jQuery("#_addPhrasebtn").hover(function () {
+		paramDiv.find("#_addPhrasebtn").hover(function () {
 			jQuery(this).children("img").hide();
 			jQuery(this).children("span").show();
 		}, function () {
@@ -110,7 +112,7 @@ const initwfphrasebutton = (editor,uiName) => {
 			jQuery(this).children("span").hide();
 		});
 		
-		jQuery("#_addPhrasebtn").bind("click", function () {
+		paramDiv.find("#_addPhrasebtn").bind("click", function () {
 			jQuery(this).hide();
 			jQuery("#cg_splitline").hide();
 			jQuery("#addphraseblock").show();
@@ -118,26 +120,26 @@ const initwfphrasebutton = (editor,uiName) => {
 			
 		});
 		
-		jQuery("#_signinputphrasecontentblock ul li").live("click", function () {
+		paramDiv.find("#_signinputphrasecontentblock ul li").live("click", function () {
 			try {
             	_onAddPhrase(jQuery(this).find("input").val());
             } catch (e) {
             	//console.log(e);
             }
-            jQuery("#_signinputphraseblock").hide();
-            jQuery("#_addPhrasebtn").show()
-			jQuery("#cg_splitline").show();
-			jQuery("#addphraseblock").hide();
+            paramDiv.find("#_signinputphraseblock").hide();
+            paramDiv.find("#_addPhrasebtn").show()
+			paramDiv.find("#cg_splitline").show();
+			paramDiv.find("#addphraseblock").hide();
 		});
 		
-		jQuery("#phraseqdbtn").bind("click", function () {
-			var phrasetext = jQuery("#phraseinput").val();
+		paramDiv.find("#phraseqdbtn").bind("click", function () {
+			var phrasetext = paramDiv.find("#phraseinput").val();
 			if (phrasetext != '') {
 				
 				phrasetext = jQuery("<div>" + phrasetext + "</div>").text();
 				
-				jQuery("#_signinputphrasecontentblock ul").append("<li class=\"loaddingli\"><span class='cg_detail' style='color:#7f7f7f;'>"+SystemEnv.getHtmlNoteName(3453,language)+"</span></li>");
-				jQuery("#_signinputphrasecontentblock").scrollTop(jQuery("#_signinputphrasecontentblock ul").height());
+				paramDiv.find("#_signinputphrasecontentblock ul").append("<li class=\"loaddingli\"><span class='cg_detail' style='color:#7f7f7f;'>"+SystemEnv.getHtmlNoteName(3453,language)+"</span></li>");
+				paramDiv.find("#_signinputphrasecontentblock").scrollTop(jQuery("#_signinputphrasecontentblock ul").height());
 				jQuery.ajax({
 					type: "get",
 					cache: false,
@@ -148,10 +150,10 @@ const initwfphrasebutton = (editor,uiName) => {
 				    error:function (XMLHttpRequest, textStatus, errorThrown) {
 				    } , 
 				    success : function (data, textStatus) {
-				    	jQuery("#phraseinput").val("");
-				    	jQuery("#phrasedesc").remove();
-				    	var lastli = jQuery("#_signinputphrasecontentblock ul .loaddingli");
-						if (jQuery("#_signinputphrasecontentblock ul li").length > 3)  {
+				    	paramDiv.find("#phraseinput").val("");
+				    	paramDiv.find("#phrasedesc").remove();
+				    	var lastli = paramDiv.find("#_signinputphrasecontentblock ul .loaddingli");
+						if (paramDiv.find("#_signinputphrasecontentblock ul li").length > 3)  {
 //							jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
 //							jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
 //							jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
@@ -168,11 +170,11 @@ const initwfphrasebutton = (editor,uiName) => {
 				});
 				
 			}
-			jQuery("#_addPhrasebtn").show()
-			jQuery("#cg_splitline").show();
+			paramDiv.find("#_addPhrasebtn").show()
+			paramDiv.find("#cg_splitline").show();
 	
 			
-			jQuery("#addphraseblock").hide();
+			paramDiv.find("#addphraseblock").hide();
 		    
 		});
 	};
@@ -216,21 +218,8 @@ const initwfphrasebutton = (editor,uiName) => {
             var el = jQuery('#'+editor.key).find(".edui-for-wfphrasebutton");
             var px=el.offset().left;
 		    var py=el.offset().top - 69 + jQuery('.wea-new-top-req-content').scrollTop();
-			jQuery("#_signinputphraseblock").css({"z-index":"99999","top":py + "px", "left":px+"px"});
-			jQuery("#_signinputphraseblock").show();
-			
-//			if (_firstclc) {
-//		    	_firstclc = false;
-//		    	var _outdiv = jQuery("#_signinputphrasecontentblock");
-//		    	var _li = jQuery("#_signinputphrasecontentblock ul li");
-//		    	if (_li.length > 3)  {
-//					jQuery("#_signinputphrasecontentblock").css("height", jQuery("#_signinputphrasecontentblock").height() + "px");
-//					jQuery("#_signinputphrasecontentblock").css("overflow", "hidden");
-//					jQuery("#_signinputphrasecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
-//					_li.show();
-//				}
-//		    }
-			
+			paramDiv.find("#_signinputphraseblock").css({"z-index":"99999","top":py + "px", "left":px+"px"});
+			paramDiv.find("#_signinputphraseblock").show();			
         }
     });
 	
@@ -248,9 +237,7 @@ const initwfphrasebutton = (editor,uiName) => {
     
     jQuery("#mainsupports").hide();
     
-    if(jQuery('#_signinputphraseblock').length == 0){
-	    setTimeout(function(){initphrase();},1000);
-    }
+	setTimeout(function(){initphrase();},1000);
 
     //因为你是添加button,所以需要返回这个button
     return btn;

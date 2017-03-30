@@ -237,11 +237,22 @@
 .wea-workflow-status-table-main span.ant-table-row-expand-icon {
 	display: none;
 }
+.wea-workflow-status-table-single .ant-table-tbody>tr>:first-child,.wea-workflow-status-table-single .ant-table-thead>tr>:first-child{
+	padding-left: 20px;
+}
 .wea-workflow-status .wea-hrm-card{
 	color: #242424;
 }
 .wea-workflow-status .wea-hrm-card:hover{
 	color: #018efb !important;
+}
+.wea-workflow-status-loadmore{
+	display: inline-block;
+	text-align: center;
+	cursor: pointer;
+	height: 40px;
+	line-height: 40px;
+	color: #2db7f5;
 }
 
 /*相关资源*/

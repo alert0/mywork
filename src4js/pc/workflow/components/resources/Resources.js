@@ -1,5 +1,5 @@
 import {Row ,Col} from 'antd';
-import {WeaNewTableOld} from 'weaCom'
+import {WeaTable} from 'ecCom'
 import cloneDeep from 'lodash/cloneDeep'
 
 import Immutable from 'immutable'
@@ -19,7 +19,7 @@ class Resources extends React.Component {
         !is(this.props.pageSize,nextProps.pageSize)||
         !is(this.props.loading,nextProps.loading)||
         !is(this.props.count,nextProps.count);
-   } 
+   }
 	componentDidMount(){
 //		jQuery('.wea-workflow-resources').height(jQuery('.wea-new-top-req-content').height() - 5);
 	}
@@ -40,13 +40,13 @@ class Resources extends React.Component {
         		{
         			menu.map(t=>{
         				const isNow = t.key == tabKey;
-        				return <div className='wea-workflow-resources-tab-item' style={isNow ? {background:'#4bb1fb',color:'#fff'} : {background:'transparent',color:'#848484'}} onClick={this.doChange.bind(this,t.key)}> 
+        				return <div className='wea-workflow-resources-tab-item' style={isNow ? {background:'#4bb1fb',color:'#fff'} : {background:'transparent',color:'#848484'}} onClick={this.doChange.bind(this,t.key)}>
         					{t.title}
         				</div>
         			}
         		)}
         	</div>
-    		<WeaNewTableOld
+    		<WeaTable
     			current={current}
                 pageSize={pageSize}
     			heightSpace={40}
@@ -54,7 +54,7 @@ class Resources extends React.Component {
                 operates={operatesR}
                 loading={loading}
                 onChange={(p,f,s)=>actions.getResourcesDatas(tabKey,p.current,p.pageSize,false)}
-                columns={this.getColumns(columnsR)} 
+                columns={this.getColumns(columnsR)}
                 datas={datasR}
                 count={count.get(dKey)} />
         </div>

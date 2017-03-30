@@ -10,9 +10,7 @@ UE.registerUI('wfannexbutton',function(editor,uiName){
 }, 34, 'remark,forwardremark');
 
 const initwfannexbutton = (editor,uiName) => {
-	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
-	const isannexupload_edit = markInfo.get('isannexupload_edit');
-
+	const isannexupload_edit = jQuery('#' + editor.key + "_div").find('#isannexupload_edit_param').val();
 	if(isannexupload_edit != "1"){
 		return;
 	}
@@ -20,7 +18,7 @@ const initwfannexbutton = (editor,uiName) => {
 	var language = readCookie("languageidweaver");
 	var msg = SystemEnv.getHtmlNoteName(3449,language);
 	var labelname = "@";
-	const annexmaxUploadImageSize = markInfo.get('annexmaxUploadImageSize');
+	const annexmaxUploadImageSize = jQuery('#' + editor.key + "_div").find('#annexmaxUploadImageSize_param').val();
 	var initphrase = function () {
 		//点击其他地方，隐藏附件上传选择框
 		jQuery("html").live('mouseup', function (e) {
@@ -190,13 +188,13 @@ var splitchar = "////~~weaversplit~~////";
 var x=0;
 var fQError = "";
 function cfileupload(editorid) {
-	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
-	const annexmainId = markInfo.get('annexmainId');
-	const annexsubId = markInfo.get('annexsubId');
-	const annexsecId = markInfo.get('annexsecId');
-	const annexmaxUploadImageSize = markInfo.get('annexmaxUploadImageSize');
-	const fileuserid = markInfo.get('fileuserid');
-	const fileloginyype = markInfo.get('fileloginyype');
+	const paramDiv = jQuery('#' + editorid + "_div");
+	const annexmainId = paramDiv.find('#annexmainId_param').val();
+	const annexsubId = paramDiv.find('#annexsubId_param').val();
+	const annexsecId = paramDiv.find('#annexsecId_param').val();
+	const annexmaxUploadImageSize = paramDiv.find('#annexmaxUploadImageSize_param').val();
+	const fileuserid = paramDiv.find('#fileuserid_param').val();
+	const fileloginyype = paramDiv.find('#fileloginyype_param').val();
 	
 	var oUploadannexupload;
 	var settings = {
@@ -314,18 +312,18 @@ function cfileupload(editorid) {
 			}
 			
 			//container.find(".e8fileupload").css("visibility","hidden");
-			var fieldannexuploadid = jQuery.trim(jQuery("#field-annexupload").val());
-			var fieldannexuploadidname = jQuery.trim(jQuery("#field-annexupload-name").val());
+			var fieldannexuploadid = jQuery.trim(paramDiv.find("#field-annexupload").val());
+			var fieldannexuploadidname = jQuery.trim(paramDiv.find("#field-annexupload-name").val());
 			if(fieldannexuploadid != "" && fieldannexuploadid !=null){
-				jQuery("#field-annexupload").val(fieldannexuploadid+","+jQuery.trim(rtvids));
-				jQuery("#field-annexupload-name").val(fieldannexuploadidname+splitchar+jQuery.trim(rtvnames));
+				paramDiv.find("#field-annexupload").val(fieldannexuploadid+","+jQuery.trim(rtvids));
+				paramDiv.find("#field-annexupload-name").val(fieldannexuploadidname+splitchar+jQuery.trim(rtvnames));
 			}else{
-				jQuery("#field-annexupload").val(jQuery.trim(rtvids));
-				jQuery("#field-annexupload-name").val(jQuery.trim(rtvnames));
+				paramDiv.find("#field-annexupload").val(jQuery.trim(rtvids));
+				paramDiv.find("#field-annexupload-name").val(jQuery.trim(rtvnames));
 			}
 		},
 		upload_complete_handler : function(){
-			var fieldannexuploadcount = jQuery("#field-annexupload-count").val();
+			var fieldannexuploadcount = paramDiv.find("#field-annexupload-count").val();
 			x++;
 			if(x == fieldannexuploadcount){
 				jQuery("#fsUploadProgressfileupload").html("");
@@ -420,10 +418,11 @@ window.deletefile = deletefile;
 function onAddUploadFile(ids,names,editorid){
 	var showfor = jQuery("#_fileuploadphraseblock").attr("showfor");
 	if(showfor != 2){
-		var fieldannexuploadrequest = jQuery("#field-annexupload-request").val();
+		var fieldannexuploadrequest = jQuery('#'+editorid+'_div').find("#field-annexupload-request").val();
 		var phrase = "<a href='javascript:void(0);' onclick=\"parent.openFullWindowHaveBar('/docs/docs/DocDsp.jsp?id=" + ids + "&isrequest=1&requestid="+fieldannexuploadrequest+"&desrequestid=0')\" style=\"color:#123885;\">" + names + "</a>&nbsp;&nbsp;";
+		console.log("phrase",phrase);
 		if(phrase!=null && phrase!=""){
-			$GetEle("remarkSpan").innerHTML = "";
+			//$GetEle("remarkSpan").innerHTML = "";
 			try{
 				UE.getEditor(editorid).setContent(phrase, true);
 			}catch(e){

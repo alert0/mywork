@@ -6,31 +6,19 @@ import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
 import {Synergy} from 'weaPortal';
 
-import {WeaErrorPage,WeaTools} from 'weaCom'
+import {WeaErrorPage,WeaTools} from 'ecCom'
 import {switchComponent} from '../util/switchComponent'
 
 import {
     WeaTab,
-    WeaNewTop,
-    WeaNewTableOld,
+    WeaTop,
+    WeaTable,
     WeaSearchGroup,
-    WeaInput,
-    WeaInput4ProjectNew,
-    WeaInput4DocsNew,
-    WeaInput4CustomNew,
-    WeaInput4WfNew,
-    WeaInput4WtNew,
-    WeaNewDate,
-    WeaInput4Hrm,
-    WeaInput4HrmNew,
-    WeaInput4DepNew,
-    WeaInput4ComNew,
-    WeaNewSelect,
     WeaRightMenu,
     WeaPopoverHrm,
-    WeaLayoutR11,
-    WeaNewTree
-} from 'weaCom'
+    WeaLeftRightLayout,
+    WeaLeftTree
+} from 'ecCom'
 
 import {Button, Form, Modal,message} from 'antd'
 const createForm = Form.create;
@@ -152,19 +140,19 @@ class QueryFlow extends React.Component {
             <div className='wea-workflow-query'>
             	{isSingle && <WeaPopoverHrm />}
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
-                <WeaNewTop 
-                	title={title} 
-                	loading={loading} 
-                	icon={<i className='icon-portal-workflow' />} 
-                	iconBgcolor='#55D2D4' 
-                	buttons={this.getButtons()} 
+                <WeaTop
+                	title={title}
+                	loading={loading}
+                	icon={<i className='icon-portal-workflow' />}
+                	iconBgcolor='#55D2D4'
+                	buttons={this.getButtons()}
                 	buttonSpace={10}
-                	showDropIcon={true} 
-                	dropMenuDatas={this.getRightMenu()} 
+                	showDropIcon={true}
+                	dropMenuDatas={this.getRightMenu()}
                 	onDropMenuClick={this.onRightMenuClick.bind(this)}
                 >
                    {showTable ? <div style={{height: '100%'}}>
-                    	<WeaLayoutR11 leftCom={this.getTree()} leftWidth={25} >
+                    	<WeaLeftRightLayout leftCom={this.getTree()} leftWidth={25} >
 	                        <WeaTab
 	                            onlyShowRight={true}
 	                            buttonsAd={this.getTabButtonsAd()}
@@ -177,7 +165,7 @@ class QueryFlow extends React.Component {
 	                            onSearch={v=>{actions.doSearch()}}
 	                        	onSearchChange={v=>{actions.saveFields({...fields.toJS(),requestname:{name:'requestname',value:v},_requestname:{name:'_requestname',value:v}})}}
 	                            />
-	                        <WeaNewTableOld
+	                        <WeaTable
 	                            current={current}
 	                        	pageSize={pageSize}
 	                        	pageAutoWrap={pageAutoWrap}
@@ -198,7 +186,7 @@ class QueryFlow extends React.Component {
 		                        saveColumnsSet={() => actions.tableColSet()}
 		                        loading={loading}
 	                            count={count}/>
-	                	</WeaLayoutR11>
+	                	</WeaLeftRightLayout>
                     </div> :
                     <div className='wea-workflow-query-search'>
                         <Form horizontal>{this.getSearchs()}</Form>
@@ -207,7 +195,7 @@ class QueryFlow extends React.Component {
                         </div>
                     </div>
                     }
-                </WeaNewTop>
+                </WeaTop>
                 </WeaRightMenu>
                 <Synergy pathname='/workflow/queryFlow' requestid="-1" />
             </div>
@@ -236,7 +224,7 @@ class QueryFlow extends React.Component {
     		content:'搜索'
     	});
         showTable && btns.push({
-         	icon: <i className='icon-Right-menu-batch'/>,
+         	icon: <i className='icon-Right-menu-Batch-sharing'/>,
 			content:'批量共享',
 			disabled: !selectedRowKeys || !`${selectedRowKeys.toJS()}`
         })
@@ -283,7 +271,7 @@ class QueryFlow extends React.Component {
     getTree() {
         const {leftTree,actions,searchParams,selectedTreeKeys,loading} = this.props;
         return (
-            <WeaNewTree
+            <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 selectedKeys={selectedTreeKeys && selectedTreeKeys.toJS()}
                 loading={loading}

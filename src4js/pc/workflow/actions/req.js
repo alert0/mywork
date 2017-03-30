@@ -273,17 +273,38 @@ export const setRightMenuInfo = value => {
 	return {type:types.SET_RIGHT_MENU_INFO,rightMenu:value};
 }
 
-//流程状态
-export const getWorkflowStatus= (reqId,isurger) => {
+//加载流程状态数据
+export const loadWfStatusData = (params, cardid, isfirst) => {
 	return (dispatch, getState) => {
-		//获取流程状态
 		dispatch({type:types.FORM_LOADING,loading:true});
-		API_REQ.getWorkflowStatus({
-			requestid:reqId
-//			isurger:isurger
-		}).then(data=>{
-			dispatch({type:types.SET_WORKFLOW_STATUS,workflowStatus:data});
+		const statusState = getState().workflowReq.get('wfStatus');
+		let newParams = {...params, ...{desremark:cardid, isfirst:isfirst, pageSize:50}};
+		if(!isfirst)
+			newParams["parameter"] = JSON.stringify(statusState.getIn([cardid,"parameter"]));
+		API_REQ.getWfStatus(newParams).then(data => {
+			let statusDatas = {cardid:cardid};
+			statusDatas[cardid] = data;
+			dispatch({type:types.SET_WORKFLOW_STATUS, wfStatus:statusDatas});
 		});
+		if(cardid === "all" && isfirst){
+			API_REQ.getWfStatusCount(params).then(data => {
+				dispatch({type:types.SET_WORKFLOW_STATUS, wfStatus:{counts:data}});
+			});
+		}
+	}
+}
+
+//流程状态-切换Card
+export const switchWfStatusCard = cardid => {
+	return (dispatch, getState) => {
+		dispatch({type:types.SET_WORKFLOW_STATUS, wfStatus:{cardid:cardid}});
+	}
+}
+
+//流程状态-全部Card控制节点行隐藏显示
+export const controlWfStatusHideRow = hideRowKeys =>{
+	return (dispatch, getState) =>{
+		dispatch({type:types.SET_WORKFLOW_STATUS, wfStatus:{hideRowKeys:hideRowKeys}});
 	}
 }
 
@@ -590,14 +611,15 @@ export const doSubmitE9Api = (actiontype,src,needwfback,formdatas) => {
 }
 
 export const setSignInputInfo = (requestid) =>{
+	const remarkDiv = jQuery('#remark_div');
 	return {
-		signworkflowids:jQuery('#signworkflowids').val(),
-		signdocids:jQuery('#signdocids').val(),
-		remarkLocation:jQuery('#remarkLocation').val(),
-		'field-annexupload':jQuery('#field-annexupload').val(),
-		'field_annexupload_del_id':jQuery('#field_annexupload_del_id').val(),
-		'field-annexupload-name':jQuery('#field-annexupload-name').val(),
-		'field-annexupload-count':jQuery('#field-annexupload-count').val(),
+		signworkflowids:remarkDiv.find('#signworkflowids').val(),
+		signdocids:remarkDiv.find('#signdocids').val(),
+		remarkLocation:remarkDiv.find('#remarkLocation').val(),
+		'field-annexupload':remarkDiv.find('#field-annexupload').val(),
+		'field_annexupload_del_id':remarkDiv.find('#field_annexupload_del_id').val(),
+		'field-annexupload-name':remarkDiv.find('#field-annexupload-name').val(),
+		'field-annexupload-count':remarkDiv.find('#field-annexupload-count').val(),
 		'field-annexupload-request':requestid
 	};
 }
@@ -613,7 +635,7 @@ export const signmustinputtips = () =>{
 	const isVisual = remarktop > 0 && (remarktop - jQuery('.wea-new-top-req').height() + 200 <  jQuery('.wea-new-top-req-content').height());
 	if(!isVisual) {
 		if(remarktop - jQuery('.wea-new-top-req').height() + 200 > jQuery('.wea-new-top-req-content').height()){
-			scrolltop = remarktop - 185 + jQuery('.wea-new-top-req-content').scrollTop();
+			scrolltop = remarktop + jQuery('.wea-new-top-req-content').scrollTop() - 185;
 		}
 		if(remarktop <  (jQuery('.wea-new-top-req').height())){
 			if(remarktop < 0) remarktop = remarktop * -1;	
@@ -1036,12 +1058,10 @@ export const scrollLoadSign = (params) => {
 			}
 		}
 		API_REQ.getFormReqInfo(logParams).then(data=>{
-			let value = data;
-			let logList = getState().workflowReq.get('logList').toJS();
-			logList = logList.concat(value.log_loglist);
-			dispatch({type:types.SET_SCROLL_MARK_INFO,logList:logList});
-			const maxrequestlogid = value.maxrequestlogid;
-			dispatch(setmaxrequestlogid(maxrequestlogid,logListTabKey > 2));
+			const logList = getState().workflowReq.get('logList');
+			let logListnew = logList.concat(Immutable.fromJS(data.log_loglist));
+			dispatch({type:types.SET_SCROLL_MARK_INFO,logList:logListnew});
+			dispatch(setmaxrequestlogid( data.maxrequestlogid,logListTabKey > 2));
 			dispatch(setIsLoadingLog(false));
 		});
 	}

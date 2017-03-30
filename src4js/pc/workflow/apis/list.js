@@ -1,4 +1,4 @@
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 
 export const getWfRequestList = params => {
     return WeaTools.callApi('/api/workflow/reqlist/list', 'GET', params);

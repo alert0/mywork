@@ -73,7 +73,7 @@ class FormField extends React.Component {
             if(detailtype == "1")
                 return <span id={"field"+fieldid+"span"} dangerouslySetInnerHTML={{__html: theValue}}></span>
             else
-                return <div style={{overflowX:"auto"}} dangerouslySetInnerHTML={{__html: theValue}} />
+                return <div style={{overflowX:"auto",overflowY:"hidden"}} dangerouslySetInnerHTML={{__html: theValue}} />
         }else if(htmltype == "3"){      //浏览框
             let showname = fieldValueObj && fieldValueObj.get("showname");
             if(fieldValueObj && fieldValueObj.has("formatvalue"))

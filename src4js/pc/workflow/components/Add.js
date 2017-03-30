@@ -5,7 +5,7 @@ import * as AddAction from '../actions/add'
 
 import {Row,Col,Input,Tabs,Button,Alert,Spin,Icon} from 'antd'
 
-import {WeaNewTop, WeaTab, WeaTools} from 'weaCom'
+import {WeaTop, WeaTab, WeaTools} from 'ecCom'
 import {Synergy} from 'weaPortal';
 
 const TabPane = Tabs.TabPane;
@@ -42,7 +42,8 @@ class Add extends React.Component {
 			actions.initDatas({"needall":"1","tabkey":add.get("tabkey")});
 			this.scrollheigth();
         }
-
+		if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.add.has("wftypes") && document.title !== "新建流程")
+            document.title = "新建流程";
     }
 	shouldComponentUpdate(nextProps,nextState) {
         return !is(this.props.add,nextProps.add);
@@ -86,18 +87,21 @@ class Add extends React.Component {
 		const curOperWfid = add.get("curOperWfid");
 		const showBeagenters = add.get("showBeagenters");
 		const showImportWf = add.get("showImportWf");
+		const commonuse = add.get('commonuse');
+		const user = add.get('user');
 		const tabDatas = [
 			{title:'全部流程',key:"1"},
-           	{title:'我的收藏',key:"2"},
-           	{title:'常用流程',key:"3"}
+           	{title:'我的收藏',key:"2"}
 		];
+		
+		if(commonuse == '1') tabDatas.push({title:'常用流程',key:"3"});
 		return (
 		   	<div className="wf-create-main">
-			   	<WeaNewTop loading={loading} icon={<i className='icon-portal-workflow' />} iconBgcolor='#55D2D4' title='新建流程' buttons={this.getButtons()} hideButtons={this.getHideButtons()} showDropIcon={false}/>
-				<WeaTab 
+			   	<WeaTop loading={loading} icon={<i className='icon-portal-workflow' />} iconBgcolor='#55D2D4' title='新建流程' buttons={this.getButtons()} hideButtons={this.getHideButtons()} showDropIcon={false}/>
+				<WeaTab
 		            onSearchChange={this.doSearch.bind(this)}
 		            selectedKey={tabkey}
-		            datas={tabDatas} 
+		            datas={tabDatas}
                     searchType={['base']}
 		            keyParam='key'
 		            onChange={this.changeTab.bind(this)} >
@@ -106,28 +110,28 @@ class Add extends React.Component {
 					{isAbc && tabkey !== "3" && (
 						<div className="abcbtn-group">
 						{
-							abcBtns.map(abcBtn => <Button className={abcBtn.get("selected") ? 'btn-selected' : ''} type='ghost' key={abcBtn.get("letter")} 
+							abcBtns.map(abcBtn => <Button className={abcBtn.get("selected") ? 'btn-selected' : ''} type='ghost' key={abcBtn.get("letter")}
 								disabled={abcBtn.get("disabled")} onClick={this.goABC.bind(this,abcBtn.get("letter"))}>{abcBtn.get("letter")}</Button>)
 						}
 						</div>)
 					}
 	           		{tabkey == "3" ? (
 	           			usedBeans.size == 0 && !loading ? <Alert message="提示" description="数据为空" type="info" showIcon /> :
-						   <UsedToDoList wfbeans={usedBeans} importDataShow={importDataShow} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />
+						   <UsedToDoList user={user} wfbeans={usedBeans} importDataShow={importDataShow} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />
 	           			):(
 	           			typesShow.size == 0 && !loading ? <Alert message="提示" description="数据为空" type="info" showIcon /> :(
 			           		mulitcol ?
 		           			<Row>
 		           				{typesCols.map(c=>{
 		           					return <Col span={24 / typesCols.size} style={{padding:'0 10px'}}>
-										<MLinkCard types={c} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
+										<MLinkCard user={user} types={c} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
 									</Col>
 		           				})}
 		           			</Row>
 							:
 							<Row>
 								<Col span="24" style={{paddingLeft:10,paddingRight:10}}>
-									<OLinkCard types={typesShow} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
+									<OLinkCard user={user} types={typesShow} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
 								</Col>
 							</Row>)
 	           			)

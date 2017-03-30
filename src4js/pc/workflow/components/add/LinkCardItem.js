@@ -1,11 +1,11 @@
 import * as API from '../../apis/add'
 import {Card,Icon,Popover,Button,AutoComplete,Menu,message} from 'antd';
-import {WeaInputFocus} from 'weaCom'
+import {WeaInputSearch} from 'ecCom'
 import Immutable from 'immutable'
 const is = Immutable.is;
 
 class LinkCardItem extends React.Component{
-	constructor(props) { 
+	constructor(props) {
         super(props);
         this.state = {
             width: 0
@@ -38,7 +38,7 @@ class LinkCardItem extends React.Component{
 		const wfbean = this.props.wfbean;
 		const wfbeanNext = nextProps.wfbean;
 		let needrender = false;
-		needrender = curOperWfidNext === wfbeanNext.get("id") 
+		needrender = curOperWfidNext === wfbeanNext.get("id")
 				&& (this.props.showBeagenters !== nextProps.showBeagenters
 				|| this.props.showImportWf !== nextProps.showImportWf
 				|| !is(this.props.importDataShow, nextProps.importDataShow))
@@ -49,11 +49,10 @@ class LinkCardItem extends React.Component{
     }
 	render(){
 		const {width} = this.state;
-		const {wfbean,importDataShow,iscommon,num,showBeagenters,showImportWf,actions} = this.props;
+		const {wfbean,importDataShow,iscommon,num,showBeagenters,showImportWf,actions,user} = this.props;
 		const beagenters = wfbean.get("beagenters");
 		const belongtoUsers = wfbean.get("belongtoUsers");
 		const wfColl = wfbean.get("wfColl");
-		const user = wfbean.get("user");
 		const isImportWf = wfbean.get("isImportWf");
 		const wfid = wfbean.get("id");
 		const wfname = wfbean.get("name");
@@ -61,11 +60,11 @@ class LinkCardItem extends React.Component{
 		const isagent = !!beagenters && beagenters.size > 0;
 		const isBelong = !!belongtoUsers && belongtoUsers.size > 0;
 		const hasImportDate = !!importDataShow && importDataShow.size > 0;
-		
+
 		const isImport = isImportWf && isImportWf == "1";
 		const colected = wfColl=="1";
 		const isCreateBtn = isagent || isBelong;
-		
+
 		const agentWidth = isImport && !iscommon ? width-90 : ((isImport || !iscommon) ? width-60 : width-30);
 		const importWidth = iscommon ? width-30 : width-60;
        	const colorarray = ["#55D2D4","#B37BFA","#FFC62E","#8DCE36","#37B2FF","#FF9537","#FF5E56"];
@@ -73,16 +72,16 @@ class LinkCardItem extends React.Component{
 				<div className="centerItem" key={wfid} onMouseLeave={this.hideOperArea.bind(this)} >
 					{iscommon && <span style={{color:colorarray[num%7],fontSize:'30px',float:'left',marginLeft:20}}><i className={'icon-New-Flow-' + (num == 9 ? '10' : ('0' + (num + 1)))} /></span>}
 					<div className="fontItem" style={{'width': iscommon ? '60%':'100%'}}>
-						<a onClick={this.onNewRequest.bind(this,wfid,0,0,0)} target="_blank" title={wfname}>{wfname}</a>
+						<a onClick={this.onNewRequest.bind(this,wfid,'',0,0)} target="_blank" title={wfname}>{wfname}</a>
 					</div>
-					
+
 					<div className= "imageItem" style={{"display":"none"}}>
 							{isCreateBtn &&
 								<div className='wea-add-drop-btn'>
 								 	<span className='wea-add-drop-btn-area' onClick={this.agentCreate.bind(this)}>
 								 		<Icon title="选择创建身份" type="team"/>
 								 	</span>
-								 	{showBeagenters && 
+								 	{showBeagenters &&
 								 		<div className='wea-add-drop-content' style={{width:agentWidth}}>
 								 			<div className='wea-add-drop-btn-on' onClick={this.agentCreate.bind(this)}>
 								 				<Icon title="选择创建身份" type="team"/>
@@ -93,7 +92,7 @@ class LinkCardItem extends React.Component{
 										 			<Menu>
 											 			{belongtoUsers.map(b=>{
 															return <Menu.Item>
-																<a onClick={this.onNewRequest.bind(this,wfid,b.get("id"),0,1)} target="_blank">
+																<a onClick={this.onNewRequest.bind(this,wfid,b.get("id"),0,0)} target="_blank">
 																	{b.get("departmentName") && (b.get("departmentName"))}{b.get("jobtitlename") && ('/' + b.get("jobtitlename"))}
 																</a>
 															</Menu.Item>})
@@ -107,7 +106,7 @@ class LinkCardItem extends React.Component{
 										 			<Menu>
 											 			{beagenters.map(b=>{
 															return <Menu.Item>
-																<a onClick={this.onNewRequest.bind(this,wfid,b.get("id"),0,1)} target="_blank">
+																<a onClick={this.onNewRequest.bind(this,wfid,'',b.get("id"),1)} target="_blank">
 																	{b.get("lastname")}{b.get("departmentName") && ('/' + b.get("departmentName"))}
 																</a>
 															</Menu.Item>})
@@ -119,17 +118,17 @@ class LinkCardItem extends React.Component{
 								 	}
 								</div>
 							}
-							{isImport && 
+							{isImport &&
 								<div className='wea-add-drop-btn' >
 									<span className='wea-add-drop-btn-area' onClick={this.importWf.bind(this)}>
 									 	<Icon title="导入流程" type="download"/>
 								 	</span>
-								 	{showImportWf && 
+								 	{showImportWf &&
 								 		<div className='wea-add-drop-content' style={{width:importWidth}}>
 								 			<div className='wea-add-drop-btn-on' onClick={this.importWf.bind(this)}>
 								 				<Icon title="导入流程" type="download"/>
 								 			</div>
-								 			<WeaInputFocus onSearchChange={v=>actions.setImportSearchValue(v)}/>
+								 			<WeaInputSearch onSearchChange={v=>actions.setImportSearchValue(v)}/>
 								 			{hasImportDate ? <Menu style={{marginTop:10}}>
 									 			{importDataShow.map((b,i)=>{
 									 				if(i < 5) return <Menu.Item title={b.value}>
@@ -142,17 +141,17 @@ class LinkCardItem extends React.Component{
 								 	}
 								</div>
 							}
-							{!iscommon && 
+							{!iscommon &&
 								<div className='wea-add-drop-btn' >
 									<Icon type={colected ? "star" : "star-o" } title={colected ? "取消收藏" : "加入我的收藏"} onClick={this.addWorkflow.bind(this,colected ? '0' : '1')}/>
 								</div>
 							}
-					</div>				
+					</div>
 				</div>
 			   )
 	}
 	//新建流程
-	onNewRequest(wfid,beagenter,f_weaver_belongto_userid,isagent,e){
+	onNewRequest(wfid,f_weaver_belongto_userid,beagenter,isagent,e){
 		//计数
 		jQuery.post('/workflow/request/AddWorkflowUseCount.jsp',{wfid:wfid});
 //		jQuery('#workflowid').val(wfid);
@@ -161,7 +160,7 @@ class LinkCardItem extends React.Component{
 //		jQuery('#subform').prop("action","/workflow/request/AddRequest.jsp");
 //		jQuery('#subform').submit();
 		
-		openFullWindowHaveBar('/workflow/request/AddRequest.jsp?workflowid='+wfid+'&isagent'+isagent+'&beagenter'+beagenter);
+		openFullWindowHaveBar('/workflow/request/AddRequest.jsp?workflowid='+wfid+'&isagent='+isagent+'&beagenter='+beagenter+'&f_weaver_belongto_userid='+f_weaver_belongto_userid);
 	}
 	//添加收藏
 	addWorkflow(colected){
@@ -184,12 +183,12 @@ class LinkCardItem extends React.Component{
 	}
 	//流程导入
 	importWf(){
-		const {actions,wfbean,showImportWf} = this.props;
+		const {actions,wfbean,showImportWf,user} = this.props;
 		const wfid = wfbean.get("id");
 		if(showImportWf){
 			actions.setShowImportWf(wfid, false);
 		}else{
-			const userid = wfbean.get("user").get("id");
+			const userid = user.get("id");
 			const params = {
 				'f_weaver_belongto_userid':userid,
 				"f_weaver_belongto_usertype":"0",

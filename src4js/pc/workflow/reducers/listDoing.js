@@ -3,7 +3,7 @@ import * as types from '../constants/ActionTypes'
 import objectAssign from 'object-assign'
 import cloneDeep from 'lodash/cloneDeep'
 
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 
 const {ls} = WeaTools;
 

@@ -146,6 +146,7 @@ export const SET_TYPES_SHOW = 'set_types_show' //单列显示数据
 export const SET_TYPES_COLS = 'set_wftypes_cols' //多列显示数据
 export const SET_TYPES_ABC = 'set_wftypes_abc' //字母排列数据
 export const SET_USED_BEANS = 'set_used_beans' //常用数据
+export const SET_COMMONUSE ='set_commonuse' //设置
 
 export const SET_IMPORT_DATA = 'set_import_data' //设置导入流程列表
 export const SET_IMPORT_SEARCH_VALUE = 'set_import_search_value' //设置导入流程搜索值

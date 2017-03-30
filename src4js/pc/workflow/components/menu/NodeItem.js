@@ -12,11 +12,10 @@ export default class NodeItem extends React.Component {
 		if(this.props.selectAll !== nextProps.selectAll) {
 			this.setState({ checked: nextProps.selectAll });
 		}
-		
-		if(!nextProps.isselecttab){
+
+		if(this.props.selecttab !== nextProps.selecttab) {
 			this.setState({ checked: false });
 		}
-		
 		return this.state.checked !== nextState.checked;
 	}
 

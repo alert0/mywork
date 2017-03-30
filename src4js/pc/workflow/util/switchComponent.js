@@ -16,17 +16,17 @@ import forEach from 'lodash/forEach';
 
 import {
     WeaInput,
-    WeaInput4ProjectNew,
-    WeaInput4DocsNew,
-    WeaInput4CustomNew,
-    WeaInput4WfNew,
-    WeaInput4WtNew,
-    WeaNewDate,
-    WeaInput4HrmNew,
-    WeaInput4DepNew,
-    WeaInput4ComNew,
-    WeaNewSelect
-} from 'weaCom';
+    WeaProjectInput,
+    WeaDocInput,
+    WeaCrmInput,
+    WeaWfInput,
+    WeaWtInput,
+    WeaDateGroup,
+    WeaHrmInput,
+    WeaDepInput,
+    WeaComInput,
+    WeaSelect
+} from 'ecCom';
 
 export const switchComponent = (props, key, FieldProps, field = {},showName='') => {
     const {getFieldProps} = props.form;
@@ -35,32 +35,32 @@ export const switchComponent = (props, key, FieldProps, field = {},showName='') 
         case KEY_1:
             return (<WeaInput {...getFieldProps(FieldProps[0])}/>)
         case KEY_2:
-            return (<WeaInput4WtNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaWtInput {...getFieldProps(FieldProps[0])} showName={showName}/>)
         case KEY_3:
-            return (<WeaInput4WfNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaWfInput {...getFieldProps(FieldProps[0])} showName={showName}/>)
         case KEY_4:
-            return (<WeaNewSelect datas={formatSelectOptions(field.options)}
+            return (<WeaSelect datas={formatSelectOptions(field.options)}
                 {...getFieldProps(FieldProps[0],{
                 	initialValue: getSelectDefaultValue(field.options)
                 })} />)
         case KEY_5:
-            return (<WeaInput4HrmNew {...getFieldProps('createrid')} getShowName={name => {console.log('--------createrid',name)} }/>)
+            return (<WeaHrmInput {...getFieldProps('createrid')} getShowName={name => {console.log('--------createrid',name)} }/>)
         case KEY_6:
-            return (<WeaInput4DepNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaDepInput {...getFieldProps(FieldProps[0])} showName={showName}/>)
         case KEY_7:
-            return (<WeaInput4ComNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaComInput {...getFieldProps(FieldProps[0])} showName={showName}/>)
         case KEY_8:
-            return (<WeaNewDate {...getFieldProps(FieldProps[0],{
+            return (<WeaDateGroup {...getFieldProps(FieldProps[0],{
                 	initialValue: getSelectDefaultValue(field.options)
                 })} datas={formatSelectOptions(field.options)} form={props.form} domkey={FieldProps} />)
         case KEY_9:
-            return (<WeaInput4HrmNew {...getFieldProps(FieldProps[0])} getShowName={name => {console.log('-------',name)} }/>)
+            return (<WeaHrmInput {...getFieldProps(FieldProps[0])} getShowName={name => {console.log('-------',name)} }/>)
         case KEY_10:
-            return (<WeaInput4DocsNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaDocInput {...getFieldProps(FieldProps[0])} showName={showName}/>)
         case KEY_11:
-            return (<WeaInput4CustomNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaCrmInput {...getFieldProps(FieldProps[0])} showName={showName}/>)
         case KEY_12:
-            return (<WeaInput4ProjectNew {...getFieldProps(FieldProps[0])} showName={showName}/>)
+            return (<WeaProjectInput {...getFieldProps(FieldProps[0])} showName={showName}/>)
         default:
             return (<WeaInput {...getFieldProps(FieldProps[0])}/>);
     }

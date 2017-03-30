@@ -1,5 +1,5 @@
 import { Tabs, Button, Checkbox } from 'antd'
-import { WeaTools } from 'weaCom'
+import { WeaTools } from 'ecCom'
 import NodeItem from './NodeItem'
 const TabPane = Tabs.TabPane;
 
@@ -34,7 +34,6 @@ class NodeOperator extends React.Component {
 		const { allitems, unsubmititems, submititems, selectAll, selectTabKey } = this.state;
 		const { handleShowNodeOperator, setOperatorIds } = this.props;
 		const nodata = (<div className="no-data">没有数据</div>);
-
 		return(
 			<div className="wea-req-node-operator">
 				<div className="title">
@@ -44,21 +43,21 @@ class NodeOperator extends React.Component {
 					  <Tabs tabBarExtraContent={<Checkbox checked={selectAll} onChange={this.selectAll.bind(this)}>全选</Checkbox>} onChange={this.changeTab.bind(this)}>
 					    <TabPane tab="全部" key="1">
 					    {allitems.length > 0 ?
-				    		allitems.map(item =><NodeItem item={item} isselecttab={selectTabKey=='1'} selectAll={selectAll} updateSelectIds={this.updateSelectIds.bind(this)}/>)
+				    		allitems.map(item =><NodeItem item={item} selecttab={selectTabKey} selectAll={selectAll} updateSelectIds={this.updateSelectIds.bind(this)}/>)
 				    		:
 				    		nodata
 					    }
 					    </TabPane>
 					    <TabPane tab="未提交" key="2">
 					    {unsubmititems.length > 0 ?
-					    	unsubmititems.map(item =><NodeItem item={item} isselecttab={selectTabKey=='2'} selectAll={selectAll}  updateSelectIds={this.updateSelectIds.bind(this)}/>)
+					    	unsubmititems.map(item =><NodeItem item={item} selecttab={selectTabKey} selectAll={selectAll}  updateSelectIds={this.updateSelectIds.bind(this)}/>)
 					    	:
 					    	nodata
 					    }
 					    </TabPane>
 					    <TabPane tab="已提交" key="3">
 					    {submititems.length > 0 ?
-					    	submititems.map(item =><NodeItem item={item} isselecttab={selectTabKey=='3'} selectAll={selectAll}  updateSelectIds={this.updateSelectIds.bind(this)}/>)
+					    	submititems.map(item =><NodeItem item={item} selecttab={selectTabKey} selectAll={selectAll}  updateSelectIds={this.updateSelectIds.bind(this)}/>)
 					    	:
 					    	nodata
 					    }

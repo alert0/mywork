@@ -13,7 +13,7 @@ import configureStore from './store/configureStore'
 
 import {routerReducer} from 'react-router-redux/lib/reducer'
 
-import {WeaErrorPage} from 'weaCom'
+import {WeaErrorPage} from 'ecCom'
 
 import Portal from 'weaPortal';
 const portalReducer = Portal.reducer;
@@ -50,7 +50,7 @@ if(debug && !(window.attachEvent && navigator.userAgent.indexOf('Opera') === -1)
 			thunkMiddleware
 		),window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 	)
-}            
+}
 
 //推向全局调用
 window.store_e9_element = store;

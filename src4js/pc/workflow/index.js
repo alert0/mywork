@@ -40,7 +40,7 @@ require('./util/weaverautocomplete_wev8');
 require('./util/img_zoom')
 require('./util/applocation_wev8')
 
-import {WeaTools} from 'weaCom';
+import {WeaTools} from 'ecCom';
 
 //onEnter={(nextState,replace,callback)=>WeaTools.checkSession(nextState,replace,callback)}
 

@@ -1,4 +1,4 @@
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 
 export const getQueryFieldsList = () => {
     return WeaTools.callApi('/api/workflow/search/condition');

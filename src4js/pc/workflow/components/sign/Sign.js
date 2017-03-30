@@ -1,5 +1,14 @@
-import {WeaNewTop,WeaTab,WeaNewTableOld,WeaNewTree,WeaLayoutR11,WeaSearchGroup,WeaRightMenu} from 'weaCom'
-import {WeaInput,WeaInput4ProjectNew,WeaInput4DocsNew,WeaInput4CustomNew,WeaInput4WfNew,WeaInput4WtNew,WeaNewDate,WeaInput4Hrm,WeaInput4HrmNew,WeaInput4DepNew,WeaInput4ComNew,WeaNewSelect} from 'weaCom'
+import {
+    WeaTab,
+    WeaSearchGroup,
+    WeaInput,
+    WeaDateGroup,
+    WeaHrmInput,
+    WeaDepInput,
+    WeaComInput,
+    WeaSelect
+} from 'ecCom'
+
 import {Row, Col, Icon, Pagination, Menu, Form, Button,Spin} from 'antd';
 
 import objectAssign from 'object-assign'
@@ -37,7 +46,7 @@ class Sign extends React.Component {
     	actions.setLoglistTabKey('1');
     	if(ismanagePage == '1'){
 			var _ue = UEUtil.initRemark('remark', false);
-			bindRemark(_ue);	
+			bindRemark(_ue);
     	}
     }
 	componentWillUnmount(){
@@ -46,7 +55,7 @@ class Sign extends React.Component {
 		actions.setShowSearchDrop(false);
 	}
 	renderTitle(text,arr){
-		return 
+		return
 	}
     render() {
     	const {actions,params,signinputinfo,logList,current,total,pagesize,forward,showuserlogids,
@@ -63,7 +72,7 @@ class Sign extends React.Component {
     	const requestid = params.get('requestid');
     	const workflowid = params.get('workflowid');
     	const signListType = params.get('signListType');
-    	
+
     	//设置主子流程名称连接信息
     	let signshowname = '';
 	  	logListTabKey > 2 && requestLogParams.get('allrequestInfos').filter(reqinfo => {
@@ -72,15 +81,24 @@ class Sign extends React.Component {
 			}
 		});
 		
+		let signInputHiddebArea = [];
+		signinputinfo && signinputinfo.mapEntries(o => {
+			let _value = o[1];
+			if(o[0] == 'phraseInfo' && _value){
+				_value = JSON.stringify(_value.toJS());
+			}
+			signInputHiddebArea.push(<input type="hidden" id={o[0]+"_param"} value={_value}/>)
+		});
+
 		let mainWf = hasMainWfRight ? requestLogParams.get('allrequestInfos').filter(w=>w.get('type') == 'main') : '';
 		let childWf = hasChildWfRight ? requestLogParams.get('allrequestInfos').filter(w=>w.get('type') == 'sub') : '';
 		let parallelWf = hasParallelWfRight ?　requestLogParams.get('allrequestInfos').filter(w=>w.get('type') == 'parallel') : '';
-		
+
 		isRelatedTome && tabDatas.push({title:'与我相关',key:"2"});
 		mainWf && tabDatas.push({title:<span>主流程意见 <i className='icon-top-Arrow' /></span>,dropMenu:mainWf.toJS(),key:"3",});
 		childWf && tabDatas.push({title:<span>子流程意见 <i className='icon-top-Arrow' /></span>,dropMenu:childWf.toJS(),key:"4"});
 		parallelWf && '1' == isReadParallel && tabDatas.push({title:<span>平行流程意见 <i className='icon-top-Arrow' /></span>,dropMenu:parallelWf.toJS(),key:"5"});
-		
+
 		const isshowsigninputdiv = ismanagePage == '1' && isHideInput == '0';
 		const defaultshowsigninput = isshowsigninputdiv && markInfo.remark != '' && markInfo.remark != null;
 		let listShow = [];
@@ -90,7 +108,7 @@ class Sign extends React.Component {
         return (
             <div className='wea-workflow-req-sign'>
             	<div>
-        			<div style={{'height':'100%','display':isshowsigninputdiv?'block':'none','margin-right':(defaultshowsigninput || isShowSignInput )?'0px':'-1px'}} >
+        			<div id="remark_div" style={{'height':'100%','display':isshowsigninputdiv?'block':'none','margin-right':(defaultshowsigninput || isShowSignInput )?'0px':'-1px'}} >
 	            		<div id="remarkShadowDiv" className='wea-workflow-req-sign-input' style={{"display":(defaultshowsigninput || isShowSignInput )?"none":"block","border-left":isSignMustInput == '1'?"2px solid #fe4e4c":'1px solid #d0d0d0'}} onClick={this.initremark.bind(this)}>
 		            		<i className="icon-xxx-form-Opinion" style={{marginRight:10}}/>{'签字意见' + (markInfo.tempbeagenter != markInfo.fileuserid ? `（您正在代理${markInfo.tempbeagentername}处理）` : '')}
 		            	</div>
@@ -98,13 +116,10 @@ class Sign extends React.Component {
 	 	            		<textarea name="remark" id="remark" style={{"width":"100%","height":"140px","margin":"0","resize": "none","color":"#a2a2a2","overflow":"hidden","color":"#c7c7c7"}}>
 	 	            			{markInfo.remark}
 	 	            		</textarea>
-		            	</div>
-		            	<div id="signrighttool" style={{"display":"none"}}>
 		            		 <input type="hidden" id="signdocids" name="signdocids" value={markInfo.signdocids}/>
 		            		 <input type="hidden" id="signworkflowids"name="signworkflowids" value={markInfo.signworkflowids}/>
 		            		 <input type="hidden" name="remarkLocation" id="remarkLocation" value={markInfo.remarkLocation}></input>
-		            		 <div class="signDoc_span" id="signDocCount" ></div> 
-        		             <input className="InputStyle" type="hidden" id="field-annexupload" name="field-annexupload" value={markInfo.annexdocids}/>
+        		             <input type="hidden" id="field-annexupload" name="field-annexupload" value={markInfo.annexdocids}/>
                              <input type="hidden" id="field_annexupload_del_id" value=""/>
                              <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={markInfo.fieldannexuploadname}/>
                              <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value=""/>
@@ -117,13 +132,14 @@ class Sign extends React.Component {
                              <input type="hidden" name='fileuserid' id='fileuserid' value={markInfo.fileuserid}/>
                              <input type="hidden" name='fileloginyype' id='fileloginyype' value={markInfo.fileloginyype}/>
                              <input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value={markInfo.annexmaxUploadImageSize}/>
-                             <span id="remarkSpan"></span>
+                             <input type="hidden" id="requestid_param" value={requestid} />
+                             {signInputHiddebArea}
 		            	</div>
 	            	</div>
 
-	            	<WeaTab 
+	            	<WeaTab
 	                    buttons={this.getTabButtons()}
-	                    datas={tabDatas} 
+	                    datas={tabDatas}
 	                    selectedKey={logListTabKey}
 	                    keyParam="key"  //主键
 	                    searchType={['drop']}
@@ -142,7 +158,7 @@ class Sign extends React.Component {
 	                }
 	            	<div className='wea-workflow-req-sign-list'>
 		            	{listShow}
-		            	{listShow && !signListType && listShow.length > 0 && <Pagination defaultCurrent={1} showQuickJumper 
+		            	{listShow && !signListType && listShow.length > 0 && <Pagination defaultCurrent={1} showQuickJumper
 		            		pageSize={pagesize}
 		            		onChange={this.onPageChange.bind(this)}
 		            		current={current}
@@ -155,7 +171,7 @@ class Sign extends React.Component {
 		            	{listShow && !isLoadingLog && listShow.length == 0 &&
 		            		<div className='ant-table-placeholder' style={{borderBottom:0}}>暂时没有数据</div>
 		            	}
-		            	{isLoadingLog && 
+		            	{isLoadingLog &&
 		            		<div className='ant-table-placeholder' style={{borderBottom:0}}>
 		            			<Spin tip="正在读取数据..."></Spin>
 		            		</div>
@@ -176,7 +192,7 @@ class Sign extends React.Component {
     	}
     }
     onPageSizeChange(current, pageSize){
-    	if(typeof this.props.onPageSizeChange == 'function') 
+    	if(typeof this.props.onPageSizeChange == 'function')
     		this.props.onPageSizeChange(pageSize);
     }
     getTabButtons(){
@@ -194,7 +210,7 @@ class Sign extends React.Component {
     			if('main' == reqinfo.get('type')) tmpkey = 3;
     			if('sub'  == reqinfo.get('type')) tmpkey = 4;
     			if('parallel' ==reqinfo.get('type')) tmpkey = 5;
-    		}   		
+    		}
     	});
     	actions.setLoglistTabKey(tmpkey,key);
     	let params = {pgnumber:1,maxrequestlogid:0};
@@ -222,7 +238,7 @@ class Sign extends React.Component {
     		});
     	}
     }
-    
+
     initremark(){
     	const {actions} = this.props;
     	actions.controlSignInput(true);
@@ -250,7 +266,7 @@ class Sign extends React.Component {
             label="操作者"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}>
-                <WeaInput4HrmNew {...getFieldProps("operatorid")} />
+                <WeaHrmInput {...getFieldProps("operatorid")} />
             </FormItem>),
             colSpan:1
         });
@@ -259,7 +275,7 @@ class Sign extends React.Component {
             label="部门"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}>
-                <WeaInput4DepNew {...getFieldProps("deptid")} />
+                <WeaDepInput {...getFieldProps("deptid")} />
             </FormItem>),
             colSpan:1
         });
@@ -268,7 +284,7 @@ class Sign extends React.Component {
             label="分部"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}>
-                <WeaInput4ComNew {...getFieldProps("subcomid")} />
+                <WeaComInput {...getFieldProps("subcomid")} />
             </FormItem>),
             colSpan:1
         });
@@ -286,8 +302,8 @@ class Sign extends React.Component {
             label="节点"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}>
-                <WeaNewSelect 
-                    datas={nodes} 
+                <WeaSelect
+                    datas={nodes}
                     {...getFieldProps("nodename")} />
             </FormItem>),
             colSpan:1
@@ -297,7 +313,7 @@ class Sign extends React.Component {
             label="操作日期"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}>
-            	<WeaNewDate {...getFieldProps("createdateselect",{
+            	<WeaDateGroup {...getFieldProps("createdateselect",{
                 	initialValue: '0'
                 })} datas={ [
 		            {value: '0',selected: true,name: '全部'},

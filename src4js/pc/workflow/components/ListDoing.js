@@ -7,11 +7,18 @@ import BatchSubmit from './list/BatchSubmit'
 import {switchComponent} from '../util/switchComponent'
 import {Synergy} from 'weaPortal';
 
-import {WeaNewTop,WeaTab,WeaNewTableOld,WeaNewTree,WeaLayoutR11,WeaSearchGroup,WeaRightMenu,WeaPopoverHrm} from 'weaCom'
+import {
+    WeaTop,
+    WeaTab,
+    WeaTable,
+    WeaLeftTree,
+    WeaLeftRightLayout,
+    WeaSearchGroup,
+    WeaRightMenu,
+    WeaPopoverHrm
+} from 'ecCom'
 
-import {WeaInput,WeaInput4ProjectNew,WeaInput4DocsNew,WeaInput4CustomNew,WeaInput4WfNew,WeaInput4WtNew,WeaNewDate,WeaInput4Hrm,WeaInput4HrmNew,WeaInput4DepNew,WeaInput4ComNew,WeaNewSelect} from 'weaCom'
-
-import {WeaErrorPage,WeaTools} from 'weaCom'
+import {WeaErrorPage,WeaTools} from 'ecCom'
 
 import {Button,Form,Modal,message} from 'antd'
 const createForm = Form.create;
@@ -52,7 +59,8 @@ class ListDoing extends React.Component {
             actions.initDatas({method:"all"});
             actions.doSearch();
         }
-
+        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.datas && document.title !== nextProps.title)
+            document.title = nextProps.title;
     }
     shouldComponentUpdate(nextProps,nextState) {
         return !is(this.props.title,nextProps.title)||
@@ -100,18 +108,18 @@ class ListDoing extends React.Component {
             <div>
             	{isSingle && <WeaPopoverHrm />}
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
-                <WeaNewTop 
-                	title={title} 
-                	loading={loading} 
-                	icon={<i className='icon-portal-workflow' />} 
-                	iconBgcolor='#55D2D4' 
-                	buttons={this.getButtons()} 
+                <WeaTop
+                	title={title}
+                	loading={loading}
+                	icon={<i className='icon-portal-workflow' />}
+                	iconBgcolor='#55D2D4'
+                	buttons={this.getButtons()}
                 	buttonSpace={10}
-                	showDropIcon={true} 
-                	dropMenuDatas={this.getRightMenu()} 
+                	showDropIcon={true}
+                	dropMenuDatas={this.getRightMenu()}
                 	onDropMenuClick={this.onRightMenuClick.bind(this)}
                 >
-                <WeaLayoutR11 defaultShowLeft={true} leftCom={this.getTree()} leftWidth={25}>
+                <WeaLeftRightLayout defaultShowLeft={true} leftCom={this.getTree()} leftWidth={25}>
                     <WeaTab
                         buttonsAd={this.getTabButtonsAd()}
                     	searchType={['base','advanced']}
@@ -128,7 +136,7 @@ class ListDoing extends React.Component {
                         keyParam="viewcondition"  //主键
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
-                    <WeaNewTableOld
+                    <WeaTable
                     	current={current}
                         tableCheck={tableCheck}
                         pageSize={pageSize}
@@ -149,12 +157,12 @@ class ListDoing extends React.Component {
                         pageAutoWrap={pageAutoWrap}
                         loading={loading}
                         count={count} />
-                </WeaLayoutR11>
+                </WeaLeftRightLayout>
                 {
                     showBatchSubmit &&
                         <BatchSubmit actions={actions} showBatchSubmit={showBatchSubmit} phrasesObj={phrasesObj} selectedRowKeys={`${selectedRowKeys && selectedRowKeys.toJS()}`} />
                 }
-                </WeaNewTop>
+                </WeaTop>
                 </WeaRightMenu>
                 <Synergy pathname='/workflow/listDoing' requestid="-1" />
             </div>
@@ -238,7 +246,7 @@ class ListDoing extends React.Component {
     getTree() {
         const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys,loading} = this.props;
         return (
-            <WeaNewTree
+            <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 counts={leftTreeCount && leftTreeCount.toJS()}
                 countsType={leftTreeCountType && leftTreeCountType.toJS()}
@@ -362,7 +370,13 @@ let s;
 // if(Sys.opera) document.write('Opera: '+Sys.opera);
 // if(Sys.safari) document.write('Safari: '+Sys.safari);
 
-window.openSPA4Single = function(routeUrl,id) {
+
+
+window.openSPA4SingleTab = function(routeUrl,id) {
+    window.openSPA4Single(routeUrl,id,true);
+}
+
+window.openSPA4Single = function(routeUrl,id,opentab) {
     let obj = jQuery("#hiddenPreLoader").length>0?jQuery("#hiddenPreLoader"):jQuery("#hiddenPreLoaderSingle");
 
     const preLoadReqInfo = routeUrl =>{
@@ -386,7 +400,9 @@ window.openSPA4Single = function(routeUrl,id) {
 
     const width = screen.availWidth - 10;
 	const height = screen.availHeight - 50;
-	let szFeatures = "top=0,";
+    let szFeatures = "";
+    if(!opentab){
+	szFeatures = "top=0,";
 	szFeatures += "left=0,";
 	szFeatures += "width=" + width + ",";
 	szFeatures += "height=" + height + ",";
@@ -395,9 +411,10 @@ window.openSPA4Single = function(routeUrl,id) {
 	szFeatures += "menubar=no,";
 	szFeatures += "scrollbars=yes,";
 	szFeatures += "resizable=yes";
+    }
     if(Sys.chrome) {
         obj.on("load",function(){
-            let spaWin = window.open("/spa/workflow/index.html#"+routeUrl, "", szFeatures);
+            let spaWin = window.open("/spa/workflow/index.html#"+routeUrl, "_blank", szFeatures);
             if(!spaWin) message.warning("对不起，流程表单弹窗被chrome阻止，请点击浏览器地址栏尾部配置例外！",5);
             $(window).unbind("mousedown");
             obj.unbind("load");

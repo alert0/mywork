@@ -12,7 +12,7 @@ class MLinkCard extends React.Component {
 			|| this.props.showImportWf !== nextProps.showImportWf;
     }
 	render() {
-		const {types,importDataShow,isAbc,curOperWfid,showBeagenters,showImportWf,actions} = this.props;
+		const {types,importDataShow,isAbc,curOperWfid,showBeagenters,showImportWf,actions,user} = this.props;
 		return (
 			<div>
 			{
@@ -34,7 +34,7 @@ class MLinkCard extends React.Component {
 								}
 							</div>
 							{
-								wfbeans.map((obj)=><LinkCardItem wfbean={obj} importDataShow={importDataShow} iscommon={false} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />)
+								wfbeans.map((obj)=><LinkCardItem user={user} wfbean={obj} importDataShow={importDataShow} iscommon={false} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />)
 							}
 						</Card>
 					)

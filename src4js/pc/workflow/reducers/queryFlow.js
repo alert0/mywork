@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import * as types from '../constants/ActionTypes'
 // import cloneDeep from 'lodash/cloneDeep'
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 
 const {ls} = WeaTools;
 

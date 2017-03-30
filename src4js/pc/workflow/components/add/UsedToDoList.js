@@ -10,14 +10,14 @@ class UsedToDoList extends React.Component{
 			|| this.props.showImportWf !== nextProps.showImportWf;
     }
 	render(){
-		const {wfbeans,importDataShow,curOperWfid,showBeagenters,showImportWf,actions} = this.props;
+		const {wfbeans,importDataShow,curOperWfid,showBeagenters,showImportWf,actions,user} = this.props;
 		return (
 			<div className="usedtodo">
 				<ul>
 					{
 						wfbeans.map((wfbean,i) => 
 							<li>
-								<LinkCardItem wfbean={wfbean} importDataShow={importDataShow} iscommon={true} num={i} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />
+								<LinkCardItem user={user} wfbean={wfbean} importDataShow={importDataShow} iscommon={true} num={i} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />
 							</li>
 						)
 					}

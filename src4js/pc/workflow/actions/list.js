@@ -7,7 +7,7 @@ import objectAssign from 'object-assign'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 import Immutable from 'immutable'
 
 //记录当前流程页
@@ -51,14 +51,14 @@ export const doSearch = (params = {}) => {
 	return(dispatch, getState) => {
 		const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
 		const {paramsBase, searchParams, searchParamsAd, leftTreeCount } = getState()['workflow' + viewScope].toJS();
-		
+
 		const newParams = {...paramsBase, ...searchParams, ...searchParamsAd, ...params, ...{ actiontype: "splitpage" } };
 		const key = newParams.method==="reqeustbytype" ? `type_${newParams.wftype}` : (newParams.method==="reqeustbywfid" ? `wf_${newParams.workflowid}` : '');
 		key && dispatch({
 			type: `${viewScope}_` + types.INIT_TOPTABCOUNT,
 			topTabCount: leftTreeCount[key]
 		});
-		
+
 		API_LIST.getWfRequestList(newParams).then((data) => {
 			dispatch({
 				type: `${viewScope}_` + types.INIT_DATAKEY,
@@ -78,14 +78,14 @@ export const getDatas = (dataKeyNow,currentNow,pageSizeNow,sorter) => {
         dispatch({type: viewScope + '_' + types.LOADING,loading:true});
 		dispatch(setSelectedRowKeys([]));
         const {dataKey,pageSize,current,sortParams} = getState()['workflow' + viewScope].toJS();
-        
+
         const newDataKey = dataKeyNow===""?dataKey:dataKeyNow;
         const pageSizeChange = pageSizeNow && pageSizeNow !== pageSize;
         const newPageSize = pageSizeNow ? pageSizeNow : pageSize;
         const newCurrent = pageSizeChange ? 1 : (currentNow ? currentNow : current);
         const newSortParams = sorter && sorter.column ? [{orderkey:sorter.column.orderkey,sortOrder:sorter.order}] : [];
-        
-        
+
+
         const doGetAPI = () => {
 	        Promise.all([
 	            API_TABLE.getTableDatas({dataKey:dataKey,current: newCurrent,sortParams:JSON.stringify(newSortParams)}).then((data)=>{
@@ -121,7 +121,7 @@ export const getDatas = (dataKeyNow,currentNow,pageSizeNow,sorter) => {
         pageSizeChange ? API_TABLE.setTablePageSize({dataKey,pageSize:newPageSize}).then(data =>{
         	doGetAPI();
         }) : doGetAPI();
-        
+
     }
 }
 
@@ -214,7 +214,8 @@ export const setShowBatchSubmit = bool =>{
 export const batchSubmitWf = (remark,checkedKeys) =>{
 	return (dispatch, getState) =>{
 		const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-		const {datas} = getState()['workflow' + viewScope].toJS();  
+		const {datas} = getState()['workflow' + viewScope].toJS();
+		dispatch({type: viewScope + '_' + types.LOADING,loading:true});
 		API_LIST.OnMultiSubmitNew2(remark, checkedKeys, datas).then(data => {
 			dispatch(initDatas());
 			dispatch(doSearch());
@@ -254,7 +255,7 @@ export const setSpaForm = isSpaForm => {
 	    ls.set("isSpaForm",isSpaForm?"true":"false");
 		dispatch({type: viewScope + '_' + types.SET_SPAFORM,isSpaForm:isSpaForm})
 	}
-} 
+}
 
 
 //table自定义列接口数据

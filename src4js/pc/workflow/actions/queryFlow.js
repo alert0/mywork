@@ -2,7 +2,7 @@ import * as types from '../constants/ActionTypes'
 import * as QUERY_FLOW from '../apis/queryFlow'
 import * as API_TABLE from '../apis/table'
 
-import {WeaTools} from 'weaCom'
+import {WeaTools} from 'ecCom'
 import {Modal} from 'antd'
 
 //初始化查询流程
@@ -103,13 +103,13 @@ export const getDatas = (dataKeyNow,currentNow,pageSizeNow,sorter) => {
         dispatch({type: types.QUERY_FLOW_LOADING, loading: true});
         const {dataKey,pageSize,current,sortParams} = getState()['workflowqueryFlow'].toJS();
 		dispatch(setSelectedRowKeys([]));
-        
+
         const newDataKey = dataKeyNow===""?dataKey:dataKeyNow;
         const pageSizeChange = pageSizeNow && pageSizeNow !== pageSize;
         const newPageSize = pageSizeNow ? pageSizeNow : pageSize;
         const newCurrent = pageSizeChange ? 1 : (currentNow ? currentNow : current);
         const newSortParams = sorter && sorter.column ? [{orderkey:sorter.column.orderkey,sortOrder:sorter.order}] : [];
-        
+
         const doGetAPI = () => {
 		    Promise.all([
 		        API_TABLE.getTableDatas({dataKey:dataKey,current: newCurrent,sortParams:JSON.stringify(newSortParams)}).then((data)=>{

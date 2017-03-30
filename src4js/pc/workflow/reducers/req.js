@@ -23,7 +23,7 @@ const initialState = Immutable.fromJS({
     cellInfo:{},
     tableInfo:{},
     linkageCfg:{},
-    workflowStatus:{},
+    wfStatus:{},
     reqTabKey:'1',
     resourcesKey:{'key0':'','key1':'','key2':'','key3':''},
     resourcesDatas:{'key0':[],'key1':[],'key2':[],'key3':[]},
@@ -92,7 +92,7 @@ export default function req(state = initialState, action) {
         case types.INIT_FORMVALUE4DETAIL:
             return state.merge({formValue4Detail:action.formValue4Detail});
         case types.CLEAR_FORM:
-            return state.merge({formValue:[],formLayout:{},formValue4Detail:{},logList:[],logParams:{},markInfo:{},logCount:0,workflowStatus:{}});
+            return state.merge({formValue:[],formLayout:{},formValue4Detail:{},logList:[],logParams:{},markInfo:{},logCount:0,wfStatus:{}});
        	case types.SET_LOG_PARAMS:
             return state.merge({logParams:state.get('logParams').merge(action.logParams)});
         case types.SET_MARK_INFO:
@@ -102,7 +102,25 @@ export default function req(state = initialState, action) {
         case types.SET_RIGHT_MENU_INFO:
             return state.merge({rightMenu:action.rightMenu});
         case types.SET_WORKFLOW_STATUS:
-            return state.merge({workflowStatus:action.workflowStatus,loading:false});
+            return function(){
+                let wfStatus = Immutable.fromJS(action.wfStatus);
+                const cardid = wfStatus.get("cardid");
+                if(cardid && wfStatus.hasIn([cardid,"datas"]) && state.hasIn(["wfStatus",cardid,"datas"])){     //追加数据
+                    let part1 = state.getIn(["wfStatus",cardid,"datas"]);
+					let part2 = wfStatus.getIn([cardid,"datas"]);
+					part2.map((v,k)=>{
+						if(part1.hasIn([k,"list"])){
+							part1 = part1.updateIn([k,"list"], list => list.concat(v.get("list")))
+							part2 = part2.delete(k);
+						}
+					});
+                    wfStatus = wfStatus.setIn([cardid,"datas"], part1.mergeDeep(part2));
+                    state = state.deleteIn(["wfStatus",cardid]);
+                }
+                if(wfStatus.has("hideRowKeys"))
+                    state = state.deleteIn(["wfStatus","hideRowKeys"]);
+                return state.mergeDeep({wfStatus:wfStatus,loading:false});
+            }()
         case types.SET_REQ_TABKEY:
             return state.merge({reqTabKey:action.reqTabKey});
         case types.SET_LOGLIST_TABKEY:
