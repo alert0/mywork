@@ -3,7 +3,6 @@ import Immutable from 'immutable'
 const bindRemark = (_uEditor) => {
 	var remarkHide = function(e) {
 
-		console.log("_uEditor",_uEditor);
 		//转发页面不隐藏
 		if(window.__isremarkPage == true) {
 			return;

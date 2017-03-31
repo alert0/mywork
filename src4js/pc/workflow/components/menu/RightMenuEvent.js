@@ -12,11 +12,18 @@ class RightMenuEvent extends React.Component {
 			return (
 				<div className='wea-req-right-menus'>
 						<div className='wea-req-right-menu-forward'>
-							<Forward showForward={showForward} actions={actions} requestid={requestid} titleName={titleName}/>
+							<Forward showForward={showForward} actions={actions} requestid={requestid} titleName={titleName} showForwardModal={this.showForwardModal}/>
 						</div>
 				</div>
 				
 			)
+	}
+	
+	
+	showForwardModal=()=>{
+		if(this.props.callback){
+			this.props.callback();
+		}
 	}
 }
 

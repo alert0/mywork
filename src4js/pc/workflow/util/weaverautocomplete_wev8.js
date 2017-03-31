@@ -114,6 +114,7 @@
 			initAutoContainer: function() {
 				autocontainer.css("left", settings.positionx);
 				autocontainer.css("top", settings.positiony);
+				autocontainer.css("position","fixed");
 
 			},
 			//初始化选择条目
@@ -304,9 +305,7 @@
 				btngroup.find("td:eq(0)").append(multicheckbutton);
 				btngroup.find("td:eq(2)").append(multicheckcancell);
 				autocontainer.append(btngroup);
-				jQuery('.wea-popover-hrm-relative-parent').append(autocontainer);
-
-				autocontainer.css("top", settings.relativeItem.offset().top - 86  + jQuery('.wea-new-top-req-content').scrollTop());
+				jQuery('#'+settings.editorid+'_div').append(autocontainer);
 				searchinput.focus();
 			},
 			//销毁容器

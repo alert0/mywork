@@ -15,20 +15,20 @@ class Forward extends React.Component {
 			operatorids: '',
 			signinput: {},
 			hasinitremark: false,
-			forwardflag: ''
+			forwardflag: '',
+			reload: false
 		};
-
-		const { requestid } = this.props;
-		let params = { actiontype: 'signInput', requestid: requestid }
-		const _this = this;
-		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', params).then(data => {
-			_this.setState({ signinput: data });
-		});
 	}
 
+	componentDidMount() {
+		this.initData();
+	}
+
+	componentWillReceiveProps(nextProps) {}
+
 	componentDidUpdate() {
-		const { hasinitremark } = this.state;
-		if(jQuery('#forwardremark').length > 0 && !hasinitremark) {
+		const { hasinitremark, reload, signinput } = this.state;
+		if(jQuery('#forwardremark').length > 0 && !hasinitremark && reload) {
 			var _ue = UEUtil.initRemark('forwardremark', false);
 			bindRemark(_ue);
 			this.setState({ hasinitremark: true });
@@ -69,13 +69,13 @@ class Forward extends React.Component {
 	}
 
 	render() {
-		const { showForward, titleName, requestid } = this.props;
+		const { showForward, titleName, requestid, onClick } = this.props;
 		const { isshownodeoperators, isshowoperategroup, signinput } = this.state;
 
 		let signInputHiddebArea = [];
 		signinput && Immutable.fromJS(signinput).mapEntries(o => {
 			let _value = o[1];
-			if(o[0] == 'phraseInfo' && _value){
+			if(o[0] == 'phraseInfo' && _value) {
 				_value = JSON.stringify(_value.toJS());
 			}
 			signInputHiddebArea.push(<input type="hidden" id={o[0]+"_param"} value={_value}/>)
@@ -100,7 +100,7 @@ class Forward extends React.Component {
 							<span>转发接收人</span>
 						</div>
 						<div className='input'>
-							<WeaHrmInput />
+							<WeaHrmInput mult/>
 						</div>
 						<div className='btns'>
 							<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
@@ -129,7 +129,7 @@ class Forward extends React.Component {
 							<span>签字意见</span>
 						</div>
 						<div className='remark' id="forwardremark_div">
-							 <textarea name='forwardremark' id="forwardremark"/>
+							 <textarea name='forwardremark' id="forwardremark" style={{'width':'100%','height':'167px'}}/>
 							 <input type="hidden" id="signdocids" name="signdocids" value=""/>
 							 <input type="hidden" id="signworkflowids"name="signworkflowids" value=""/>
 							 <input type="hidden" name="remarkLocation" id="remarkLocation" value=""></input>
@@ -140,13 +140,14 @@ class Forward extends React.Component {
 							 <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value=""/>
 							 <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
 							 <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
-							 <input type="hidden" name='annexmainId' id='annexmainId' value=""/>
-							 <input type="hidden" name='annexsubId' id='annexsubId' value=""/>
-							 <input type="hidden" name='annexsecId' id='annexsecId' value=""/>
+							 <input type="hidden" name='annexmainId' id='annexmainId' value={signinput.annexmainId}/>
+							 <input type="hidden" name='annexsubId' id='annexsubId' value={signinput.annexsubId}/>
+							 <input type="hidden" name='annexsecId' id='annexsecId' value={signinput.annexsecId}/>
 							 <input type="hidden" name='fileuserid' id='fileuserid' value=""/>
 							 <input type="hidden" name='fileloginyype' id='fileloginyype' value=""/>
-							 <input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value=""/>
+							 <input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value={signinput.annexmaxUploadImageSize}/>
 							 <input type="hidden" id="requestid_param" value={requestid} />
+							 <input type="hidden" id="workflowid" value={signinput.workflowid} />
 							 {signInputHiddebArea}
 						</div>
 					</div>
@@ -181,16 +182,17 @@ class Forward extends React.Component {
 		let forwardremarkInfo = this.getSignInputInfo();
 
 		const { actions, requestid } = this.props;
-		let params = objectAssign({}, forwardremarkInfo, { 
-			operate: 'save', 
-			field5: operatorids, 
-			forwardflag: forwardflag, 
-			actiontype: 'remarkOperate', 
-			requestid: requestid 
+		let params = objectAssign({}, forwardremarkInfo, {
+			operate: 'save',
+			field5: operatorids,
+			forwardflag: forwardflag,
+			actiontype: 'remarkOperate',
+			requestid: requestid
 		});
 		console.log("params", params);
 		const _this = this;
 		WeaTools.callApi('/workflow/core/ControlServlet.jsp?action=RequestSubmitAction', 'POST', params).then(data => {
+			_this.clearSignInput();
 			const forwardflag = data.forwardflag;
 			if(forwardflag == '1') {
 				e9signReload();
@@ -203,7 +205,9 @@ class Forward extends React.Component {
 					//刷新门户流程列表
 					jQuery(window.opener.document).find('#btnWfCenterReload').click();
 				} catch(e) {}
-				actions.reqIsSubmit(true);
+				try {
+					actions.reqIsSubmit(true);
+				} catch(e) {}
 			}
 		});
 	}
@@ -225,16 +229,51 @@ class Forward extends React.Component {
 	}
 
 	cancelEvent() {
-		this.setState({
-			showForward: false
-		});
+		const { controllShowForward } = this.props;
+		controllShowForward(false);
+		this.clearSignInput();
+	}
 
-		const { actions } = this.props;
-		actions.setShowForward(false);
-
-		//清空签字意见内容
+	//清空签字意见内容
+	clearSignInput() {
 		let ue = UE.getEditor('forwardremark');
 		ue.setContent('');
+
+		const paramDiv = jQuery('#forwardremark_div');
+		const ids = paramDiv.find("#field-annexupload").val();
+		if(ids) {
+			let idArr = ids.split(',');
+			idArr.map(o => {
+				paramDiv.find('#li_' + o).remove();
+			});
+
+			const _targetobj = jQuery('#forwardremark').find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
+			_targetobj.addClass("wfres_1");
+			_targetobj.removeClass("wfres_1_slt");
+		}
+
+		const signdocids = paramDiv.find("#signdocids").val();
+		if(signdocids) {
+			const _targetobj = jQuery('#forwardremark').find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
+			_targetobj.addClass("wfres_2");
+			_targetobj.removeClass("wfres_2_slt");
+		}
+
+		const signworkflowids = paramDiv.find("#signworkflowids").val();
+		if(signworkflowids) {
+			_targetobj = jQuery('#forwardremark').find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
+			_targetobj.addClass("wfres_3");
+			_targetobj.removeClass("wfres_3_slt");
+		}
+	}
+
+	initData() {
+		const { requestid } = this.props;
+		let params = { actiontype: 'signInput', requestid: requestid }
+		const _this = this;
+		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', params).then(data => {
+			_this.setState({ signinput: data, reload: true });
+		});
 	}
 }
 

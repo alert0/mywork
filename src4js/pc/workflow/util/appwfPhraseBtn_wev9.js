@@ -215,10 +215,10 @@ const initwfphrasebutton = (editor,uiName) => {
             //这里可以不用执行命令,做你自己的操作也可
 			//editor.execCommand(uiName);
 			phraseeditor = editor.key;
-            var el = jQuery('#'+editor.key).find(".edui-for-wfphrasebutton");
-            var px=el.offset().left;
-		    var py=el.offset().top - 69 + jQuery('.wea-new-top-req-content').scrollTop();
-			paramDiv.find("#_signinputphraseblock").css({"z-index":"99999","top":py + "px", "left":px+"px"});
+            var el = jQuery('#'+editor.key).find(".edui-for-wfphrasebutton")[0];
+            var rectEl = el.getBoundingClientRect();
+            var y = rectEl.top + rectEl.height - 3;
+			paramDiv.find("#_signinputphraseblock").css({"z-index":"99999","top":y + "px", "left":rectEl.left+"px","position":"fixed"});
 			paramDiv.find("#_signinputphraseblock").show();			
         }
     });

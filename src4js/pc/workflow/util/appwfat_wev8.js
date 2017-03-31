@@ -40,9 +40,9 @@ const initwfatbutton = (editor, uiName) => {
 
 			editor.registerCommand(uiName, {
 				execCommand: function() {
-					var el = jQuery('#' + editor.key).find(".edui-for-wfatbutton");
-					var px = el.offset().left;
-					var py = el.offset().top;
+					var el = jQuery('#' + editor.key).find(".edui-for-wfatbutton")[0].getBoundingClientRect();
+					var px = el.left;
+					var py = el.top;
 
 					var allatids = ",";
 					try {
@@ -62,6 +62,7 @@ const initwfatbutton = (editor, uiName) => {
 						itemmaxlength: 4,
 						positionx: px,
 						positiony: py,
+						editorid:editor.key,
 						autoitems: atitems,
 						relativeItem: el,
 						entercallback: function() {

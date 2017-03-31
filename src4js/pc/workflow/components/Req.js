@@ -9,7 +9,7 @@ import ImgZoom from './sign/ImgZoom'
 import WfStatus from './status/WfStatus'
 import Resources from './resources/Resources'
 import Share from './share/Share'
-import RightMenuEvent from './menu/RightMenuEvent'
+import Forward from './menu/Forward'
 
 
 import {WeaReqTop,WeaRightMenu} from 'ecCom'
@@ -64,7 +64,10 @@ class Req extends React.Component {
                     actions.scrollLoadSign({pgnumber:parseInt(pgnumber)+1,firstload:false,maxrequestlogid:logParams.get('maxrequestlogid')});
                 }
             }
+            //滚动时隐藏签字意见的下拉列
             jQuery('#edui_fixedlayer>div').css('display','none');
+            jQuery('#remark_div').find('#_signinputphraseblock').css('display','none');
+            jQuery('#remark_div').find('.filtercontainer').css('display','none');
         });
     }
     // componentDidUpdate(){
@@ -311,7 +314,7 @@ class Req extends React.Component {
                     {hiddenarea}
                     {formarea}
                 </form>
-                <RightMenuEvent rightMenuStatus={rightMenuStatus} actions={actions} titleName={titleName} requestid={requestid}/>
+				<Forward showForward={rightMenuStatus.get('showForward')} actions={actions} requestid={requestid} titleName={titleName} controllShowForward={this.controllShowForward.bind(this)}/>
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}
@@ -401,6 +404,11 @@ class Req extends React.Component {
             UEUtil.getUEInstance('remark').destroy();
         }
         router.goBack();
+    }
+    
+    controllShowForward(bool){
+    	const {actions} = this.props;
+    	actions.setShowForward(bool);
     }
 }
 
