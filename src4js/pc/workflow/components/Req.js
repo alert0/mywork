@@ -314,7 +314,7 @@ class Req extends React.Component {
                     {hiddenarea}
                     {formarea}
                 </form>
-				<Forward showForward={rightMenuStatus.get('showForward')} actions={actions} requestid={requestid} titleName={titleName} controllShowForward={this.controllShowForward.bind(this)}/>
+				<Forward showForward={rightMenuStatus.get('showForward')} fromform={true} actions={actions} requestid={requestid} titleName={titleName} controllShowForward={this.controllShowForward.bind(this)}/>
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}

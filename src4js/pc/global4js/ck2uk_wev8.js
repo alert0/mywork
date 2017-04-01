@@ -189,14 +189,11 @@ var UEUtil = {
 	},
 	initRemark : function (editorid, isIE8) {
 		//转发页面特殊处理
-		if (window.__isremarkPage == true) {
-			jQuery("#remark").css("height", "170px");
-		}
 		var _ue = UE.getEditor(editorid, {
 			 autoFloatEnabled:false,//不保持工具栏位置
 			 allowDivTransToP:false,//不把div自动转为p
 			 disabledTableInTable:false,//允许table嵌套
-			 autoHeightEnabled : (window.__isremarkPage == true ? false : true),
+			 autoHeightEnabled : (editorid == 'forwardremark' ? false : true),
        		 toolbars: [[
 	            'fullscreen', 'source', '|',
 	            'bold', 'italic', 'underline', 'fontborder', 'strikethrough', '|', 
@@ -206,18 +203,18 @@ var UEUtil = {
 	            'link', 'unlink', 'insertimage', 'inserttable', '|', '|', 'undo', 'redo','|', window.__haswfresource ? '|' :' ', '|','|'
 	        ]], theme : "metro"
        	});
-       	this.bindEvent('remark');
+       	this.bindEvent(editorid);
        	_ue.addListener('ready', function(){
 			try {
 				__insertimage(_ue, "insertimage");
-				var fieldannexuploadname = jQuery("#field-annexupload-name").val();
+				var fieldannexuploadname = jQuery('#'+editorid+'_div')("#field-annexupload-name").val();
 				if(fieldannexuploadname == "" || fieldannexuploadname == null){
 					__fileupload(_ue, "wfannexbutton");
 				}
-				jQuery(".edui-for-wfphrasebutton").children("div").children("div").children("div").children(".edui-label").html("<span style='cursor:pointer;line-height:20px;color:#949292!important;'>"+SystemEnv.getHtmlNoteName(3998)+"</span>");
+				jQuery('#'+editorid).find(".edui-for-wfphrasebutton").children("div").children("div").children("div").children(".edui-label").html("<span style='cursor:pointer;line-height:20px;color:#949292!important;'>"+SystemEnv.getHtmlNoteName(3998)+"</span>");
 				//IE8下屏蔽at功能
 				if (!!!isIE8) {
-				    initremarkat(jQuery("#remark").children("div").children("div").children("iframe")[0]);
+				    initremarkat(jQuery("#"+editorid).children("div").children("div").children("iframe")[0]);
 				}
 				/*
 				if (!!window.UEDITOR_CONFIG && !isNaN(window.UEDITOR_CONFIG.remarkfontsize)) {
@@ -232,27 +229,28 @@ var UEUtil = {
 			window._isremarkcomp = true;
 		});
        	_ue.addListener('selectionchange', function(){
+       		var paramDiv  = jQuery('#'+editorid+"_div");
        		try {
-	        	if (jQuery("#_signinputphraseblock").is(":visible")) {
-					jQuery("#_signinputphraseblock").hide();
-					jQuery("#_addPhrasebtn").show()
-					jQuery("#cg_splitline").show();
-					jQuery("#addphraseblock").hide();
+	        	if (paramDiv.find("#_signinputphraseblock").is(":visible")) {
+					paramDiv.find("#_signinputphraseblock").hide();
+					paramDiv.find("#_addPhrasebtn").show()
+					paramDiv.find("#cg_splitline").show();
+					paramDiv.find("#addphraseblock").hide();
 				}
-	        	var showfor = jQuery("#_fileuploadphraseblock").attr("showfor");
-	        	var banfold = jQuery("#fsUploadProgressfileuploaddiv").attr("banfold");
-	        	var _filetop = jQuery("#_fileuploadphraseblock").offset().top;
+	        	var showfor = paramDiv.find("#_fileuploadphraseblock").attr("showfor");
+	        	var banfold = paramDiv.find("#fsUploadProgressfileuploaddiv").attr("banfold");
+	        	var _filetop = paramDiv.find("#_fileuploadphraseblock").offset().top;
 	        	if (_filetop > 0 && showfor != "1" && banfold != "1") {
 					//jQuery("#_fileuploadphraseblock").hide();
-	        		jQuery("#_fileuploadphraseblock").css("top","-500px");
-	        		jQuery("#fsUploadProgressfileuploaddiv").css("top","-500px");
+	        		paramDiv.find("#_fileuploadphraseblock").css("top","-500px");
+	        		paramDiv.find("#fsUploadProgressfileuploaddiv").css("top","-500px");
 					//jQuery("#_addfilebtn").show()
 					//jQuery("#cg_splitline").show();
 					//jQuery("#addfileupload").hide();
 					//jQuery("#_fsarrowsblock").css("display","none");
 					//jQuery("#_fscgblock").css("display","none");
 				}else{
-					jQuery("#_fileuploadphraseblock").attr("showfor","0");
+					paramDiv.find("#_fileuploadphraseblock").attr("showfor","0");
 				}
 			} catch (e45) {
 			}
@@ -629,25 +627,31 @@ function __fileupload(editor,uiName){
 		var x=0;
 		var splitchar = "////~~weaversplit~~////";
 		var fQError = "";
+		const paramDiv = jQuery('#' + editor.key + "_div");
 		function init(uuid) {
-			var annexmainId = jQuery("#annexmainId").val();
-			var annexsubId = jQuery("#annexsubId").val();
-			var annexsecId = jQuery("#annexsecId").val();
-			var fileuserid = jQuery("#fileuserid").val();
-			var fileloginyype = jQuery("#fileloginyype").val();
+			const params = {'method':'uploadFile'};
+			let annexmaxUploadImageSize = '0';
+			if(editor.key == 'remark'){
+				params.annexmainId = paramDiv.find('#annexmainId_param').val();
+				params.annexsubId = paramDiv.find('#annexsubId_param').val();
+				params.annexsecId = paramDiv.find('#annexsecId_param').val();
+				params.fileuserid = paramDiv.find('#fileuserid_param').val();
+				params.fileloginyype = paramDiv.find('#fileloginyype_param').val();
+				annexmaxUploadImageSize = paramDiv.find('#annexmaxUploadImageSize_param').val();
+			}else{
+				params.annexmainId = jQuery('#forwardremark_hidden_area').find('#annexmainId').val();
+				params.annexsubId = jQuery('#forwardremark_hidden_area').find('#annexsubId').val();
+				params.annexsecId = jQuery('#forwardremark_hidden_area').find('#annexsecId').val();
+				params.fileuserid = jQuery('#forwardremark_hidden_area').find('#fileuserid').val();
+				params.fileloginyype = jQuery('#forwardremark_hidden_area').find('#fileloginyype').val();
+				annexmaxUploadImageSize = jQuery('#forwardremark_hidden_area').find('#annexmaxUploadImageSize').val();
+			}
 			var language = "7";
 			var btnwidth = language==8?86:35;
-			var annexmaxUploadImageSize = jQuery("#annexmaxUploadImageSize").val();
 			var settings = {
 				flash_url : "/js/swfupload/swfupload.swf",
 				upload_url: "/docs/docupload/MultiDocUploadByWorkflow.jsp?userid="+window.__userid+"&usertype="+window.__usertype+"&docfiletype=1",
-				post_params:{"method":"uploadFile",
-					"mainId": annexmainId,
-					"subId": annexsubId,
-					"secId": annexsecId,
-					"userid": fileuserid,
-					"logintype": fileloginyype
-				},
+				post_params:params,
 				use_query_string : true,//要传递参数用到的配置
 				file_size_limit : annexmaxUploadImageSize + " MB",
 				file_types : "*.*",
@@ -655,7 +659,7 @@ function __fileupload(editor,uiName){
 				file_upload_limit : 50,
 				file_queue_limit : 0,
 				custom_settings : {
-					progressTarget : "fsUploadProgressfileupload",
+					progressTarget : "fsUploadProgressfileupload_"+editor.key,
 					cancelButtonId : "fileCancel"
 				},
 				debug: false,
@@ -724,14 +728,17 @@ function __fileupload(editor,uiName){
 						   container.find(".edui-for-wfannexbutton").css("visibility","visible");
 						   container.find(".edui-for-wfannexbutton").css("cursor","pointer");
 						   container.find(".edui-for-wfannexbutton").css("z-index","101");
-						   jQuery("#promptinformation").html("");
-						   var el = jQuery(".edui-for-wfannexbutton");
-						   var px=el.offset().left;
-						   var py=el.offset().top  - 69  + jQuery('.wea-new-top-req-content').scrollTop();
-						   jQuery("#fsUploadProgressfileuploaddiv").css({"top":py + "px", "left":px+"px"});
+						   paramDiv.find("#promptinformation").html("");
+//						   var el = container.find(".edui-for-wfannexbutton");
+//						   var px=el.offset().left;
+//						   var py=el.offset().top  - 69  + jQuery('.wea-new-top-req-content').scrollTop();
+//						   paramDiv.find("#fsUploadProgressfileuploaddiv").css({"top":py + "px", "left":px+"px"});
+						   
+						   sethraseblockPosition('fsUploadProgressfileuploaddiv',editor.key);
+						   
 						   //jQuery("#fsUploadProgressfileuploaddiv").show();
-						   jQuery("#field-annexupload-count").val(numFilesQueued);
-						   jQuery("#fsUploadProgressfileuploaddiv").attr("banfold","1");
+						   paramDiv.find("#field-annexupload-count").val(numFilesQueued);
+						   paramDiv.find("#fsUploadProgressfileuploaddiv").attr("banfold","1");
 						   //jQuery(".cg_optblock").css("display","none");
 						   //enableAllmenu();
 						   this.startUpload();
@@ -762,27 +769,27 @@ function __fileupload(editor,uiName){
 					}
 				}
 				//container.find(".e8fileupload").css("visibility","hidden");
-				var fieldannexuploadid = jQuery.trim(jQuery("#field-annexupload").val());
-				var fieldannexuploadidname = jQuery.trim(jQuery("#field-annexupload-name").val());
+				var fieldannexuploadid = jQuery.trim(paramDiv.find("#field-annexupload").val());
+				var fieldannexuploadidname = jQuery.trim(paramDiv.find("#field-annexupload-name").val());
 				if(fieldannexuploadid != "" && fieldannexuploadid !=null){
-					jQuery("#field-annexupload").val(fieldannexuploadid+","+jQuery.trim(rtvids));
-					jQuery("#field-annexupload-name").val(fieldannexuploadidname+splitchar+jQuery.trim(rtvnames));
+					paramDiv.find("#field-annexupload").val(fieldannexuploadid+","+jQuery.trim(rtvids));
+					paramDiv.find("#field-annexupload-name").val(fieldannexuploadidname+splitchar+jQuery.trim(rtvnames));
 				}else{
-					jQuery("#field-annexupload").val(jQuery.trim(rtvids));
-					jQuery("#field-annexupload-name").val(jQuery.trim(rtvnames));
+					paramDiv.find("#field-annexupload").val(jQuery.trim(rtvids));
+					paramDiv.find("#field-annexupload-name").val(jQuery.trim(rtvnames));
 				}
 				//插入图片
 				//editor.execCommand('inserthtml',img); 
 			},
 			upload_complete_handler : function(){
-				var fieldannexuploadcount = jQuery("#field-annexupload-count").val();
+				var fieldannexuploadcount = paramDiv.find("#field-annexupload-count").val();
 				x++;
 				if(x == fieldannexuploadcount){
-					jQuery("#fsUploadProgressfileupload").html("");
-					jQuery("#fsUploadProgressfileuploaddiv").css("top","-500px");
+					paramDiv.find("#fsUploadProgressfileupload_"+editor.key).html("");
+					paramDiv.find("#fsUploadProgressfileuploaddiv").css("top","-500px");
 					try {
-	           			var _targetobj = jQuery(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
-		            	if (document.getElementById("field-annexupload").value != '') {
+	           			var _targetobj = jQuery('#'+editor.key).find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
+		            	if (paramDiv.find('#field-annexupload').val() != '') {
 		            		_targetobj.addClass("wfres_1_slt");
 		            		_targetobj.removeClass("wfres_1");
 		            	} else {
@@ -790,7 +797,7 @@ function __fileupload(editor,uiName){
 		            		_targetobj.removeClass("wfres_1_slt");
 		            	}
 		            } catch (e) {}
-		            jQuery("#fsUploadProgressfileuploaddiv").attr("banfold","0");
+		            paramDiv.find("#fsUploadProgressfileuploaddiv").attr("banfold","0");
 		            addli();
 		            
 		            //jQuery("#_fsarrowsblock").css("display","none");
@@ -980,18 +987,19 @@ function __fileupload(editor,uiName){
 		}
 		
 		function addli(){
-			var el = jQuery(".edui-for-wfannexbutton");
-	        var px=el.offset().left;
-		    var py=el.offset().top - 69  + jQuery('.wea-new-top-req-content').scrollTop();
-		    jQuery("#_fileuploadphraseblock").css("z-index","999");
-		    jQuery("#_fileuploadphraseblock").css({"top":py + "px", "left":px+"px"});
+//			var el = jQuery('#'+editor.key).find(".edui-for-wfannexbutton");
+//	        var px=el.offset().left;
+//		    var py=el.offset().top - 69  + jQuery('.wea-new-top-req-content').scrollTop();
+//		    paramDiv.find("#_fileuploadphraseblock").css("z-index","999");
+//		    paramDiv.find("#_fileuploadphraseblock").css({"top":py + "px", "left":px+"px"});
+		    sethraseblockPosition('_fileuploadphraseblock',editor.key);
 			//jQuery("#_fileuploadphraseblock").show();
-				var ids = jQuery.trim(jQuery("#field-annexupload").val());
-				var names = jQuery.trim(jQuery("#field-annexupload-name").val());
-				var _ul = jQuery("#_fileuploadphraseblock").find("#_filecontentblock ul");
+				var ids = jQuery.trim(paramDiv.find("#field-annexupload").val());
+				var names = jQuery.trim(paramDiv.find("#field-annexupload-name").val());
+				var _ul = paramDiv.find("#_fileuploadphraseblock").find("#_filecontentblock ul");
 				if(ids != "" && ids != null){
-					var fieldcancle = jQuery("#field-cancle").val();
-					jQuery("#promptinformation").html("").css("padding","2px");
+					var fieldcancle = paramDiv.find("#field-cancle").val();
+					paramDiv.find("#promptinformation").html("").css("padding","2px");
 					if(ids.indexOf(",") > -1){
 						var idArray = ids.split(",");
 						var nameArray = names.split(splitchar);
@@ -1000,39 +1008,39 @@ function __fileupload(editor,uiName){
 			                var curname = jQuery.trim(nameArray[i]);
 			                if(!checkliid(jQuery.trim(curid))){
 			                	//continue;
-			                	_ul.append("<li id='li_"+curid+"' onclick=\"onAddUploadFile("+curid+",'"+curname+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + curname + "' >" + curname + "</span><a onmouseover=\"showBt("+curid+")\" onmouseout=\"hiddenBt("+curid+")\" onclick=\"deletefile("+curid+",'"+curname+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
+			                	_ul.append("<li id='li_"+curid+"' onclick=\"onAddUploadFile("+curid+",'"+curname+"','"+editor.key+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + curname + "' >" + curname + "</span><a onmouseover=\"showBt("+curid+")\" onmouseout=\"hiddenBt("+curid+")\" onclick=\"deletefile("+curid+",'"+curname+"','"+editor.key+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 			                }
 					    }
 					}else{
 						if(!checkliid(jQuery.trim(ids))){
 		                	//return;
-		                	_ul.append("<li id='li_"+ids+"' onclick=\"onAddUploadFile("+ids+",'"+names+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + names + "'>" + names + "</span><a onmouseover=\"showBt("+ids+")\" onmouseout=\"hiddenBt("+ids+")\" onclick=\"deletefile("+ids+",'"+names+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
+		                	_ul.append("<li id='li_"+ids+"' onclick=\"onAddUploadFile("+ids+",'"+names+"','"+editor.key+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + names + "'>" + names + "</span><a onmouseover=\"showBt("+ids+")\" onmouseout=\"hiddenBt("+ids+")\" onclick=\"deletefile("+ids+",'"+names+"','"+editor.key+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 						}
 					}
 				}
-		    	var _outdiv = jQuery("#_filecontentblock");
-		    	var _li = jQuery("#_filecontentblock ul li");
+		    	var _outdiv = paramDiv.find("#_filecontentblock");
+		    	var _li = paramDiv.find("#_filecontentblock ul li");
 		    	if (_li.length > 4)  {
-					jQuery("#_filecontentblock").css("height", "124px");
-					jQuery("#_filecontentblock").css("overflow", "hidden");
-					jQuery("#_filecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
+					paramDiv.find("#_filecontentblock").css("height", "124px");
+					paramDiv.find("#_filecontentblock").css("overflow", "hidden");
+					paramDiv.find("#_filecontentblock").perfectScrollbar({horizrailenabled:false,zindex:1000});
 					_li.show();
 				}
 		    	if (_li.length == 4)  {
-					jQuery("#_filecontentblock").css("height", "94px");
-					jQuery("#_filecontentblock").css("overflow","");
+					paramDiv.find("#_filecontentblock").css("height", "94px");
+					paramDiv.find("#_filecontentblock").css("overflow","");
 				}
 		    	if (_li.length == 3)  {
-					jQuery("#_filecontentblock").css("height", "64px");
-					jQuery("#_filecontentblock").css("overflow","");
+					paramDiv.find("#_filecontentblock").css("height", "64px");
+					paramDiv.find("#_filecontentblock").css("overflow","");
 				}
 		    	if (_li.length == 2)  {
-					jQuery("#_filecontentblock").css("height", "34px");
-					jQuery("#_filecontentblock").css("overflow","");
+					paramDiv.find("#_filecontentblock").css("height", "34px");
+					paramDiv.find("#_filecontentblock").css("overflow","");
 				}
 		    	if (_li.length == 1)  {
-					jQuery("#_filecontentblock").css("height", "34px");
-					jQuery("#_filecontentblock").css("overflow","");
+					paramDiv.find("#_filecontentblock").css("height", "34px");
+					paramDiv.find("#_filecontentblock").css("overflow","");
 				}
 		}
 		

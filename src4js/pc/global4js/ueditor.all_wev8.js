@@ -24934,6 +24934,7 @@ UE.ui = baidu.editor.ui = {};
                 document.body : document.documentElement;
         },
         getClientRect: function (element){
+        	console.log("element",element);
             var bcr;
             //trace  IE6下在控制编辑器显隐时可能会报错，catch一下
             try{
@@ -25477,6 +25478,7 @@ UE.ui = baidu.editor.ui = {};
             this.showAnchorRect( uiUtils.getClientRect( element ), hoz );
         },
         showAnchorRect: function ( rect, hoz, adj ){
+        	console.log("rect",rect,"hoz",hoz,"adj",adj);
             this._doAutoRender();
             var vpRect = uiUtils.getViewportRect();
             this.getDom().style.visibility = 'hidden';
@@ -27276,6 +27278,7 @@ UE.ui = baidu.editor.ui = {};
                 this.editor.container.style.zIndex && (this.getDom().style.zIndex = this.editor.container.style.zIndex * 1 + 10);
                 this._hidden = false;
                 this.fireEvent('show');
+                console.log("27281",this.getDom().style.zIndex - 4,this.getDom());
                 baidu.editor.ui.uiUtils.getFixedLayer().style.zIndex = this.getDom().style.zIndex - 4;
             }
         },
@@ -28997,9 +29000,18 @@ UE.ui = baidu.editor.ui = {};
 
             utils.each(UE._customizeUI,function(obj,key){
                 var itemUI,index;
-                if(obj.id && obj.id != editor.key){
-                    //return false;
-                }else {
+                let flag = false;
+	        	 if(obj.id){
+	                obj.id.split(',').filter(objid=>{
+	                	if(objid == editor.key){
+	                		flag = true;
+	                	}
+	                });
+	             }else{
+	             	flag = true;
+	             }
+                
+                if(flag){
 	                itemUI = obj.execFn.call(editor,editor,key);
 	                if(itemUI){
 	                    index = obj.index;
@@ -29389,6 +29401,7 @@ UE.ui = baidu.editor.ui = {};
                     domUtils.addClass(holder, "edui-" + editor.options.theme);
                     editor.ui.render(holder);
                     var opt = editor.options;
+                    console.log("opt",opt);
                     //给实例添加一个编辑器的容器引用
                     editor.container = editor.ui.getDom();
                     var parents = domUtils.findParents(holder,true);

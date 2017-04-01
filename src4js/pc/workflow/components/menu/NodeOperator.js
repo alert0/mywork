@@ -15,19 +15,15 @@ class NodeOperator extends React.Component {
 			selectTabKey: '1',
 			selectAll: false
 		};
+	}
 
+	componentDidMount() {
 		const { requestid } = this.props;
 		const _this = this;
 		WeaTools.callApi('/api/workflow/reqforward/' + requestid, 'GET', {}).then(data => {
 			_this.setState({ alldatas: data });
+			_this.initData(data);
 		});
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		if(this.state.alldatas !== nextState.alldatas) {
-			this.initData(nextState.alldatas);
-		}
-		return true;
 	}
 
 	render() {

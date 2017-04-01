@@ -26,9 +26,22 @@ function fileQueued(file) {
 window.fileQueued = fileQueued;
 
 function fileQueueError(file, errorCode, message) {
+	file.name = decodeURIComponent(file.name);
 	try {
 		if (errorCode === SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED) {
-			alert("You have attempted to queue too many files.\n" + (message === 0 ? "You have reached the upload limit." : "You may select " + (message > 1 ? "up to " + message + " files." : "one file.")));
+			var fileUploadLimit=this.settings.file_upload_limit; //最大上传文件个数
+			if(message==fileUploadLimit){                        //大于最大上传个数 wmsg.error.QUEUE_LIMIT_MAX 在语言包中定义
+				var msg = wmsg.error.QUEUE_LIMIT_MAX.replace(new RegExp("\\{" + 0 + "\\}", "g"), message);
+				alert(msg);
+			}else if(message==0){                                //已经选择了50个
+			    var msg = wmsg.error.QUEUE_LIMIT_ZERO.replace(new RegExp("\\{" + 0 + "\\}", "g"), fileUploadLimit);
+			    alert(msg);	
+			}else{                                              //已经有选择了文件，但总数大于最大上传数
+				var msg = wmsg.error.QUEUE_LIMIT_REMAIN.replace(new RegExp("\\{" + 0 + "\\}", "g"), fileUploadLimit-message);
+				msg=msg.replace(new RegExp("\\{" + 1 + "\\}", "g"), message);
+				alert(msg);
+			}
+			//alert("You have attempted to queue too many files.\n" + (message === 0 ? "You have reached the upload limit." : "You may select " + (message > 1 ? "up to " + message + " files." : "one file.")));
 			return;
 		}
 
@@ -38,7 +51,6 @@ function fileQueueError(file, errorCode, message) {
 
 		switch (errorCode) {
 		case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
-			//progress.setStatus("File is too big.");
 			progress.setStatus(""+SystemEnv.getHtmlNoteName(4061));
 			var fileProgressID = file.id;
 			jQuery("#"+fileProgressID).removeClass().addClass("progressWrapper2");
@@ -129,6 +141,7 @@ function uploadSuccess(file, serverData) {
 window.uploadSuccess = uploadSuccess;
 
 function uploadError(file, errorCode, message) {
+	file.name = decodeURIComponent(file.name);
 	try {
 		var progress = new FileProgress(file, this.customSettings.progressTarget);
 		progress.setError();
@@ -165,7 +178,7 @@ function uploadError(file, errorCode, message) {
 				document.getElementById(this.customSettings.cancelButtonId).disabled = true;
 			}
 			progress.setStatus("Cancelled");
-			progress.setCancelled(this);
+			progress.setCancelled();
 			break;
 		case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
 			progress.setStatus("Stopped");
@@ -192,8 +205,8 @@ window.uploadComplete =  uploadComplete;
 
 // This event comes from the Queue Plugin
 function queueComplete(numFilesUploaded) {
-//	var status = document.getElementById("divStatus");
-//	status.innerHTML = numFilesUploaded + " file" + (numFilesUploaded === 1 ? "" : "s") + " uploaded.";
+	var status = document.getElementById("divStatus");
+	status.innerHTML = numFilesUploaded + " file" + (numFilesUploaded === 1 ? "" : "s") + " uploaded.";
 }
 
 window.queueComplete =  queueComplete;

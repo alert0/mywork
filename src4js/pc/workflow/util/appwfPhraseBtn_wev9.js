@@ -43,11 +43,20 @@ const initwfphrasebutton = (editor,uiName) => {
 		} catch (e) {}
 		//combox html
 		
-		const _hasPrivateRight = paramDiv.find('#hasAddWfPhraseRight_param').val();
-		let phraseInfo 	= paramDiv.find('#phraseInfo_param').val();
+		let _hasPrivateRight = false;
+		let phraseInfo 	= '';
+		if('remark' == editor.key){
+			_hasPrivateRight = paramDiv.find('#hasAddWfPhraseRight_param').val();
+			phraseInfo 	= paramDiv.find('#phraseInfo_param').val();
+		}else{
+			_hasPrivateRight = jQuery('#forwardremark_hidden_area').find('#hasAddWfPhraseRight').val();
+			phraseInfo 	= jQuery('#forwardremark_hidden_area').find('#phraseInfo').val();
+		}
 		if(phraseInfo){
 			phraseInfo = JSON.parse(phraseInfo);
 		}
+		
+		console.log("_hasPrivateRight",_hasPrivateRight,"phraseInfo",phraseInfo);
 		var comboxHtml = "" +
 						"<div id=\"_signinputphraseblock\" class=\"_signinputphraseblockClass\" style='display:none;z-index:999;'>" +
 						"	<div class=\"phrase_arrowsblock\"><img src=\"/images/ecology8/workflow/phrase/addPhrasejt_wev8.png\" width=\"14px\" height=\"14px\"></div>" +

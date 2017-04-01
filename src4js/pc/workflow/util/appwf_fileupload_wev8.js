@@ -11,7 +11,15 @@ UE.registerUI('wfannexbutton',function(editor,uiName){
 
 const initwfannexbutton = (editor,uiName) => {
 	const paramDiv = jQuery('#' + editor.key + "_div");
-	const isannexupload_edit = paramDiv.find('#isannexupload_edit_param').val();
+	let isannexupload_edit = '0';
+	let annexmaxUploadImageSize = '0';
+	if(editor.key == 'remark'){
+		isannexupload_edit = paramDiv.find('#isannexupload_edit_param').val()
+		annexmaxUploadImageSize = paramDiv.find('#annexmaxUploadImageSize_param').val()
+	}else{
+		isannexupload_edit = jQuery('#forwardremark_hidden_area').find('#isannexupload_edit').val();
+		annexmaxUploadImageSize = jQuery('#forwardremark_hidden_area').find('#annexmaxUploadImageSize').val();
+	}
 	if(isannexupload_edit != "1"){
 		return;
 	}
@@ -19,7 +27,6 @@ const initwfannexbutton = (editor,uiName) => {
 	var language = readCookie("languageidweaver");
 	var msg = SystemEnv.getHtmlNoteName(3449,language);
 	var labelname = "@";
-	const annexmaxUploadImageSize = jQuery('#' + editor.key + "_div").find('#annexmaxUploadImageSize_param').val();
 	var initphrase = function () {
 		//点击其他地方，隐藏附件上传选择框
 		jQuery("html").live('mouseup', function (e) {
@@ -183,24 +190,29 @@ var x=0;
 var fQError = "";
 function cfileupload(editorid) {
 	const paramDiv = jQuery('#' + editorid + "_div");
-	const annexmainId = paramDiv.find('#annexmainId_param').val();
-	const annexsubId = paramDiv.find('#annexsubId_param').val();
-	const annexsecId = paramDiv.find('#annexsecId_param').val();
-	const annexmaxUploadImageSize = paramDiv.find('#annexmaxUploadImageSize_param').val();
-	const fileuserid = paramDiv.find('#fileuserid_param').val();
-	const fileloginyype = paramDiv.find('#fileloginyype_param').val();
+	const params = {'method':'uploadFile'};
+	let annexmaxUploadImageSize = '0';
+	if(editorid == 'remark'){
+		params.annexmainId = paramDiv.find('#annexmainId_param').val();
+		params.annexsubId = paramDiv.find('#annexsubId_param').val();
+		params.annexsecId = paramDiv.find('#annexsecId_param').val();
+		params.fileuserid = paramDiv.find('#fileuserid_param').val();
+		params.fileloginyype = paramDiv.find('#fileloginyype_param').val();
+		annexmaxUploadImageSize = paramDiv.find('#annexmaxUploadImageSize_param').val();
+	}else{
+		params.annexmainId = jQuery('#forwardremark_hidden_area').find('#annexmainId').val();
+		params.annexsubId = jQuery('#forwardremark_hidden_area').find('#annexsubId').val();
+		params.annexsecId = jQuery('#forwardremark_hidden_area').find('#annexsecId').val();
+		params.fileuserid = jQuery('#forwardremark_hidden_area').find('#fileuserid').val();
+		params.fileloginyype = jQuery('#forwardremark_hidden_area').find('#fileloginyype').val();
+		annexmaxUploadImageSize = jQuery('#forwardremark_hidden_area').find('#annexmaxUploadImageSize').val();
+	}
 	
 	var oUploadannexupload;
 	var settings = {
 			flash_url : "/js/swfupload/swfupload.swf",
 			upload_url: "/docs/docupload/MultiDocUploadByWorkflow.jsp?userid="+window.__userid+"&usertype="+window.__usertype,
-			post_params:{"method":"uploadFile",
-				"mainId": annexmainId,
-				"subId": annexsubId,
-				"secId": annexsecId,
-				"userid": fileuserid,
-				"logintype": fileloginyype
-			},
+			post_params:params,
 			use_query_string : true,//要传递参数用到的配置
 			file_size_limit : annexmaxUploadImageSize + " MB",
 			file_types : "*.*",

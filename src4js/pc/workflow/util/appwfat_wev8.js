@@ -14,25 +14,28 @@ const initwfatbutton = (editor, uiName) => {
 	var labelname = "@";
 
 	//获取参数
-	const paramDiv = jQuery('#' + editor.key + "_div");
-	const requestid = paramDiv.find('#requestid_param').val();
-	const workflowid = paramDiv.find('#workflowid_param').val();
-	const nodeid = paramDiv.find('#nodeid_param').val();
-	const isbill = paramDiv.find('#isbill_param').val();
-	const formid = paramDiv.find('#formid_param').val();
-	console.log("requestid", requestid, "workflowid", workflowid, "nodeid", nodeid, "isbill", isbill, "formid", formid);
+	const params = {};
+	if('remark' == editor.key){
+		const paramDiv = jQuery('#remark_div');
+		params.requestid = paramDiv.find('#requestid_param').val();
+		params.workflowid = paramDiv.find('#workflowid_param').val();
+		params.nodeid = paramDiv.find('#nodeid_param').val();
+		params.isbill = paramDiv.find('#isbill_param').val();
+		params.formid = paramDiv.find('#formid_param').val();
+	}else{
+		const paramDiv = jQuery('#forwardremark_hidden_area');
+		params.requestid = paramDiv.find('#requestid').val();
+		params.workflowid = paramDiv.find('#workflowid').val();
+		params.nodeid = paramDiv.find('#nodeid').val();
+		params.isbill = paramDiv.find('#isbill').val();
+		params.formid = paramDiv.find('#formid').val();
+	}
 
 	let atitems = [];
 	jQuery.ajax({
 		url: '/workflow/request/WorkflowRequestPictureForJson.jsp',
 		type: 'POST', //GET
-		data: {
-			requestid: requestid,
-			workflowid: workflowid,
-			nodeid: nodeid,
-			isbill: isbill,
-			formid: formid
-		},
+		data: params,
 		success: function(response) {
 			atitems = response;
 			window.__atdataready = true;

@@ -11,7 +11,12 @@ UE.registerUI('wfdocbutton',function(editor,uiName){
 }, 34, 'remark,forwardremark');
 
 const initwfdocbutton = (editor,uiName) => {
-	const isSignDoc_edit = jQuery('#' + editor.key + "_div").find('#isSignDoc_edit_param').val();
+	let isSignDoc_edit = '0';
+	if(editor.key == 'remark'){
+		isSignDoc_edit = jQuery('#remark_div').find('#isSignDoc_edit_param').val();
+	}else{
+		isSignDoc_edit = jQuery('#forwardremark_hidden_area').find('#isSignDoc_edit').val();
+	}
 	if(isSignDoc_edit != '1'){
 		return;
 	}

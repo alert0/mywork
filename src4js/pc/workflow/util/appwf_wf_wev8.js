@@ -11,7 +11,12 @@ UE.registerUI('wfwfbutton', function(editor, uiName) {
 }, 34, 'remark,forwardremark');
 
 const initwfwfbutton = (editor,uiName) => {
-	const isSignWorkflow_edit = jQuery('#' + editor.key + "_div").find('#isSignWorkflow_edit_param').val();
+	let isSignWorkflow_edit = '0';
+	if('remark' == editor.key){
+		isSignWorkflow_edit =  jQuery('#remark_div').find('#isSignWorkflow_edit_param').val();
+	}else{
+		 isSignWorkflow_edit = jQuery('#forwardremark_hidden_area').find('#isSignWorkflow_edit').val();
+	}
 	if(isSignWorkflow_edit != '1'){
 		return;
 	}
@@ -19,7 +24,6 @@ const initwfwfbutton = (editor,uiName) => {
 	var language = readCookie("languageidweaver");
 	var msg = SystemEnv.getHtmlNoteName(3449, language);
 	var labelname = "@";
-
 
 	//注册按钮执行时的command命令，使用命令默认就会带有回退操作
 	editor.registerCommand(uiName, {
