@@ -6,7 +6,10 @@ export default class OGroup extends React.Component {
 		super(props);
 		this.state = {
 			showall: false,
-			hrmgroups: []
+			hrmgroups: [],
+			allUserIds: '',
+			allUserCount: 0,
+			showAllUser: false
 		};
 
 		const _this = this;
@@ -41,14 +44,30 @@ export default class OGroup extends React.Component {
 		handleVisibleChange(false);
 	}
 
+	showAllOperators() {
+		console.log(" show all operators ");
+		const { showAllUser, allUserIds } = this.state;
+		if(showAllUser) {
+			const { handleVisibleChange, setOperatorIds } = this.props;
+			setOperatorIds(allUserIds);
+			handleVisibleChange(false);
+		} else {
+			WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', {}).then(data => {
+				console.log("all operators ", data);
+				this.setState({ showAllUser: true, allUserIds: data.userIds, allUserCount: data.userCount });
+			});
+		}
+
+	}
+
 	render() {
 		const { handleVisibleChange, setOperatorIds } = this.props;
-		const { showall, hrmgroups } = this.state;
+		const { showall, hrmgroups, showAllUser, allUserCount } = this.state;
 
 		return(
 			<div className="wea-req-operate-group">
-				<div className="wea-req-all-operators">
-					<span>所有人</span>
+				<div className="wea-req-all-operators" onClick="this.showAllOperators.bind(this)">
+					<span>所有人{showAllUser && "（"+allUserCount+"）"}</span>
 				</div>
 				<div className="wea-req-operate-content">
 					<ul>

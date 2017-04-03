@@ -48,10 +48,6 @@ class Forward extends React.Component {
 					forwardremark: FCKEditorExt.getHtml('remark')
 				});
 
-				const { hasinitremark } = this.state;
-				if(hasinitremark) {
-					UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), true);
-				}
 			}
 		}
 	}
@@ -59,11 +55,10 @@ class Forward extends React.Component {
 	componentDidUpdate() {
 		const { hasinitremark, reload, signinput } = this.state;
 		if(jQuery('#forwardremark').length > 0 && !hasinitremark && reload) {
-			console.log("-67-workflowid2", jQuery('#workflowid2').val());
-			console.log("-67-workflowid33", jQuery('#workflowid33').val());
 			var _ue = UEUtil.initRemark('forwardremark', false);
 			bindRemark(_ue);
 			this.setState({ hasinitremark: true });
+			UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), true);
 			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index', '105');
 			jQuery('.wea-req-forward-modal').css('z-index', '105');
 		}
@@ -88,16 +83,14 @@ class Forward extends React.Component {
 	setOperatorIds(ids) {
 		const { field5 } = this.state;
 		let operatoridarr = field5.split(',').concat(ids.split(','));
-		let result = [];
 		operatoridarr.filter(o => {
 			if(o == '')
 				return false;
 			if(result.contains(o))
 				return false;
-			result.push(o);
 			return true;
 		});
-		this.setState({ field5: result.join(',') });
+		this.setState({ field5: operatoridarr.join(',') });
 	}
 
 	render() {
