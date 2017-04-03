@@ -99,88 +99,88 @@ class Forward extends React.Component {
 
 		return(
 			<div>
-			<Modal title={this.getTopTitle(titleName)} 
-				visible ={showForward}	
-				wrapClassName = "wea-req-forward-modal"
-				style={{'min-width':'1100px'}}
-				maskClosable={false}
-				onCancel={this.cancelEvent.bind(this)}
-				footer={[
-				    <Button type="primary" size="large" onClick={this.submitEvent.bind(this)}>提交</Button>,
-	                <Button type="ghost" size="large" onClick={this.cancelEvent.bind(this)}>关闭</Button>
-				]}
-			>
-				<div className="wea-req-forward-content">
-					<div className="wea-req-forward-content-receive">
-						<div className='label'>
-							<span>*</span>
-							<span>转发接收人</span>
+				<Modal title={this.getTopTitle(titleName)} 
+					visible ={showForward}	
+					wrapClassName = "wea-req-forward-modal"
+					style={{'min-width':'1100px'}}
+					maskClosable={false}
+					onCancel={this.cancelEvent.bind(this)}
+					footer={[
+					    <Button type="primary" size="large" onClick={this.submitEvent.bind(this)}>提交</Button>,
+		                <Button type="ghost" size="large" onClick={this.cancelEvent.bind(this)}>关闭</Button>
+					]}
+				>
+					<div className="wea-req-forward-content">
+						<div className="wea-req-forward-content-receive">
+							<div className='label'>
+								<span>*</span>
+								<span>转发接收人</span>
+							</div>
+							<div className='input'>
+								<WeaHrmInput mult onChange={(o)=>this.setOperatorIds(o)}/>
+							</div>
+							<div className='btns'>
+								<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
+										 trigger="click"
+										 onVisibleChange={this.handleVisibleChange.bind(this)}
+										 visible={isshowoperategroup}
+										 overlayClassName="wea-req-forward-customer-me">
+									<div className='wea-workflow-icon'>
+										<i className='icon-customer-me'/>
+									</div>
+								</Popover>
+								<Popover placement="bottomLeft" title="" content={<NodeOperator requestid={requestid} setOperatorIds={this.setOperatorIds.bind(this)} handleShowNodeOperator={this.handleShowNodeOperator.bind(this)}/>} 
+										 trigger="click"
+										 onVisibleChange={this.handleShowNodeOperator.bind(this)}
+										 visible={isshownodeoperators}
+										 overlayClassName="wea-req-forward-node-operator">
+									<div className='wea-workflow-icon'>
+										<i className='icon-New-Flow-channel'/>
+									</div>
+								</Popover>
+							</div>
 						</div>
-						<div className='input'>
-							<WeaHrmInput mult onChange={(o)=>this.setOperatorIds(o)}/>
-						</div>
-						<div className='btns'>
-							<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
-									 trigger="click"
-									 onVisibleChange={this.handleVisibleChange.bind(this)}
-									 visible={isshowoperategroup}
-									 overlayClassName="wea-req-forward-customer-me">
-								<div className='wea-workflow-icon'>
-									<i className='icon-customer-me'/>
-								</div>
-							</Popover>
-							<Popover placement="bottomLeft" title="" content={<NodeOperator requestid={requestid} setOperatorIds={this.setOperatorIds.bind(this)} handleShowNodeOperator={this.handleShowNodeOperator.bind(this)}/>} 
-									 trigger="click"
-									 onVisibleChange={this.handleShowNodeOperator.bind(this)}
-									 visible={isshownodeoperators}
-									 overlayClassName="wea-req-forward-node-operator">
-								<div className='wea-workflow-icon'>
-									<i className='icon-New-Flow-channel'/>
-								</div>
-							</Popover>
+						<div className="wea-req-forward-content-remark">
+							<div className='label'>
+								<span>*</span>
+								<span>签字意见</span>
+							</div>
+							<div className='remark' id="forwardremark_div">
+								 <textarea name='forwardremark' id="forwardremark" style={{'width':'100%','height':'167px'}} >
+								 	{this.state.forwardremark}
+								 </textarea>
+								 <input type="hidden" id="signdocids" name="signdocids" value={this.state.signdocids}/>
+								 <input type="hidden" id="signworkflowids"name="signworkflowids" value={this.state.signworkflowids}/>
+								 <input type="hidden" name="remarkLocation" id="remarkLocation" value={this.state.remarkLocation}></input>
+								 <input type="hidden" id="field-annexupload" name="field-annexupload" value={this.state.fieldannexupload}/>
+								 <input type="hidden" id="field_annexupload_del_id" value=''/>
+								 <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={this.state.fieldannexuploadname}/>
+								 <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value={this.state.fieldannexuploadcount}/>
+								 <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value={requestid}/>
+								 <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
+								 <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
+							</div>
 						</div>
 					</div>
-					<div className="wea-req-forward-content-remark">
-						<div className='label'>
-							<span>*</span>
-							<span>签字意见</span>
-						</div>
-						<div className='remark' id="forwardremark_div">
-							 <textarea name='forwardremark' id="forwardremark" style={{'width':'100%','height':'167px'}} >
-							 	{this.state.forwardremark}
-							 </textarea>
-							 <input type="hidden" id="signdocids" name="signdocids" value={this.state.signdocids}/>
-							 <input type="hidden" id="signworkflowids"name="signworkflowids" value={this.state.signworkflowids}/>
-							 <input type="hidden" name="remarkLocation" id="remarkLocation" value={this.state.remarkLocation}></input>
-							 <input type="hidden" id="field-annexupload" name="field-annexupload" value={this.state.fieldannexupload}/>
-							 <input type="hidden" id="field_annexupload_del_id" value=''/>
-							 <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={this.state.fieldannexuploadname}/>
-							 <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value={this.state.fieldannexuploadcount}/>
-							 <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value={requestid}/>
-							 <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
-							 <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
-						</div>
-					</div>
+				</Modal>
+				<div id="forwardremark_hidden_area">
+					<input type="hidden" name='annexmainId' id='annexmainId' value={signinput.annexmainId}/>
+					<input type="hidden" name='annexsubId' id='annexsubId' value={signinput.annexsubId}/>
+					<input type="hidden" name='annexsecId' id='annexsecId' value={signinput.annexsecId}/>
+					<input type="hidden" name='fileuserid' id='fileuserid' value={signinput.fileuserid}/>
+					<input type="hidden" name='fileloginyype' id='fileloginyype' value={signinput.fileloginyype}/>
+					<input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value={signinput.annexmaxUploadImageSize}/>
+					<input type="hidden" name='isSignDoc_edit' id='isSignDoc_edit' value={signinput.isSignDoc_edit}/>
+					<input type="hidden" name='isannexupload_edit' id='isannexupload_edit' value={signinput.isannexupload_edit}/>
+					<input type="hidden" name='isSignWorkflow_edit' id='isSignWorkflow_edit' value={signinput.isSignWorkflow_edit}/>
+					<input type="hidden" name='workflowid' id='workflowid' value={signinput.workflowid}/>
+					<input type="hidden" name='requestid' id='requestid' value={requestid}/>
+					<input type="hidden" name='nodeid' id='nodeid' value={signinput.nodeid}/>
+					<input type="hidden" name='isbill' id='isbill' value={signinput.isbill}/>
+					<input type="hidden" name='formid' id='formid' value={signinput.formid}/>
+					<input type="hidden" name='hasAddWfPhraseRight' id='hasAddWfPhraseRight' value={signinput.hasAddWfPhraseRight}/>
+					<input type="hidden" name='phraseInfo' id='phraseInfo' value={signinput.phraseInfo && JSON.stringify(signinput.phraseInfo)}/>
 				</div>
-			</Modal>
-			<div id="forwardremark_hidden_area">
-				<input type="hidden" name='annexmainId' id='annexmainId' value={signinput.annexmainId}/>
-				<input type="hidden" name='annexsubId' id='annexsubId' value={signinput.annexsubId}/>
-				<input type="hidden" name='annexsecId' id='annexsecId' value={signinput.annexsecId}/>
-				<input type="hidden" name='fileuserid' id='fileuserid' value={signinput.fileuserid}/>
-				<input type="hidden" name='fileloginyype' id='fileloginyype' value={signinput.fileloginyype}/>
-				<input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value={signinput.annexmaxUploadImageSize}/>
-				<input type="hidden" name='isSignDoc_edit' id='isSignDoc_edit' value={signinput.isSignDoc_edit}/>
-				<input type="hidden" name='isannexupload_edit' id='isannexupload_edit' value={signinput.isannexupload_edit}/>
-				<input type="hidden" name='isSignWorkflow_edit' id='isSignWorkflow_edit' value={signinput.isSignWorkflow_edit}/>
-				<input type="hidden" name='workflowid' id='workflowid' value={signinput.workflowid}/>
-				<input type="hidden" name='requestid' id='requestid' value={requestid}/>
-				<input type="hidden" name='nodeid' id='nodeid' value={signinput.nodeid}/>
-				<input type="hidden" name='isbill' id='isbill' value={signinput.isbill}/>
-				<input type="hidden" name='formid' id='formid' value={signinput.formid}/>
-				<input type="hidden" name='hasAddWfPhraseRight' id='hasAddWfPhraseRight' value={signinput.hasAddWfPhraseRight}/>
-				<input type="hidden" name='phraseInfo' id='phraseInfo' value={signinput.phraseInfo && JSON.stringify(signinput.phraseInfo)}/>
-			</div>
 			</div>
 		)
 	}
