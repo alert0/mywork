@@ -79,7 +79,7 @@ class Forward extends React.Component {
 			isshownodeoperators: bool
 		});
 	}
-    //更新操作者
+	//更新操作者
 	setOperatorIds(ids) {
 		const { field5 } = this.state;
 		let operatoridarr = field5.split(',').concat(ids.split(','));
@@ -302,11 +302,16 @@ class Forward extends React.Component {
 	}
 
 	initData() {
+		const { hasinitremark } = this.state;
+		if(hasinitremark) {
+			UE.getEditor('forwardremark').destory();
+		}
 		const { requestid } = this.props;
 		let params = { actiontype: 'signInput', requestid: requestid }
 		const _this = this;
 		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', params).then(data => {
-			_this.setState({ signinput: data, reload: true });
+			_this.setState({ signinput: data, reload: true, hasinitremark: false });
+
 		});
 	}
 }
