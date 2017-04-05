@@ -52,7 +52,7 @@
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input {
-	width: 600px;
+	width: 490px;
 	float: left;
 	height: 32px;
 }
@@ -174,10 +174,14 @@
 }
 
 .wea-req-operate-group .wea-req-all-operators {
-	height: 42px;
-	line-height: 42px;
+	height: 55px;
+	line-height: 55px;
 	padding-left: 15px;
 	color: #323232;
+	cursor: pointer;
+}
+.wea-req-operate-group .wea-req-all-operators:hover{
+	background: #ECF7FD;
 	cursor: pointer;
 }
 

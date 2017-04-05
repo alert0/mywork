@@ -66,7 +66,7 @@ const doSupervise = () => { window.store_e9_workflow.dispatch(window.action_e9_w
 window.doSupervise = doSupervise;
 
 //表单---转发，zdialog
-const doReviewE9 = () => {
+const doReviewE9 = (destuserid) => {
 //	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
 //	const requestid = formstate.get('requestid');
 //	const userid = formstate.get('f_weaver_belongto_userid');

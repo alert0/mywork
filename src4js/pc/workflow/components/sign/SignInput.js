@@ -6,8 +6,6 @@ class SignInput extends React.Component {
 
 	render() {
 		const { markInfo,ismanagePage , isSignMustInput, actions } = this.props;
-		
-		
 
 		const isshowsigninputdiv = ismanagePage == '1' && isHideInput == '0';
 		const defaultshowsigninput = isshowsigninputdiv && markInfo.remark != '' && markInfo.remark != null;

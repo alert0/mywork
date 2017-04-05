@@ -40,7 +40,11 @@ class SignListItem extends React.Component {
 						<img src={data.get('img_path')} className='content-text-left-user-img'/>
 					}
 					<div style={{'width':'132px'}}>
-						<p><a href={`javaScript:openhrm(${data.get('displayid')})`} onClick={event => window.pointerXY(event)}>{data.get('displayname')}</a></p>
+						<p>
+							{data.get('isexsAgent') && <a href={`javaScript:openhrm(${data.get('log_agentorbyagentid')})`} onClick={event => window.pointerXY(event)}>{data.get('displaybyagentname')}</a>}
+							{data.get('isexsAgent') && <span>{`->`}</span>}
+							<a href={`javaScript:openhrm(${data.get('displayid')})`} onClick={event => window.pointerXY(event)}>{data.get('displayname')}</a>
+						</p>
 						<span>
 							<a href={dpurl} target="_blank" style={{color:'#9b9b9b','white-space':'pre-wrap'}}>
 								{data.get('displaydepname')}
@@ -115,7 +119,7 @@ class SignListItem extends React.Component {
 						{showrivebtnspan &&
 							<span style={{float:'right'}} className="reqlogbtn">
 								<span style={{marginRight:16,cursor:'pointer'}}>{data.get('isReference') && <span onClick={()=>quoteClick(data)}><i className='icon-xxx-form-Quote' style={{marginRight:6}} />引用</span>}</span>
-								<span style={{cursor:'pointer'}}>{forward == '1'&& <span onClick={()=>doReview(requestid,workflowid,data.get('displayid'))}><i className='icon-xxx-form-Forward' style={{marginRight:6}}/>转发</span>}</span>
+								<span style={{cursor:'pointer'}}>{forward == '1'&& <span onClick={()=>actions.setShowForward(true,data.get('displayid'))}><i className='icon-xxx-form-Forward' style={{marginRight:6}}/>转发</span>}</span>
 							</span>
 						}
 					</p>

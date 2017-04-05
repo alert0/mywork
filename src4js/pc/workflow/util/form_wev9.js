@@ -12,10 +12,10 @@ const showAutoCompleteDiv = (ele, fieldid) => {
 	var offset = target.offset();
 	var scrollObj = jQuery("div.wea-new-top-req-content");
 	
-	var __x = offset.left - 225/2 +  jQuery(ele).width()/2;
+	var __x = offset.left - 245/2 +  jQuery(ele).width()/2;
 	var __y = offset.top + scrollObj.scrollTop() - scrollObj.offset().top + 5;
 	if (jQuery(ele).height() > 20) {
-		__x = offset.left - 225/2 + 5;
+		__x = offset.left - 245/2 + 5;
 		__y = __y + 18;
 	}
 	
@@ -46,7 +46,7 @@ const showAutoCompleteDiv = (ele, fieldid) => {
 	}
 	
 	if(!!browgroupHtml){
-		var autoCompleteDiv = jQuery("<div id='__brow__detaildiv' class='wea-hrmgroup-wrapper' style=\"position:absolute;width:225px;z-index:999;left:" + __x + "px;top:" + __y + "px;\"></div>");
+		var autoCompleteDiv = jQuery("<div id='__brow__detaildiv' class='wea-hrmgroup-wrapper' style=\"position:absolute;width:245px;z-index:999;left:" + __x + "px;top:" + __y + "px;\"></div>");
 		var autoCompleteDiv_html = jQuery("<div class=\"arrowsblock\"><img src=\"/images/ecology8/workflow/multres/arrows_2_wev8.png\" width=\"22px\" height=\"22px\"></div>"
 			+ "<div class='ac_results' style='margin-top:20px;background:#fff;z-index:9;'><ul>"+browgroupHtml+"</ul></div>"
 		);
@@ -64,7 +64,7 @@ const showalldetail = (ele, fieldid) => {
 		"overflow" : "auto"
 	});
 	
-	parentDiv.perfectScrollbar({horizrailenabled:false,zindex:1000});
+	//parentDiv.perfectScrollbar({horizrailenabled:false,zindex:1000});
 	
 	var othli = target.parent().children().not(":visible");
 	othli.show();

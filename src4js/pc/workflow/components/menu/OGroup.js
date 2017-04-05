@@ -20,7 +20,9 @@ export default class OGroup extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return this.state.hrmgroups !== nextState.hrmgroups ||
-			this.state.showall !== nextState.showall;
+			this.state.showall !== nextState.showall ||
+			this.state.showAllUser !== nextState.showAllUser || 
+			this.state.allUserCount !== nextState.allUserCount;
 	}
 
 	//添加常用组
@@ -39,34 +41,38 @@ export default class OGroup extends React.Component {
 		dialog.show();
 	}
 
-	add(setOperatorIds, ids, handleVisibleChange) {
-		setOperatorIds(ids);
+	add(setOperatorIds, handleVisibleChange,groupobj) {
+		//公共組
+		if(groupobj.type == '4'){
+			setOperatorIds("group|"+groupobj.typeid);
+		}
+		
+		if(groupobj.type == '6'){
+			setOperatorIds(groupobj.ids);
+		}
+		
 		handleVisibleChange(false);
 	}
 
 	showAllOperators() {
-		console.log(" show all operators ");
 		const { showAllUser, allUserIds } = this.state;
 		if(showAllUser) {
 			const { handleVisibleChange, setOperatorIds } = this.props;
 			setOperatorIds(allUserIds);
 			handleVisibleChange(false);
 		} else {
-			WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', {}).then(data => {
-				console.log("all operators ", data);
-				this.setState({ showAllUser: true, allUserIds: data.userIds, allUserCount: data.userCount });
+			WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', {isgetallres:'1'}).then(data => {
+				this.setState({ showAllUser: true, allUserIds: data.ids, allUserCount: data.count });
 			});
 		}
-
 	}
-
 	render() {
 		const { handleVisibleChange, setOperatorIds } = this.props;
 		const { showall, hrmgroups, showAllUser, allUserCount } = this.state;
 
 		return(
 			<div className="wea-req-operate-group">
-				<div className="wea-req-all-operators" onClick="this.showAllOperators.bind(this)">
+				<div className="wea-req-all-operators" onClick={this.showAllOperators.bind(this)}>
 					<span>所有人{showAllUser && "（"+allUserCount+"）"}</span>
 				</div>
 				<div className="wea-req-operate-content">
@@ -77,7 +83,7 @@ export default class OGroup extends React.Component {
 									return true;
 								}
 								const count = o.ids.split(',').length;
-								return  <li onClick={this.add.bind(this,setOperatorIds,o.ids,handleVisibleChange)}>
+								return  <li onClick={this.add.bind(this,setOperatorIds,handleVisibleChange,o)}>
 											<span className='cg_title'>{`${o.typename}（${count}人）`}</span>
 											<span className='cg_detail'>{o.names}</span>
 										</li>

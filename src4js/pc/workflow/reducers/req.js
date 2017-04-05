@@ -140,7 +140,7 @@ export default function req(state = initialState, action) {
     	case types.SET_REQ_SUBMIT_ERROR_MSG_HTML:
     		return state.merge({dangerouslyhtml:{reqsubmiterrormsghtml:action.msghtml}});
     	case types.SET_SHOW_FORWARD:
-    		return state.merge({rightMenuStatus:{showForward:action.bool}});
+    		return state.merge({rightMenuStatus:{showForward:action.bool,forwarduserid:action.forwarduserid}});
     	case types.SET_OPERATE_INFO:
     		return state.mergeDeep({params:{hiddenarea:action.updateinfo}});
     	case types.UPDATE_SHOW_USER_LOGID:

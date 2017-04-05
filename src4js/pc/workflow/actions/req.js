@@ -954,9 +954,9 @@ export const updateHiddenSysFieldname = (fieldname) => {
 	}
 }
 
-export const setShowForward = bool =>{
+export const setShowForward = (bool,forwarduserid) =>{
 	return(dispatch, getState) => {
-		dispatch({type:types.SET_SHOW_FORWARD,bool:bool});
+		dispatch({type:types.SET_SHOW_FORWARD,bool:bool,forwarduserid:forwarduserid?forwarduserid:''});
 	}
 }
 

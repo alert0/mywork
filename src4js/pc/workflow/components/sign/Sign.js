@@ -103,7 +103,7 @@ class Sign extends React.Component {
 		const defaultshowsigninput = isshowsigninputdiv && markInfo.remark != '' && markInfo.remark != null;
 		let listShow = [];
 		logList && logList.forEach(obj=>{
-			listShow.push(<SignListItem data={obj} isShowUserheadimg={isShowUserheadimg} actions={actions} forward={forward} requestid={requestid} workflowid={workflowid} showuserlogids={showuserlogids}/>);
+			listShow.push(<SignListItem data={obj} isShowUserheadimg={isShowUserheadimg} actions={actions} forward={forward} requestid={requestid} workflowid={workflowid} showuserlogids={showuserlogids} f_weaver_belongto_userid={params.get('f_weaver_belongto_userid')}/>);
 		});
         return (
             <div className='wea-workflow-req-sign'>
