@@ -664,7 +664,7 @@ public class SearchWorkflowService {
 			}
 			tableString += "</head>" + "</table>";
 			
-			String sessionkey = user.getUID()+"_"+Util.getEncrypt(Util.getRandom());
+			String sessionkey = pageUid+"_"+Util.getEncrypt(Util.getRandom());
 			Util_TableMap.setVal(sessionkey, tableString);
 			//System.err.println(tableString);
 			retmap.put("sessionkey", sessionkey);

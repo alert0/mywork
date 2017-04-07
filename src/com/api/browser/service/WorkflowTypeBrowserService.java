@@ -7,6 +7,7 @@ import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.util.SqlUtils;
 import com.api.workflow.util.PageUidFactory;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
@@ -25,7 +26,7 @@ public class WorkflowTypeBrowserService extends BrowserService{
 
 		String fullname = Util.null2String(params.get("name"));
 		String description = Util.null2String(params.get("description"));
-		String sqlwhere = " where 1 = 1 ";
+		String sqlwhere = " ";
 		if (!fullname.equals("")) {
 			sqlwhere += " and typename like '%";
 			sqlwhere += Util.fromScreen2(fullname, user.getLanguage());
@@ -36,7 +37,7 @@ public class WorkflowTypeBrowserService extends BrowserService{
 			sqlwhere += Util.fromScreen2(description, user.getLanguage());
 			sqlwhere += "%'";
 		}
-
+		sqlwhere  = SqlUtils.replaceFirstAnd(sqlwhere);
 		//拼装查询SQL
 		String backfields = "id,typename,typedesc,dsporder";
 		String sqlfrom = " workflow_type " + sqlwhere;

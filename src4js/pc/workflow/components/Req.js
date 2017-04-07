@@ -95,6 +95,7 @@ class Req extends React.Component {
     // }
     shouldComponentUpdate(nextProps,nextState) {
         return this.props.loading!==nextProps.loading||
+        !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
         !is(this.props.params,nextProps.params)||
         !is(this.props.tableInfo,nextProps.tableInfo)||
         !is(this.props.formValue,nextProps.formValue)||
@@ -105,13 +106,6 @@ class Req extends React.Component {
         !is(this.props.logList,nextProps.logList)||
         !is(this.props.logListTabKey,nextProps.logListTabKey)||
         !is(this.props.logCount,nextProps.logCount)||
-        !is(this.props.resourcesKey,nextProps.resourcesKey)||
-        !is(this.props.resourcesDatas,nextProps.resourcesDatas)||
-        !is(this.props.resourcesCount,nextProps.resourcesCount)||
-        !is(this.props.resourcesColumns,nextProps.resourcesColumns)||
-        !is(this.props.resourcesOperates,nextProps.resourcesOperates)||
-        !is(this.props.resourcesCurrent,nextProps.resourcesCurrent)||
-        !is(this.props.resourcesPageSize,nextProps.resourcesPageSize)||
         !is(this.props.resourcesTabKey,nextProps.resourcesTabKey)||
         !is(this.props.rightMenu,nextProps.rightMenu)||
         !is(this.props.reqIsSubmit,nextProps.reqIsSubmit)||
@@ -143,9 +137,9 @@ class Req extends React.Component {
         actions.setReqTabKey('1');
     }
     render() {
-        const {reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
-            signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,wfStatus,actions,logParams,resourcesDatas,
-            resourcesOperates,resourcesCount,resourcesColumns,resourcesCurrent,resourcesPageSize,resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
+        const {comsWeaTable,reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
+            signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,wfStatus,actions,logParams,
+            resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
             custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
         const titleName = params?params.get("titlename"):"";
@@ -198,12 +192,32 @@ class Req extends React.Component {
                 domfieldid = "chatsType";
             formarea.push(<input type="hidden" id={domfieldid} name={domfieldid} value={domfieldvalue} />)
         });
+        formValue4Detail && formValue4Detail.map((v,k) => {
+            const detailindex = parseInt(k.substring(7))-1;
+            let submitdtlid = "";
+            v && v.map((datas, rowindex) => {
+                submitdtlid += rowindex+",";
+                datas.mapEntries && datas.mapEntries(f => {
+                    const domfieldvalue = f[1] && f[1].get("value"); 
+                    if(f[0] === "keyid"){
+                        formarea.push(<input type="hidden" name={`dtl_id_${detailindex}_${rowindex}`} value={domfieldvalue} />);
+                    }else{
+                        const domfieldid = f[0]+"_"+rowindex;
+                        formarea.push(<input type="hidden" id={domfieldid} name={domfieldid} value={domfieldvalue} />);
+                    }
+                })
+            })
+            formarea.push(<input type="hidden" id={`nodesnum${detailindex}`} name={`nodesnum${detailindex}`} value={v.size} />);
+            formarea.push(<input type="hidden" id={`indexnum${detailindex}`} name={`indexnum${detailindex}`} value={v.size} />);
+            formarea.push(<input type="hidden" id={`submitdtlid${detailindex}`} name={`submitdtlid${detailindex}`} value={submitdtlid} />);
+            formarea.push(<input type="hidden" id={`deldtlid${detailindex}`} name={`deldtlid${detailindex}`} value="" />);
+        })
         return (
             <div>
                 <WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
                 <WeaReqTop
                     title={<div dangerouslySetInnerHTML={{__html: titleName}} />}
-                    loading={loading}
+                    loading={loading || comsWeaTable.get('loading')}
                     icon={<i className='icon-portal-workflow' />}
                     iconBgcolor='#55D2D4'
                     buttons={this.getButtons()}
@@ -278,14 +292,8 @@ class Req extends React.Component {
                         {
                             reqTabKey == '4' &&
                                 <Resources
-                                    loading={loading}
+                               		requestid={requestid}
                                     actions={actions}
-                                    datas={resourcesDatas}
-                                    operates={resourcesOperates}
-                                    columns={resourcesColumns}
-                                    count={resourcesCount}
-                                    current={resourcesCurrent}
-                                    pageSize={resourcesPageSize}
                                     tabKey={resourcesTabKey}
                                     />
                         }
@@ -360,7 +368,7 @@ class Req extends React.Component {
         return btnArr
     }
     changeData(key){
-        const {actions,location,wfStatus,resourcesKey,params} = this.props
+        const {actions,location,wfStatus,resourcesTabKey,params} = this.props
         const {requestid} = location.query;
         const workflowid = params?params.get("workflowid"):"";
         const nodeid = params?params.get("nodeid"):"";
@@ -371,7 +379,7 @@ class Req extends React.Component {
         key == '2' && !jQuery('.req-workflow-map').attr('src') && jQuery('.req-workflow-map').attr('src',
         `/workflow/request/WorkflowRequestPictureInner.jsp?f_weaver_belongto_userid=&f_weaver_belongto_usertype=&fromFlowDoc=&modeid=${modeid}&requestid=${requestid}&workflowid=${workflowid}&nodeid=${nodeid}&isbill=${isbill}&formid=${formid}&showE9Pic=1`);
         key == "3" && is(wfStatus,Immutable.fromJS({})) && actions.loadWfStatusData({requestid:requestid},"all",true);
-        key == "4" && resourcesKey.get('key0') == '' && actions.getResourcesKey(requestid);
+        key == "4" && actions.getResourcesKey(requestid, resourcesTabKey);
         actions.setReqTabKey(key);
     }
     getButtons() {
@@ -430,51 +438,47 @@ class MyErrorHandler extends React.Component {
 Req = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(Req);
 
 function mapStateToProps(state) {
-    const {workflowReq,workflowlistDoing} = state;
+    const {workflowReq,workflowlistDoing,comsWeaTable} = state;
+    const name = workflowReq.get('resourcesKey') ? workflowReq.get('resourcesKey').split('_')[0] : 'init';
     return {
-        params:workflowReq.get("params"),
+        params:workflowReq.get("params"),   //基础参数
         loading:workflowReq.get("loading"),
-        formLayout:workflowReq.get("formLayout"),
-        tableInfo:workflowReq.get("tableInfo"),
-        formValue:workflowReq.get("formValue"),
-        formValue4Detail:workflowReq.get("formValue4Detail"),
-        logList:workflowReq.get("logList"),
-        logParams:workflowReq.get("logParams"),
-        logCount:workflowReq.get("logCount"),
-        logListTabKey:workflowReq.get("logListTabKey"),
-        cellInfo:workflowReq.get("cellInfo"),
-        wfStatus:workflowReq.get("wfStatus"),
-        resourcesKey:workflowReq.get("resourcesKey"),
-        resourcesDatas:workflowReq.get("resourcesDatas"),
-        resourcesCount:workflowReq.get("resourcesCount"),
-        resourcesColumns:workflowReq.get("resourcesColumns"),
-        resourcesOperates:workflowReq.get("resourcesOperates"),
-        resourcesCurrent:workflowReq.get("resourcesCurrent"),
-        resourcesPageSize:workflowReq.get("resourcesPageSize"),
-        resourcesTabKey:workflowReq.get("resourcesTabKey"),
-        rightMenu:workflowReq.get("rightMenu"),
-        reqTabKey:workflowReq.get("reqTabKey"),
-        reqIsSubmit:workflowReq.get("reqIsSubmit"),
+        formLayout:workflowReq.get("formLayout"),   //布局
+        tableInfo:workflowReq.get("tableInfo"),     //字段信息
+        formValue:workflowReq.get("formValue"),     //主表数据
+        formValue4Detail:workflowReq.get("formValue4Detail"),   //明细数据
+        logList:workflowReq.get("logList"),//签字意见列表
+        logParams:workflowReq.get("logParams"), //签字意见查询参数
+        logCount:workflowReq.get("logCount"), //签字意见总数
+        logListTabKey:workflowReq.get("logListTabKey"),//签字意见tabkey
+        cellInfo:workflowReq.get("cellInfo"),       //单元格内容信息(节点意见、二维码等)
+        wfStatus:workflowReq.get("wfStatus"),       //流程状态
+        resourcesTabKey:workflowReq.get("resourcesTabKey"),     //相关资源tab
+        rightMenu:workflowReq.get("rightMenu"),//右键按钮
+        reqTabKey:workflowReq.get("reqTabKey"), //表单tab标识
+        reqIsSubmit:workflowReq.get("reqIsSubmit"),//流程提交关闭
         pathBack:workflowlistDoing.get("nowRouterWfpath"),
-        reqIsReload:workflowReq.get("reqIsReload"),
+        reqIsReload:workflowReq.get("reqIsReload"), //是否需要reload表单
         requestid:workflowReq.get("params").get('requestid'),
-        isShowSignInput:workflowReq.get('isShowSignInput')?workflowReq.get('isShowSignInput'):false,
-        scriptcontent:workflowReq.get("scriptcontent"),
-        custompagehtml:workflowReq.get('custompagehtml'),
-        isShowUserheadimg:workflowReq.get('isShowUserheadimg'),
-        reqsubmiterrormsghtml:workflowReq.getIn(['dangerouslyhtml','reqsubmiterrormsghtml']),
-        rightMenuStatus:workflowReq.get('rightMenuStatus'),
-        signFields:workflowReq.get('signFields'),
-        showSearchDrop:workflowReq.get('showSearchDrop'),
+        isShowSignInput:workflowReq.get('isShowSignInput')?workflowReq.get('isShowSignInput'):false,//是否显示签字意见输入框
+        scriptcontent:workflowReq.get("scriptcontent"),     //代码块
+        custompagehtml:workflowReq.get('custompagehtml'),   //自定义页面内容
+        isShowUserheadimg:workflowReq.get('isShowUserheadimg'),//是否显示签字意见操作人头像
+        reqsubmiterrormsghtml:workflowReq.getIn(['dangerouslyhtml','reqsubmiterrormsghtml']), //流程提交错误信息
+        rightMenuStatus:workflowReq.get('rightMenuStatus'), //按钮状态相关
+        signFields:workflowReq.get('signFields'), //签字意见查询相关
+        showSearchDrop:workflowReq.get('showSearchDrop'), //签字意见搜索按钮点击控制
         showBackToE8:workflowReq.get('showBackToE8'),
-        showuserlogids:workflowReq.get('showuserlogids'),
-        reqRequestId:workflowReq.get('reqRequestId'),
-        relLogParams:workflowReq.get('relLogParams'),
-        isLoadingLog:workflowReq.get('isLoadingLog'),
-        reqLoadDuration:workflowReq.get('reqLoadDuration'),
+        showuserlogids:workflowReq.get('showuserlogids'), //签字意见显示所有人控制
+        reqRequestId:workflowReq.get('reqRequestId'),  //主子流程请求ID
+        relLogParams:workflowReq.get('relLogParams'), //主子流程签字意见查询参数
+        isLoadingLog:workflowReq.get('isLoadingLog'), //签字意见加载是否中
+        reqLoadDuration:workflowReq.get('reqLoadDuration'), //
         jsLoadDuration: workflowReq.get('jsLoadDuration'),
         apiDuration: workflowReq.get('apiDuration'),
         dispatchDuration: workflowReq.get('dispatchDuration'),
+        //table
+        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
     }
 }
 

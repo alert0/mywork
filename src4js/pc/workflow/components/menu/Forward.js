@@ -4,6 +4,7 @@ import OGroup from './OGroup'
 import NodeOperator from './NodeOperator'
 import Immutable from 'immutable'
 import objectAssign from 'object-assign'
+import cloneDeep from 'lodash/cloneDeep'
 
 class Forward extends React.Component {
 	constructor(props) {
@@ -25,7 +26,9 @@ class Forward extends React.Component {
 			forwardflag: '',
 			forwardremark: '',
 			operatorDatas: [],
-			loading: false
+			loading: false,
+			field5: '',
+			selectOperatorsMax: undefined //转发人数最大限制，默认100
 		};
 	}
 
@@ -45,13 +48,13 @@ class Forward extends React.Component {
 					remarkLocation: remarkDiv.find('#remarkLocation').val(),
 					fieldannexupload: remarkDiv.find('#field-annexupload').val(),
 					fieldannexuploadname: remarkDiv.find('#field-annexupload-name').val(),
-					forwardflag: forwardflag,
-					forwardremark: FCKEditorExt.getHtml('remark')
+					forwardflag: forwardflag
+					//forwardremark: FCKEditorExt.getHtml('remark')
 				});
 			}
 
 			if(forwardOperators != '') {
-				this.setOperatorIds(forwardOperators);
+				this.setOperatorIds({ids:forwardOperators,isAllUser:false});
 			}
 		}
 	}
@@ -66,7 +69,8 @@ class Forward extends React.Component {
 			fieldannexupload: '',
 			fieldannexuploadname: '',
 			fieldannexuploadcount: '',
-			fieldannexuploadrequest: ''
+			fieldannexuploadrequest: '',
+			field5: undefined
 		});
 	}
 
@@ -75,12 +79,15 @@ class Forward extends React.Component {
 		if(jQuery('#forwardremark').length > 0 && !hasinitremark && reload) {
 			var _ue = UEUtil.initRemark('forwardremark', false);
 			bindRemark(_ue);
-			this.setState({ hasinitremark: true});
+			this.setState({ hasinitremark: true });
 			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index', '105');
 			jQuery('.wea-req-forward-modal').css('z-index', '105');
-			setTimeout(function () {
-				UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'),true);
-        	}, 500);
+			const {ismanagePage} = this.props;
+			if(ismanagePage == '1'){
+				setTimeout(function() {
+					UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), true);
+				}, 500);
+			}
 		}
 	}
 
@@ -100,27 +107,26 @@ class Forward extends React.Component {
 		});
 	}
 	//更新操作者
-	setOperatorIds(ids) {
-		WeaTools.callApi('/api/workflow/org/resource', 'GET', { types: ids }).then(data => {
-			const { operatorDatas } = this.state;
-			let operatorDataResult = operatorDatas.concat(data);
-			let result = [];
-			operatorDataResult = operatorDataResult.filter(o => {
-				if(o == '')
-					return false;
-				if(result.contains(o.nodeid))
-					return false;
-				result.push(o.nodeid);
-				return true;
+	setOperatorIds(params) {
+		if(params.isAllUser) {
+			const allUser = [{ type: 'all', lastname: '所有人', ids: params.ids, count: params.count, id: 'all_users' }];
+			this.setState({ operatorDatas: allUser });
+		} else {
+			WeaTools.callApi('/api/workflow/org/resource', 'GET', { types: params.ids }).then(data => {
+				if(params.groupname){
+					data && data.map(o=>{
+						o.lastname = params.groupname;
+					});
+				}
+				console.log("data",data);				
+				this.setState({ operatorDatas: data });
 			});
-			this.setState({ operatorDatas: operatorDataResult });
-		});
+		}
 	}
 
 	render() {
 		const { showForward, titleName, requestid, onClick } = this.props;
-		const { isshownodeoperators, isshowoperategroup, signinput, operatorDatas, loading } = this.state;
-		console.log("operatorDatas1", operatorDatas);
+		const { isshownodeoperators, isshowoperategroup, signinput, operatorDatas, loading, field5, selectOperatorsMax } = this.state;
 		return(
 			<div>
 			<Modal title={this.getTopTitle(titleName)} 
@@ -141,7 +147,7 @@ class Forward extends React.Component {
 							<span>转发接收人</span>
 						</div>
 						<div className='input'>
-							<WeaHrmInput mult onChange={(o)=>this.setOperatorIds(o)} opsDatas={operatorDatas}/>
+							<WeaHrmInput mult onChange={(o)=>{console.log("o",o);this.setState({field5:o})}} value={field5} opsDatas={operatorDatas} maxLength={selectOperatorsMax}/>
 						</div>
 						<div className='btns'>
 							<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
@@ -222,34 +228,23 @@ class Forward extends React.Component {
 
 	//提交
 	submitEvent() {
-		const { operatorDatas, forwardflag } = this.state;
+		const { operatorDatas, forwardflag, field5 } = this.state;
+		const { fromform, controllShowForward } = this.props;
 		let forwardremarkcontent = FCKEditorExt.getText("forwardremark");
 		//验证签字意见必填
 		const flag = chekcremark(forwardremarkcontent);
-		let field5 = [];
-		this.setState({ loading: true });
-		operatorDatas.map(o => {
-			if(o.type == 'resource') {
-				field5.push(o.id);
-			} else {
-				o.users && o.users.map(s => {
-					if(!field5.contains(s.id)) {
-						field5.push(s.id);
-					}
-				});
-			}
-		});
-
-		if(!flag || field5.length == 0) {
-			message.warning('"转发人、签字意见"未填写', 2);
+		console.log("field5",field5,"flag",flag);
+		if(!flag || field5 == '') {
+			message.warning('必要信息不完整，红色*号为必填项！', 2);
 			return;
 		}
+		this.setState({ loading: true });
 		let forwardremarkInfo = this.getSignInputInfo();
 
 		let params = objectAssign({}, forwardremarkInfo, {
 			operate: 'save',
 			actiontype: 'remarkOperate',
-			field5: field5.join(','),
+			field5: field5,
 			requestid: this.props.requestid,
 			forwardflag: forwardflag
 		});
@@ -259,21 +254,23 @@ class Forward extends React.Component {
 			const forwardflag = data.forwardflag;
 			const { actions } = this.props;
 			this.setState({ loading: false });
-			if(forwardflag == '1') {
-				e9signReload();
-				actions.setShowForward(false);
-			} else {
-				try {
-					window.opener._table.reLoad();
-				} catch(e) {}
-				try {
-					//刷新门户流程列表
-					jQuery(window.opener.document).find('#btnWfCenterReload').click();
-				} catch(e) {}
-				try {
-					actions.reqIsSubmit(true);
-				} catch(e) {}
+			if(fromform) {
+				if(forwardflag == '1') {
+					e9signReload();
+				} else {
+					try {
+						window.opener._table.reLoad();
+					} catch(e) {}
+					try {
+						//刷新门户流程列表
+						jQuery(window.opener.document).find('#btnWfCenterReload').click();
+					} catch(e) {}
+					try {
+						actions.reqIsSubmit(true);
+					} catch(e) {}
+				}
 			}
+			controllShowForward(false);
 		});
 	}
 
@@ -342,8 +339,17 @@ class Forward extends React.Component {
 			const { hasinitremark } = _this.state;
 			if(hasinitremark) {
 				UE.getEditor('forwardremark').destroy();
+				jQuery('#forwardremark_div').find('#_fileuploadphraseblock').remove();
+				jQuery('#forwardremark_div').find('#fsUploadProgressfileuploaddiv').remove();
+				jQuery('#forwardremark_div').find('#_signinputphraseblock').remove();
 			}
 			_this.setState({ signinput: data, reload: true, hasinitremark: false });
+		});
+	}
+	//
+	setForwardOperatorMax() {
+		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', {}).then(data => {
+			this.setState({ selectOperatorsMax: data.max });
 		});
 	}
 }

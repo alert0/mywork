@@ -21,7 +21,7 @@ export default class OGroup extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
 		return this.state.hrmgroups !== nextState.hrmgroups ||
 			this.state.showall !== nextState.showall ||
-			this.state.showAllUser !== nextState.showAllUser || 
+			this.state.showAllUser !== nextState.showAllUser ||
 			this.state.allUserCount !== nextState.allUserCount;
 	}
 
@@ -41,27 +41,32 @@ export default class OGroup extends React.Component {
 		dialog.show();
 	}
 
-	add(setOperatorIds, handleVisibleChange,groupobj) {
+	add(setOperatorIds, handleVisibleChange, groupobj) {
 		//公共組
-		if(groupobj.type == '4'){
-			setOperatorIds("group|"+groupobj.typeid);
+		let params = {};
+		if(groupobj.type == '4') {
+			params.ids = "group|" + groupobj.typeid;
+			params.isAllUser = false;
+			params.groupname = groupobj.typename;
 		}
-		
-		if(groupobj.type == '6'){
-			setOperatorIds(groupobj.ids);
+
+		if(groupobj.type == '6') {
+			params.ids  = groupobj.ids;
+			params.isAllUser = false;
 		}
-		
+		setOperatorIds(params);
 		handleVisibleChange(false);
 	}
 
 	showAllOperators() {
-		const { showAllUser, allUserIds } = this.state;
+		const { showAllUser, allUserIds, allUserCount } = this.state;
 		if(showAllUser) {
 			const { handleVisibleChange, setOperatorIds } = this.props;
-			setOperatorIds(allUserIds);
+			let params  = {ids:allUserIds,isAllUser:true,count:allUserCount};
+			setOperatorIds(params);
 			handleVisibleChange(false);
 		} else {
-			WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', {isgetallres:'1'}).then(data => {
+			WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', { isgetallres: '1' }).then(data => {
 				this.setState({ showAllUser: true, allUserIds: data.ids, allUserCount: data.count });
 			});
 		}

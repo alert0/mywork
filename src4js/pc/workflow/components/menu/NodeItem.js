@@ -1,4 +1,4 @@
-import { Checkbox } from 'antd'
+import { Checkbox, Icon } from 'antd'
 
 export default class NodeItem extends React.Component {
 	constructor(props) {
@@ -27,7 +27,10 @@ export default class NodeItem extends React.Component {
 			<div className="node-item">
 				<div className="checkbox"><Checkbox checked={checked} onChange={this.selectOne.bind(this,updateSelectIds,item.ids)}/></div>
 				<div className="nodename"><span>{item && item.nodename}</span></div>
-				<div className="operatos"><span>{item && item.names}</span></div>
+				<div className="operatos">
+					<span>{item && item.names}</span>
+				</div>
+				<div className="viewmore"><Icon type="double-right"/></div>
 			</div>
 		)
 	}

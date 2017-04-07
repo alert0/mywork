@@ -7,11 +7,11 @@ import java.util.StringTokenizer;
 
 import weaver.conn.RecordSet;
 import weaver.cpt.util.CommonShareManager;
-import weaver.general.BaseBean;
 import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.util.SqlUtils;
 import com.api.workflow.util.PageUidFactory;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
@@ -68,9 +68,6 @@ public class ProjectBrowserService extends BrowserService {
 			}
 		}
 
-		if (sqlwhere.equals("")) {
-			sqlwhere += " where 1 = 1";
-		}
 		if (!name.equals("")) {
 			sqlwhere += " and t1.name like '%" + Util.fromScreen2(name, user.getLanguage()) + "%' ";
 		}
@@ -101,10 +98,10 @@ public class ProjectBrowserService extends BrowserService {
 			permissionSql = " (" + csm.getPrjShareWhereByUser(user) + ") ";
 		}
 
-		if (!sqlwhere.equals("")) {
+		if (!"".equals(permissionSql)) {
 			sqlwhere += " and " + permissionSql;
 		}
-
+		sqlwhere  = SqlUtils.replaceFirstAnd(sqlwhere);
 		String backfields = "t1.id, t1.name, t1.status,t1.prjtype,t1.worktype,t1.manager";
 		String sqlfrom = "Prj_ProjectInfo t1 " + sqlwhere;
 

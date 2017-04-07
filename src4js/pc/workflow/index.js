@@ -20,10 +20,13 @@ import './css/signInput_wev9.css'
 import './css/worflowmessage_wev8.css'
 import './css/forward.css'
 
-import reducer from './reducers/'
+import reducers from './reducers/'
+import { reducer_coms } from '../coms/index'
 import * as WorkflowListAction from './actions/list'
 import * as WorkflowReqAction from './actions/req'
 import * as WorkflowQueryAction from './actions/queryFlow'
+
+const reducer = { ...reducers, ...reducer_coms }
 
 require("./util/doing");
 require("./util/formbtn");
@@ -40,12 +43,12 @@ require('./util/weaverautocomplete_wev8');
 require('./util/img_zoom')
 require('./util/applocation_wev8')
 
-import {WeaTools} from 'ecCom';
+import { WeaTools } from 'ecCom';
 
 //onEnter={(nextState,replace,callback)=>WeaTools.checkSession(nextState,replace,callback)}
 
 const WorkflowRoute = (
-    <Route path="workflow" breadcrumbName="流程" component={Home}>
+	<Route path="workflow" breadcrumbName="流程" component={Home}>
         <Route name="listDoing" path="listDoing" component={ListDoing} />
         <Route name="listDone" path="listDone" component={ListDone} />
         <Route name="listMine" path="listMine" component={ListMine} />
@@ -57,11 +60,11 @@ const WorkflowRoute = (
 )
 
 module.exports = {
-    Route:WorkflowRoute,
-    reducer,
-    action: {
-	    WorkflowListAction,
-	    WorkflowReqAction,
-	    WorkflowQueryAction
-    }
+	Route: WorkflowRoute,
+	reducer,
+	action: {
+		WorkflowListAction,
+		WorkflowReqAction,
+		WorkflowQueryAction
+	}
 }

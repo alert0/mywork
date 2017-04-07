@@ -25,14 +25,8 @@ const initialState = Immutable.fromJS({
     linkageCfg:{},
     wfStatus:{},
     reqTabKey:'1',
-    resourcesKey:{'key0':'','key1':'','key2':'','key3':''},
-    resourcesDatas:{'key0':[],'key1':[],'key2':[],'key3':[]},
-    resourcesCurrent:1,
-    resourcesPageSize:10,
+    resourcesKey: '',
     resourcesTabKey:'0',
-    resourcesCount:{'key0':0,'key1':0,'key2':0,'key3':0},
-    resourcesColumns:{'key0':[],'key1':[],'key2':[],'key3':[]},
-    resourcesOperates:{'key0':[],'key1':[],'key2':[],'key3':[]},
     rightMenu:{},
     reqIsSubmit:false,
     signFields:{},
@@ -67,15 +61,7 @@ export default function req(state = initialState, action) {
     	case types.SET_HIDDEN_AREA:
     		return state.merge({params:state.get('params').merge({hiddenarea:state.getIn(['params','hiddenarea']).merge(action.hiddenarea)})});
     	case types.SET_RESOURCES_KEY:
-    		return state.merge({resourcesKey:state.get('resourcesKey').merge(action.key)});
-    	case types.SET_RESOURCES_DATAS:
-    		return state.merge({resourcesDatas:state.get('resourcesDatas').merge(action.datas),
-    		resourcesColumns:state.get('resourcesColumns').merge(action.columns),
-    		resourcesOperates:state.get('resourcesOperates').merge(action.ops),
-    		resourcesPageSize:action.pageSize,resourcesCurrent:action.current,
-    		resourcesTabKey:action.tabKey});
-    	case types.SET_RESOURCES_SET:
-    		return state.merge({resourcesCount:state.get('resourcesCount').merge(action.count)});
+    		return state.merge({resourcesKey:action.key,resourcesTabKey:action.tabindex});
         case types.FORM_LOADING:
             return state.merge({loading:action.loading});
         case 'TEST_PAGE_LOAD_DURATION':

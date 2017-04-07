@@ -45,7 +45,6 @@
             false;
   })();  
   
-
   var browserdetected = false;
   
   var getBrowserDetection = function() {
@@ -154,8 +153,7 @@
     this.name = 'nicescroll';
     
     self.me = me;
-    perfectScrollbar
-
+    
     this.opt = {
       doc:$("body"),
       win:false,

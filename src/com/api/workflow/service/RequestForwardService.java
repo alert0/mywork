@@ -2,20 +2,18 @@ package com.api.workflow.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-import com.alibaba.fastjson.JSON;
 
 import weaver.conn.RecordSet;
 import weaver.general.Pinyin4j;
@@ -23,6 +21,8 @@ import weaver.general.Util;
 import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
 import weaver.hrm.resource.ResourceComInfo;
+
+import com.alibaba.fastjson.JSON;
 
 @Path("/workflow/reqforward")
 public class RequestForwardService {
@@ -173,5 +173,13 @@ public class RequestForwardService {
 			}
 		}
 		return JSON.toJSONString(operators);
+	}
+	
+	@POST
+	@Path("/forwardright/count")
+	public String getForwardSelectUsersRight(@Context HttpServletRequest request, @Context
+			HttpServletResponse response){
+		
+		return "";
 	}
 }

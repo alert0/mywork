@@ -57,6 +57,11 @@
 	height: 32px;
 }
 
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input .ant-select-selection__rendered{
+	max-height: 55px;
+}
+
+
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns {
 	width: 100px;
 	float: left;
@@ -235,14 +240,15 @@
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .nodename {
 	width: 80px;
 	float: left;
-	display: table;
+	/*display: table;*/
 	margin: 0 auto;
 	height: 100%;
+	padding-top: 18px;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .nodename span {
-	display: table-cell;
-	vertical-align: middle;
+	/*display: table-cell;*/
+	/*vertical-align: middle;*/
 	/*white-space: nowrap;*/
 	/*text-overflow: ellipsis;*/
 }
@@ -250,14 +256,22 @@
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .operatos {
 	width: 300px;
 	float: left;
-	display: table;
+	/*display: table;*/
 	margin: 0 auto;
-	height: 100%;
+	height: 55px;
+	padding-top:18px;
+	word-wrap: break-word;
+  	overflow: hidden;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .operatos span {
-	display: table-cell;
-	vertical-align: middle;
+	/*display: table-cell;*/
+	/*vertical-align: middle;*/
+}
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .viewmore{
+	height: 55px;
+	padding-top: 35px;
+	display: none;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .footer {

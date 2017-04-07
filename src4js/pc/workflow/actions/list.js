@@ -2,6 +2,8 @@ import * as types from '../constants/ActionTypes'
 import * as API_LIST from '../apis/list'
 import * as API_TABLE from '../apis/table'
 
+import {WeaTableRedux_action} from '../../coms/index'
+
 import {Modal} from 'antd'
 import objectAssign from 'object-assign'
 
@@ -66,70 +68,9 @@ export const doSearch = (params = {}) => {
 				dataKey: data.sessionkey,
 				sharearg: data.sharearg
 			});
-			dispatch(getDatas(data.sessionkey, params.current || 1));
+			//dispatch(getDatas(data.sessionkey, params.current || 1));
+			dispatch(WeaTableRedux_action.getDatas(data.sessionkey, params.current || 1));
 		});
-	}
-}
-
-//获取table数据
-export const getDatas = (dataKeyNow,currentNow,pageSizeNow,sorter) => {
-    return (dispatch, getState) => {
-    	const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-        dispatch({type: viewScope + '_' + types.LOADING,loading:true});
-		dispatch(setSelectedRowKeys([]));
-        const {dataKey,pageSize,current,sortParams} = getState()['workflow' + viewScope].toJS();
-
-        const newDataKey = dataKeyNow===""?dataKey:dataKeyNow;
-        const pageSizeChange = pageSizeNow && pageSizeNow !== pageSize;
-        const newPageSize = pageSizeNow ? pageSizeNow : pageSize;
-        const newCurrent = pageSizeChange ? 1 : (currentNow ? currentNow : current);
-        const newSortParams = sorter && sorter.column ? [{orderkey:sorter.column.orderkey,sortOrder:sorter.order}] : [];
-
-
-        const doGetAPI = () => {
-	        Promise.all([
-	            API_TABLE.getTableDatas({dataKey:dataKey,current: newCurrent,sortParams:JSON.stringify(newSortParams)}).then((data)=>{
-	                dispatch({type: viewScope + '_' + types.INIT_DATAS,datas:data.datas,columns:data.columns,pageSize:data.pageSize,current:newCurrent,sortParams:newSortParams,operates:data.ops,tableCheck:data.haveCheck,pageAutoWrap:data.pageAutoWrap});
-	                return data;
-	            }),
-	            API_TABLE.getTableCounts({dataKey:newDataKey}).then((data)=>{
-	                dispatch({type: viewScope + '_' + types.INIT_SET,count:data.count});
-	                return data;
-	            })
-	        ]).then(result =>{
-	        	const {ops} = result[0];
-	        	if(result[0].haveCheck || (ops && ops.length>0)){
-		            const {columns,datas} = result[0];
-		            let newDatas = new Array();
-		            for(let i=0;i<datas.length;i++) {
-		                const data = datas[i];
-		                let newData = {};
-		                for(let j=0;j<columns.length;j++) {
-		                    let column = columns[j];
-		                    if((column.from&&column.from==="set")||column.dataIndex==="randomFieldId") {
-		                        newData[column.dataIndex] = data[column.dataIndex];
-		                    }
-		                }
-		                newDatas.push(newData);
-		            }
-		            API_TABLE.getTableChecks({randomDatas:JSON.stringify(newDatas),dataKey:dataKey}).then((data)=>{
-		                dispatch({type: viewScope + '_' + types.RESET_DATAS, newDatas:data.datas});
-		            });
-	        	}
-	        });
-        }
-        pageSizeChange ? API_TABLE.setTablePageSize({dataKey,pageSize:newPageSize}).then(data =>{
-        	doGetAPI();
-        }) : doGetAPI();
-
-    }
-}
-
-//选中row
-export const setSelectedRowKeys = value => {
-	return (dispatch, getState) => {
-		const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-		dispatch({type: viewScope + '_' + types.SET_SELECTED_ROWKEYS,selectedRowKeys:value})
 	}
 }
 
@@ -214,11 +155,13 @@ export const setShowBatchSubmit = bool =>{
 export const batchSubmitWf = (remark,checkedKeys) =>{
 	return (dispatch, getState) =>{
 		const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-		const {datas} = getState()['workflow' + viewScope].toJS();
+		const { datas } = getState()['workflow' + viewScope].toJS();
+		const name = getState()['workflow' + viewScope].get('dataKey') ? getState()['workflow' + viewScope].get('dataKey').split('_')[0] : 'init';
+		const current = window.store_e9_workflow.getState()['WeaTableRedux_state'].getIn([name,'current']);
 		dispatch({type: viewScope + '_' + types.LOADING,loading:true});
 		API_LIST.OnMultiSubmitNew2(remark, checkedKeys, datas).then(data => {
 			dispatch(initDatas());
-			dispatch(doSearch());
+			dispatch(doSearch({current}));
 		})
 	}
 }
@@ -255,53 +198,4 @@ export const setSpaForm = isSpaForm => {
 	    ls.set("isSpaForm",isSpaForm?"true":"false");
 		dispatch({type: viewScope + '_' + types.SET_SPAFORM,isSpaForm:isSpaForm})
 	}
-}
-
-
-//table自定义列接口数据
-export const tableColSet = isInit => {
-    return (dispatch, getState) => {
-    	const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-        const {dataKey,colSetKeys} = getState()['workflow' + viewScope].toJS();
-        const method= isInit ? 'GET' :'POST';
-        dispatch({type: viewScope + '_' + types.LOADING,loading:true});
-        API_TABLE.tableColSet(isInit ? {dataKey:dataKey} : {dataKey:dataKey,systemIds:`${colSetKeys}`},method).then(data=>{
-        	if(data.status){
-	        	if(data.destdatas){
-	        		let keys = [];
-	        		data.destdatas.map(d => {keys.push(d.id)});
-	        		datas = [].concat(data.destdatas).concat(data.srcdatas);
-	        		newDatas = [];
-	        		datas.map(d => newDatas.push({key:d.id, name:d.name, description: d.name}))
-		            dispatch({type: viewScope + '_' + types.TABLE_COL_SET,colSetKeys:keys,colSetdatas:newDatas});
-        			dispatch({type: viewScope + '_' + types.LOADING,loading:false});
-	        	}else{
-			        dispatch(setColSetVisible(false));
-			        dispatch(setTableColSetkeys([]));
-	        		dispatch(doSearch());
-	        	}
-        	}else{
-        		Modal.error({
-        			title: '接口错误，请重新提交',
-        		});
-        	}
-        });
-    }
-}
-
-//table自定义列显示项
-export const setTableColSetkeys = keyArr => {
-    return (dispatch, getState) => {
-    	const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-    	const {colSetdatas} = getState()['workflow' + viewScope].toJS();
-	    dispatch({type: viewScope + '_' + types.TABLE_COL_SET,colSetKeys:keyArr,colSetdatas:colSetdatas});
-    }
-}
-
-//table自定义列visible
-export const setColSetVisible = bool => {
-    return (dispatch, getState) => {
-    	const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-	    dispatch({type: viewScope + '_' + types.TABLE_COL_SET_VISIBLE,value:bool});
-    }
 }

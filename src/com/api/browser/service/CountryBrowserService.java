@@ -4,14 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import weaver.general.Util;
-import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
 
 import com.api.workflow.util.PageUidFactory;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
 /**
- * 
+ * 国家
  * @author jhy Mar 24, 2017
  * 
  */

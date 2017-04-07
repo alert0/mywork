@@ -129,7 +129,7 @@ const initwfphrasebutton = (editor,uiName) => {
 			
 		});
 		
-		paramDiv.find("#_signinputphrasecontentblock ul li").live("click", function () {
+		paramDiv.find("#_signinputphrasecontentblock ul li").click(function () {
 			try {
             	_onAddPhrase(jQuery(this).find("input").val());
             } catch (e) {
@@ -222,7 +222,7 @@ const initwfphrasebutton = (editor,uiName) => {
         //点击时执行的命令
         onclick:function () {
             //这里可以不用执行命令,做你自己的操作也可
-			//editor.execCommand(uiName);
+//			editor.execCommand(uiName);
 			phraseeditor = editor.key;
             var el = jQuery('#'+editor.key).find(".edui-for-wfphrasebutton")[0];
             var rectEl = el.getBoundingClientRect();

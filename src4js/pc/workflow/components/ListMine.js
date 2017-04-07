@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import * as ListAction from '../actions/list'
 import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
-import {switchComponent} from '../util/switchComponent'
 import {Synergy} from 'weaPortal';
+
+import {WeaTableRedux,WeaTableRedux_action} from '../../coms/index'
 
 import {
     WeaTop,
     WeaTab,
-    WeaTable,
     WeaLeftTree,
     WeaLeftRightLayout,
     WeaSearchGroup,
@@ -58,7 +58,7 @@ class ListMine extends React.Component {
             actions.initDatas({method:"all"});
             actions.doSearch();
         }
-        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.datas && document.title !== nextProps.title)
+        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.title && document.title !== nextProps.title)
             document.title = nextProps.title;
     }
     shouldComponentUpdate(nextProps,nextState) {
@@ -68,9 +68,7 @@ class ListMine extends React.Component {
         !is(this.props.leftTreeCountType,nextProps.leftTreeCountType)||
         !is(this.props.topTab,nextProps.topTab)||
         !is(this.props.topTabCount,nextProps.topTabCount)||
-        !is(this.props.datas,nextProps.datas)||
         !is(this.props.columns,nextProps.columns)||
-        !is(this.props.count,nextProps.count)||
         !is(this.props.loading,nextProps.loading)||
         !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
@@ -79,15 +77,9 @@ class ListMine extends React.Component {
         !is(this.props.orderFields,nextProps.orderFields)||
         !is(this.props.showSearchAd,nextProps.showSearchAd)||
         !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
-        !is(this.props.tableCheck,nextProps.tableCheck)||
+        !is(this.props.loading,nextProps.loading)||
         !is(this.props.isSpaForm,nextProps.isSpaForm)||
-        !is(this.props.current,nextProps.current)||
-        !is(this.props.colSetVisible,nextProps.colSetVisible)||
-        !is(this.props.colSetdatas,nextProps.colSetdatas)||
-        !is(this.props.colSetKeys,nextProps.colSetKeys)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
-        !is(this.props.pageAutoWrap,nextProps.pageAutoWrap)||
-        !is(this.props.pageSize,nextProps.pageSize)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
     }
     componentWillUnmount(){
@@ -98,8 +90,7 @@ class ListMine extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {pageSize,pageAutoWrap,topTab,topTabCount,columns,datas,actions,title,count,loading,operates,searchParams,
-        	showSearchAd,tableCheck,searchParamsAd,sortParams,current,colSetVisible,colSetdatas,colSetKeys} = this.props;
+        const {loading,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj,selectedRowKeys} = this.props;
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
@@ -132,27 +123,10 @@ class ListMine extends React.Component {
                         keyParam="viewcondition"  //主键
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
-                    <WeaTable
-                    	current={current}
-                        tableCheck={tableCheck}
-                        operates={operates && operates.toJS()}
-                        pageSize={pageSize}
-                        hasOrder={true}
-                        onChange={(p,f,s)=>actions.getDatas("",p.current,p.pageSize,s)}
-                        rowSel={this.getRowSel()}
-                        columns={this.getColumns(columns && columns.toJS())}
-                        datas={datas && datas.toJS()}
-                        needScroll={true}
-                        sortParams={sortParams && sortParams.toJS()}
-                        colSetVisible={colSetVisible}
-                        colSetdatas={colSetdatas && colSetdatas.toJS()}
-                        colSetKeys={colSetKeys && colSetKeys.toJS()}
-                        showColumnsSet={bool => {actions.setColSetVisible(bool)}}
-                        onTransferChange={keys=>{actions.setTableColSetkeys(keys)}}
-                        saveColumnsSet={() => actions.tableColSet()}
-                        pageAutoWrap={pageAutoWrap}
-                        loading={loading}
-                        count={count} />
+                    <WeaTableRedux 
+                    	hasOrder={true}
+                    	needScroll={true}
+                    	/>
                 </WeaLeftRightLayout>
                 </WeaTop>
                 </WeaRightMenu>
@@ -210,7 +184,7 @@ class ListMine extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {switchComponent(this.props, field.key, field.domkey, field)}
+                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field)}
                     </FormItem>),
                 colSpan:1
             })
@@ -269,21 +243,6 @@ class ListMine extends React.Component {
                 }} />
         )
     }
-    getRowSel() {
-    	const {actions,selectedRowKeys} = this.props;
-        return {
-            selectedRowKeys: selectedRowKeys && selectedRowKeys.toJS(),
-            onChange(sRowKeys, selectedRows) {
-                actions.setSelectedRowKeys(sRowKeys);
-            },
-            onSelect(record, selected, selectedRows) {
-                //console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-                //console.log(selected, selectedRows, changeRows);
-            }
-        };
-    }
     getTabButtonsAd() {
     	const {actions} = this.props;
         return [
@@ -296,24 +255,6 @@ class ListMine extends React.Component {
     	const {selectedRowKeys,actions} = this.props;
     	let btns = [];
         return btns
-    }
-    getColumns(columns) {
-        const {isSpaForm} = this.props;
-        let newColumns = cloneDeep(columns);
-        return newColumns.map((column)=>{
-            let newColumn = column;
-            newColumn.render = (text,record,index)=>{ //前端元素转义
-                let valueSpan = record[newColumn.dataIndex+"span"];
-//              if(!valueSpan || valueSpan==="") {
-//                  return text;
-//              }
-                function createMarkup() { return {__html: valueSpan}; };
-                return (
-                    <div className="wea-url" dangerouslySetInnerHTML={createMarkup()} />
-                )
-            }
-            return newColumn;
-        });
     }
 }
 
@@ -345,42 +286,36 @@ ListMine = createForm({
 })(ListMine);
 
 function mapStateToProps(state) {
-	const {workflowlistMine} = state;
+    const {workflowlistMine,WeaTableRedux_state} = state;
+	const name = workflowlistMine.get('dataKey') ? workflowlistMine.get('dataKey').split('_')[0] : 'init';
     return {
-        title:workflowlistMine.get('title'),
-        leftTree:workflowlistMine.get('leftTree'),
-        leftTreeCount:workflowlistMine.get('leftTreeCount'),
-        leftTreeCountType:workflowlistMine.get('leftTreeCountType'),
-        topTab:workflowlistMine.get('topTab'),
-        topTabCount:workflowlistMine.get('topTabCount'),
-        datas:workflowlistMine.get('datas'),
-        columns:workflowlistMine.get('columns'),
-        count:workflowlistMine.get('count'),
-        loading:workflowlistMine.get('loading'),
-        operates:workflowlistMine.get('operates'),
-        searchParams:workflowlistMine.get('searchParams'),
-        searchParamsAd:workflowlistMine.get('searchParamsAd'),
-        selectedRowKeys: workflowlistMine.get('selectedRowKeys'),
-        orderFields:workflowlistMine.get('orderFields'),
-        showSearchAd:workflowlistMine.get('showSearchAd'),
-        selectedTreeKeys:workflowlistMine.get('selectedTreeKeys'),
-        tableCheck:workflowlistMine.get('tableCheck'),
-        isSpaForm:workflowlistMine.get('isSpaForm'),
-        isClearNowPageStatus:workflowlistMine.get('isClearNowPageStatus'),
-        sortParams:workflowlistMine.get('sortParams'),
-        current:workflowlistMine.get('current'),
-        colSetVisible:workflowlistMine.get('colSetVisible'),
-        colSetdatas:workflowlistMine.get('colSetdatas'),
-        colSetKeys:workflowlistMine.get('colSetKeys'),
-        conditioninfo:workflowlistMine.get('conditioninfo'),
-        pageAutoWrap:workflowlistMine.get('pageAutoWrap'),
-        pageSize:workflowlistMine.get('pageSize'),
+        title: workflowlistMine.get('title'),
+		leftTree: workflowlistMine.get('leftTree'),
+		leftTreeCount: workflowlistMine.get('leftTreeCount'),
+		leftTreeCountType: workflowlistMine.get('leftTreeCountType'),
+		topTab: workflowlistMine.get('topTab'),
+		topTabCount: workflowlistMine.get('topTabCount'),
+		searchParams: workflowlistMine.get('searchParams'),
+		searchParamsAd: workflowlistMine.get('searchParamsAd'),
+		orderFields: workflowlistMine.get('orderFields'),
+		showSearchAd: workflowlistMine.get('showSearchAd'),
+		selectedTreeKeys: workflowlistMine.get('selectedTreeKeys'),
+		isSpaForm: workflowlistMine.get('isSpaForm'),
+		isClearNowPageStatus: workflowlistMine.get('isClearNowPageStatus'),
+		sortParams: workflowlistMine.get('sortParams'),
+		conditioninfo: workflowlistMine.get('conditioninfo'),
+		showBatchSubmit: workflowlistMine.get('showBatchSubmit'),
+		phrasesObj: workflowlistMine.get('phrasesObj'),
+		sharearg: workflowlistMine.get('sharearg'),
+		//table
+		loading: WeaTableRedux_state.getIn([name,'loading']),
+		selectedRowKeys: WeaTableRedux_state.getIn([name,'selectedRowKeys']),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(ListAction, dispatch)
+        actions: bindActionCreators({...ListAction,...WeaTableRedux_action}, dispatch)
     }
 }
 

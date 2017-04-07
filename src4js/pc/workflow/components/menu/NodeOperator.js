@@ -68,7 +68,7 @@ class NodeOperator extends React.Component {
 	}
 
 	btnOnClick(setOperatorIds, handleShowNodeOperator) {
-		setOperatorIds(this.state.selectids);
+		setOperatorIds({ids:this.state.selectids,isAllUser:false});
 		handleShowNodeOperator(false);
 	}
 

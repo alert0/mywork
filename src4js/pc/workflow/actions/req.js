@@ -3,6 +3,8 @@ const confirm = Modal.confirm;
 const success = Modal.success;
 const warning = Modal.warning;
 
+import {WeaTableRedux_action} from '../../coms/index'
+
 import * as types from '../constants/ActionTypes'
 import * as API_REQ from '../apis/req'
 import * as API_TABLE from '../apis/table'
@@ -14,9 +16,6 @@ const List = Immutable.List;
 //初始化表单
 export const initFormLayout = (reqId,preloadkey,comemessage) => {
 	return (dispatch, getState) => {
-		dispatch({type: types.SET_RESOURCES_KEY,key:{'key0':''}});
-		dispatch({type:types.SET_RESOURCES_DATAS,pageSize:10,current:1,tabKey:'0',datas:{'key0':[],'key1':[],'key2':[],'key3':[]}});
-		dispatch({type: types.SET_RESOURCES_SET,count:{'key0':0,'key1':0,'key2':0,'key3':0}});
 		dispatch({type:types.FORM_LOADING,loading:true});
 		const apiLoadStart = new Date().getTime();
 		API_REQ.getFormReqInfo({
@@ -25,13 +24,10 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			preloadkey: preloadkey,
 			comemessage:comemessage
 		}).then((data)=>{
-			//console.log("data:",data);
-			const params = data;
+			const params = data.params;
 			const dispatchStart = new Date().getTime();
 			const apiDuration = dispatchStart - apiLoadStart;
-//			dispatch({type: types.INIT_FORMLAYOUT,});
 			dispatch({type: types.INIT_FORMVALUE,params:params,formLayout:data.datajson,formValue:data.maindata,cellInfo:data.cellinfo,tableInfo:data.tableinfo,linkageCfg:data.linkageCfg});
-			//console.log("data.datajson:",data.datajson);
 			//性能测试
 			dispatch({type: 'TEST_PAGE_LOAD_DURATION',
 				reqLoadDuration:(new Date().getTime() - (window.REQ_PAGE_LOAD_START ? window.REQ_PAGE_LOAD_START : 0)),
@@ -96,7 +92,7 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			}).then(data=>{});
 			
 			//判断是否是滚动加载
-			const loadmethod = data.signListType ? 'scroll' : 'split';
+			const loadmethod = params.signListType ? 'scroll' : 'split';
 			let logParamsInit = {
 				actiontype:"requestLog",
 				requestid:reqId,
@@ -309,89 +305,13 @@ export const controlWfStatusHideRow = hideRowKeys =>{
 }
 
 //相关资源
-export const getResourcesKey = requestid => {
+export const getResourcesKey = (requestid, tabindex) => {
 	return (dispatch, getState) => {
-    	dispatch({type:types.FORM_LOADING,loading:true});
-		for(let i = 0;i < 4;i++){
-			API_REQ.getResourcesKey({requestid:requestid,tabindex:i}).then((data)=>{
-				let keyObj = {};
-        		keyObj['key' + i] = data.sessionkey;
-	            dispatch({type: types.SET_RESOURCES_KEY,key:keyObj});
-	            i == 0 && dispatch(getResourcesDatas(i.toString(),1,10,true))
-	        });
-		}
-	}
-}
-//获取相关资源table数据
-export const getResourcesDatas = (tabindex, current, pageSizeNow, isInit) => {
-    return (dispatch, getState) => {
-        const {resourcesKey,resourcesPageSize,resourcesColumns,resourcesOperates,resourcesCount,resourcesTabKey} = getState().workflowReq.toJS();
-        const newDataKey = resourcesKey['key' + tabindex];
-        const newPageSize = pageSizeNow ? pageSizeNow : resourcesPageSize;
-        
-        const min = newPageSize*(current-1)+1;
-        const max = newPageSize*current;
-        dispatch({type:types.FORM_LOADING,loading:true});
-	    dispatch({type: types.SET_RESOURCES_DATAS,pageSize:newPageSize,current:current,tabKey:(isInit ? resourcesTabKey: tabindex)});
-        Promise.all([
-	        API_TABLE.getTableDatas({dataKey:newDataKey,min:min,max:max}).then((data)=>{
-	        	let dataObj = {};
-	        	let columns = {};
-	        	let ops = {};
-	        	dataObj['key' + tabindex] = data.datas;
-	        	columns['key' + tabindex] = data.columns;
-	        	ops['key' + tabindex] = data.ops;
-	            dispatch({type:types.SET_RESOURCES_DATAS,datas:dataObj,columns:columns,pageSize:newPageSize,ops:ops,current:current,tabKey:(isInit ? resourcesTabKey: tabindex)});
-	            return data;
-	        }),
-	        API_TABLE.getTableCounts({dataKey:newDataKey}).then((data)=>{
-	        	let count = {};
-	        	count['key' + tabindex] = data.count;
-	            dispatch({type: types.SET_RESOURCES_SET,count:count});
-	        	tabindex == 0 && dispatch({type:types.FORM_LOADING,loading:false});
-	        	return data;
-	        })
-        ]).then((result)=>{
-	        const {columns,datas,ops} = result[0];
-        	dispatch({type:types.FORM_LOADING,loading:false});
-            if(result[0].haveCheck || (ops && ops.length>0)){
-	            let newDatas = new Array();
-	            for(let i=0;i<datas.length;i++) {
-	                const data = datas[i];
-	                let newData = {};
-	                for(let j=0;j<columns.length;j++) {
-	                    let column = columns[j];
-	                    if((column.from&&column.from==="set")||column.dataIndex==="randomFieldId") {
-	                        newData[column.dataIndex] = data[column.dataIndex];
-	                    }
-	                }
-	                newDatas.push(newData);
-	            }
-	            API_TABLE.getTableChecks({randomDatas:JSON.stringify(newDatas),dataKey:newDataKey}).then((data)=>{
-	            	let dataObj = {};
-	            	const {resourcesDatas} = getState().workflowReq.toJS();
-	            	let resetDatas = resourcesDatas['key' + tabindex];
-	            	const newRsDatas = data.datas;
-	                for(let i=0;i<resetDatas.length;i++) {
-	                    let find = false;
-	                    let resetData = resetDatas[i];
-	                    for(let j=0;j<newRsDatas.length&&!find;j++) {
-	                        let newRsData = newRsDatas[j];
-	                        if(newRsData.randomFieldId===resetData.randomFieldId) {
-	                            for(let p in newRsData) {
-	                                resetData[p] = newRsData[p];
-	                            }
-	                            find = true;
-	                        }
-	                    }
-	                }
-		        	dataObj['key' + tabindex] = resetDatas;
-	                dispatch({type:types.SET_RESOURCES_DATAS,datas:dataObj,pageSize:newPageSize,current:current,tabKey:(isInit ? resourcesTabKey: tabindex)});
-	            });
-            }
+		API_REQ.getResourcesKey({requestid,tabindex}).then((data)=>{
+            dispatch({type: types.SET_RESOURCES_KEY,key:data.sessionkey,tabindex});
+            dispatch(WeaTableRedux_action.getDatas(data.sessionkey, 1));
         });
-      
-    }
+	}
 }
 
 //表单提交
@@ -404,6 +324,7 @@ export const setHiddenArea = value => {
 export const getformdatas = () =>{
 	return (dispatch, getState) => {
 		const formValue = getState().workflowReq.get('formValue');
+		const formValue4Detail = getState().workflowReq.get('formValue4Detail');
 		let formarea = {};
         formValue.mapEntries && formValue.mapEntries(f => {
         	f[1].mapEntries(o =>{
@@ -412,6 +333,23 @@ export const getformdatas = () =>{
         			formarea[fieldname] = o[1];
         		}
 			});
+        });
+        
+        formValue4Detail && formValue4Detail.map((v,k) => {
+            const detailindex = parseInt(k.substring(7))-1;
+            let submitdtlid = "";
+            v && v.map((datas, rowindex) => {
+                submitdtlid += rowindex+",";
+                datas.mapEntries && datas.mapEntries(f => {
+                    let domfieldid = f[0] === "keyid" ? `dtl_id_${detailindex}_${rowindex}` : `${f[0]}_${rowindex}`;
+                    const domfieldvalue = f[1] && f[1].get("value"); 
+                    formarea[domfieldid] = domfieldvalue;
+                })
+            })
+            formarea['nodesnum'+detailindex] = v.size;
+            formarea['indexnum'+detailindex] = v.size;
+            formarea['submitdtlid'+detailindex] = submitdtlid;
+            formarea['deldtlid'+detailindex] = '';
         });
         return formarea;
 	}
@@ -787,12 +725,8 @@ export const doRetract = () => {
 			workflowid:workflowid,
 			flag: 'rb'
 		}).then(data => {
-			if(data.reqRoute){
-				//页面重新加载
-				dispatch(reqIsReload(true));
-			}else{
-				window.location.href = "/workflow/request/ViewRequest.jsp?requestid="+requestid;
-			}
+			//页面重新加载
+			dispatch(reqIsReload(true));
 		});
 	}
 }

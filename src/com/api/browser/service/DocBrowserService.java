@@ -14,11 +14,12 @@ import weaver.share.ShareManager;
 import weaver.systeminfo.SystemEnv;
 import weaver.workflow.search.WfAdvanceSearchUtil;
 
+import com.api.browser.util.SqlUtils;
 import com.api.workflow.util.PageUidFactory;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
 /**
- * 
+ * 文档
  * @author jhy Mar 24, 2017
  *
  */
@@ -68,7 +69,7 @@ public class DocBrowserService extends BrowserService{
             orderby = Util.StringReplace(orderby, " asc", " ");
         }
         
-        String sqlwhere = " where 1=1 ";
+        String sqlwhere = "  ";
         String docstatus[] = new String[] { "1", "2", "5", "7" };
         for (int i = 0; i < docstatus.length; i++) {
             docSearchComInfo.addDocstatus(docstatus[i]);
@@ -86,6 +87,7 @@ public class DocBrowserService extends BrowserService{
 		
         DocManager dm = new DocManager();
         sqlwhere += dm.getDateDuringSql(date2during);
+        sqlwhere  = SqlUtils.replaceFirstAnd(sqlwhere);
         String pageUid = PageUidFactory.getBrowserUID("doclist");
         String tableString = "<table instanceid='BrowseTable' tabletype='none' pageUid =\"" + pageUid + "\">" + 
                                     "<sql backfields=\"" + backfields + "\" sqlform=\"" + Util.toHtmlForSplitPage(fromSql) + "\" sqlwhere=\"" + sqlwhere + "\"  sqlorderby=\"" + orderby + "\"  sqlprimarykey=\"t1.id\" sqlsortway=\"Desc\"/>" + 

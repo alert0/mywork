@@ -8,6 +8,7 @@ import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.util.SqlUtils;
 import com.api.workflow.util.PageUidFactory;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
@@ -93,6 +94,7 @@ public class CustomerBrowserService extends BrowserService{
 			sqlwhere = "  t1.deleted<>1 and t1.agent=" + user.getUID() + sqlwhere;
 		}
 		sqlwhere = Util.toHtmlForSplitPage(sqlwhere);
+		sqlwhere  = SqlUtils.replaceFirstAnd(sqlwhere);
 		String orderby = "t1.id";
 		String pageUid = PageUidFactory.getBrowserUID("cuslist");
 		String tableString = "<table instanceid='BrowseTable' tabletype='none' pageUid =\"" + pageUid + "\">" + 
@@ -111,4 +113,12 @@ public class CustomerBrowserService extends BrowserService{
 		return apidatas;
 	}
 
+	@Override
+	public Map<String, Object> getBrowserConditionDatas(Map<String, Object> params) throws Exception {
+		// TODO Auto-generated method stub
+		return super.getBrowserConditionDatas(params);
+	}
+
+	
+	
 }

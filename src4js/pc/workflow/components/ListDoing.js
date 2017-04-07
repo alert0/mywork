@@ -4,13 +4,13 @@ import * as ListAction from '../actions/list'
 import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
 import BatchSubmit from './list/BatchSubmit'
-import {switchComponent} from '../util/switchComponent'
 import {Synergy} from 'weaPortal';
+
+import {WeaTableRedux,WeaTableRedux_action} from '../../coms/index'
 
 import {
     WeaTop,
     WeaTab,
-    WeaTable,
     WeaLeftTree,
     WeaLeftRightLayout,
     WeaSearchGroup,
@@ -59,7 +59,7 @@ class ListDoing extends React.Component {
             actions.initDatas({method:"all"});
             actions.doSearch();
         }
-        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.datas && document.title !== nextProps.title)
+        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.title && document.title !== nextProps.title)
             document.title = nextProps.title;
     }
     shouldComponentUpdate(nextProps,nextState) {
@@ -69,11 +69,6 @@ class ListDoing extends React.Component {
         !is(this.props.leftTreeCountType,nextProps.leftTreeCountType)||
         !is(this.props.topTab,nextProps.topTab)||
         !is(this.props.topTabCount,nextProps.topTabCount)||
-        !is(this.props.datas,nextProps.datas)||
-        !is(this.props.columns,nextProps.columns)||
-        !is(this.props.count,nextProps.count)||
-        !is(this.props.loading,nextProps.loading)||
-        !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
         !is(this.props.searchParamsAd,nextProps.searchParamsAd)||
         !is(this.props.selectedRowKeys,nextProps.selectedRowKeys)||
@@ -83,15 +78,9 @@ class ListDoing extends React.Component {
         !is(this.props.phrasesObj,nextProps.phrasesObj) ||
         !is(this.props.sharearg,nextProps.sharearg) ||
         !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
-        !is(this.props.tableCheck,nextProps.tableCheck)||
+        !is(this.props.loading,nextProps.loading)||
         !is(this.props.isSpaForm,nextProps.isSpaForm)||
-        !is(this.props.current,nextProps.current)||
-        !is(this.props.colSetVisible,nextProps.colSetVisible)||
-        !is(this.props.colSetdatas,nextProps.colSetdatas)||
-        !is(this.props.colSetKeys,nextProps.colSetKeys)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
-        !is(this.props.pageAutoWrap,nextProps.pageAutoWrap)||
-        !is(this.props.pageSize,nextProps.pageSize)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
     }
     componentWillUnmount(){
@@ -102,8 +91,7 @@ class ListDoing extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {pageSize,pageAutoWrap,topTab,topTabCount,columns,datas,actions,title,count,loading,operates,searchParams,
-        	showSearchAd,tableCheck,searchParamsAd,showBatchSubmit,phrasesObj,selectedRowKeys,sortParams,current,colSetVisible,colSetdatas,colSetKeys} = this.props;
+        const {loading,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj,selectedRowKeys} = this.props;
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
@@ -136,27 +124,10 @@ class ListDoing extends React.Component {
                         keyParam="viewcondition"  //主键
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
-                    <WeaTable
-                    	current={current}
-                        tableCheck={tableCheck}
-                        pageSize={pageSize}
-                        operates={operates && operates.toJS()}
-                        hasOrder={true}
-                        onChange={(p,f,s)=>actions.getDatas("",p.current,p.pageSize,s)}
-                        rowSel={this.getRowSel()}
-                        columns={this.getColumns(columns && columns.toJS())}
-                        datas={datas && datas.toJS()}
-                        needScroll={true}
-                        sortParams={sortParams && sortParams.toJS()}
-                        colSetVisible={colSetVisible}
-                        colSetdatas={colSetdatas && colSetdatas.toJS()}
-                        colSetKeys={colSetKeys && colSetKeys.toJS()}
-                        showColumnsSet={bool => {actions.setColSetVisible(bool)}}
-                        onTransferChange={keys=>{actions.setTableColSetkeys(keys)}}
-                        saveColumnsSet={() => actions.tableColSet()}
-                        pageAutoWrap={pageAutoWrap}
-                        loading={loading}
-                        count={count} />
+                    <WeaTableRedux 
+                    	hasOrder={true}
+                    	needScroll={true}
+                    	/>
                 </WeaLeftRightLayout>
                 {
                     showBatchSubmit &&
@@ -228,7 +199,7 @@ class ListDoing extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {switchComponent(this.props, field.key, field.domkey, field)}
+                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field)}
                     </FormItem>),
                 colSpan:1
             })
@@ -287,21 +258,6 @@ class ListDoing extends React.Component {
                 }} />
         )
     }
-    getRowSel() {
-    	const {actions,selectedRowKeys} = this.props;
-        return {
-            selectedRowKeys: selectedRowKeys && selectedRowKeys.toJS(),
-            onChange(sRowKeys, selectedRows) {
-                actions.setSelectedRowKeys(sRowKeys);
-            },
-            onSelect(record, selected, selectedRows) {
-                //console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-                //console.log(selected, selectedRows, changeRows);
-            }
-        };
-    }
     getTabButtonsAd() {
     	const {actions} = this.props;
         return [
@@ -319,24 +275,6 @@ class ListDoing extends React.Component {
                 onClick={()=>{actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`})}}>批量提交</Button>)
         }
         return btns;
-    }
-    getColumns(columns) {
-        const {isSpaForm} = this.props;
-        let newColumns = cloneDeep(columns);
-        return newColumns.map((column)=>{
-            let newColumn = column;
-            newColumn.render = (text,record,index)=>{ //前端元素转义
-                let valueSpan = record[newColumn.dataIndex+"span"];
-//              if(!valueSpan || valueSpan==="") {
-//                  return text;
-//              }
-                function createMarkup() { return {__html: valueSpan}; };
-                return (
-                    <div className="wea-url" dangerouslySetInnerHTML={createMarkup()} />
-                )
-            }
-            return newColumn;
-        });
     }
 }
 
@@ -453,45 +391,36 @@ ListDoing = createForm({
 })(ListDoing);
 
 function mapStateToProps(state) {
-	const {workflowlistDoing} = state;
+	const {workflowlistDoing,WeaTableRedux_state} = state;
+	const name = workflowlistDoing.get('dataKey') ? workflowlistDoing.get('dataKey').split('_')[0] : 'init';
     return {
-        title:workflowlistDoing.get('title'),
-        leftTree:workflowlistDoing.get('leftTree'),
-        leftTreeCount:workflowlistDoing.get('leftTreeCount'),
-        leftTreeCountType:workflowlistDoing.get('leftTreeCountType'),
-        topTab:workflowlistDoing.get('topTab'),
-        topTabCount:workflowlistDoing.get('topTabCount'),
-        datas:workflowlistDoing.get('datas'),
-        columns:workflowlistDoing.get('columns'),
-        count:workflowlistDoing.get('count'),
-        loading:workflowlistDoing.get('loading'),
-        operates:workflowlistDoing.get('operates'),
-        searchParams:workflowlistDoing.get('searchParams'),
-        searchParamsAd:workflowlistDoing.get('searchParamsAd'),
-        selectedRowKeys: workflowlistDoing.get('selectedRowKeys'),
-        orderFields:workflowlistDoing.get('orderFields'),
-        showSearchAd:workflowlistDoing.get('showSearchAd'),
-        selectedTreeKeys:workflowlistDoing.get('selectedTreeKeys'),
-        tableCheck:workflowlistDoing.get('tableCheck'),
-        isSpaForm:workflowlistDoing.get('isSpaForm'),
-        isClearNowPageStatus:workflowlistDoing.get('isClearNowPageStatus'),
-        sortParams:workflowlistDoing.get('sortParams'),
-        current:workflowlistDoing.get('current'),
-        colSetVisible:workflowlistDoing.get('colSetVisible'),
-        colSetdatas:workflowlistDoing.get('colSetdatas'),
-        colSetKeys:workflowlistDoing.get('colSetKeys'),
-        conditioninfo:workflowlistDoing.get('conditioninfo'),
-        showBatchSubmit:workflowlistDoing.get('showBatchSubmit'),
-        phrasesObj:workflowlistDoing.get('phrasesObj'),
-        sharearg:workflowlistDoing.get('sharearg'),
-        pageAutoWrap:workflowlistDoing.get('pageAutoWrap'),
-        pageSize:workflowlistDoing.get('pageSize'),
+        title: workflowlistDoing.get('title'),
+		leftTree: workflowlistDoing.get('leftTree'),
+		leftTreeCount: workflowlistDoing.get('leftTreeCount'),
+		leftTreeCountType: workflowlistDoing.get('leftTreeCountType'),
+		topTab: workflowlistDoing.get('topTab'),
+		topTabCount: workflowlistDoing.get('topTabCount'),
+		searchParams: workflowlistDoing.get('searchParams'),
+		searchParamsAd: workflowlistDoing.get('searchParamsAd'),
+		orderFields: workflowlistDoing.get('orderFields'),
+		showSearchAd: workflowlistDoing.get('showSearchAd'),
+		selectedTreeKeys: workflowlistDoing.get('selectedTreeKeys'),
+		isSpaForm: workflowlistDoing.get('isSpaForm'),
+		isClearNowPageStatus: workflowlistDoing.get('isClearNowPageStatus'),
+		sortParams: workflowlistDoing.get('sortParams'),
+		conditioninfo: workflowlistDoing.get('conditioninfo'),
+		showBatchSubmit: workflowlistDoing.get('showBatchSubmit'),
+		phrasesObj: workflowlistDoing.get('phrasesObj'),
+		sharearg: workflowlistDoing.get('sharearg'),
+		//table
+		loading: WeaTableRedux_state.getIn([name,'loading']),
+		selectedRowKeys: WeaTableRedux_state.getIn([name,'selectedRowKeys']),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(ListAction, dispatch)
+        actions: bindActionCreators({...ListAction,...WeaTableRedux_action}, dispatch)
     }
 }
 
