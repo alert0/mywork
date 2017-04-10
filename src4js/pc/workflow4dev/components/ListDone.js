@@ -3,19 +3,22 @@ import { connect } from 'react-redux'
 import * as ListAction from '../actions/list'
 import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
-import {switchComponent} from '../util/switchComponent'
 import {Synergy} from 'weaPortal';
+
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
 
 import {
     WeaTop,
     WeaTab,
-    WeaTable,
     WeaLeftTree,
     WeaLeftRightLayout,
     WeaSearchGroup,
     WeaRightMenu,
     WeaPopoverHrm
 } from 'ecCom'
+
 
 import {WeaErrorPage,WeaTools} from 'ecCom'
 
@@ -58,7 +61,7 @@ class ListDone extends React.Component {
             actions.initDatas({method:"all"});
             actions.doSearch();
         }
-        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.datas && document.title !== nextProps.title)
+        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.title && document.title !== nextProps.title)
             document.title = nextProps.title;
     }
     shouldComponentUpdate(nextProps,nextState) {
@@ -68,26 +71,17 @@ class ListDone extends React.Component {
         !is(this.props.leftTreeCountType,nextProps.leftTreeCountType)||
         !is(this.props.topTab,nextProps.topTab)||
         !is(this.props.topTabCount,nextProps.topTabCount)||
-        !is(this.props.datas,nextProps.datas)||
         !is(this.props.columns,nextProps.columns)||
-        !is(this.props.count,nextProps.count)||
         !is(this.props.loading,nextProps.loading)||
         !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
         !is(this.props.searchParamsAd,nextProps.searchParamsAd)||
-        !is(this.props.selectedRowKeys,nextProps.selectedRowKeys)||
+        !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
         !is(this.props.orderFields,nextProps.orderFields)||
         !is(this.props.showSearchAd,nextProps.showSearchAd)||
-        !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
-        !is(this.props.tableCheck,nextProps.tableCheck)||
+        !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
         !is(this.props.isSpaForm,nextProps.isSpaForm)||
-        !is(this.props.current,nextProps.current)||
-        !is(this.props.colSetVisible,nextProps.colSetVisible)||
-        !is(this.props.colSetdatas,nextProps.colSetdatas)||
-        !is(this.props.colSetKeys,nextProps.colSetKeys)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
-        !is(this.props.pageAutoWrap,nextProps.pageAutoWrap)||
-        !is(this.props.pageSize,nextProps.pageSize)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
     }
     componentWillUnmount(){
@@ -98,8 +92,9 @@ class ListDone extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {pageSize,pageAutoWrap,topTab,topTabCount,columns,datas,actions,title,count,loading,operates,searchParams,
-        	showSearchAd,tableCheck,searchParamsAd,sortParams,current,colSetVisible,colSetdatas,colSetKeys} = this.props;
+        const {comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
+        const loading = comsWeaTable.get('loading');
+        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
@@ -132,27 +127,10 @@ class ListDone extends React.Component {
                         keyParam="viewcondition"  //主键
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
-                    <WeaTable
-                    	current={current}
-                        tableCheck={tableCheck}
-                        operates={operates && operates.toJS()}
-                        pageSize={pageSize}
-                        hasOrder={true}
-                        onChange={(p,f,s)=>actions.getDatas("",p.current,p.pageSize,s)}
-                        rowSel={this.getRowSel()}
-                        columns={this.getColumns(columns && columns.toJS())}
-                        datas={datas && datas.toJS()}
-                        needScroll={true}
-                        sortParams={sortParams && sortParams.toJS()}
-                        colSetVisible={colSetVisible}
-                        colSetdatas={colSetdatas && colSetdatas.toJS()}
-                        colSetKeys={colSetKeys && colSetKeys.toJS()}
-                        showColumnsSet={bool => {actions.setColSetVisible(bool)}}
-                        onTransferChange={keys=>{actions.setTableColSetkeys(keys)}}
-                        saveColumnsSet={() => actions.tableColSet()}
-                        pageAutoWrap={pageAutoWrap}
-                        loading={loading}
-                        count={count} />
+                    <WeaTable 
+                    	hasOrder={true}
+                    	needScroll={true}
+                    	/>
                 </WeaLeftRightLayout>
                 </WeaTop>
                 </WeaRightMenu>
@@ -161,7 +139,8 @@ class ListDone extends React.Component {
         )
     }
     onRightMenuClick(key){
-    	const {actions,selectedRowKeys} = this.props;
+    	const {actions,comsWeaTable} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
     	if(key == '0'){
     		actions.doSearch();
     		actions.setShowSearchAd(false)
@@ -172,7 +151,8 @@ class ListDone extends React.Component {
     	}
     }
     getRightMenu(){
-    	const {selectedRowKeys,sharearg,actions} = this.props;
+    	const {comsWeaTable,sharearg,actions} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
     	let btns = [];
     	btns.push({
@@ -210,7 +190,7 @@ class ListDone extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {switchComponent(this.props, field.key, field.domkey, field)}
+                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field)}
                     </FormItem>),
                 colSpan:1
             })
@@ -255,9 +235,17 @@ class ListDone extends React.Component {
                 	})
                     const workflowid = key.indexOf("wf_")===0 ? key.substring(3) : '';
                 	const workflowtype = key.indexOf("type_")===0 ? key.substring(5) : '';
+                	let workflowidShowName = '';
+                	let workflowtypeShowName = '';
+                	leftTree && leftTree.map(l=>{
+                		if(l.get('domid') == key) workflowtypeShowName = l.get('name');
+                		l.get('childs') && l.get('childs').map(c=>{
+                			if(c.get('domid') == key) workflowidShowName = c.get('name');
+                		})
+                	})
                 	const fieldsObj = {
-                		workflowid:{name:'workflowid',value:workflowid},
-                		workflowtype:{name:'workflowtype',value:workflowtype}
+                		workflowid:{name:'workflowid',value:workflowid,valueSpan:workflowidShowName},
+                		workflowtype:{name:'workflowtype',value:workflowtype,valueSpan:workflowtypeShowName},
                 	};
                 	actions.saveOrderFields(fieldsObj);
                     actions.doSearch({
@@ -268,21 +256,6 @@ class ListDone extends React.Component {
                     });
                 }} />
         )
-    }
-    getRowSel() {
-    	const {actions,selectedRowKeys} = this.props;
-        return {
-            selectedRowKeys: selectedRowKeys && selectedRowKeys.toJS(),
-            onChange(sRowKeys, selectedRows) {
-                actions.setSelectedRowKeys(sRowKeys);
-            },
-            onSelect(record, selected, selectedRows) {
-                //console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-                //console.log(selected, selectedRows, changeRows);
-            }
-        };
     }
     getTabButtonsAd() {
     	const {actions} = this.props;
@@ -296,24 +269,6 @@ class ListDone extends React.Component {
     	const {selectedRowKeys,actions} = this.props;
     	let btns = [];
         return btns
-    }
-    getColumns(columns) {
-        const {isSpaForm} = this.props;
-        let newColumns = cloneDeep(columns);
-        return newColumns.map((column)=>{
-            let newColumn = column;
-            newColumn.render = (text,record,index)=>{ //前端元素转义
-                let valueSpan = record[newColumn.dataIndex+"span"];
-//              if(!valueSpan || valueSpan==="") {
-//                  return text;
-//              }
-                function createMarkup() { return {__html: valueSpan}; };
-                return (
-                    <div className="wea-url" dangerouslySetInnerHTML={createMarkup()} />
-                )
-            }
-            return newColumn;
-        });
     }
 }
 
@@ -330,14 +285,7 @@ ListDone = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(ListDone);
 
 ListDone = createForm({
 	onFieldsChange(props, fields) {
-    	let _fields = {...fields};
-    	for(let k in fields){
-    		if(fields[k].value.indexOf('_@_') >= 0){
-    			let newValue =  fields[k].value.split('_@_');
-	    		_fields[k].value = newValue[0];
-    		}
-    	}
-        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields,..._fields});
+        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields});
     },
 	mapPropsToFields(props) {
 		return props.orderFields.toJS();
@@ -345,42 +293,35 @@ ListDone = createForm({
 })(ListDone);
 
 function mapStateToProps(state) {
-	const {workflowlistDone} = state;
+	const {workflowlistDone,comsWeaTable} = state;
+	const name = workflowlistDone.get('dataKey') ? workflowlistDone.get('dataKey').split('_')[0] : 'init';
     return {
-        title:workflowlistDone.get('title'),
-        leftTree:workflowlistDone.get('leftTree'),
-        leftTreeCount:workflowlistDone.get('leftTreeCount'),
-        leftTreeCountType:workflowlistDone.get('leftTreeCountType'),
-        topTab:workflowlistDone.get('topTab'),
-        topTabCount:workflowlistDone.get('topTabCount'),
-        datas:workflowlistDone.get('datas'),
-        columns:workflowlistDone.get('columns'),
-        count:workflowlistDone.get('count'),
-        loading:workflowlistDone.get('loading'),
-        operates:workflowlistDone.get('operates'),
-        searchParams:workflowlistDone.get('searchParams'),
-        searchParamsAd:workflowlistDone.get('searchParamsAd'),
-        selectedRowKeys: workflowlistDone.get('selectedRowKeys'),
-        orderFields:workflowlistDone.get('orderFields'),
-        showSearchAd:workflowlistDone.get('showSearchAd'),
-        selectedTreeKeys:workflowlistDone.get('selectedTreeKeys'),
-        tableCheck:workflowlistDone.get('tableCheck'),
-        isSpaForm:workflowlistDone.get('isSpaForm'),
-        isClearNowPageStatus:workflowlistDone.get('isClearNowPageStatus'),
-        sortParams:workflowlistDone.get('sortParams'),
-        current:workflowlistDone.get('current'),
-        colSetVisible:workflowlistDone.get('colSetVisible'),
-        colSetdatas:workflowlistDone.get('colSetdatas'),
-        colSetKeys:workflowlistDone.get('colSetKeys'),
-        conditioninfo:workflowlistDone.get('conditioninfo'),
-        pageAutoWrap:workflowlistDone.get('pageAutoWrap'),
-        pageSize:workflowlistDone.get('pageSize'),
+        title: workflowlistDone.get('title'),
+		leftTree: workflowlistDone.get('leftTree'),
+		leftTreeCount: workflowlistDone.get('leftTreeCount'),
+		leftTreeCountType: workflowlistDone.get('leftTreeCountType'),
+		topTab: workflowlistDone.get('topTab'),
+		topTabCount: workflowlistDone.get('topTabCount'),
+		searchParams: workflowlistDone.get('searchParams'),
+		searchParamsAd: workflowlistDone.get('searchParamsAd'),
+		orderFields: workflowlistDone.get('orderFields'),
+		showSearchAd: workflowlistDone.get('showSearchAd'),
+		selectedTreeKeys: workflowlistDone.get('selectedTreeKeys'),
+		isSpaForm: workflowlistDone.get('isSpaForm'),
+		isClearNowPageStatus: workflowlistDone.get('isClearNowPageStatus'),
+		sortParams: workflowlistDone.get('sortParams'),
+		conditioninfo: workflowlistDone.get('conditioninfo'),
+		showBatchSubmit: workflowlistDone.get('showBatchSubmit'),
+		phrasesObj: workflowlistDone.get('phrasesObj'),
+		sharearg: workflowlistDone.get('sharearg'),
+		//table
+        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(ListAction, dispatch)
+        actions: bindActionCreators({...ListAction,...WeaTableAction}, dispatch)
     }
 }
 

@@ -21,12 +21,12 @@ import './css/worflowmessage_wev8.css'
 import './css/forward.css'
 
 import reducers from './reducers/'
-import { reducer_coms } from '../coms/index'
+import { comsReducer } from '../coms/index'
 import * as WorkflowListAction from './actions/list'
 import * as WorkflowReqAction from './actions/req'
 import * as WorkflowQueryAction from './actions/queryFlow'
 
-const reducer = { ...reducers, ...reducer_coms }
+const reducer = { ...reducers, ...comsReducer }
 
 require("./util/doing");
 require("./util/formbtn");

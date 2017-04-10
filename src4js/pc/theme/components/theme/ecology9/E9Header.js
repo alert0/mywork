@@ -23,8 +23,9 @@ class E9Header extends React.Component {
                     <E9FreqUseMenu />
                     <E9QuickSearch />
                 </div>
+
                 <div className="e9header-right">
-                    <div className="e9header-sign" id="e9header-sign"></div>
+                    <div className="e9header-sign" id="signPlugin"></div>
                     <div className="e9header-toolbar-separate"></div>
                     <E9Remind />
                     <E9ToolBar />

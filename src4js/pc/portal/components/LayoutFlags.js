@@ -1,5 +1,5 @@
  //引入元素组件
- import Element from './element/';
+ import ElementType from './ElementType';
  import CustomLayoutFlags from './CustomLayoutFlags';
 
  class LayoutFlags extends React.Component {
@@ -16,7 +16,7 @@
      }
  }
 
- import { WeaErrorPage, WeaTools } from 'weaCom';
+ import { WeaErrorPage, WeaTools } from 'ecCom';
 
  class MyErrorHandler extends React.Component {
      render() {
@@ -42,7 +42,7 @@
              if (!_isEmpty(layoutFlags)) {
                  lfhtml = layoutFlags.map((layoutFlag, i) => {
                      return <td width = { layoutFlag.areasize }
-                     className = "valign"><GroupDiv key = { _uuid() }
+                     className = "valign"><GroupDiv key = {layoutFlag.areaflag}
                      layoutFlag = { layoutFlag }
                      /></td>
                  });
@@ -150,5 +150,5 @@
 
  //group Div组件
  const GroupDiv = ({ layoutFlag }) => <div className="group" data-areaflag={layoutFlag.areaflag}>
-        <div>{layoutFlag.areaElements.map(ele => <Element key={_uuid()} ele={ele}/>)}</div>
+        <div>{layoutFlag.areaElements.map(ele => <ElementType key={_uuid()} ele={ele}/>)}</div>
       </div>

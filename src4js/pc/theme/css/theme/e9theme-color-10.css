@@ -1,0 +1,81 @@
+.e9theme-color-10 .e9header-container {
+    color: #fff;
+    background-color: #71a2b0;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu,
+.e9theme-color-10 .e9aside-container .ant-menu {
+    color: #72a4ab;
+    background-color: #395a87;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu .wea-menu-switch {
+    color: #73a3af;
+    background-color: #143664;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu .wevicon {
+    color: #72a4ab;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu .wea-menu-selected .wevicon,
+.e9theme-color-10 .e9aside-container .wea-menu-inline .ant-menu-item-active .wevicon,
+.e9theme-color-10 .e9aside-container .wea-menu-inline .ant-menu-submenu-active .wevicon,
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active .wevicon {
+    color: #455876;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu-inline .wea-menu-selected,
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-submenu > .wea-menu-selected,
+.e9theme-color-10 .e9aside-container .wea-menu-inline .ant-menu-item:hover,
+.e9theme-color-10 .e9aside-container .wea-menu-inline .ant-menu-submenu-title:hover {
+    color: #455876 !important;
+    background-color: #f1f1f1 !important;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-sub .wea-menu-selected,
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-item-active,
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active {
+    color: #fff !important;
+    background-color: #395a87 !important;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-item-active:before,
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-submenu-active:before {
+    border: 2px solid #73a3af;
+    border-top: 21px solid #73a3af;
+    border-bottom: 21px solid #73a3af;
+}
+
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-submenu-active,
+.e9theme-color-10 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active > ul {
+    color: #455876;
+    background-color: #f1f1f1 !important;
+}
+
+.e9theme-color-10 .e9left-menu-email-item {
+    color: #fff;
+    background: #71a2b0;
+}
+
+.e9theme-color-10 .e9left-menu-email-item .wevicon {
+    color: #fff !important;
+}
+
+.e9theme-color-10 .e9left-menu-email-item-selected {
+    color: #143664;
+    background: #f6f6f6;
+}
+
+.e9theme-color-10 .e9left-menu-email-item-selected .wevicon {
+    color: #143664 !important;
+}
+
+.e9theme-color-10 .e9left-menu-email-item-ul {
+    color: #143664;
+    background: #f6f6f6;
+}
+
+.e9theme-color-10 .e9left-menu-email-item-ul li:hover {
+    background: #dadfe3;
+}

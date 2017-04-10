@@ -1,8 +1,7 @@
 import {Row ,Col} from 'antd';
-import {WeaTable} from 'ecCom'
 import cloneDeep from 'lodash/cloneDeep'
 
-import {WeaTableRedux} from '../../../coms/index'
+import {WeaTable} from '../../../coms/index'
 
 import Immutable from 'immutable'
 const is = Immutable.is;
@@ -37,7 +36,7 @@ class Resources extends React.Component {
         			}
         		)}
         	</div>
-    		<WeaTableRedux />
+    		<WeaTable />
         </div>
     }
     doChange(key){

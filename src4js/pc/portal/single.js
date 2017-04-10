@@ -1,19 +1,9 @@
-import {
-	render
-} from 'react-dom'
-import {
-	combineReducers,
-	applyMiddleware,
-	compose
-} from 'redux';
-import {
-	Provider
-} from 'react-redux'
-import {
-	createHistory,
-	useBasename,
-	createHashHistory
-} from 'history'
+import ECLocalStorage from './util/ecLocalStorage';
+window.ecLocalStorage = ECLocalStorage;
+import { render } from 'react-dom'
+import { combineReducers, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux'
+import { createHistory, useBasename, createHashHistory } from 'history'
 import thunkMiddleware from 'redux-thunk/lib/index'
 import Router from 'react-router/lib/Router'
 import Route from 'react-router/lib/Route'
@@ -21,37 +11,25 @@ import Link from 'react-router/lib/Link'
 import useRouterHistory from 'react-router/lib/useRouterHistory'
 import Redirect from 'react-router/lib/Redirect'
 import configureStore from './store/configureStore'
+import { routerReducer } from 'react-router-redux/lib/reducer'
+import objectAssign from 'object-assign'
+import { WeaErrorPage } from 'ecCom'
 
-import {
-	routerReducer
-} from 'react-router-redux/lib/reducer'
-
-import {
-	WeaErrorPage
-} from 'weaCom'
-
-//门户相关模块
 //门户相关模块
 import Portal from './index';
 const Homepage = Portal.Homepage;
-const homeReducer = Portal.reducer;
-import objectAssign from 'object-assign'
+const pReducer = Portal.reducer;
+const pAction = Portal.action;
 
-let reducers = objectAssign({}, homeReducer, {
-	routing: routerReducer
-});
-
+let reducers = objectAssign({}, pReducer, { routing: routerReducer });
 const rootReducer = combineReducers(reducers);
-
 const debug = true;
-
 let store = configureStore(
 	rootReducer,
 	applyMiddleware(
 		thunkMiddleware
 	)
 );
-
 if (debug && !(window.attachEvent && navigator.userAgent.indexOf('Opera') === -1) && window.__REDUX_DEVTOOLS_EXTENSION__) { //非IE才有debug
 	store = configureStore(
 		rootReducer,
@@ -64,7 +42,7 @@ if (debug && !(window.attachEvent && navigator.userAgent.indexOf('Opera') === -1
 
 //推向全局调用
 window.store_e9_element = store;
-
+window.action_e9_element = pAction;
 
 store.subscribe(() => {
 	//    console.log(store.getState())
@@ -92,7 +70,7 @@ class Root extends React.Component {
 		return (
 			<Provider store={store}>
 				<Router history={history}>
-                    <Route path="portal/portal-:hpid-:subCompanyId" component={Homepage}/>
+                    <Route path="portal-:hpid-:subCompanyId" component={Homepage}/>
 					<Route path="*" component={Error}/>
 				</Router>
 			</Provider>
@@ -100,4 +78,4 @@ class Root extends React.Component {
 	}
 }
 
-ReactDOM.render(<Root />, document.getElementById('container'));
+ReactDOM.render(<Root />, document.getElementById('portal'));

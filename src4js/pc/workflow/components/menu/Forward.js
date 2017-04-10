@@ -1,5 +1,5 @@
-import { Modal, Row, Col, Button, Popover, message } from 'antd'
-import { WeaHrmInput, WeaTools } from 'ecCom'
+import { Modal, Row, Col, Button, Popover, message ,Spin} from 'antd'
+import { WeaHrmInput, WeaTools ,WeaRightMenu} from 'ecCom'
 import OGroup from './OGroup'
 import NodeOperator from './NodeOperator'
 import Immutable from 'immutable'
@@ -30,6 +30,10 @@ class Forward extends React.Component {
 			field5: '',
 			selectOperatorsMax: undefined //转发人数最大限制，默认100
 		};
+		
+		this.setForwardOperatorMax();
+		
+		window.FORWARD_OBJ  = this;
 	}
 
 	componentDidMount() {
@@ -52,8 +56,8 @@ class Forward extends React.Component {
 					//forwardremark: FCKEditorExt.getHtml('remark')
 				});
 			}
-
-			if(forwardOperators != '') {
+			
+			if(forwardOperators && forwardOperators != '') {
 				this.setOperatorIds({ids:forwardOperators,isAllUser:false});
 			}
 		}
@@ -83,11 +87,16 @@ class Forward extends React.Component {
 			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index', '105');
 			jQuery('.wea-req-forward-modal').css('z-index', '105');
 			const {ismanagePage} = this.props;
+			const _that = this;
 			if(ismanagePage == '1'){
 				setTimeout(function() {
-					UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), true);
+					try{
+						_that.setRedPoint();
+						UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'),false);
+					}catch(e){console.log(e)}
 				}, 500);
 			}
+			
 		}
 	}
 
@@ -118,15 +127,15 @@ class Forward extends React.Component {
 						o.lastname = params.groupname;
 					});
 				}
-				console.log("data",data);				
 				this.setState({ operatorDatas: data });
 			});
 		}
 	}
 
 	render() {
-		const { showForward, titleName, requestid, onClick } = this.props;
+		const { showForward, requestid, onClick } = this.props;
 		const { isshownodeoperators, isshowoperategroup, signinput, operatorDatas, loading, field5, selectOperatorsMax } = this.state;
+		const titleName  =  this.state.signinput.requestname;
 		return(
 			<div>
 			<Modal title={this.getTopTitle(titleName)} 
@@ -140,6 +149,7 @@ class Forward extends React.Component {
 	                <Button type="ghost" size="large" disabled={loading} onClick={this.cancelEvent.bind(this)}>关闭</Button>
 				]} 
 			>
+			<Spin spinning={loading} tip="正在提交，请稍等...">
 				<div className="wea-req-forward-content">
 					<div className="wea-req-forward-content-receive">
 						<div className='label'>
@@ -147,7 +157,7 @@ class Forward extends React.Component {
 							<span>转发接收人</span>
 						</div>
 						<div className='input'>
-							<WeaHrmInput mult onChange={(o)=>{console.log("o",o);this.setState({field5:o})}} value={field5} opsDatas={operatorDatas} maxLength={selectOperatorsMax}/>
+							<WeaHrmInput mult onChange={(o)=>{this.setState({field5:o})}} value={field5} opsDatas={operatorDatas} maxLength={selectOperatorsMax}/>
 						</div>
 						<div className='btns'>
 							<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
@@ -172,8 +182,9 @@ class Forward extends React.Component {
 					</div>
 					<div className="wea-req-forward-content-remark">
 						<div className='label'>
-							<span>*</span>
+							<span>{signinput.isSignMustInput == '1' && '*'}</span>
 							<span>签字意见</span>
+							<span style={{}}>{signinput.tempbeagenter != signinput.fileuserid ? `（您正在代理${signinput.tempbeagentername}处理）` : ''}</span>
 						</div>
 						<div className='remark' id="forwardremark_div">
 							 <textarea name='forwardremark' id="forwardremark" style={{'width':'100%','height':'167px'}} >
@@ -191,6 +202,7 @@ class Forward extends React.Component {
 						</div>
 					</div>
 				</div>
+				</Spin>
 			</Modal>
 			<div id="forwardremark_hidden_area">
 				<input type="hidden" name='annexmainId' id='annexmainId' value={signinput.annexmainId}/>
@@ -213,10 +225,30 @@ class Forward extends React.Component {
 			</div>
 		)
 	}
+	
+	onRightMenuClick(key){
+        const {rightMenu} = this.props;
+        rightMenu && !is(rightMenu,Immutable.fromJS({})) && rightMenu.get('rightMenus').map((m,i)=>{
+            let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
+            Number(key) == i && eval(fn)
+        });
+        if(key == '0'){
+            actions.doSearch();
+            actions.setShowSearchAd(false)
+        }
+        if(key == '1'){
+            actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`})
+        }
+        if(key == '2'){
+            actions.setColSetVisible(true);
+            actions.tableColSet(true)
+        }
+    }
+	
 	getTopTitle(titlename) {
 		return(
 			<Row>
-                <Col span="8" style={{paddingLeft:20, lineHeight:"45px"}}>
+                <Col span="16" style={{paddingLeft:20, lineHeight:"45px"}}>
                     <div className="wea-workflow-icon">
                         <i className='icon-portal-workflow' />
                     </div>
@@ -228,18 +260,22 @@ class Forward extends React.Component {
 
 	//提交
 	submitEvent() {
-		const { operatorDatas, forwardflag, field5 } = this.state;
+		console.log("signdocids",jQuery('#forwardremark_div').find('#signdocids').val(),this.state.signdocids);
+		const { operatorDatas, forwardflag, field5 ,signinput} = this.state;
 		const { fromform, controllShowForward } = this.props;
 		let forwardremarkcontent = FCKEditorExt.getText("forwardremark");
 		//验证签字意见必填
-		const flag = chekcremark(forwardremarkcontent);
-		console.log("field5",field5,"flag",flag);
+		let flag = true;
+		if(signinput.isSignMustInput == '1'){
+			flag = chekcremark(forwardremarkcontent);
+		}
 		if(!flag || field5 == '') {
 			message.warning('必要信息不完整，红色*号为必填项！', 2);
 			return;
 		}
-		this.setState({ loading: true });
 		let forwardremarkInfo = this.getSignInputInfo();
+		console.log("forwardremarkInfo",forwardremarkInfo);
+		this.setState({ loading: true });
 
 		let params = objectAssign({}, forwardremarkInfo, {
 			operate: 'save',
@@ -275,16 +311,15 @@ class Forward extends React.Component {
 	}
 
 	getSignInputInfo() {
-		const remarkDiv = jQuery('#forwardremark_div');
+		const paramDiv  = jQuery('#forwardremark_div');
 		const { requestid } = this.props;
 		return {
-			signworkflowids: remarkDiv.find('#signworkflowids').val(),
-			signdocids: remarkDiv.find('#signdocids').val(),
-			remarkLocation: remarkDiv.find('#remarkLocation').val(),
-			'field-annexupload': remarkDiv.find('#field-annexupload').val(),
-			'field_annexupload_del_id': remarkDiv.find('#field_annexupload_del_id').val(),
-			'field-annexupload-name': remarkDiv.find('#field-annexupload-name').val(),
-			'field-annexupload-count': remarkDiv.find('#field-annexupload-count').val(),
+			signworkflowids: paramDiv.find('#signworkflowids').val(),
+			signdocids: paramDiv.find('#signdocids').val(),
+			remarkLocation: paramDiv.find('#remarkLocation').val(),
+			'field-annexupload': paramDiv.find('#field-annexupload').val(),
+			'field-annexupload-name': paramDiv.find('#field-annexupload-name').val(),
+			'field-annexupload-count': paramDiv.find('#field-annexupload-count').val(),
 			'field-annexupload-request': requestid,
 			remark: FCKEditorExt.getHtml('forwardremark')
 		};
@@ -330,6 +365,30 @@ class Forward extends React.Component {
 
 		this.clearState();
 	}
+	
+	setRedPoint(){
+		const paramDiv = jQuery('#forwardremark_div');
+		const ids = paramDiv.find("#field-annexupload").val();
+		if(ids) {
+			const _targetobj = jQuery('#forwardremark').find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
+			_targetobj.addClass("wfres_1_slt");
+			_targetobj.removeClass("wfres_1");
+		}
+
+		const signdocids = paramDiv.find("#signdocids").val();
+		if(signdocids) {
+			const _targetobj = jQuery('#forwardremark').find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
+			_targetobj.addClass("wfres_2_slt");
+			_targetobj.removeClass("wfres_2");
+		}
+
+		const signworkflowids = paramDiv.find("#signworkflowids").val();
+		if(signworkflowids) {
+			_targetobj = jQuery('#forwardremark').find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
+			_targetobj.addClass("wfres_3_slt");
+			_targetobj.removeClass("wfres_3");
+		}
+	}
 
 	initData() {
 		const { requestid } = this.props;
@@ -346,10 +405,10 @@ class Forward extends React.Component {
 			_this.setState({ signinput: data, reload: true, hasinitremark: false });
 		});
 	}
-	//
+	//选择人数控制
 	setForwardOperatorMax() {
-		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', {}).then(data => {
-			this.setState({ selectOperatorsMax: data.max });
+		WeaTools.callApi('/api/workflow/org/selectMaxRight', 'GET', {}).then(data => {
+			this.setState({ selectOperatorsMax: data.right ? undefined : 100 });
 		});
 	}
 }

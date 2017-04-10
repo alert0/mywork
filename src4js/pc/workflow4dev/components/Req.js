@@ -9,6 +9,7 @@ import ImgZoom from './sign/ImgZoom'
 import WfStatus from './status/WfStatus'
 import Resources from './resources/Resources'
 import Share from './share/Share'
+import Forward from './menu/Forward'
 
 
 import {WeaReqTop,WeaRightMenu} from 'ecCom'
@@ -43,7 +44,6 @@ class Req extends React.Component {
         this.resetHeight()
         actions.reqIsSubmit(false);
         actions.reqIsReload(false);
-        actions.isClickBtnReview(false);
         actions.setShowUserlogid('');
         const that = this;
 
@@ -64,7 +64,10 @@ class Req extends React.Component {
                     actions.scrollLoadSign({pgnumber:parseInt(pgnumber)+1,firstload:false,maxrequestlogid:logParams.get('maxrequestlogid')});
                 }
             }
+            //滚动时隐藏签字意见的下拉列
             jQuery('#edui_fixedlayer>div').css('display','none');
+            jQuery('#remark_div').find('#_signinputphraseblock').css('display','none');
+            jQuery('#remark_div').find('.filtercontainer').css('display','none');
         });
     }
     // componentDidUpdate(){
@@ -92,6 +95,7 @@ class Req extends React.Component {
     // }
     shouldComponentUpdate(nextProps,nextState) {
         return this.props.loading!==nextProps.loading||
+        !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
         !is(this.props.params,nextProps.params)||
         !is(this.props.tableInfo,nextProps.tableInfo)||
         !is(this.props.formValue,nextProps.formValue)||
@@ -102,13 +106,6 @@ class Req extends React.Component {
         !is(this.props.logList,nextProps.logList)||
         !is(this.props.logListTabKey,nextProps.logListTabKey)||
         !is(this.props.logCount,nextProps.logCount)||
-        !is(this.props.resourcesKey,nextProps.resourcesKey)||
-        !is(this.props.resourcesDatas,nextProps.resourcesDatas)||
-        !is(this.props.resourcesCount,nextProps.resourcesCount)||
-        !is(this.props.resourcesColumns,nextProps.resourcesColumns)||
-        !is(this.props.resourcesOperates,nextProps.resourcesOperates)||
-        !is(this.props.resourcesCurrent,nextProps.resourcesCurrent)||
-        !is(this.props.resourcesPageSize,nextProps.resourcesPageSize)||
         !is(this.props.resourcesTabKey,nextProps.resourcesTabKey)||
         !is(this.props.rightMenu,nextProps.rightMenu)||
         !is(this.props.reqIsSubmit,nextProps.reqIsSubmit)||
@@ -118,7 +115,7 @@ class Req extends React.Component {
         this.props.scriptcontent !== nextProps.scriptcontent||
         this.props.custompagehtml !== nextProps.custompagehtml||
         this.props.reqsubmiterrormsghtml !== nextProps.reqsubmiterrormsghtml||
-        !is(this.props.isclickbtnreview,nextProps.isclickbtnreview)||
+        !is(this.props.rightMenuStatus,nextProps.rightMenuStatus)||
         this.props.signFields !== nextProps.signFields||
         this.props.showBackToE8 !== nextProps.showBackToE8||
         this.props.showSearchDrop !== nextProps.showSearchDrop||
@@ -140,10 +137,10 @@ class Req extends React.Component {
         actions.setReqTabKey('1');
     }
     render() {
-        const {reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
-            signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,wfStatus,actions,logParams,resourcesDatas,
-            resourcesOperates,resourcesCount,resourcesColumns,resourcesCurrent,resourcesPageSize,resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
-            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,isclickbtnreview,rightMenu,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
+        const {comsWeaTable,reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
+            signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,wfStatus,actions,logParams,
+            resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
+            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
         const titleName = params?params.get("titlename"):"";
         const isshared = params?params.get("isshared"):"";
@@ -195,12 +192,32 @@ class Req extends React.Component {
                 domfieldid = "chatsType";
             formarea.push(<input type="hidden" id={domfieldid} name={domfieldid} value={domfieldvalue} />)
         });
+        formValue4Detail && formValue4Detail.map((v,k) => {
+            const detailindex = parseInt(k.substring(7))-1;
+            let submitdtlid = "";
+            v && v.map((datas, rowindex) => {
+                submitdtlid += rowindex+",";
+                datas.mapEntries && datas.mapEntries(f => {
+                    const domfieldvalue = f[1] && f[1].get("value"); 
+                    if(f[0] === "keyid"){
+                        formarea.push(<input type="hidden" name={`dtl_id_${detailindex}_${rowindex}`} value={domfieldvalue} />);
+                    }else{
+                        const domfieldid = f[0]+"_"+rowindex;
+                        formarea.push(<input type="hidden" id={domfieldid} name={domfieldid} value={domfieldvalue} />);
+                    }
+                })
+            })
+            formarea.push(<input type="hidden" id={`nodesnum${detailindex}`} name={`nodesnum${detailindex}`} value={v.size} />);
+            formarea.push(<input type="hidden" id={`indexnum${detailindex}`} name={`indexnum${detailindex}`} value={v.size} />);
+            formarea.push(<input type="hidden" id={`submitdtlid${detailindex}`} name={`submitdtlid${detailindex}`} value={submitdtlid} />);
+            formarea.push(<input type="hidden" id={`deldtlid${detailindex}`} name={`deldtlid${detailindex}`} value="" />);
+        })
         return (
             <div>
                 <WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
                 <WeaReqTop
                     title={<div dangerouslySetInnerHTML={{__html: titleName}} />}
-                    loading={loading}
+                    loading={loading || comsWeaTable.get('loading')}
                     icon={<i className='icon-portal-workflow' />}
                     iconBgcolor='#55D2D4'
                     buttons={this.getButtons()}
@@ -275,14 +292,8 @@ class Req extends React.Component {
                         {
                             reqTabKey == '4' &&
                                 <Resources
-                                    loading={loading}
+                               		requestid={requestid}
                                     actions={actions}
-                                    datas={resourcesDatas}
-                                    operates={resourcesOperates}
-                                    columns={resourcesColumns}
-                                    count={resourcesCount}
-                                    current={resourcesCurrent}
-                                    pageSize={resourcesPageSize}
                                     tabKey={resourcesTabKey}
                                     />
                         }
@@ -311,6 +322,7 @@ class Req extends React.Component {
                     {hiddenarea}
                     {formarea}
                 </form>
+				<Forward showForward={rightMenuStatus.get('showForward')} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} titleName={titleName} controllShowForward={this.controllShowForward.bind(this)}/>
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}
@@ -356,7 +368,7 @@ class Req extends React.Component {
         return btnArr
     }
     changeData(key){
-        const {actions,location,wfStatus,resourcesKey,params} = this.props
+        const {actions,location,wfStatus,resourcesTabKey,params} = this.props
         const {requestid} = location.query;
         const workflowid = params?params.get("workflowid"):"";
         const nodeid = params?params.get("nodeid"):"";
@@ -367,7 +379,7 @@ class Req extends React.Component {
         key == '2' && !jQuery('.req-workflow-map').attr('src') && jQuery('.req-workflow-map').attr('src',
         `/workflow/request/WorkflowRequestPictureInner.jsp?f_weaver_belongto_userid=&f_weaver_belongto_usertype=&fromFlowDoc=&modeid=${modeid}&requestid=${requestid}&workflowid=${workflowid}&nodeid=${nodeid}&isbill=${isbill}&formid=${formid}&showE9Pic=1`);
         key == "3" && is(wfStatus,Immutable.fromJS({})) && actions.loadWfStatusData({requestid:requestid},"all",true);
-        key == "4" && resourcesKey.get('key0') == '' && actions.getResourcesKey(requestid);
+        key == "4" && actions.getResourcesKey(requestid, resourcesTabKey);
         actions.setReqTabKey(key);
     }
     getButtons() {
@@ -394,15 +406,17 @@ class Req extends React.Component {
         return btnArr
     }
 
-    doReviewE9(actions){
-        actions.isClickBtnReview(true);
-    }
 
     gobackpage(router,ismanagePage){
         if(ismanagePage == '1'){
             UEUtil.getUEInstance('remark').destroy();
         }
         router.goBack();
+    }
+    
+    controllShowForward(bool){
+    	const {actions} = this.props;
+    	actions.setShowForward(bool);
     }
 }
 
@@ -424,7 +438,8 @@ class MyErrorHandler extends React.Component {
 Req = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(Req);
 
 function mapStateToProps(state) {
-    const {workflowReq,workflowlistDoing} = state;
+    const {workflowReq,workflowlistDoing,comsWeaTable} = state;
+    const name = workflowReq.get('resourcesKey') ? workflowReq.get('resourcesKey').split('_')[0] : 'init';
     return {
         params:workflowReq.get("params"),
         loading:workflowReq.get("loading"),
@@ -438,13 +453,6 @@ function mapStateToProps(state) {
         logListTabKey:workflowReq.get("logListTabKey"),
         cellInfo:workflowReq.get("cellInfo"),
         wfStatus:workflowReq.get("wfStatus"),
-        resourcesKey:workflowReq.get("resourcesKey"),
-        resourcesDatas:workflowReq.get("resourcesDatas"),
-        resourcesCount:workflowReq.get("resourcesCount"),
-        resourcesColumns:workflowReq.get("resourcesColumns"),
-        resourcesOperates:workflowReq.get("resourcesOperates"),
-        resourcesCurrent:workflowReq.get("resourcesCurrent"),
-        resourcesPageSize:workflowReq.get("resourcesPageSize"),
         resourcesTabKey:workflowReq.get("resourcesTabKey"),
         rightMenu:workflowReq.get("rightMenu"),
         reqTabKey:workflowReq.get("reqTabKey"),
@@ -457,7 +465,7 @@ function mapStateToProps(state) {
         custompagehtml:workflowReq.get('custompagehtml'),
         isShowUserheadimg:workflowReq.get('isShowUserheadimg'),
         reqsubmiterrormsghtml:workflowReq.getIn(['dangerouslyhtml','reqsubmiterrormsghtml']),
-        isclickbtnreview:workflowReq.getIn(['btnStatus','isclickbtnreview']),
+        rightMenuStatus:workflowReq.get('rightMenuStatus'),
         signFields:workflowReq.get('signFields'),
         showSearchDrop:workflowReq.get('showSearchDrop'),
         showBackToE8:workflowReq.get('showBackToE8'),
@@ -469,6 +477,8 @@ function mapStateToProps(state) {
         jsLoadDuration: workflowReq.get('jsLoadDuration'),
         apiDuration: workflowReq.get('apiDuration'),
         dispatchDuration: workflowReq.get('dispatchDuration'),
+        //table
+        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
     }
 }
 

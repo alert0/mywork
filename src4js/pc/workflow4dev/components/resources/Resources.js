@@ -1,6 +1,7 @@
 import {Row ,Col} from 'antd';
-import {WeaTable} from 'ecCom'
 import cloneDeep from 'lodash/cloneDeep'
+
+import {WeaTable} from '../../../coms/index'
 
 import Immutable from 'immutable'
 const is = Immutable.is;
@@ -11,30 +12,19 @@ class Resources extends React.Component {
     }
 	shouldComponentUpdate(nextProps,nextState) {
 		return !is(this.props.tabKey,nextProps.tabKey)||
-		!is(this.props.actions,nextProps.actions)||
-        !is(this.props.operates,nextProps.operates)||
-        !is(this.props.datas,nextProps.datas)||
-        !is(this.props.columns,nextProps.columns)||
-        !is(this.props.current,nextProps.current)||
-        !is(this.props.pageSize,nextProps.pageSize)||
-        !is(this.props.loading,nextProps.loading)||
-        !is(this.props.count,nextProps.count);
+		!is(this.props.actions,nextProps.actions);
    }
 	componentDidMount(){
 //		jQuery('.wea-workflow-resources').height(jQuery('.wea-new-top-req-content').height() - 5);
 	}
     render() {
-    	const {actions,operates,datas,columns,count,current,pageSize,tabKey,loading} = this.props;
+    	const {actions,tabKey} = this.props;
     	const menu = [
 			{title:'全部',key:'0',},
 			{title:'相关流程',key:'1'},
 			{title:'相关文档',key:'2'},
 			{title:'相关附件',key:'3'},
 		];
-		let dKey = 'key' + tabKey;
-		let operatesR = operates.get(dKey) ? operates.get(dKey).toJS() : [];
-		let columnsR = columns.get(dKey) ? columns.get(dKey).toJS() : [];
-		let datasR = datas.get(dKey) ? datas.get(dKey).toJS() : [];
         return <div className='wea-workflow-resources' >
         	<div className='wea-workflow-resources-tab'>
         		{
@@ -46,39 +36,12 @@ class Resources extends React.Component {
         			}
         		)}
         	</div>
-    		<WeaTable
-    			current={current}
-                pageSize={pageSize}
-    			heightSpace={40}
-                tableCheck={false}
-                operates={operatesR}
-                loading={loading}
-                onChange={(p,f,s)=>actions.getResourcesDatas(tabKey,p.current,p.pageSize,false)}
-                columns={this.getColumns(columnsR)}
-                datas={datasR}
-                count={count.get(dKey)} />
+    		<WeaTable />
         </div>
     }
     doChange(key){
-    	const {actions,pageSize} = this.props;
-    	actions.getResourcesDatas(key, 1, pageSize, false);
-    }
-    getColumns(columns) {
-        let newColumns = cloneDeep(columns);
-        return newColumns.map((column)=>{
-            let newColumn = column;
-            newColumn.render = (text,record,index)=>{ //前端元素转义
-                let valueSpan = record[newColumn.dataIndex+"span"];
-//              if(!valueSpan || valueSpan==="") {
-//                  return text;
-//              }
-                function createMarkup() { return {__html: valueSpan}; };
-                return (
-                    <div className="wea-url" dangerouslySetInnerHTML={createMarkup()} />
-                )
-            }
-            return newColumn;
-        });
+    	const {actions,requestid} = this.props;
+    	actions.getResourcesKey(requestid, key);
     }
 }
 

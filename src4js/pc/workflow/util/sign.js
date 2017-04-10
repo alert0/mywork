@@ -67,6 +67,12 @@ const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, c
 				resourceids = resourceids.substr(0);
 				resourcename = resourcename.substr(0);
 				paramDiv.find("#" + inputname).val(resourceids);
+				if(editorykey == 'forwardremark'){
+					jQuery('#forwardremark_hidden_area').find('#'+inputname).val(resourceids);
+					let params = {};
+					params[inputname] = resourceids;
+					FORWARD_OBJ.setState(params)
+				}
 				var resourceidArray = resourceids.split(",");
 				var resourcenameArray = resourcename.split(",");
 

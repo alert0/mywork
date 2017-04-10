@@ -1,10 +1,11 @@
 import React from 'react';
 import {Popover, Input} from 'antd';
-import {WeaScroll} from 'weaCom';
+import {WeaScroll} from 'ecCom';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as themeActions from '../../../actions/theme';
+
 import {onLoadMain} from '../../../actions/theme';
 
 class E9QuickSearch extends React.Component {
@@ -21,6 +22,13 @@ class E9QuickSearch extends React.Component {
     }
 
     onVisibleChange(visible) {
+        let e9shadowMain = document.getElementById('e9shadowMain');
+        if (visible) {
+            e9shadowMain.style.display = 'block';
+        } else {
+            e9shadowMain.style.display = 'none';
+        }
+
         const {actions} = this.props;
         actions.changeQuickSearchTypesVisible(visible);
     }
@@ -39,7 +47,7 @@ class E9QuickSearch extends React.Component {
         if ('5' == searchType) {
             searchRouteUrl = `/workflow/queryFlow?from=quickSearch&requestname=${searchValue}`;
         }
-        onLoadMain({url: searchUrl, routeurl: searchRouteUrl});
+        onLoadMain({url: encodeURI(searchUrl), routeurl: searchRouteUrl});
     }
 
     render() {

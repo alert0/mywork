@@ -80,6 +80,15 @@ class Sign extends React.Component {
 				signshowname = reqinfo.get('signshowname');
 			}
 		});
+		
+		let signInputHiddebArea = [];
+		signinputinfo && signinputinfo.mapEntries(o => {
+			let _value = o[1];
+			if(o[0] == 'phraseInfo' && _value){
+				_value = JSON.stringify(_value.toJS());
+			}
+			signInputHiddebArea.push(<input type="hidden" id={o[0]+"_param"} value={_value}/>)
+		});
 
 		let mainWf = hasMainWfRight ? requestLogParams.get('allrequestInfos').filter(w=>w.get('type') == 'main') : '';
 		let childWf = hasChildWfRight ? requestLogParams.get('allrequestInfos').filter(w=>w.get('type') == 'sub') : '';
@@ -94,12 +103,12 @@ class Sign extends React.Component {
 		const defaultshowsigninput = isshowsigninputdiv && markInfo.remark != '' && markInfo.remark != null;
 		let listShow = [];
 		logList && logList.forEach(obj=>{
-			listShow.push(<SignListItem data={obj} isShowUserheadimg={isShowUserheadimg} actions={actions} forward={forward} requestid={requestid} workflowid={workflowid} showuserlogids={showuserlogids}/>);
+			listShow.push(<SignListItem data={obj} isShowUserheadimg={isShowUserheadimg} actions={actions} forward={forward} requestid={requestid} workflowid={workflowid} showuserlogids={showuserlogids} f_weaver_belongto_userid={params.get('f_weaver_belongto_userid')}/>);
 		});
         return (
             <div className='wea-workflow-req-sign'>
             	<div>
-        			<div style={{'height':'100%','display':isshowsigninputdiv?'block':'none','margin-right':(defaultshowsigninput || isShowSignInput )?'0px':'-1px'}} >
+        			<div id="remark_div" style={{'height':'100%','display':isshowsigninputdiv?'block':'none','margin-right':(defaultshowsigninput || isShowSignInput )?'0px':'-1px'}} >
 	            		<div id="remarkShadowDiv" className='wea-workflow-req-sign-input' style={{"display":(defaultshowsigninput || isShowSignInput )?"none":"block","border-left":isSignMustInput == '1'?"2px solid #fe4e4c":'1px solid #d0d0d0'}} onClick={this.initremark.bind(this)}>
 		            		<i className="icon-xxx-form-Opinion" style={{marginRight:10}}/>{'签字意见' + (markInfo.tempbeagenter != markInfo.fileuserid ? `（您正在代理${markInfo.tempbeagentername}处理）` : '')}
 		            	</div>
@@ -107,13 +116,10 @@ class Sign extends React.Component {
 	 	            		<textarea name="remark" id="remark" style={{"width":"100%","height":"140px","margin":"0","resize": "none","color":"#a2a2a2","overflow":"hidden","color":"#c7c7c7"}}>
 	 	            			{markInfo.remark}
 	 	            		</textarea>
-		            	</div>
-		            	<div id="signrighttool" style={{"display":"none"}}>
 		            		 <input type="hidden" id="signdocids" name="signdocids" value={markInfo.signdocids}/>
 		            		 <input type="hidden" id="signworkflowids"name="signworkflowids" value={markInfo.signworkflowids}/>
 		            		 <input type="hidden" name="remarkLocation" id="remarkLocation" value={markInfo.remarkLocation}></input>
-		            		 <div class="signDoc_span" id="signDocCount" ></div>
-        		             <input className="InputStyle" type="hidden" id="field-annexupload" name="field-annexupload" value={markInfo.annexdocids}/>
+        		             <input type="hidden" id="field-annexupload" name="field-annexupload" value={markInfo.annexdocids}/>
                              <input type="hidden" id="field_annexupload_del_id" value=""/>
                              <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={markInfo.fieldannexuploadname}/>
                              <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value=""/>
@@ -126,7 +132,8 @@ class Sign extends React.Component {
                              <input type="hidden" name='fileuserid' id='fileuserid' value={markInfo.fileuserid}/>
                              <input type="hidden" name='fileloginyype' id='fileloginyype' value={markInfo.fileloginyype}/>
                              <input type="hidden" name='annexmaxUploadImageSize' id='annexmaxUploadImageSize' value={markInfo.annexmaxUploadImageSize}/>
-                             <span id="remarkSpan"></span>
+                             <input type="hidden" id="requestid_param" value={requestid} />
+                             {signInputHiddebArea}
 		            	</div>
 	            	</div>
 

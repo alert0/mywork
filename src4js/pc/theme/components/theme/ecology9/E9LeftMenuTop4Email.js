@@ -50,11 +50,13 @@ export default class E9LeftMenuTop4Email extends React.Component {
         // 写信/收信的类型列表
         let dataItems = this.state.dataItems;
 
-        let background = type == 0 ? '#ececec' : '#f6f6f6';
+        let current4class = type == 0 ? 'e9left-menu-email-item-ul-bc1' : 'e9left-menu-email-item-ul-bc2';
+        let selected4class1 = type == 0 && visible ? 'e9left-menu-email-item-selected' : '';
+        let selected4class2 = type == 1 && visible ? 'e9left-menu-email-item-selected' : '';
 
         return (
             <div className="e9left-menu-email">
-                <div className="e9left-menu-email-item" onClick={() => this.onSelect(0, writeEmail, 0)}>
+                <div className={`e9left-menu-email-item ${selected4class1}`} onClick={() => this.onSelect(0, writeEmail, 0)}>
                     <i className="wevicon wevicon-menu-default wevicon-menu-536-53601" />
                     <span className="e9left-menu-email-title">{writeEmail.name}</span>
                     <Icon type="caret-down"
@@ -64,7 +66,7 @@ export default class E9LeftMenuTop4Email extends React.Component {
                           }}
                     />
                 </div>
-                <div className="e9left-menu-email-item" onClick={() => this.onSelect(1, receiveEmail, 0)}>
+                <div className={`e9left-menu-email-item ${selected4class2}`} onClick={() => this.onSelect(1, receiveEmail, 0)}>
                     <i className="wevicon wevicon-menu-default wevicon-menu-536-53602" />
                     <span className="e9left-menu-email-title">{receiveEmail.name}</span>
                     <Icon type="caret-down"
@@ -76,7 +78,7 @@ export default class E9LeftMenuTop4Email extends React.Component {
                 </div>
                 {
                     visible ? (
-                            <ul className="e9left-menu-email-clear e9left-menu-email-item-ul" style={{background: background}}>
+                            <ul className={`e9left-menu-email-clear e9left-menu-email-item-ul ${current4class}`}>
                                 {
                                     dataItems.map((item, index) => {
                                         return <li key={index} onClick={() => this.onSelect(index, item, 0)}>{item.name}</li>

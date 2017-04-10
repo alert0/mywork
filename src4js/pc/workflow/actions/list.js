@@ -2,7 +2,9 @@ import * as types from '../constants/ActionTypes'
 import * as API_LIST from '../apis/list'
 import * as API_TABLE from '../apis/table'
 
-import {WeaTableRedux_action} from '../../coms/index'
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
 
 import {Modal} from 'antd'
 import objectAssign from 'object-assign'
@@ -69,7 +71,7 @@ export const doSearch = (params = {}) => {
 				sharearg: data.sharearg
 			});
 			//dispatch(getDatas(data.sessionkey, params.current || 1));
-			dispatch(WeaTableRedux_action.getDatas(data.sessionkey, params.current || 1));
+			dispatch(WeaTableAction.getDatas(data.sessionkey, params.current || 1));
 		});
 	}
 }
@@ -157,7 +159,7 @@ export const batchSubmitWf = (remark,checkedKeys) =>{
 		const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
 		const { datas } = getState()['workflow' + viewScope].toJS();
 		const name = getState()['workflow' + viewScope].get('dataKey') ? getState()['workflow' + viewScope].get('dataKey').split('_')[0] : 'init';
-		const current = window.store_e9_workflow.getState()['WeaTableRedux_state'].getIn([name,'current']);
+		const current = window.store_e9_workflow.getState()['comsWeaTable'].getIn([name,'current']);
 		dispatch({type: viewScope + '_' + types.LOADING,loading:true});
 		API_LIST.OnMultiSubmitNew2(remark, checkedKeys, datas).then(data => {
 			dispatch(initDatas());

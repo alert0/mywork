@@ -6,11 +6,7 @@ export const doWfInfoGet = params => {
 }
 
 export const doAddWfToColl = params => {
-    return new Promise((resolve,reject) => {
-        fetch((window.server || "" ) + "/workflow/request/RequestHandlerWorkflow.jsp", getFetchParams("POST",params)).then(response => {
-            resolve();
-        });
-    });
+    return WeaTools.callApi('/api/workflow/createreq/managewfcoll', 'GET', params);
 }
 
 export const getRequestImportData = params => {

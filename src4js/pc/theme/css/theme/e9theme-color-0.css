@@ -1,0 +1,68 @@
+.e9theme-color-0 .e9header-container {
+    color: #fff;
+    background-color: #0066b1;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu,
+.e9theme-color-0 .e9aside-container .ant-menu {
+    color: #000;
+    background-color: #fff;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu .wea-menu-switch {
+    color: #000;
+    background-color: #eff2f7;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu .wevicon {
+    color: #87a4b6;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu .wea-menu-selected .wevicon,
+.e9theme-color-0 .e9aside-container .wea-menu-inline .ant-menu-item-active .wevicon,
+.e9theme-color-0 .e9aside-container .wea-menu-inline .ant-menu-submenu-active .wevicon {
+    color: #fff !important;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active .wevicon {
+    color: #87a4b6;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu .wea-menu-selected,
+.e9theme-color-0 .e9aside-container .wea-menu-inline .ant-menu-item:hover,
+.e9theme-color-0 .e9aside-container .wea-menu-inline .ant-menu-submenu-title:hover,
+.e9theme-color-0 .e9aside-container .wea-menu-vertical .ant-menu-item-active,
+.e9theme-color-0 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active {
+    color: #fff !important;
+    background-color: #0077d1 !important;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-item-active:before,
+.e9theme-color-0 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-submenu-active:before {
+    border: 2px solid #0077d1;
+    border-top: 21px solid #0077d1;
+    border-bottom: 21px solid #0077d1;
+}
+
+.e9theme-color-0 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-submenu-active,
+.e9theme-color-0 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active > ul {
+    color: #000;
+    background-color: #eff2f7 !important;
+}
+
+.e9theme-color-0 .e9left-menu-email-item,
+.e9theme-color-0 .e9left-menu-email-item-ul-bc2 {
+    color: #000;
+    background: #f6f6f6;
+}
+
+.e9theme-color-0 .e9left-menu-email-item:first-child,
+.e9theme-color-0 .e9left-menu-email-item-ul-bc1 {
+    color: #000;
+    background: #ececec;
+}
+
+.e9theme-color-0 .e9left-menu-email-item-ul li:hover {
+    color: #000;
+    background: #dadfe3;
+}

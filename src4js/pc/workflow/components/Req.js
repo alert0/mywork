@@ -322,7 +322,7 @@ class Req extends React.Component {
                     {hiddenarea}
                     {formarea}
                 </form>
-				<Forward showForward={rightMenuStatus.get('showForward')} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} titleName={titleName} controllShowForward={this.controllShowForward.bind(this)}/>
+				<Forward showForward={rightMenuStatus.get('showForward')} ismanagePage={ismanagePage} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} controllShowForward={this.controllShowForward.bind(this)}/>
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}
@@ -439,7 +439,6 @@ Req = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(Req);
 
 function mapStateToProps(state) {
     const {workflowReq,workflowlistDoing,comsWeaTable} = state;
-    const name = workflowReq.get('resourcesKey') ? workflowReq.get('resourcesKey').split('_')[0] : 'init';
     return {
         params:workflowReq.get("params"),   //基础参数
         loading:workflowReq.get("loading"),
@@ -478,7 +477,7 @@ function mapStateToProps(state) {
         apiDuration: workflowReq.get('apiDuration'),
         dispatchDuration: workflowReq.get('dispatchDuration'),
         //table
-        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 

@@ -1,46 +1,22 @@
 import {message} from 'antd';
-import {WeaTools} from 'weaCom';
+import {WeaTools} from 'ecCom';
 import * as LOGIN_API from '../apis/login';
 import {LOGIN} from '../constants/ActionTypes';
 import ECLocalStorage from '../util/ecLocalStorage';
-import {showDialog} from '../util/themeUtils';
+import {showDialog} from '../util/themeUtil';
 
 /**
- * 加载登录页图片资源
+ * 加载登录主题
  *
- * @returns {function(*, *)}
+ * @returns {function(*)}
  */
-export function loadLoginImages() {
-    return (dispatch, getState) => {
-        LOGIN_API.getLoginBgImages().then((result) => {
-            let loginBgImages = result.bgsrc;
-            let loginLogoImage = result.logoSrc;
-
-            // 判断当前使用的背景图片是否存在背景图片库中，若存在，继续使用该背景图片，若不存在，使用背景图片库第一张
-            let loginBgImage = getState().login.get('loginBgImage');
-            if (loginBgImages && loginBgImages.length) {
-                let isExists = false;
-                for (let i = 0, len = loginBgImages.length; i < len; i++) {
-                    if (loginBgImages[i] == loginBgImage) {
-                        isExists = true;
-                    }
-                }
-                if (!isExists) {
-                    loginBgImage = loginBgImages[0];
-                    ECLocalStorage.set('login', 'loginBgImage', loginBgImage, false);
-                }
-            } else {
-                loginBgImage = '';
-                ECLocalStorage.set('login', 'loginBgImage', '', false);
+export function loadLoginTheme() {
+    return (dispatch) => {
+        dispatch({
+            type: LOGIN.LOGIN_THEME,
+            value: {
+                loginTheme: 'ecology9'
             }
-
-            dispatch({
-                type: LOGIN.LOGIN_LOGIN,
-                value: {
-                    loginBgImage: loginBgImage,
-                    loginLogoImage: loginLogoImage
-                }
-            });
         });
     }
 }
@@ -58,7 +34,7 @@ export function changeLoginType(loginType) {
 
     return (dispatch) => {
         dispatch({
-            type: LOGIN.LOGIN_LOGIN,
+            type: LOGIN.LOGIN_TYPE,
             value: {
                 loginType: loginType
             }
@@ -67,65 +43,7 @@ export function changeLoginType(loginType) {
 }
 
 /**
- * 切换登录页背景图片
- *
- * @param loginBgImage     登录页背景图片
- *
- * @returns {function(*, *)}
- */
-export function changeLoginBgImage(loginBgImage) {
-    ECLocalStorage.set('login', 'loginBgImage', loginBgImage, false);
-
-    return (dispatch) => {
-        dispatch({
-            type: LOGIN.LOGIN_LOGIN,
-            value: {
-                loginBgImage: loginBgImage
-            }
-        });
-    }
-}
-
-/**
- * 加载登录页背景图片资源
- *
- * @returns {function(*, *)}
- */
-export function loadLoginBgImages() {
-    return (dispatch) => {
-        LOGIN_API.getLoginBgImages().then((result) => {
-            let loginBgImages = result.bgsrc;
-
-            dispatch({
-                type: LOGIN.LOGIN_BG_IMAGES,
-                value: {
-                    loginBgImages: loginBgImages
-                }
-            });
-        });
-    }
-}
-
-/**
- * 显示隐藏登录页背景图片库
- *
- * @param visible     是否显示
- *
- * @returns {function(*, *)}
- */
-export function changeLoginBgImagesVisible(visible) {
-    return (dispatch) => {
-        dispatch({
-            type: LOGIN.LOGIN_BG_IMAGES,
-            value: {
-                loginBgImagesVisible: visible
-            }
-        });
-    }
-}
-
-/**
- * 加载登录页表单配置信息
+ * 加载登录页表单配置
  *
  * @returns {function(*)}
  */
@@ -341,7 +259,6 @@ export function onLogin(params) {
                 if (isRememberPassword) {
                     cachePassword = password;
                 }
-
                 ECLocalStorage.set('login', 'cacheAccount', cacheAccount, false);
                 ECLocalStorage.set('login', 'cachePassword', cachePassword, false);
                 ECLocalStorage.set('login', 'isRememberAccount', isRememberAccount, false);
@@ -383,7 +300,12 @@ export function onLogin(params) {
                 }
 
                 // 返回错误信息提示
-                message.error((<span>{errorMsg}{errorUrl != '' ? <span className="e9login-error-msg" onClick={() => showDialog(errorBtnText, errorUrl)}>{errorBtnText}</span> : ''}</span>), 10);
+                message.error((
+                    <span>
+                        {errorMsg}
+                        {errorUrl != '' ? <span className="e9login-error-msg" onClick={() => showDialog({title: errorBtnText, url: errorUrl, callbackfunc: () => {}})}>{errorBtnText}</span> : ''}
+                    </span>
+                ), 10);
 
                 // 修改登录错误次数
                 dispatch({
@@ -395,4 +317,13 @@ export function onLogin(params) {
             }
         });
     }
+}
+
+/**
+ * 退出
+ */
+export function onLogout() {
+    top.Dialog.confirm("确定要退出系统吗？", function () {
+        LOGIN_API.logout().then(() => weaHistory.push({pathname: '/'}));
+    });
 }

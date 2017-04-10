@@ -56,7 +56,6 @@ const initwfphrasebutton = (editor,uiName) => {
 			phraseInfo = JSON.parse(phraseInfo);
 		}
 		
-		console.log("_hasPrivateRight",_hasPrivateRight,"phraseInfo",phraseInfo);
 		var comboxHtml = "" +
 						"<div id=\"_signinputphraseblock\" class=\"_signinputphraseblockClass\" style='display:none;z-index:999;'>" +
 						"	<div class=\"phrase_arrowsblock\"><img src=\"/images/ecology8/workflow/phrase/addPhrasejt_wev8.png\" width=\"14px\" height=\"14px\"></div>" +
@@ -192,7 +191,6 @@ const initwfphrasebutton = (editor,uiName) => {
 	var _onAddPhrase = function (phrase){
 		if(phrase!=null && phrase!=""){
 			//$GetEle("remarkSpan").innerHTML = "";
-			console.log("phraseeditor",phraseeditor);
 			try{
 				var curContent = UE.getEditor(phraseeditor).getContent();
 				var setFlag = true;		//true 追加内容，false清空再追加内容

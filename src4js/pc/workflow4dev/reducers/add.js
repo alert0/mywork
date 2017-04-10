@@ -22,7 +22,9 @@ const initialState = Immutable.fromJS({
 	importValue:"",
 	curOperWfid:0,
 	showBeagenters:false,
-	showImportWf:false
+	showImportWf:false,
+	commonuse:'',
+	user:{}
 });
 
 export default function list(state = initialState, action) {
@@ -31,6 +33,8 @@ export default function list(state = initialState, action) {
 			return state.merge({loading:action.data});
         case types.SET_WFTYPES:
 			return state.merge({wftypes:action.data,loading:false});
+		case types.SET_COMMONUSE:
+			return state.merge({commonuse:action.commonuse,user:action.user});
         case types.SET_SEARCH_VALUE:
 			return state.merge({value:action.data});
         case types.SET_TABKEY:

@@ -8,12 +8,15 @@ import Immutable from 'immutable'
  */
 UE.registerUI('wfdocbutton',function(editor,uiName){
 	return initwfdocbutton(editor,uiName);
-}, 34, 'remark');
+}, 34, 'remark,forwardremark');
 
 const initwfdocbutton = (editor,uiName) => {
-	const markInfo = window.store_e9_workflow.getState().workflowReq.getIn(['params','signinputinfo']);
-	const isSignDoc_edit = markInfo.get('isSignDoc_edit');
-	
+	let isSignDoc_edit = '0';
+	if(editor.key == 'remark'){
+		isSignDoc_edit = jQuery('#remark_div').find('#isSignDoc_edit_param').val();
+	}else{
+		isSignDoc_edit = jQuery('#forwardremark_hidden_area').find('#isSignDoc_edit').val();
+	}
 	if(isSignDoc_edit != '1'){
 		return;
 	}
@@ -26,7 +29,7 @@ const initwfdocbutton = (editor,uiName) => {
     editor.registerCommand(uiName,{
         execCommand:function() {
             //showSignResourceCenter('signAnnexuploadCount')
-            onShowSignBrowser4signinput('/docs/docs/MutiDocBrowser.jsp','/docs/docs/DocDsp.jsp?isrequest=1&id=','signdocids','signdocspan',37, 'signDocCount')
+            onShowSignBrowser4signinput('/docs/docs/MutiDocBrowser.jsp','/docs/docs/DocDsp.jsp?isrequest=1&id=','signdocids','signdocspan',37, 'signDocCount',editor.key)
         }
     });
 

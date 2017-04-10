@@ -1,0 +1,302 @@
+.wea-req-forward-modal {
+	/*z-index: 105;*/
+}
+
+.wea-req-forward-modal .ant-modal-header {
+	padding: 0px 0px;
+	background: #f9f9f9;
+	border-bottom-color: #eee;
+}
+
+.wea-req-forward-modal .ant-modal-header .ant-row span {
+	color: #484848;
+	font-size: 14px;
+}
+
+.wea-req-forward-modal .ant-modal-footer {
+	text-align: center;
+	height: 80px;
+	padding: 24px 0px;
+	border-top-width: 0px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content {
+	margin: 0px 20px;
+	height: 300px;
+}
+
+.wea-req-forward-modal .ant-modal-body {
+	padding: 0px;
+	margin: 0px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive {
+	margin-top: 30px;
+	width: 100%;
+	height: 28px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .label {
+	width: 80px;
+	float: left;
+	height: 32px;
+	line-height: 32px;
+	color: #484848;
+	font-size: 12px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .label span:first-of-type {
+	vertical-align: middle;
+	color: #F00;
+	margin-right: 5px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input {
+	width: 490px;
+	float: left;
+	height: 32px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input .ant-select-selection__rendered{
+	max-height: 55px;
+}
+
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns {
+	width: 100px;
+	float: left;
+	margin-left: 10px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns .wea-workflow-icon {
+	background: #fff;
+	color: #484848;
+	border: 1px solid #c3c3c3;
+	border-radius: 5px;
+	height: 32px;
+	width: 32px;
+	line-height: 32px;
+	font-size: 21px;
+	margin-right: 5px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns .wea-workflow-icon:hover {
+	cursor: pointer;
+	border-color: #2DB7F5;
+	box-shadow: 0 0 1px #2DB7F5
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark {
+	width: 100%;
+	margin-top: 20px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark .label {
+	color: #484848;
+	font-size: 12px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark .label span:first-of-type {
+	vertical-align: middle;
+	color: #F00;
+	margin-right: 5px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark .remark {
+	margin-top: 15px;
+	border: 1px solid #c3c3c3;
+	height: 200px;
+	width:100%;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark .remark textarea {
+	width: 100%;
+	height: 200px;
+}
+
+.wea-req-forward-customer-me {
+	width: 250px;
+}
+
+.wea-req-forward-customer-me .ant-popover-inner-content {
+	padding: 0px;
+	margin: 0px;
+}
+
+.wea-req-forward-customer-me .ant-popover-content .ant-popover-arrow {
+	display: none;
+}
+
+.wea-req-forward-customer-me .ant-popover-content .ant-popover-title {
+	display: none;
+}
+
+.wea-req-operate-group .wea-req-operate-content {
+	max-height: 165px;
+	overflow-y: auto;
+}
+
+.wea-req-operate-group .wea-req-operate-content ul li {
+	height: 55px;
+	padding-top: 10px
+}
+
+.wea-req-operate-group .wea-req-operate-content ul li:hover {
+	background: #ECF7FD;
+	cursor: pointer;
+}
+
+.wea-req-operate-group .wea-req-operate-content .cg_title {
+	color: #323232;
+	margin-left: 15px;
+}
+
+.wea-req-operate-group .wea-req-operate-content .cg_detail {
+	display: inline-block;
+	width: 210px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: #bfbfc0;
+	margin-left: 15px;
+}
+
+.wea-req-operate-group .wea-req-operate-load-more {
+	width: 100%;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	cursor: pointer;
+}
+
+.wea-req-operate-group .wea-req-operate-add {
+	width: 100%;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	border-top: 1px solid #e8e8e8;
+	cursor: pointer;
+}
+
+.wea-req-operate-group .wea-req-all-operators {
+	height: 55px;
+	line-height: 55px;
+	padding-left: 15px;
+	color: #323232;
+	cursor: pointer;
+}
+.wea-req-operate-group .wea-req-all-operators:hover{
+	background: #ECF7FD;
+	cursor: pointer;
+}
+
+.wea-req-forward-node-operator {
+	width: 463px;
+	box-shadow: 0 0 1px #f5f5f5;
+}
+
+.wea-req-forward-node-operator .ant-popover-inner-content {
+	margin: 0px;
+	padding: 0px;
+}
+
+.wea-req-forward-node-operator .ant-popover-content .ant-popover-arrow {
+	display: none;
+}
+
+.wea-req-forward-node-operator .ant-popover-content .ant-popover-title {
+	display: none;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator {}
+
+.wea-req-forward-node-operator .wea-req-node-operator .title {
+	height: 55px;
+	line-height: 55px;
+	background: #f5f5f5;
+	color: #323232;
+	border-bottom: 1px solid #e8e8e8;
+	padding-left: 15px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content {}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item {
+	height: 55px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item:hover {
+	background: #ecf7fd;
+	cursor: pointer;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .checkbox {
+	padding-left: 15px;
+	width: 38px;
+	float: left;
+	margin-top: 18px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .nodename {
+	width: 80px;
+	float: left;
+	/*display: table;*/
+	margin: 0 auto;
+	height: 100%;
+	padding-top: 18px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .nodename span {
+	/*display: table-cell;*/
+	/*vertical-align: middle;*/
+	/*white-space: nowrap;*/
+	/*text-overflow: ellipsis;*/
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .operatos {
+	width: 300px;
+	float: left;
+	/*display: table;*/
+	margin: 0 auto;
+	height: 55px;
+	padding-top:18px;
+	word-wrap: break-word;
+  	overflow: hidden;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .operatos span {
+	/*display: table-cell;*/
+	/*vertical-align: middle;*/
+}
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .viewmore{
+	height: 55px;
+	padding-top: 35px;
+	display: none;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .footer {
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	border-top: 1px solid #e8e8e8;
+}
+
+.wea-req-forward-node-operator .ant-tabs-nav {
+	float: right;
+}
+
+.wea-req-forward-node-operator .ant-tabs-bar>div:first-of-type {
+	float: left !important;
+	padding-left: 15px;
+}
+
+.wea-req-forward-node-operator .ant-tabs-bar {
+	margin-bottom: 0px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .no-data{
+	height: 55px;
+	width: 100%;
+	line-height: 55px;
+	text-align: center;
+}

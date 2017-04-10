@@ -1,14 +1,15 @@
 import React from 'react';
+import {WeaPopoverHrm, WeaTools, WeaErrorPage} from 'ecCom';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as themeActions from '../../../actions/theme';
-import * as THEME_API from '../../../apis/theme';
+
 import ECLocalStorage from '../../../util/ecLocalStorage';
-import {WeaPopoverHrm, WeaTools, WeaErrorPage} from 'weaCom';
+
 import E9Header from './E9Header';
 import E9LeftMenu from './E9LeftMenu';
-import Birthday from '../../Birthday';
+import Birthday from '../../plugin/Birthday';
 
 class E9Theme extends React.Component {
     componentWillMount() {
@@ -22,25 +23,19 @@ class E9Theme extends React.Component {
         const {actions} = this.props;
         let pathname = this.props.location.pathname;
         actions.loadLeftMenu(pathname, true);
-
-        // 插件加载
-        setTimeout(function () {
-            THEME_API.getPlugin().then((result) => {
-                jQuery('head').append(result);
-            });
-        }, 500);
     }
 
     shouldComponentUpdate(nextProps) {
-        if (this.props.location.key != nextProps.location.key) {
+        if (this.props.location.key != nextProps.location.key || this.props.themeColorType != nextProps.themeColorType) {
             return true;
         }
     }
 
     render() {
+        const {themeColorType} = this.props;
         return (
-            <div className="e9theme-layout-container">
-                <iframe id="hiddenPreLoader" name="hiddenPreLoader" style={{display: "none"}} width="0" height="0" border="0" frameborder="0" src="/spa/workflow/index.html"></iframe>
+            <div className={`e9theme-layout-container e9theme-color-${themeColorType}`}>
+                <iframe id="hiddenPreLoader" name="hiddenPreLoader" style={{display: "none"}} frameBorder="0" width="0" height="0" src="/spa/workflow/index.html"></iframe>
                 <WeaPopoverHrm />
                 <Birthday />
                 <div className="e9theme-layout-header">
@@ -51,6 +46,7 @@ class E9Theme extends React.Component {
                         <E9LeftMenu {...this.props} />
                     </div>
                     <div className="e9theme-layout-main">
+                        <div id="e9shadowMain" className="e9theme-layout-main-shadow"></div>
                         <div id="e9routeMain" className="e9theme-layout-main-route">
                             {this.props.children}
                         </div>

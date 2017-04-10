@@ -4,13 +4,15 @@ import * as ListAction from '../actions/list'
 import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
 import BatchSubmit from './list/BatchSubmit'
-import {switchComponent} from '../util/switchComponent'
 import {Synergy} from 'weaPortal';
+
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
 
 import {
     WeaTop,
     WeaTab,
-    WeaTable,
     WeaLeftTree,
     WeaLeftRightLayout,
     WeaSearchGroup,
@@ -59,7 +61,7 @@ class ListDoing extends React.Component {
             actions.initDatas({method:"all"});
             actions.doSearch();
         }
-        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.datas && document.title !== nextProps.title)
+        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.title && document.title !== nextProps.title)
             document.title = nextProps.title;
     }
     shouldComponentUpdate(nextProps,nextState) {
@@ -69,29 +71,17 @@ class ListDoing extends React.Component {
         !is(this.props.leftTreeCountType,nextProps.leftTreeCountType)||
         !is(this.props.topTab,nextProps.topTab)||
         !is(this.props.topTabCount,nextProps.topTabCount)||
-        !is(this.props.datas,nextProps.datas)||
-        !is(this.props.columns,nextProps.columns)||
-        !is(this.props.count,nextProps.count)||
-        !is(this.props.loading,nextProps.loading)||
-        !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
         !is(this.props.searchParamsAd,nextProps.searchParamsAd)||
-        !is(this.props.selectedRowKeys,nextProps.selectedRowKeys)||
         !is(this.props.orderFields,nextProps.orderFields)||
         !is(this.props.showSearchAd,nextProps.showSearchAd)||
         !is(this.props.showBatchSubmit,nextProps.showBatchSubmit) ||
         !is(this.props.phrasesObj,nextProps.phrasesObj) ||
         !is(this.props.sharearg,nextProps.sharearg) ||
         !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
-        !is(this.props.tableCheck,nextProps.tableCheck)||
+        !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
         !is(this.props.isSpaForm,nextProps.isSpaForm)||
-        !is(this.props.current,nextProps.current)||
-        !is(this.props.colSetVisible,nextProps.colSetVisible)||
-        !is(this.props.colSetdatas,nextProps.colSetdatas)||
-        !is(this.props.colSetKeys,nextProps.colSetKeys)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
-        !is(this.props.pageAutoWrap,nextProps.pageAutoWrap)||
-        !is(this.props.pageSize,nextProps.pageSize)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
     }
     componentWillUnmount(){
@@ -102,8 +92,9 @@ class ListDoing extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {pageSize,pageAutoWrap,topTab,topTabCount,columns,datas,actions,title,count,loading,operates,searchParams,
-        	showSearchAd,tableCheck,searchParamsAd,showBatchSubmit,phrasesObj,selectedRowKeys,sortParams,current,colSetVisible,colSetdatas,colSetKeys} = this.props;
+        const {comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
+        const loading = comsWeaTable.get('loading');
+        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
@@ -136,27 +127,10 @@ class ListDoing extends React.Component {
                         keyParam="viewcondition"  //主键
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
-                    <WeaTable
-                    	current={current}
-                        tableCheck={tableCheck}
-                        pageSize={pageSize}
-                        operates={operates && operates.toJS()}
-                        hasOrder={true}
-                        onChange={(p,f,s)=>actions.getDatas("",p.current,p.pageSize,s)}
-                        rowSel={this.getRowSel()}
-                        columns={this.getColumns(columns && columns.toJS())}
-                        datas={datas && datas.toJS()}
-                        needScroll={true}
-                        sortParams={sortParams && sortParams.toJS()}
-                        colSetVisible={colSetVisible}
-                        colSetdatas={colSetdatas && colSetdatas.toJS()}
-                        colSetKeys={colSetKeys && colSetKeys.toJS()}
-                        showColumnsSet={bool => {actions.setColSetVisible(bool)}}
-                        onTransferChange={keys=>{actions.setTableColSetkeys(keys)}}
-                        saveColumnsSet={() => actions.tableColSet()}
-                        pageAutoWrap={pageAutoWrap}
-                        loading={loading}
-                        count={count} />
+                    <WeaTable 
+                    	hasOrder={true}
+                    	needScroll={true}
+                    	/>
                 </WeaLeftRightLayout>
                 {
                     showBatchSubmit &&
@@ -169,7 +143,8 @@ class ListDoing extends React.Component {
         )
     }
     onRightMenuClick(key){
-    	const {actions,selectedRowKeys} = this.props;
+    	const {actions,comsWeaTable} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
     	if(key == '0'){
     		actions.doSearch();
     		actions.setShowSearchAd(false)
@@ -183,20 +158,19 @@ class ListDoing extends React.Component {
     	}
     }
     getRightMenu(){
-    	const {selectedRowKeys,sharearg,actions} = this.props;
+    	const {comsWeaTable,sharearg,actions} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
     	let btns = [];
     	btns.push({
     		icon: <i className='icon-Right-menu--search'/>,
     		content:'搜索'
     	});
-        if(hasBatchBtn == "true"){
-            btns.push({
-             	icon: <i className='icon-Right-menu-batch'/>,
-    			content:'批量提交',
-    			disabled: !selectedRowKeys || !`${selectedRowKeys.toJS()}`
-            })
-        }
+        btns.push({
+            icon: <i className='icon-Right-menu-batch'/>,
+            content:'批量提交',
+            disabled: hasBatchBtn !=="true" || !selectedRowKeys || !`${selectedRowKeys.toJS()}`
+        })
     	btns.push({
     		icon: <i className='icon-Right-menu-Custom'/>,
     		content:'显示定制列'
@@ -228,7 +202,7 @@ class ListDoing extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {switchComponent(this.props, field.key, field.domkey, field)}
+                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field)}
                     </FormItem>),
                 colSpan:1
             })
@@ -271,12 +245,22 @@ class ListDoing extends React.Component {
                 	topTab.map(t=>{
                         if(countsType && countsType.name && t.get('groupid') == countsType.name) viewc = t.get('viewcondition')
                 	})
-                    const workflowid = key.indexOf("wf_")===0 ? key.substring(3) : '';
+                	
+                	const workflowid = key.indexOf("wf_")===0 ? key.substring(3) : '';
                 	const workflowtype = key.indexOf("type_")===0 ? key.substring(5) : '';
+                	let workflowidShowName = '';
+                	let workflowtypeShowName = '';
+                	leftTree && leftTree.map(l=>{
+                		if(l.get('domid') == key) workflowtypeShowName = l.get('name');
+                		l.get('childs') && l.get('childs').map(c=>{
+                			if(c.get('domid') == key) workflowidShowName = c.get('name');
+                		})
+                	})
                 	const fieldsObj = {
-                		workflowid:{name:'workflowid',value:workflowid},
-                		workflowtype:{name:'workflowtype',value:workflowtype}
+                		workflowid:{name:'workflowid',value:workflowid,valueSpan:workflowidShowName},
+                		workflowtype:{name:'workflowtype',value:workflowtype,valueSpan:workflowtypeShowName},
                 	};
+                	
                 	actions.saveOrderFields(fieldsObj);
                     actions.doSearch({
                         method:key.indexOf("type_")===0 ? "reqeustbytype" : "reqeustbywfid",
@@ -287,21 +271,6 @@ class ListDoing extends React.Component {
                 }} />
         )
     }
-    getRowSel() {
-    	const {actions,selectedRowKeys} = this.props;
-        return {
-            selectedRowKeys: selectedRowKeys && selectedRowKeys.toJS(),
-            onChange(sRowKeys, selectedRows) {
-                actions.setSelectedRowKeys(sRowKeys);
-            },
-            onSelect(record, selected, selectedRows) {
-                //console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-                //console.log(selected, selectedRows, changeRows);
-            }
-        };
-    }
     getTabButtonsAd() {
     	const {actions} = this.props;
         return [
@@ -311,7 +280,8 @@ class ListDoing extends React.Component {
         ]
     }
     getButtons() {
-    	const {selectedRowKeys,sharearg,actions} = this.props;
+    	const {comsWeaTable,sharearg,actions} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
     	let btns = [];
         if(hasBatchBtn == "true"){
@@ -319,24 +289,6 @@ class ListDoing extends React.Component {
                 onClick={()=>{actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`})}}>批量提交</Button>)
         }
         return btns;
-    }
-    getColumns(columns) {
-        const {isSpaForm} = this.props;
-        let newColumns = cloneDeep(columns);
-        return newColumns.map((column)=>{
-            let newColumn = column;
-            newColumn.render = (text,record,index)=>{ //前端元素转义
-                let valueSpan = record[newColumn.dataIndex+"span"];
-//              if(!valueSpan || valueSpan==="") {
-//                  return text;
-//              }
-                function createMarkup() { return {__html: valueSpan}; };
-                return (
-                    <div className="wea-url" dangerouslySetInnerHTML={createMarkup()} />
-                )
-            }
-            return newColumn;
-        });
     }
 }
 
@@ -438,14 +390,7 @@ ListDoing = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(ListDoing);
 
 ListDoing = createForm({
 	onFieldsChange(props, fields) {
-    	let _fields = {...fields};
-    	for(let k in fields){
-    		if(fields[k].value.indexOf('_@_') >= 0){
-    			let newValue =  fields[k].value.split('_@_');
-	    		_fields[k].value = newValue[0];
-    		}
-    	}
-        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields,..._fields});
+        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields});
     },
 	mapPropsToFields(props) {
 		return props.orderFields.toJS();
@@ -453,45 +398,35 @@ ListDoing = createForm({
 })(ListDoing);
 
 function mapStateToProps(state) {
-	const {workflowlistDoing} = state;
+	const {workflowlistDoing,comsWeaTable} = state;
+	const name = workflowlistDoing.get('dataKey') ? workflowlistDoing.get('dataKey').split('_')[0] : 'init';
     return {
-        title:workflowlistDoing.get('title'),
-        leftTree:workflowlistDoing.get('leftTree'),
-        leftTreeCount:workflowlistDoing.get('leftTreeCount'),
-        leftTreeCountType:workflowlistDoing.get('leftTreeCountType'),
-        topTab:workflowlistDoing.get('topTab'),
-        topTabCount:workflowlistDoing.get('topTabCount'),
-        datas:workflowlistDoing.get('datas'),
-        columns:workflowlistDoing.get('columns'),
-        count:workflowlistDoing.get('count'),
-        loading:workflowlistDoing.get('loading'),
-        operates:workflowlistDoing.get('operates'),
-        searchParams:workflowlistDoing.get('searchParams'),
-        searchParamsAd:workflowlistDoing.get('searchParamsAd'),
-        selectedRowKeys: workflowlistDoing.get('selectedRowKeys'),
-        orderFields:workflowlistDoing.get('orderFields'),
-        showSearchAd:workflowlistDoing.get('showSearchAd'),
-        selectedTreeKeys:workflowlistDoing.get('selectedTreeKeys'),
-        tableCheck:workflowlistDoing.get('tableCheck'),
-        isSpaForm:workflowlistDoing.get('isSpaForm'),
-        isClearNowPageStatus:workflowlistDoing.get('isClearNowPageStatus'),
-        sortParams:workflowlistDoing.get('sortParams'),
-        current:workflowlistDoing.get('current'),
-        colSetVisible:workflowlistDoing.get('colSetVisible'),
-        colSetdatas:workflowlistDoing.get('colSetdatas'),
-        colSetKeys:workflowlistDoing.get('colSetKeys'),
-        conditioninfo:workflowlistDoing.get('conditioninfo'),
-        showBatchSubmit:workflowlistDoing.get('showBatchSubmit'),
-        phrasesObj:workflowlistDoing.get('phrasesObj'),
-        sharearg:workflowlistDoing.get('sharearg'),
-        pageAutoWrap:workflowlistDoing.get('pageAutoWrap'),
-        pageSize:workflowlistDoing.get('pageSize'),
+        title: workflowlistDoing.get('title'),
+		leftTree: workflowlistDoing.get('leftTree'),
+		leftTreeCount: workflowlistDoing.get('leftTreeCount'),
+		leftTreeCountType: workflowlistDoing.get('leftTreeCountType'),
+		topTab: workflowlistDoing.get('topTab'),
+		topTabCount: workflowlistDoing.get('topTabCount'),
+		searchParams: workflowlistDoing.get('searchParams'),
+		searchParamsAd: workflowlistDoing.get('searchParamsAd'),
+		orderFields: workflowlistDoing.get('orderFields'),
+		showSearchAd: workflowlistDoing.get('showSearchAd'),
+		selectedTreeKeys: workflowlistDoing.get('selectedTreeKeys'),
+		isSpaForm: workflowlistDoing.get('isSpaForm'),
+		isClearNowPageStatus: workflowlistDoing.get('isClearNowPageStatus'),
+		sortParams: workflowlistDoing.get('sortParams'),
+		conditioninfo: workflowlistDoing.get('conditioninfo'),
+		showBatchSubmit: workflowlistDoing.get('showBatchSubmit'),
+		phrasesObj: workflowlistDoing.get('phrasesObj'),
+		sharearg: workflowlistDoing.get('sharearg'),
+		//table
+        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(ListAction, dispatch)
+        actions: bindActionCreators({...ListAction,...WeaTableAction}, dispatch)
     }
 }
 

@@ -2,7 +2,9 @@ import * as types from '../constants/ActionTypes'
 import * as QUERY_FLOW from '../apis/queryFlow'
 import * as API_TABLE from '../apis/table'
 
-import {WeaTableRedux_action} from '../../coms/index'
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
 
 import {WeaTools} from 'ecCom'
 import {Modal} from 'antd'
@@ -63,7 +65,7 @@ export const doSearch = (params = {}) => {
         QUERY_FLOW.queryFieldsSearch(params.jsonstr ? params : {...searchParams,...searchParamsAd}).then((data)=>{
             dispatch({type: types.QUERY_FLOW_SEARCH_RESULT, value: data.sessionkey});
             //dispatch(getDatas(data.sessionkey, params.current || 1));
-            dispatch(WeaTableRedux_action.getDatas(data.sessionkey, params.current || 1));
+            dispatch(WeaTableAction.getDatas(data.sessionkey, params.current || 1));
         })
     }
 }

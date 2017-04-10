@@ -126,6 +126,7 @@ class E9Form extends React.Component {
                     <i className="wevicon wevicon-e9login-account" />
                     <input style={{display: 'none'}} />
                     <input ref="account" type="text" className="e9login-form-input"
+                           autoComplete="off"
                            defaultValue={cacheAccount}
                            placeholder="账号"
                            onKeyDown={this.onKeyDownEvent.bind(this, 'account')}

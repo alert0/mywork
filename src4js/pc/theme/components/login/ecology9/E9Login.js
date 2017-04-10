@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as loginActions from '../../../actions/login';
+import * as login4e9Actions from '../../../actions/login4e9';
 
 import E9MultiLang from './E9MultiLang';
 import E9Form from './E9Form';
@@ -11,16 +12,15 @@ import E9BgImages from './E9BgImages';
 
 class E9Login extends React.Component {
     componentWillMount() {
-        const {actions} = this.props;
-        actions.loadLoginImages();
-        actions.loadLoginBgImages();
-        actions.loadLoginFormSetting();
-        actions.loadLoginQRCode();
+        const {loginActions, login4e9Actions} = this.props;
+        loginActions.loadLoginFormSetting();
+        loginActions.loadLoginQRCode();
+        login4e9Actions.loadLoginImages();
     }
 
     onChangeLoginType() {
-        const {actions, loginType} = this.props;
-        actions.changeLoginType(loginType);
+        const {loginActions, loginType} = this.props;
+        loginActions.changeLoginType(loginType);
     }
 
     render() {
@@ -50,17 +50,19 @@ class E9Login extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {login} = state;
+    const {login, login4e9} = state;
     return {
-        loginBgImage: login.get('loginBgImage'),
-        loginLogoImage: login.get('loginLogoImage'),
-        loginType: login.get('loginType')
+        loginType: login.get('loginType'),
+        loginBgImage: login4e9.get('loginBgImage'),
+        loginLogoImage: login4e9.get('loginLogoImage')
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators(loginActions, dispatch)
+        loginActions: bindActionCreators(loginActions, dispatch),
+        login4e9Actions: bindActionCreators(login4e9Actions, dispatch),
+        dispatch: dispatch
     }
 };
 

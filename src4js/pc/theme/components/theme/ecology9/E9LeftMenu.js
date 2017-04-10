@@ -1,13 +1,15 @@
 import React from 'react';
 
+import {WeaMenu} from 'ecCom';
+import E9LeftMenuTop4Email from './E9LeftMenuTop4Email';
+
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as themeActions from '../../../actions/theme';
 import {onLoadMain} from '../../../actions/theme';
-import * as THEME_API from '../../../apis/theme';
 
-import {WeaMenu} from 'weaCom';
-import E9LeftMenuTop4Email from './E9LeftMenuTop4Email';
+import ECLocalStorage from '../../../util/ecLocalStorage';
+import * as PLUGIN_API from '../../../apis/plugin';
 
 class E9LeftMenu extends React.Component {
     componentWillReceiveProps(nextProps) {
@@ -21,12 +23,13 @@ class E9LeftMenu extends React.Component {
     }
 
     onSelect(key, leftMenuSelected, type) {
+        window.isPortalRender = true;
         const {actions} = this.props;
         // type=0 表示正常点击菜单，type=1 表示点击菜单后面的图标
         if (type == 1 && leftMenuSelected.id == '536-53606') {
             // 清空垃圾箱
             window.top.Dialog.confirm('确定要清空该文件夹下的邮件吗？', function () {
-                THEME_API.clearEmail().then(function () {
+                PLUGIN_API.clearEmailDustbin().then(function () {
                     // 垃圾箱清空后，打开垃圾箱
                     onLoadMain(leftMenuSelected);
                     actions.changeLeftMenuSelected(leftMenuSelected);
@@ -64,19 +67,23 @@ class E9LeftMenu extends React.Component {
             }
         }
 
+        let mode = ECLocalStorage.getStr('themeTemp', `leftMenuMode-${ECLocalStorage.getCacheAccount()}`, false) || 'inline';
+
         return (
-            <WeaMenu
-                mode={leftMenuMode}
-                needSwitch={true}
-                inlineWidth={197}
-                verticalWidth={61}
-                datas={showLeftMenu}
-                defaultSelectedKey={selectedKey}
-                onSelect={this.onSelect.bind(this)}
-                onModeChange={this.onModeChange.bind(this)}
-                addonBefore={leftMenuType == 'email' ? <E9LeftMenuTop4Email emailMenu={emailMenu} onSelect={this.onSelect.bind(this)} /> : ''}
-                addonBeforeHeight={leftMenuType == 'email' ? 40 : 0}
-            />
+            <div className="e9aside-container">
+                <WeaMenu
+                    mode={mode}
+                    needSwitch={true}
+                    inlineWidth={197}
+                    verticalWidth={61}
+                    datas={showLeftMenu}
+                    defaultSelectedKey={selectedKey}
+                    onSelect={this.onSelect.bind(this)}
+                    onModeChange={this.onModeChange.bind(this)}
+                    addonBefore={leftMenuType == 'email' ? <E9LeftMenuTop4Email emailMenu={emailMenu} onSelect={this.onSelect.bind(this)} /> : ''}
+                    addonBeforeHeight={leftMenuType == 'email' ? 40 : 0}
+                />
+            </div>
         );
     }
 }

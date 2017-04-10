@@ -28,7 +28,7 @@ export const IS_SHOW_USER_HEAD_IMG = 'is_show_user_head_img' //设置是否显�
 export const SAVE_SIGN_FIELDS = 'save_sign_fields' //签字意见搜索表单内容
 export const SET_SHOW_SEARCHDROP = 'set_show_searchdrop' //签字意见搜索表单显示
 export const SET_REQ_SUBMIT_ERROR_MSG_HTML = 'set_req_submit_error_msg_html' //设置提交精确提示信息
-export const IS_CLICK_BTN_REVIEW ='is_click_btn_review' //是否点击转发按钮
+export const SET_SHOW_FORWARD ='set_show_forward' //是否点击转发按钮
 export const SET_OPERATE_INFO ='set_operate_info' //变更提交信息
 export const SET_SHOWBACK_TO_E8 ='set_showback_to_e8' //切回e8按钮
 export const UPDATE_SHOW_USER_LOGID = 'update_show_user_logid' //更新需要显示全部人员的logid
@@ -146,6 +146,7 @@ export const SET_TYPES_SHOW = 'set_types_show' //单列显示数据
 export const SET_TYPES_COLS = 'set_wftypes_cols' //多列显示数据
 export const SET_TYPES_ABC = 'set_wftypes_abc' //字母排列数据
 export const SET_USED_BEANS = 'set_used_beans' //常用数据
+export const SET_COMMONUSE ='set_commonuse' //设置
 
 export const SET_IMPORT_DATA = 'set_import_data' //设置导入流程列表
 export const SET_IMPORT_SEARCH_VALUE = 'set_import_search_value' //设置导入流程搜索值

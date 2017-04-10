@@ -4,8 +4,9 @@ import {Popover} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as themeActions from '../../../actions/theme';
+
 import {onLoadMain} from '../../../actions/theme';
-import {showDialog} from '../../../util/themeUtils';
+import {showDialog} from '../../../util/themeUtil';
 
 class E9ToolBarMore extends React.Component {
     componentWillMount() {
@@ -19,7 +20,21 @@ class E9ToolBarMore extends React.Component {
         let linkmode = item.linkmode;
 
         if (linkmode == '1') {
-            showDialog(title, url, 700, 600, () => {
+            let width = 700;
+            let height = 600;
+            let opacity = 0.4;
+            if (url == '/systeminfo/version.jsp') {
+                width = 630;
+                height = 400;
+            }
+            showDialog({
+                title: title,
+                url: url,
+                width: width,
+                height: height,
+                opacity: opacity,
+                callbackfunc: () => {
+                }
             });
         } else {
             onLoadMain({url: url, routeurl: '', target: linkmode == '0' ? '_blank' : 'mainFrame'});
@@ -29,6 +44,13 @@ class E9ToolBarMore extends React.Component {
     }
 
     onVisibleChange(visible) {
+        let e9shadowMain = document.getElementById('e9shadowMain');
+        if (visible) {
+            e9shadowMain.style.display = 'block';
+        } else {
+            e9shadowMain.style.display = 'none';
+        }
+
         const {actions} = this.props;
         actions.changeToolbarMoreMenuVisible(visible);
     }

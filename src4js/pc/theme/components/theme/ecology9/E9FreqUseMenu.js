@@ -1,12 +1,13 @@
 import React from 'react';
 import {Popover} from 'antd';
-import {WeaScroll} from 'weaCom';
+import {WeaScroll} from 'ecCom';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as themeActions from '../../../actions/theme';
+
 import {onLoadMain} from '../../../actions/theme';
-import {showDialog} from '../../../util/themeUtils';
+import {showDialog} from '../../../util/themeUtil';
 
 class E9FreqUseMenu extends React.Component {
     componentWillMount() {
@@ -29,12 +30,19 @@ class E9FreqUseMenu extends React.Component {
         // 常用菜单设置保存回调中调用了该函数，定义一个空函数，防止报错
         window.loadCommonMenu = () => {
         };
-        showDialog(title, url, 700, 600, () => actions.loadFreqUseMenu());
+        showDialog({title: title, url: url, callbackfunc: () => actions.loadFreqUseMenu()});
 
         this.onVisibleChange(false);
     }
 
     onVisibleChange(visible) {
+        let e9shadowMain = document.getElementById('e9shadowMain');
+        if (visible) {
+            e9shadowMain.style.display = 'block';
+        } else {
+            e9shadowMain.style.display = 'none';
+        }
+
         const {actions} = this.props;
         actions.changeFreqUseMenuVisible(visible);
     }

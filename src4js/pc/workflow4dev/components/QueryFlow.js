@@ -6,13 +6,15 @@ import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
 import {Synergy} from 'weaPortal';
 
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
+
 import {WeaErrorPage,WeaTools} from 'ecCom'
-import {switchComponent} from '../util/switchComponent'
 
 import {
     WeaTab,
     WeaTop,
-    WeaTable,
     WeaSearchGroup,
     WeaRightMenu,
     WeaPopoverHrm,
@@ -86,21 +88,9 @@ class QueryFlow extends React.Component {
             !is(this.props.condition, nextProps.condition) ||
             !is(this.props.searchParamsAd, nextProps.searchParamsAd)||
             !is(this.props.fields, nextProps.fields)||
-            !is(this.props.current,nextProps.current)||
-            !is(this.props.tableCheck,nextProps.tableCheck)||
-            !is(this.props.operates,nextProps.operates)||
-            !is(this.props.loading,nextProps.loading)||
-            !is(this.props.datas,nextProps.datas)||
-            !is(this.props.sortParams,nextProps.sortParams)||
-            !is(this.props.count,nextProps.count)||
             !is(this.props.showTable,nextProps.showTable)||
-            !is(this.props.selectedRowKeys,nextProps.selectedRowKeys)||
+            !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
             !is(this.props.showSearchAd,nextProps.showSearchAd)||
-            !is(this.props.colSetVisible,nextProps.colSetVisible)||
-            !is(this.props.colSetdatas,nextProps.colSetdatas)||
-            !is(this.props.colSetKeys,nextProps.colSetKeys)||
-            !is(this.props.pageAutoWrap,nextProps.pageAutoWrap)||
-        	!is(this.props.pageSize,nextProps.pageSize)||
             !is(this.props.btninfo, nextProps.btninfo);
     }
     componentWillUnmount() {
@@ -115,27 +105,17 @@ class QueryFlow extends React.Component {
     render() {
         const isSingle = window.location.pathname == '/spa/workflow/index.jsp';
         const {
-        	pageSize,
-        	pageAutoWrap,
+        	comsWeaTable,
             title,
-            loading,
             dataKey,
-            current,
-            tableCheck,
-            operates,
-            datas,
-            sortParams,
-            columns,
-            count,
             showTable,
             actions,
             searchParamsAd,
             showSearchAd,
-            colSetVisible,
-            colSetdatas,
-            colSetKeys,
             fields
         } = this.props;
+        const loading = comsWeaTable.get('loading');
+        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div className='wea-workflow-query'>
             	{isSingle && <WeaPopoverHrm />}
@@ -165,27 +145,10 @@ class QueryFlow extends React.Component {
 	                            onSearch={v=>{actions.doSearch()}}
 	                        	onSearchChange={v=>{actions.saveFields({...fields.toJS(),requestname:{name:'requestname',value:v},_requestname:{name:'_requestname',value:v}})}}
 	                            />
-	                        <WeaTable
-	                            current={current}
-	                        	pageSize={pageSize}
-	                        	pageAutoWrap={pageAutoWrap}
-	                            tableCheck={tableCheck}
-	                            operates={operates && operates.toJS()}
-	                            hasOrder={true}
-	                            onChange={(p,f,s)=>actions.getDatas("",p.current,p.pageSize,s)}
-	                            rowSel={this.getRowSel()}
-	                            columns={this.getColumns(columns.toJS())}
-	                            datas={datas && datas.toJS()}
-	                            needScroll={true}
-	                            sortParams={sortParams && sortParams.toJS()}
-		                        colSetVisible={colSetVisible}
-		                        colSetdatas={colSetdatas && colSetdatas.toJS()}
-		                        colSetKeys={colSetKeys && colSetKeys.toJS()}
-		                        showColumnsSet={bool => {actions.setColSetVisible(bool)}}
-		                        onTransferChange={keys=>{actions.setTableColSetkeys(keys)}}
-		                        saveColumnsSet={() => actions.tableColSet()}
-		                        loading={loading}
-	                            count={count}/>
+	                        <WeaTable 
+		                    	hasOrder={true}
+		                    	needScroll={true}
+		                    	/>
 	                	</WeaLeftRightLayout>
                     </div> :
                     <div className='wea-workflow-query-search'>
@@ -202,7 +165,8 @@ class QueryFlow extends React.Component {
         )
     }
     onRightMenuClick(key){
-    	const {actions,selectedRowKeys} = this.props;
+    	const {actions,comsWeaTable} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
     	if(key == '0'){
     		actions.doSearch();
     		actions.setShowSearchAd(false);
@@ -217,14 +181,15 @@ class QueryFlow extends React.Component {
     	}
     }
     getRightMenu(){
-    	const {selectedRowKeys,actions,showTable} = this.props;
+    	const {comsWeaTable,showTable,actions} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
     	let btns = [];
     	btns.push({
     		icon: <i className='icon-Right-menu--search'/>,
     		content:'搜索'
     	});
         showTable && btns.push({
-         	icon: <i className='icon-Right-menu-batch'/>,
+         	icon: <i className='icon-Right-menu-Batch-sharing'/>,
 			content:'批量共享',
 			disabled: !selectedRowKeys || !`${selectedRowKeys.toJS()}`
         })
@@ -261,7 +226,7 @@ class QueryFlow extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {switchComponent(this.props, field.key, domkeys, field, fields.toJS()[domkeys[0]] && fields.toJS()[domkeys[0]].showName)}
+                        {WeaTools.switchComponent(this.props, field.key, domkeys, field)}
                     </FormItem>),
                 colSpan:1
             })
@@ -296,10 +261,10 @@ class QueryFlow extends React.Component {
                 		})
                 	})
                 	const fieldsObj = {
-                		workflowid:{name:'workflowid',value:workflowid,showName:workflowidShowName},
-                		_workflowid:{name:'_workflowid',value:workflowid,showName:workflowidShowName},
-                		typeid:{name:'typeid',value:typeid,showName:typeidShowName},
-                		_typeid:{name:'_typeid',value:typeid,showName:typeidShowName}
+                		workflowid:{name:'workflowid',value:workflowid,valueSpan:workflowidShowName},
+                		_workflowid:{name:'_workflowid',value:workflowid,valueSpan:workflowidShowName},
+                		typeid:{name:'typeid',value:typeid,valueSpan:typeidShowName},
+                		_typeid:{name:'_typeid',value:typeid,valueSpan:typeidShowName}
                 	};
                 	actions.saveFields(fieldsObj);
                     actions.doSearch();
@@ -328,42 +293,11 @@ class QueryFlow extends React.Component {
         ]
     }
     getButtons() {
-        const {actions,showTable,selectedRowKeys} = this.props;
+        const {actions,showTable,comsWeaTable} = this.props;
+        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         let btns =[];
         showTable && btns.push(<Button type="primary" disabled={!(selectedRowKeys && `${selectedRowKeys.toJS()}`)} onClick={()=>{actions.batchShareWf(`${selectedRowKeys.toJS()}`)}}  >批量共享</Button>);
         return btns
-    }
-    getRowSel() {
-        const {actions,selectedRowKeys} = this.props;
-        return {
-            selectedRowKeys: selectedRowKeys && selectedRowKeys.toJS(),
-            onChange(sRowKeys, selectedRows) {
-                actions.setSelectedRowKeys(sRowKeys);
-            },
-            onSelect(record, selected, selectedRows) {
-                //console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-                //console.log(selected, selectedRows, changeRows);
-            }
-        };
-    }
-    getColumns(columns) {
-        let newColumns = cloneDeep(columns);
-        return newColumns.map((column)=>{
-            let newColumn = column;
-            newColumn.render = (text,record,index)=>{ //前端元素转义
-                let valueSpan = record[newColumn.dataIndex+"span"];
-//              if(!valueSpan || valueSpan==="") {
-//                  return text;
-//              }
-                function createMarkup() { return {__html: valueSpan}; };
-                return (
-                    <div className="wea-url" dangerouslySetInnerHTML={createMarkup()} />
-                )
-            }
-            return newColumn;
-        });
     }
 }
 
@@ -380,21 +314,15 @@ QueryFlow = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(QueryFlow);
 
 QueryFlow = createForm({
     onFieldsChange(props, fields) {
-    	let _fields = {...fields};
     	let __fields = {};
     	for(let k in fields){
     		let __obj = {...fields[k]};
-    		if(fields[k].value.indexOf('_@_') >= 0){
-    			let newValue =  fields[k].value.split('_@_');
-	    		_fields[k].value = newValue[0];
-	    		_fields[k].showName = newValue[1];
-    		}
-    		__obj.name = _fields[k].name.indexOf('_') < 0 ? `_${_fields[k].name}` : _fields[k].name.substring(1);
-    		__obj.value = _fields[k].value;
-    		__obj.showName = _fields[k].showName;
+    		__obj.name = fields[k].name.indexOf('_') < 0 ? `_${fields[k].name}` : fields[k].name.substring(1);
+    		__obj.value = fields[k].value;
+    		__obj.valueSpan = fields[k].valueSpan;
     		__fields[k.indexOf('_') < 0 ? `_${k}` : k.substring(1)] = {...__obj};
     	}
-        props.actions.saveFields({...props.fields.toJS(), ...fields,..._fields, ...__fields});
+        props.actions.saveFields({...props.fields.toJS(), ...fields, ...__fields});
     },
     mapPropsToFields(props) {
         return props.fields.toJS();
@@ -402,41 +330,27 @@ QueryFlow = createForm({
 })(QueryFlow);
 
 function mapStateToProps(state) {
-    const {
-        workflowqueryFlow
-    } = state;
+    const {workflowqueryFlow,comsWeaTable} = state;
+	const name = workflowqueryFlow.get('dataKey') ? workflowqueryFlow.get('dataKey').split('_')[0] : 'init';
     return {
         title: workflowqueryFlow.get('title'),
         condition: workflowqueryFlow.get('condition'),
         fields: workflowqueryFlow.get('fields'),
         searchParamsAd: workflowqueryFlow.get('searchParamsAd'),
         dataKey: workflowqueryFlow.get('dataKey'),
-        loading: workflowqueryFlow.get('loading'),
-        current: workflowqueryFlow.get('current'),
-        tableCheck: workflowqueryFlow.get('tableCheck'),
-        datas: workflowqueryFlow.get('datas'),
-        sortParams: workflowqueryFlow.get('sortParams'),
-        count: workflowqueryFlow.get('count'),
-        columns: workflowqueryFlow.get('columns'),
-        pageSize: workflowqueryFlow.get('pageSize'),
-        operates: workflowqueryFlow.get('operates'),
         showTable: workflowqueryFlow.get('showTable'),
         showSearchAd: workflowqueryFlow.get('showSearchAd'),
-        colSetVisible: workflowqueryFlow.get('colSetVisible'),
-        colSetdatas: workflowqueryFlow.get('colSetdatas'),
-        colSetKeys: workflowqueryFlow.get('colSetKeys'),
         leftTree: workflowqueryFlow.get('leftTree'),
         searchParams:workflowqueryFlow.get('searchParams'),
-        selectedRowKeys: workflowqueryFlow.get('selectedRowKeys'),
         selectedTreeKeys:workflowqueryFlow.get('selectedTreeKeys'),
-        pageAutoWrap:workflowqueryFlow.get('pageAutoWrap'),
-        pageSize:workflowqueryFlow.get('pageSize'),
+        //table
+        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({...QueryFlowAction,setNowRouterWfpath}, dispatch)
+        actions: bindActionCreators({...QueryFlowAction,setNowRouterWfpath,...WeaTableAction}, dispatch)
     }
 }
 

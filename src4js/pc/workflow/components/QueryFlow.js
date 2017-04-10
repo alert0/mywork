@@ -6,7 +6,9 @@ import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
 import {Synergy} from 'weaPortal';
 
-import {WeaTableRedux,WeaTableRedux_action} from '../../coms/index'
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
 
 import {WeaErrorPage,WeaTools} from 'ecCom'
 
@@ -86,9 +88,8 @@ class QueryFlow extends React.Component {
             !is(this.props.condition, nextProps.condition) ||
             !is(this.props.searchParamsAd, nextProps.searchParamsAd)||
             !is(this.props.fields, nextProps.fields)||
-            !is(this.props.loading,nextProps.loading)||
             !is(this.props.showTable,nextProps.showTable)||
-            !is(this.props.selectedRowKeys,nextProps.selectedRowKeys)||
+            !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
             !is(this.props.showSearchAd,nextProps.showSearchAd)||
             !is(this.props.btninfo, nextProps.btninfo);
     }
@@ -104,8 +105,8 @@ class QueryFlow extends React.Component {
     render() {
         const isSingle = window.location.pathname == '/spa/workflow/index.jsp';
         const {
+        	comsWeaTable,
             title,
-            loading,
             dataKey,
             showTable,
             actions,
@@ -113,6 +114,8 @@ class QueryFlow extends React.Component {
             showSearchAd,
             fields
         } = this.props;
+        const loading = comsWeaTable.get('loading');
+        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div className='wea-workflow-query'>
             	{isSingle && <WeaPopoverHrm />}
@@ -142,7 +145,7 @@ class QueryFlow extends React.Component {
 	                            onSearch={v=>{actions.doSearch()}}
 	                        	onSearchChange={v=>{actions.saveFields({...fields.toJS(),requestname:{name:'requestname',value:v},_requestname:{name:'_requestname',value:v}})}}
 	                            />
-	                        <WeaTableRedux 
+	                        <WeaTable 
 		                    	hasOrder={true}
 		                    	needScroll={true}
 		                    	/>
@@ -162,7 +165,8 @@ class QueryFlow extends React.Component {
         )
     }
     onRightMenuClick(key){
-    	const {actions,selectedRowKeys} = this.props;
+    	const {actions,comsWeaTable} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
     	if(key == '0'){
     		actions.doSearch();
     		actions.setShowSearchAd(false);
@@ -177,7 +181,8 @@ class QueryFlow extends React.Component {
     	}
     }
     getRightMenu(){
-    	const {selectedRowKeys,actions,showTable} = this.props;
+    	const {comsWeaTable,showTable,actions} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
     	let btns = [];
     	btns.push({
     		icon: <i className='icon-Right-menu--search'/>,
@@ -288,7 +293,8 @@ class QueryFlow extends React.Component {
         ]
     }
     getButtons() {
-        const {actions,showTable,selectedRowKeys} = this.props;
+        const {actions,showTable,comsWeaTable} = this.props;
+        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         let btns =[];
         showTable && btns.push(<Button type="primary" disabled={!(selectedRowKeys && `${selectedRowKeys.toJS()}`)} onClick={()=>{actions.batchShareWf(`${selectedRowKeys.toJS()}`)}}  >批量共享</Button>);
         return btns
@@ -324,8 +330,7 @@ QueryFlow = createForm({
 })(QueryFlow);
 
 function mapStateToProps(state) {
-    const {workflowqueryFlow,WeaTableRedux_state} = state;
-	const name = workflowqueryFlow.get('dataKey') ? workflowqueryFlow.get('dataKey').split('_')[0] : 'init';
+    const {workflowqueryFlow,comsWeaTable} = state;
     return {
         title: workflowqueryFlow.get('title'),
         condition: workflowqueryFlow.get('condition'),
@@ -338,14 +343,13 @@ function mapStateToProps(state) {
         searchParams:workflowqueryFlow.get('searchParams'),
         selectedTreeKeys:workflowqueryFlow.get('selectedTreeKeys'),
         //table
-		loading: WeaTableRedux_state.getIn([name,'loading']),
-		selectedRowKeys: WeaTableRedux_state.getIn([name,'selectedRowKeys']),
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({...QueryFlowAction,setNowRouterWfpath,...WeaTableRedux_action}, dispatch)
+        actions: bindActionCreators({...QueryFlowAction,setNowRouterWfpath,...WeaTableAction}, dispatch)
     }
 }
 

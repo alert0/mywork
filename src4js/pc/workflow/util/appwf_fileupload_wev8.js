@@ -110,13 +110,13 @@ const initwfannexbutton = (editor,uiName) => {
 				for (var i=0; i<idArray.length; i++) {
 			    	var curid = jQuery.trim(idArray[i]);
 	                var curname = jQuery.trim(nameArray[i]);
-	                if(!checkliid(jQuery.trim(curid))){
+	                if(!checkliid(jQuery.trim(curid),editor.key)){
 	                	//continue;
 	                	_ul.append("<li id='li_"+curid+"' onclick=\"onAddUploadFile("+curid+",'"+curname+"','"+editor.key+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + curname + "' >" + curname + "</span><a onmouseover=\"showBt("+curid+")\" onmouseout=\"hiddenBt("+curid+")\" onclick=\"deletefile("+curid+",'"+curname+"','"+editor.key+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 	                }
 			    }
 			}else{
-				if(!checkliid(jQuery.trim(ids))){
+				if(!checkliid(jQuery.trim(ids),editor.key)){
                 	//return;
                 	_ul.append("<li id='li_"+ids+"' onclick=\"onAddUploadFile("+ids+",'"+names+"','"+editor.key+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + names + "'>" + names + "</span><a onmouseover=\"showBt("+ids+")\" onmouseout=\"hiddenBt("+ids+")\" onclick=\"deletefile("+ids+",'"+names+"','"+editor.key+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 				}
@@ -318,11 +318,13 @@ function cfileupload(editorid) {
 			var fieldannexuploadid = jQuery.trim(paramDiv.find("#field-annexupload").val());
 			var fieldannexuploadidname = jQuery.trim(paramDiv.find("#field-annexupload-name").val());
 			if(fieldannexuploadid != "" && fieldannexuploadid !=null){
-				paramDiv.find("#field-annexupload").val(fieldannexuploadid+","+jQuery.trim(rtvids));
-				paramDiv.find("#field-annexupload-name").val(fieldannexuploadidname+splitchar+jQuery.trim(rtvnames));
-			}else{
-				paramDiv.find("#field-annexupload").val(jQuery.trim(rtvids));
-				paramDiv.find("#field-annexupload-name").val(jQuery.trim(rtvnames));
+				rtvids = fieldannexuploadid+","+jQuery.trim(rtvids);
+				rtvnames = fieldannexuploadidname+splitchar+jQuery.trim(rtvnames);
+			}
+			paramDiv.find("#field-annexupload").val(jQuery.trim(rtvids));
+			paramDiv.find("#field-annexupload-name").val(jQuery.trim(rtvnames));
+			if(editorid == 'forwardremark'){
+				FORWARD_OBJ.setState({'fieldannexupload':rtvids,'fieldannexuploadname':rtvnames,'fieldannexuploadcount':1});
 			}
 		},
 		upload_complete_handler : function(){
@@ -382,6 +384,9 @@ function deletefile(id,names,editorid){
 			ids = ids.substring(0, ids.length - 1);
 		}
 		paramDiv.find("#field-annexupload").val(ids);
+		if(editorid == 'forwardremark'){
+			jQuery('#forwardremark_hidden_area').find("#field-annexupload").val(ids);
+		}
 		paramDiv.find("#li_"+id).remove();
 		var _li = paramDiv.find("#_filecontentblock ul li");
 		if (_li.length == 4)  {
@@ -441,9 +446,9 @@ function onAddUploadFile(ids,names,editorid){
 
 window.onAddUploadFile = onAddUploadFile;
 
-function checkliid(id){
+function checkliid(id,editorid){
 	var ischeck = false;
-	var liarray = jQuery("#_filecontentblock ul li");
+	var liarray = jQuery('#'+editorid+'_div').find("#_filecontentblock ul li");
 	for (var j=0; j<liarray.length; j++) {
 		if(jQuery.trim(jQuery(liarray[j]).attr("id")) == ("li_"+id)){
 			ischeck = true;
@@ -482,13 +487,13 @@ function addlinew(editorid){
 				for (var i=0; i<idArray.length; i++) {
 			    	var curid = jQuery.trim(idArray[i]);
 	                var curname = jQuery.trim(nameArray[i]);
-	                if(!checkliid(jQuery.trim(curid))){
+	                if(!checkliid(jQuery.trim(curid),editorid)){
 	                	//continue;
 	                	_ul.append("<li id='li_"+curid+"' onclick=\"onAddUploadFile("+curid+",'"+curname+"','"+editorid+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + curname + "' >" + curname + "</span><a onmouseover=\"showBt("+curid+")\" onmouseout=\"hiddenBt("+curid+")\" onclick=\"deletefile("+curid+",'"+curname+"','"+editorid+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 	                }
 			    }
 			}else{
-				if(!checkliid(jQuery.trim(ids))){
+				if(!checkliid(jQuery.trim(ids),editorid)){
                 	//return;
                 	_ul.append("<li id='li_"+ids+"' onclick=\"onAddUploadFile("+ids+",'"+names+"','"+editorid+"')\" class=\"cg_item\"><span class='cg_detail' style='width:130px;' title='" + names + "'>" + names + "</span><a onmouseover=\"showBt("+ids+")\" onmouseout=\"hiddenBt("+ids+")\" onclick=\"deletefile("+ids+",'"+names+"','"+editorid+"')\" style=\"float:right;width:10px;height:10px;margin-right:5px;margin-top:8px;background-image:url(/images/ecology8/workflow/annexdel_wev8.png);\" class=\"e8_delClass1\" title='"+fieldcancle+"' ></a></li>");
 				}

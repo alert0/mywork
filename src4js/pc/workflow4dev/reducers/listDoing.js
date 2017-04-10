@@ -9,7 +9,6 @@ const {ls} = WeaTools;
 
 const initState = {
     title:"待办事宜",
-    loading:false,
 	leftTree:ls.getJSONObj("listDoingleftTree") || [],
     leftTreeCount:{},
     leftTreeCountType:[
@@ -36,13 +35,7 @@ const initState = {
     ],
     topTab:[],
     topTabCount:{},
-    datas:[],
-    operates:[],
     dataKey:"",
-    current:1,
-    count:0,
-    pageSize:10,
-    columns:[],
     sharearg:{},
     paramsBase:{
         viewScope: "doing",
@@ -54,23 +47,15 @@ const initState = {
     searchParams:{
     	viewcondition:0
     },
-    selectedRowKeys:[],
     selectedTreeKeys:[],
     orderFields:{},
     searchParamsAd:{},
     showSearchAd:false,
-    tableCheck:false,
-    isSpaForm:ls.getStr("isSpaForm")==="true",
     isClearNowPageStatus:false,
     nowRouterWfpath:'listDoing',
-    sortParams:[],
-    colSetdatas:[],
-    colSetKeys:[],
-    colSetVisible:false,
     conditioninfo:[],
     showBatchSubmit: false,
     phrasesObj:{},
-    pageAutoWrap:false
 };
 
 let initialState = Immutable.fromJS(initState);
@@ -79,50 +64,19 @@ export default function list(state = initialState, action) {
     switch (action.type) {
     	case types.SET_NOW_ROUTER_PATH:
       		return state.merge({nowRouterWfpath: action.path});
-      	case types.LISTDOING_TABLE_COL_SET_VISIBLE:
-      		return state.merge({colSetVisible: action.value});
-    	case types.LISTDOING_TABLE_COL_SET:
-      		return state.merge({colSetKeys: action.colSetKeys,colSetdatas: (action.colSetdatas ? action.colSetdatas : [] )});
     	case types.LISTDOING_CLEAR_PAGE_STATUS:
       		return state.merge({isClearNowPageStatus:action.isToReq});
     	case types.LISTDOING_UNMOUNT_CLEAR:
-      		return state.merge({searchParamsAd:{},selectedRowKeys:[],showSearchAd:false}).merge(
-      			action.isToReq ? {} : {selectedTreeKeys:[],searchParams: initState.searchParams,orderFields:{},selectedRowKeys:[]});
-        case types.LISTDOING_LOADING:
-          	return state.merge({loading:action.loading});
+      		return state.merge({searchParamsAd:{},showSearchAd:false}).merge(
+      			action.isToReq ? {} : {selectedTreeKeys:[],searchParams: initState.searchParams,orderFields:{}});
         case types.LISTDOING_INIT_DATAKEY:
-          	return state.merge({dataKey:action.dataKey,searchParams:action.searchParams,sharearg:action.sharearg,isInit:true,loading:true});
-        case types.LISTDOING_INIT_DATAS:
-          	return state.merge({datas:action.datas,loading:false,columns:action.columns,operates:action.operates,tableCheck:action.tableCheck,current:action.current,pageSize:action.pageSize,sortParams:action.sortParams,pageAutoWrap:action.pageAutoWrap});
-        case types.LISTDOING_RESET_DATAS:
-          	return state.merge(function(){
-                let resetDatas = state.get('datas').toJS();
-                const newDatas = action.newDatas;
-                for(let i=0;i<resetDatas.length;i++) {
-                    let find = false;
-                    let resetData = resetDatas[i];
-                    for(let j=0;j<newDatas.length&&!find;j++) {
-                        let newData = newDatas[j];
-                        if(newData.randomFieldId===resetData.randomFieldId) {
-                            for(let p in newData) {
-                                resetData[p] = newData[p];
-                            }
-                            find = true;
-                        }
-                    }
-                }
-                return {datas:resetDatas};
-            }());
-        case types.LISTDOING_INIT_SET:
-          	return state.merge({count:action.count});
+          	return state.merge({dataKey:action.dataKey,searchParams:action.searchParams,sharearg:action.sharearg,isInit:true});
         case types.LISTDOING_INIT_BASE:
           	return state.merge({leftTree:action.leftTree,topTab:action.topTab,leftTreeCountType:action.leftTreeCountType,title:action.title,conditioninfo:action.conditioninfo});
         case types.LISTDOING_INIT_COUNT:
           	return state.merge({leftTreeCount:action.leftTreeCount,topTabCount:action.topTabCount});
         case types.LISTDOING_INIT_TOPTABCOUNT:
           	return state.merge({topTabCount:action.topTabCount});
-        case types.LISTDOING_SET_SELECTED_ROWKEYS:
-          	return state.merge({selectedRowKeys:action.selectedRowKeys});
         case types.LISTDOING_SET_SELECTED_TREEKEYS:
           	return state.merge({selectedTreeKeys:action.selectedTreeKeys});
         case types.LISTDOING_SAVE_ORDER_FIELDS:
@@ -146,8 +100,6 @@ export default function list(state = initialState, action) {
             return state.merge({showBatchSubmit: action.value});
         case types.LISTDOING_OPER_PHRASES:
             return state.mergeDeep({phrasesObj: action.value});
-        case types.LISTDOING_SET_SPAFORM:
-          	return state.setIn(['searchParams','isSPA'],ls.getStr("isSpaForm")==="true"?"1":"0").merge({isSpaForm:action.isSpaForm});
         default:
             return state
     }

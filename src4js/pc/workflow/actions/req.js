@@ -3,7 +3,9 @@ const confirm = Modal.confirm;
 const success = Modal.success;
 const warning = Modal.warning;
 
-import {WeaTableRedux_action} from '../../coms/index'
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
 
 import * as types from '../constants/ActionTypes'
 import * as API_REQ from '../apis/req'
@@ -309,7 +311,7 @@ export const getResourcesKey = (requestid, tabindex) => {
 	return (dispatch, getState) => {
 		API_REQ.getResourcesKey({requestid,tabindex}).then((data)=>{
             dispatch({type: types.SET_RESOURCES_KEY,key:data.sessionkey,tabindex});
-            dispatch(WeaTableRedux_action.getDatas(data.sessionkey, 1));
+            dispatch(WeaTableAction.getDatas(data.sessionkey, 1));
         });
 	}
 }

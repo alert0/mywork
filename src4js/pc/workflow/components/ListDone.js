@@ -5,7 +5,9 @@ import forEach from 'lodash/forEach'
 import isEmpty from 'lodash/isEmpty'
 import {Synergy} from 'weaPortal';
 
-import {WeaTableRedux,WeaTableRedux_action} from '../../coms/index'
+import {WeaTable} from '../../coms/index'
+
+const WeaTableAction = WeaTable.action;
 
 import {
     WeaTop,
@@ -16,6 +18,7 @@ import {
     WeaRightMenu,
     WeaPopoverHrm
 } from 'ecCom'
+
 
 import {WeaErrorPage,WeaTools} from 'ecCom'
 
@@ -73,11 +76,10 @@ class ListDone extends React.Component {
         !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
         !is(this.props.searchParamsAd,nextProps.searchParamsAd)||
-        !is(this.props.selectedRowKeys,nextProps.selectedRowKeys)||
+        !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
         !is(this.props.orderFields,nextProps.orderFields)||
         !is(this.props.showSearchAd,nextProps.showSearchAd)||
-        !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
-        !is(this.props.loading,nextProps.loading)||
+        !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
         !is(this.props.isSpaForm,nextProps.isSpaForm)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
@@ -90,7 +92,9 @@ class ListDone extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {loading,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj,selectedRowKeys} = this.props;
+        const {comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
+        const loading = comsWeaTable.get('loading');
+        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
@@ -123,7 +127,7 @@ class ListDone extends React.Component {
                         keyParam="viewcondition"  //主键
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
-                    <WeaTableRedux 
+                    <WeaTable 
                     	hasOrder={true}
                     	needScroll={true}
                     	/>
@@ -135,7 +139,8 @@ class ListDone extends React.Component {
         )
     }
     onRightMenuClick(key){
-    	const {actions,selectedRowKeys} = this.props;
+    	const {actions,comsWeaTable} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
     	if(key == '0'){
     		actions.doSearch();
     		actions.setShowSearchAd(false)
@@ -146,7 +151,8 @@ class ListDone extends React.Component {
     	}
     }
     getRightMenu(){
-    	const {selectedRowKeys,sharearg,actions} = this.props;
+    	const {comsWeaTable,sharearg,actions} = this.props;
+    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
     	let btns = [];
     	btns.push({
@@ -229,9 +235,17 @@ class ListDone extends React.Component {
                 	})
                     const workflowid = key.indexOf("wf_")===0 ? key.substring(3) : '';
                 	const workflowtype = key.indexOf("type_")===0 ? key.substring(5) : '';
+                	let workflowidShowName = '';
+                	let workflowtypeShowName = '';
+                	leftTree && leftTree.map(l=>{
+                		if(l.get('domid') == key) workflowtypeShowName = l.get('name');
+                		l.get('childs') && l.get('childs').map(c=>{
+                			if(c.get('domid') == key) workflowidShowName = c.get('name');
+                		})
+                	})
                 	const fieldsObj = {
-                		workflowid:{name:'workflowid',value:workflowid},
-                		workflowtype:{name:'workflowtype',value:workflowtype}
+                		workflowid:{name:'workflowid',value:workflowid,valueSpan:workflowidShowName},
+                		workflowtype:{name:'workflowtype',value:workflowtype,valueSpan:workflowtypeShowName},
                 	};
                 	actions.saveOrderFields(fieldsObj);
                     actions.doSearch({
@@ -271,14 +285,7 @@ ListDone = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(ListDone);
 
 ListDone = createForm({
 	onFieldsChange(props, fields) {
-    	let _fields = {...fields};
-    	for(let k in fields){
-    		if(fields[k].value.indexOf('_@_') >= 0){
-    			let newValue =  fields[k].value.split('_@_');
-	    		_fields[k].value = newValue[0];
-    		}
-    	}
-        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields,..._fields});
+        props.actions.saveOrderFields({...props.orderFields.toJS(), ...fields});
     },
 	mapPropsToFields(props) {
 		return props.orderFields.toJS();
@@ -286,8 +293,7 @@ ListDone = createForm({
 })(ListDone);
 
 function mapStateToProps(state) {
-	const {workflowlistDone,WeaTableRedux_state} = state;
-	const name = workflowlistDone.get('dataKey') ? workflowlistDone.get('dataKey').split('_')[0] : 'init';
+	const {workflowlistDone,comsWeaTable} = state;
     return {
         title: workflowlistDone.get('title'),
 		leftTree: workflowlistDone.get('leftTree'),
@@ -307,15 +313,14 @@ function mapStateToProps(state) {
 		showBatchSubmit: workflowlistDone.get('showBatchSubmit'),
 		phrasesObj: workflowlistDone.get('phrasesObj'),
 		sharearg: workflowlistDone.get('sharearg'),
-		//table
-		loading: WeaTableRedux_state.getIn([name,'loading']),
-		selectedRowKeys: WeaTableRedux_state.getIn([name,'selectedRowKeys']),
+        //table
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({...ListAction,...WeaTableRedux_action}, dispatch)
+        actions: bindActionCreators({...ListAction,...WeaTableAction}, dispatch)
     }
 }
 

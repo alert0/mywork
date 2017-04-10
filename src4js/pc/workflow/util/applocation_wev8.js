@@ -10,12 +10,13 @@ const initwflocatebutton = (editor, uiName) => {
 	//注册按钮执行时的command命令，使用命令默认就会带有回退操作
 	editor.registerCommand(uiName, {
 		execCommand: function() {
+			var paramDiv = jQuery('#'+editor.key + '_div');
 			var dlg = new window.top.Dialog(); //定义Dialog对象
 			// dlg.Title = '请选择';//"<%=SystemEnv.getHtmlLabelName(18214,user.getLanguage())%>";
 			dlg.Model = true;
 			dlg.Width = 900; //定义长度
 			dlg.Height = 600;
-			var posiData = jQuery('#remarkLocation').val();
+			var posiData = paramDiv.find('#remarkLocation').val();
 			var lng = "";
 			var lat = "";
 			var addr = "";
@@ -31,20 +32,26 @@ const initwflocatebutton = (editor, uiName) => {
 				if(data) {
 					var timeStamp = (new Date()).getTime();
 					var initData = timeStamp + "," + data.jingdu + "," + data.weidu + "," + data.addr;
-					jQuery('#remarkLocation').val(initData);
+					paramDiv.find('#remarkLocation').val(initData);
+					if(editor.key == 'forwardremark'){
+						jQuery('#forwardremark_hidden_area').find("#remarkLocation").val(initData);
+					}
 					//alert(sHtml);
 					//editor.execCommand('inserthtml', sHtml); 
-					_targetobj = jQuery(".edui-for-wflocatebutton").children("div").children("div").children("div").children(".edui-box");
+					_targetobj = paramDiv.find(".edui-for-wflocatebutton").children("div").children("div").children("div").children(".edui-box");
 					_targetobj.addClass("wflocate2");
 					_targetobj.removeClass("edui-metro");
 					_targetobj.removeClass("wflocate1");
 
 				} else {
-					_targetobj = jQuery(".edui-for-wflocatebutton").children("div").children("div").children("div").children(".edui-box");
+					_targetobj = paramDiv.find(".edui-for-wflocatebutton").children("div").children("div").children("div").children(".edui-box");
 					_targetobj.addClass("wflocate1");
 					_targetobj.removeClass("edui-metro");
 					_targetobj.removeClass("wflocate2");
-					jQuery('#remarkLocation').val("");
+					paramDiv.find('#remarkLocation').val("");
+					if(editor.key == 'forwardremark'){
+						jQuery('#forwardremark_hidden_area').find("#remarkLocation").val('');
+					}
 				}
 			}
 			dlg.show();

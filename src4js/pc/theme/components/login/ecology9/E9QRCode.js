@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTyps from 'react-router/lib/PropTypes';
+import {WeaTools} from 'ecCom';
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as loginActions from '../../../actions/login';
 
-import {WeaTools} from 'weaCom';
-
 import ecLocalStorage from '../../../util/ecLocalStorage';
+import * as LOGIN_API from '../../../apis/login';
 
 class E9QRCode extends React.Component {
     static contextTypes = {
@@ -48,7 +48,7 @@ class E9QRCode extends React.Component {
         const {loginQRCode} = this.props;
         let langId = document.getElementById('langId');
 
-        WeaTools.callApi('/mobile/plugin/login/QCLoginStatus.jsp', 'POST', {langid: langId, loginkey: loginQRCode}, 'text').then((result) => {
+        LOGIN_API.qcLogin({langid: langId, loginkey: loginQRCode}).then((result) => {
             if (jQuery.trim(result) != '0' && jQuery.trim(result) != '9') {
                 const {router} = this.context;
                 ecLocalStorage.storageInit();

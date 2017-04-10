@@ -1,0 +1,78 @@
+.e9theme-color-5 .e9header-container {
+    color: #fff;
+    background-color: #01b7c4;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu,
+.e9theme-color-5 .e9aside-container .ant-menu {
+    color: #528fa4;
+    background-color: #22596d;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu .wea-menu-switch {
+    color: #548ea4;
+    background-color: #0d465a;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu .wevicon {
+    color: #528fa4;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu .wea-menu-selected .wevicon,
+.e9theme-color-5 .e9aside-container .wea-menu-inline .ant-menu-item-active .wevicon,
+.e9theme-color-5 .e9aside-container .wea-menu-inline .ant-menu-submenu-active .wevicon {
+    color: #fff !important;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active .wevicon {
+    color: #fffeff;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu .wea-menu-selected,
+.e9theme-color-5 .e9aside-container .wea-menu-inline .ant-menu-item:hover,
+.e9theme-color-5 .e9aside-container .wea-menu-inline .ant-menu-submenu-title:hover,
+.e9theme-color-5 .e9aside-container .wea-menu-vertical .ant-menu-item-active,
+.e9theme-color-5 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active {
+    color: #fff !important;
+    background-color: #01b7c4 !important;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-item-active:before,
+.e9theme-color-5 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-submenu-active:before {
+    border: 2px solid #01b7c4;
+    border-top: 21px solid #01b7c4;
+    border-bottom: 21px solid #01b7c4;
+}
+
+.e9theme-color-5 .e9aside-container .wea-menu-vertical .ant-menu-root > .ant-menu-submenu-active,
+.e9theme-color-5 .e9aside-container .wea-menu-vertical .ant-menu-submenu-active > ul {
+    color: #548ea4;
+    background-color: #0d465a !important;
+}
+
+.e9theme-color-5 .e9left-menu-email-item {
+    color: #fff;
+    background: #01b7c4;
+}
+
+.e9theme-color-5 .e9left-menu-email-item .wevicon {
+    color: #fff !important;
+}
+
+.e9theme-color-5 .e9left-menu-email-item-selected {
+    color: #0d465a;
+    background: #f6f6f6;
+}
+
+.e9theme-color-5 .e9left-menu-email-item-selected .wevicon {
+    color: #0d465a !important;
+}
+
+.e9theme-color-5 .e9left-menu-email-item-ul {
+    color: #0d465a;
+    background: #f6f6f6;
+}
+
+.e9theme-color-5 .e9left-menu-email-item-ul li:hover {
+    background: #dadfe3;
+}

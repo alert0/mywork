@@ -1,17 +1,26 @@
-import {WeaTools} from 'weaCom';
+import {WeaTools} from 'ecCom';
 
-export const getTopLogo = () => WeaTools.callApi('/page/interfaces/themeColorListJson.jsp', 'GET', {}, 'json');
-export const getTopMenu = () => WeaTools.callApi('/page/interfaces/leftMenuToJson.jsp?parentid=0&needchild=0&withportal=0', 'GET', {}, 'json');
-export const getFreqUseMenu = () => WeaTools.callApi('/page/interfaces/commonMenuToJson.jsp?shownourlmenu=n', 'GET', {}, 'json');
-export const getQuickSearchTypes = () => WeaTools.callApi('/page/interfaces/quickSearchItemsToJson.jsp', 'GET', {}, 'json');
-export const getRemindList = () => WeaTools.callApi('/wui/theme/ecology9/page/getRemindInfo.jsp', 'GET', {}, 'json');
-export const getToolbarMenu = () => WeaTools.callApi('/page/interfaces/toolbarIconToJson.jsp', 'GET', {}, 'json');
-export const getToolbarMoreMenu = () => WeaTools.callApi('/page/interfaces/toolbarMoreMenuToJson.jsp?menutype=front', 'GET', {}, 'json');
-export const getAccount = () => WeaTools.callApi('/page/interfaces/accountListJson.jsp', 'GET', {}, 'json');
-export const getBirthdayInfo = () => WeaTools.callApi('/hrm/resource/getBirthdayInfo.jsp', 'GET', {}, 'json');
-export const getPortalMenu = () => WeaTools.callApi('/page/interfaces/portalMenuToJson.jsp?parentid=0', 'GET', {}, 'json');
-export const getEmailMenu = () => WeaTools.callApi('/wui/theme/ecology9/page/emailMenuJSON.jsp', 'GET', {}, 'json');
-export const getCommonMenu = (params = {}) => WeaTools.callApi('/page/interfaces/leftMenuToJson.jsp', 'POST', params, 'json');
-export const getPlugin = () => WeaTools.callApi('/wui/common/page/pluginManage.jsp', 'GET', {}, 'text');
-export const clearEmail = () => WeaTools.callApi('/email/new/MailManageOperation.jsp?operation=deleteAll&folderid=-3', 'GET', {}, 'text');
-export const logout = () => WeaTools.callApi('/login/LoginUtil.jsp', 'POST', {type: 'logout'}, 'text');
+// e9登录页图片
+export const getLoginImages = () => WeaTools.callApi('/api/portal/login/logininfo', 'POST', {method: 'preload'}, 'json');
+// e9主题配置
+export const getThemeConfig = () => WeaTools.callApi('/api/portal/theme/themeconfig', 'POST', {}, 'json');
+// 顶部菜单
+export const getTopMenu = () => WeaTools.callApi('/api/portal/leftmenu/leftmenu', 'POST', {parentid: '0', needchild: '0', withportal: '0'}, 'json');
+// 常用菜单
+export const getFreqUseMenu = () => WeaTools.callApi('/api/portal/frequsemenu/frequsemenu', 'POST', {shownourlmenu: 'n'}, 'json');
+// 快速搜索类型
+export const getQuickSearchTypes = () => WeaTools.callApi('/api/portal/quicksearch/quicksearchtypes', 'POST', {}, 'json');
+// 工具栏菜单
+export const getToolbarMenu = () => WeaTools.callApi('/api/portal/toolbar/toolbarmenu', 'POST', {}, 'json');
+// 工具栏更多菜单
+export const getToolbarMoreMenu = () => WeaTools.callApi('/api/portal/toolbarmore/toolbarmoremenu', 'POST', {menutype: 'front'}, 'json');
+// 账号
+export const getAccount = () => WeaTools.callApi('/api/portal/account/accountlist', 'POST', {}, 'json');
+// 门户菜单
+export const getPortalMenu = () => WeaTools.callApi('/api/portal/portalmenu/portalmenu', 'POST', {parentid: 0}, 'json');
+// 邮件菜单
+export const getEmailMenu = () => WeaTools.callApi('/api/portal/emailmenu/emailmenu', 'POST', {}, 'json');
+// 模块菜单
+export const getCommonMenu = (params = {}) => WeaTools.callApi('/api/portal/leftmenu/leftmenu', 'POST', params, 'json');
+// 消息提醒
+export const getRemindList = () => WeaTools.callApi('/page/interfaces/getRemindInfo.jsp', 'POST', {}, 'json');

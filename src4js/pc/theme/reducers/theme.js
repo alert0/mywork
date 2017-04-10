@@ -1,23 +1,36 @@
 import Immutable from 'immutable';
 import {THEME} from '../constants/ActionTypes';
-import ECLocalStorage from '../util/ecLocalStorage';
 
 /**
  * 主题
  *
  * @param state
+ *          themeInfo               主题信息
+ *
  *          topLogoImage            顶部 logo
+ *
  *          topMenu                 顶部菜单
+ *          topMenuVisible          顶部菜单是否可见
+ *          topMenuSelected         选中的顶部菜单
+ *
  *          freqUseMenu             常用菜单
+ *          freqUseMenuVisible      常用菜单是否可见
+ *
  *          quickSearchTypes        快速搜索类型
+ *          quickSearchTypesVisible 快速搜索类型是否可见
+ *          quickSearchTypesSelected选中的快速搜索类型
  *
  *          hasRemind               是否有新消息
  *          remindList              消息列表
+ *          remindListVisible       消息列表是否可见
  *
  *          toolbarMenu             工具栏菜单
+ *
  *          toolbarMoreMenu         工具栏更多菜单
+ *          toolbarMoreMenuVisible  工具栏更多菜单是否可见
  *
  *          account                 账号信息
+ *          accountVisible          账号信息是否可见
  *
  *          leftMenuMode            左侧菜单展示模式。1、展开状态（inline），即菜单垂直展开；2、收缩状态（vertical），即菜单水平展开
  *          leftMenu                左侧菜单
@@ -27,6 +40,11 @@ import ECLocalStorage from '../util/ecLocalStorage';
  * @returns {*}
  */
 export default function theme(state = Immutable.fromJS({
+    themeInfo: {
+        themeType: '',
+        themeColorType: ''
+    },
+
     topLogoImage: '',
 
     topMenu: [],
@@ -52,12 +70,15 @@ export default function theme(state = Immutable.fromJS({
     account: {},
     accountVisible: false,
 
-    leftMenuMode: ECLocalStorage.getStr('theme', 'leftMenuMode', false) || 'inline',
+    leftMenuMode: 'inline',
     leftMenu: [],
     leftMenuSelected: {},
     leftMenuType: 'portal'
 }), action) {
     switch (action.type) {
+        case THEME.THEME_INFO:
+            return state.merge(action.value);
+
         case THEME.THEME_TOP_LOGO:
             return state.merge(action.value);
 

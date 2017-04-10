@@ -87,11 +87,14 @@ class Add extends React.Component {
 		const curOperWfid = add.get("curOperWfid");
 		const showBeagenters = add.get("showBeagenters");
 		const showImportWf = add.get("showImportWf");
+		const commonuse = add.get('commonuse');
+		const user = add.get('user');
 		const tabDatas = [
 			{title:'全部流程',key:"1"},
-           	{title:'我的收藏',key:"2"},
-           	{title:'常用流程',key:"3"}
+           	{title:'我的收藏',key:"2"}
 		];
+		
+		if(commonuse == '1') tabDatas.push({title:'常用流程',key:"3"});
 		return (
 		   	<div className="wf-create-main">
 			   	<WeaTop loading={loading} icon={<i className='icon-portal-workflow' />} iconBgcolor='#55D2D4' title='新建流程' buttons={this.getButtons()} hideButtons={this.getHideButtons()} showDropIcon={false}/>
@@ -114,21 +117,21 @@ class Add extends React.Component {
 					}
 	           		{tabkey == "3" ? (
 	           			usedBeans.size == 0 && !loading ? <Alert message="提示" description="数据为空" type="info" showIcon /> :
-						   <UsedToDoList wfbeans={usedBeans} importDataShow={importDataShow} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />
+						   <UsedToDoList user={user} wfbeans={usedBeans} importDataShow={importDataShow} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions} />
 	           			):(
 	           			typesShow.size == 0 && !loading ? <Alert message="提示" description="数据为空" type="info" showIcon /> :(
 			           		mulitcol ?
 		           			<Row>
 		           				{typesCols.map(c=>{
 		           					return <Col span={24 / typesCols.size} style={{padding:'0 10px'}}>
-										<MLinkCard types={c} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
+										<MLinkCard user={user} types={c} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
 									</Col>
 		           				})}
 		           			</Row>
 							:
 							<Row>
 								<Col span="24" style={{paddingLeft:10,paddingRight:10}}>
-									<OLinkCard types={typesShow} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
+									<OLinkCard user={user} types={typesShow} mulitcol={mulitcol} importDataShow={importDataShow} isAbc={isAbc} wftypes={wftypes} curOperWfid={curOperWfid} showBeagenters={showBeagenters} showImportWf={showImportWf} actions={actions}/>
 								</Col>
 							</Row>)
 	           			)

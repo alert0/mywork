@@ -1,6 +1,6 @@
 import React from 'react';
 import {Popover} from 'antd';
-import {WeaScroll} from 'weaCom';
+import {WeaScroll} from 'ecCom';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -57,6 +57,19 @@ class E9TopMenu extends React.Component {
 
     onVisibleChange(visible) {
         const {actions} = this.props;
+
+        let e9shadowMain = document.getElementById('e9shadowMain');
+        if (visible) {
+            e9shadowMain.style.display = 'block';
+
+            actions.changeFreqUseMenuVisible(false);
+            actions.changeQuickSearchTypesVisible(false);
+            actions.changeToolbarMoreMenuVisible(false);
+            actions.changeAccountVisible(false);
+        } else {
+            e9shadowMain.style.display = 'none';
+        }
+
         actions.changeTopMenuVisible(visible);
     }
 
@@ -73,7 +86,7 @@ class E9TopMenu extends React.Component {
                 <div className="e9header-top-menu-home" title="首页" onClick={this.onHomeClick.bind(this)}>
                     <i className="wevicon wevicon-e9header-top-menu-home" />
                 </div>
-                <Popover visible={topMenuVisible} onVisibleChange={this.onVisibleChange.bind(this)} placement="bottomLeft" content={topMenuContent} trigger="click" overlayClassName="e9header-top-menu-popover">
+                <Popover visible={topMenuVisible} onVisibleChange={this.onVisibleChange.bind(this)} placement="bottomLeft" content={topMenuContent} trigger="hover" overlayClassName="e9header-top-menu-popover">
                     <div className="e9header-top-menu-module">
                         <div className="e9header-top-menu-common">
                             <i className="wevicon wevicon-e9header-top-menu-common" />

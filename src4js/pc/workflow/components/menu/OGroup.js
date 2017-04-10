@@ -29,10 +29,9 @@ export default class OGroup extends React.Component {
 	addgroup(handleVisibleChange) {
 		handleVisibleChange(false);
 		const languageid = readCookie("languageidweaver");
-		const title = SystemEnv.getHtmlNoteName(4672, languageid);
 		const dialog = new window.top.Dialog();
 		dialog.currentWindow = window;
-		dialog.Title = title;
+		dialog.Title = '新建自定义组';
 		dialog.Width = 550;
 		dialog.Height = 550;
 		dialog.Drag = true;
@@ -104,7 +103,7 @@ export default class OGroup extends React.Component {
 				}
 				<div className="wea-req-operate-add" onClick={() => this.addgroup(handleVisibleChange)}>
 					<span style={{'color':'#59b632'}}><Icon type="plus-square" /></span>
-					<span style={{'color':'#323232','margin-left':'10px'}}>添加常用组</span>
+					<span style={{'color':'#323232','margin-left':'10px'}} >添加常用组</span>
 				</div>
 			</div>
 		)

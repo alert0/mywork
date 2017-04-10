@@ -19,8 +19,9 @@ const bindRemark = (_uEditor) => {
 					//jQuery("html").unbind('mouseup', remarkHide);
 					//jQuery(".remarkDiv").hide();
 					//jQuery("#remarkShadowDiv").show();
-
-					window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.controlSignInput(false))
+					if(_uEditor.key == 'remark'){
+						window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.controlSignInput(false))
+					}
 				}
 			} catch(e) {}
 			e.stopPropagation();
@@ -28,15 +29,15 @@ const bindRemark = (_uEditor) => {
 	};
 	jQuery(".wea-new-top-req-content").live('mousedown', remarkHide);
 	_uEditor.ready(function() {
-		jQuery(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_1");
-		jQuery(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_2");
-		jQuery(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_3");
+		jQuery('#'+_uEditor.key).find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_1");
+		jQuery('#'+_uEditor.key).find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_2");
+		jQuery('#'+_uEditor.key).find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro").addClass("wfres_3");
 	});
 }
 
 window.bindRemark = bindRemark;
 
-const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, countEleID) => {
+const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, countEleID,editorykey) => {
 	//关闭表单签章显示,防止某些IE版本下,表单签章显示白色和弹窗冲突
 	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
 	const requestid = formstate.get('requestid');
@@ -45,15 +46,14 @@ const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, c
 	if(top.Dialog._Array.length == 0) {
 		jQuery("[id^=Consult]").hide();
 	}
-	var tmpids = jQuery("#" + inputname).val();
+	const paramDiv = jQuery('#' + editorykey + "_div");
+	var tmpids = paramDiv.find("#" + inputname).val();
 	var url;
 	if(type1 === 37) {
-		// url = "/systeminfo/BrowserMain.jsp?f_weaver_belongto_userid=<%=userid%>&f_weaver_belongto_usertype=<%=(Util.getIntValue(user.getLogintype()) - 1)%>&url=" + url + "?f_weaver_belongto_userid=<%=userid%>&f_weaver_belongto_usertype=<%=(Util.getIntValue(user.getLogintype()) - 1)%>&documentids=" + tmpids;
 		url = "/systeminfo/BrowserMain.jsp?f_weaver_belongto_userid=" + userid + "&f_weaver_belongto_usertype=0&url=" + url + "?documentids=" + tmpids + escape("&f_weaver_belongto_userid=" + userid + "&f_weaver_belongto_usertype=0");
 	} else {
 		url = "/systeminfo/BrowserMain.jsp?f_weaver_belongto_userid=" + userid + "&f_weaver_belongto_usertype=0&url=" + url + "?resourceids=" + tmpids + escape("&f_weaver_belongto_userid=" + userid + "&f_weaver_belongto_usertype=0");
 	}
-	//alert(url);
 	var dialog = new window.top.Dialog();
 	dialog.currentWindow = window;
 	dialog.callbackfunParam = null;
@@ -66,44 +66,32 @@ const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, c
 				var sHtml = "";
 				resourceids = resourceids.substr(0);
 				resourcename = resourcename.substr(0);
-				jQuery("#" + inputname).val(resourceids);
+				paramDiv.find("#" + inputname).val(resourceids);
 				var resourceidArray = resourceids.split(",");
 				var resourcenameArray = resourcename.split(",");
-
-				if(!!countEleID) {
-					//jQuery("#" + countEleID).children("Table").find("TD[class=signcountClass_center]").html(resourceidArray.length);
-					//resourcename = resourcename.replace(/\,/g,",  ");
-					//jQuery("#" + countEleID).html("");
-					//jQuery("#" + countEleID).show();
-				}
 
 				for(var _i = 0; _i < resourceidArray.length; _i++) {
 					var curid = resourceidArray[_i];
 					var curname = resourcenameArray[_i];
-					//unselectable=\"off\" contenteditable=\"false\"
 					if(type1 === 37) {
-						//sHtml = sHtml + "<a href='javascript:void 0' onclick=\"parent.addDocReadTag('" + curid + "');parent.openFullWindowHaveBar('/docs/docs/DocDsp.jsp?id=" + curid + "&isrequest=1&requestid=<%="-1".equals(requestid) ? "{#[currentRequestid]#}" : requestid %>')\" title='" + curname + "'>" + curname + "</a>";
 						sHtml = sHtml + "<a href='/docs/docs/DocDsp.jsp?id=" + curid + "&isrequest=1&requestid=" + requestid + "'  target='_blank' title='" + curname + "' style=\"color:#123885;\" >" + curname + "</a>&nbsp;&nbsp;";
-						//sHtml += "<a href='/docs/docs/DocDsp.jsp?id="+curid+"&requestid=<%=requestid%>' target='_blank' style=\"color:#123885;\">"+curname+ "</a>&nbsp;&nbsp;"; 
 					} else {
-						//sHtml = sHtml + "<a href=" + linkurl + curid + " target='_blank'>" + curname + "</a> &nbsp; ";                	  
 						sHtml += "<a href='/workflow/request/ViewRequest.jsp?f_weaver_belongto_userid=" + userid + "&f_weaver_belongto_usertype=0&requestid=" + curid + "&isrequest=1' target='_blank' style=\"color:#123885;\">" + curname + "</a>&nbsp;&nbsp;";
 					}
 				}
-				jQuery("#" + countEleID).html(sHtml);
-				var editorid = "remark";
+				//jQuery("#" + countEleID).html(sHtml);
 				try {
-					UE.getEditor(editorid).setContent(" &nbsp;" + sHtml, true);
+					UE.getEditor(editorykey).setContent(" &nbsp;" + sHtml, true);
 				} catch(e) {}
 				try {
 					var _targetobj;
 					var _targetobjimg = "";
 					var _targetobjClass = "";
 					if(type1 == 152) { //相关流程
-						_targetobj = jQuery(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_3";
 					} else {
-						_targetobj = jQuery(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_2";
 					}
 					//alert(_targetobj.css("background"));
@@ -116,7 +104,7 @@ const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, c
 					}
 				} catch(e) {}
 			} else {
-				jQuery("#" + inputname).val("");
+				paramDiv.find("#" + inputname).val("");
 				if(!!countEleID) {
 					jQuery("#" + countEleID).children("Table").find("TD[class=signcountClass_center]").html("0");
 					jQuery("#" + countEleID).hide();
@@ -127,10 +115,10 @@ const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, c
 					var _targetobjimg = "";
 					var _targetobjClass = "";
 					if(type1 == 152) { //相关流程
-						_targetobj = jQuery(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_3";
 					} else {
-						_targetobj = jQuery(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
+						_targetobj = jQuery('#'+editorykey).find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
 						_targetobjClass = "wfres_2";
 					}
 					//alert(_targetobj.css("background"));

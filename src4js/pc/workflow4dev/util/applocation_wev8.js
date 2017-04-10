@@ -4,7 +4,7 @@
  */
 UE.registerUI('wflocatebutton', function(editor, uiName) {
 	return initwflocatebutton(editor, uiName);
-}, 99, ['remark']);
+},99, 'remark,forwardremark');
 
 const initwflocatebutton = (editor, uiName) => {
 	//注册按钮执行时的command命令，使用命令默认就会带有回退操作

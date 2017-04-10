@@ -177,7 +177,7 @@ window._table = {
 		const viewScope = window.store_e9_workflow.getState().workflowlistDoing.get('nowRouterWfpath');
 	    const state = window.store_e9_workflow.getState()['workflow' + viewScope];
 	    const name = state.get('dataKey') ? state.get('dataKey').split('_')[0] : 'init';
-	    const current = window.store_e9_workflow.getState()['WeaTableRedux_state'].getIn([name,'current']);
+	    const current = window.store_e9_workflow.getState()['comsWeaTable'].getIn([name,'current']);
 		
 		if(viewScope == 'queryFlow'){
 			window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowQueryAction.doSearch({current}));

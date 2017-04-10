@@ -1,28 +1,38 @@
-import { INIT_HP_DATA } from '../constants/ActionTypes';
+import { PORTAL_HPDATA } from '../constants/ActionTypes';
 import ecLocalStorage from '../util/ecLocalStorage.js';
-import { reqHpDatas } from '../apis/req';
+import { reqPortalDatas } from '../apis/portal';
 import Immutable from 'immutable';
-const getHpData = (params) => {
+const getPortalDatas = (params) => {
     return (dispatch, getState) => {
-        var olddata = ecLocalStorage.getObj("homepage-" + params.hpid, "hpdata-" + params.hpid + "-" + params.subCompanyId, true);
-        dispatch({
-            type: INIT_HP_DATA,
-            hpdata: olddata
-        });
-        reqHpDatas(params).then((data) => {
-            let iolddata = Immutable.fromJS(olddata);
-            let idata = Immutable.fromJS(data);
-            if (!Immutable.is(iolddata, idata)) {
-                ecLocalStorage.set("homepage-" + params.hpid, "hpdata-" + params.hpid + "-" + params.subCompanyId, data, true);
-                dispatch({
-                    type: INIT_HP_DATA,
-                    hpdata: data
-                });
+        const { hpid } = params;
+        reqPortalDatas(params).then((data) => {
+            window.isPortalRender = false;
+            if(data.hasRight === "true"){
+                window.global_isremembertab = data.hpinfo.isremembertab !== "0";
+                ecLocalStorage.set("portal-" + hpid, "hpdata", data, true);
             }
+            dispatch(handleImmutableData(hpid,data));
+        });
+    }
+}
+
+const getImmutableData = (key, old, im) => {
+    var ndata = {};
+    ndata[key] = old;
+    var nresult = im.merge(Immutable.fromJS(ndata));
+    return nresult;
+}
+
+const handleImmutableData = (key, data) => {
+    return (dispatch, getState) => {
+        const ihpdata = getState().portal.get("hpdata");
+        dispatch({
+            type: PORTAL_HPDATA,
+            hpdata: getImmutableData(key, data, ihpdata)
         });
     }
 }
 
 module.exports = {
-    getHpData
+    getPortalDatas
 };

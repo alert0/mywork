@@ -6,41 +6,35 @@ import ECLocalStorage from '../util/ecLocalStorage';
  * 登录页
  *
  * @param state
- *              loginBgImage                    登录页当前使用的背景图片
- *              loginLogoImage                  登录页 logo 图片
- *              loginType                       登录类型，普通表单登录(form)和扫描二维码(QRCode)登录
+ *              loginTheme          登录主题
  *
- *              loginBgImages                   登录页背景图片库
- *              loginBgImagesVisible            是否显示登录页背景图片库
+ *              loginType           登录类型，表单登录(form)和扫描二维码(QRCode)登录
  *
- *              hasMultiLang                    是否有多语言
- *              multiLangVisible                是否显示多语言
- *              langId                          语言 id
- *              langText                        语言描述
+ *              hasMultiLang        是否有多语言
+ *              multiLangVisible    是否显示多语言
+ *              langId              语言 id
+ *              langText            语言描述
  *
- *              hasDynamicPassword              是否有动态密码
- *              isRememberAccount               是否记住账号
- *              isRememberPassword              是否记住密码
- *              cacheAccount                    缓存的账号
- *              cachePassword                   缓存的密码
- *              hasValidateCode                 是否有验证码
- *              maxWrongTimes                   登录最多错误次数
- *              wrongTimes                      登录错误次数
- *              validateCode                    验证码
- *              isLogging                       是否正在登录
+ *              hasDynamicPassword  是否有动态密码
+ *              isRememberAccount   是否记住账号
+ *              isRememberPassword  是否记住密码
+ *              cacheAccount        缓存的账号
+ *              cachePassword       缓存的密码
+ *              hasValidateCode     是否有验证码
+ *              maxWrongTimes       登录最多错误次数
+ *              wrongTimes          登录错误次数
+ *              validateCode        验证码
+ *              isLogging           是否正在登录
  *
- *              loginQRCode                     登录二维码 UUID
+ *              loginQRCode         登录二维码 UUID
  *
  * @param action
  * @returns {*}
  */
 export default function login(state = Immutable.fromJS({
-    loginBgImage: ECLocalStorage.getStr('login', 'loginBgImage', false) || '',
-    loginLogoImage: ECLocalStorage.getStr('login', 'loginLogoImage', false) || '',
-    loginType: ECLocalStorage.getStr('login', 'loginType', false) || 'form',
+    loginTheme: '',
 
-    loginBgImages: [],
-    loginBgImagesVisible: false,
+    loginType: ECLocalStorage.getStr('login', 'loginType', false) || 'form',
 
     hasMultiLang: false,
     multiLangVisible: false,
@@ -61,10 +55,10 @@ export default function login(state = Immutable.fromJS({
     loginQRCode: ''
 }), action) {
     switch (action.type) {
-        case LOGIN.LOGIN_LOGIN:
+        case LOGIN.LOGIN_THEME:
             return state.merge(action.value);
 
-        case LOGIN.LOGIN_BG_IMAGES:
+        case LOGIN.LOGIN_TYPE:
             return state.merge(action.value);
 
         case LOGIN.LOGIN_MULTI_LANG:
@@ -77,6 +71,6 @@ export default function login(state = Immutable.fromJS({
             return state.merge(action.value);
 
         default:
-            return state
+            return state;
     }
 }

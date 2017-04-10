@@ -4,15 +4,14 @@ import {Popover, Badge, Icon} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as themeActions from '../../../actions/theme';
+
 import {onLoadMain} from '../../../actions/theme';
 
 class E9Remind extends React.Component {
     componentWillMount() {
         const {actions} = this.props;
-        actions.loadRemindInfo();
-
-        // 十五分钟刷新一次提醒消息
-        this.remindInterval = window.setInterval(() => actions.loadRemindInfo(), 15 * 60 * 1000);
+        // 五分钟刷新一次提醒消息
+        this.remindInterval = window.setInterval(() => actions.loadRemindInfo(), 5 * 60 * 1000);
     }
 
     componentWillUnmount() {
@@ -26,6 +25,13 @@ class E9Remind extends React.Component {
     }
 
     onVisibleChange(visible) {
+        let e9shadowMain = document.getElementById('e9shadowMain');
+        if (visible) {
+            e9shadowMain.style.display = 'block';
+        } else {
+            e9shadowMain.style.display = 'none';
+        }
+
         const {actions} = this.props;
         actions.changeRemindListVisible(visible);
     }

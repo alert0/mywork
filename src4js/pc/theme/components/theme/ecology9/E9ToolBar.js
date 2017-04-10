@@ -3,8 +3,9 @@ import React from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as themeActions from '../../../actions/theme';
+
 import {onLoadMain} from '../../../actions/theme';
-import {showDialog} from '../../../util/themeUtils';
+import {showDialog} from '../../../util/themeUtil';
 
 class E9ToolBar extends React.Component {
     componentWillMount() {
@@ -18,10 +19,24 @@ class E9ToolBar extends React.Component {
         let opentype = item.opentype;
 
         if (opentype == '1') {
-            showDialog(title, url, 700, 600, () => {
+            let width = 700;
+            let height = 600;
+            let opacity = 0.4;
+            if (url == '/favourite/MyFavourite.jsp') {
+                width = 657;
+                height = 565;
+            }
+            showDialog({
+                title: title,
+                url: url,
+                width: width,
+                height: height,
+                opacity: opacity,
+                callbackfunc: () => {
+                }
             });
         } else {
-            onLoadMain({url: url, routeurl: '', target:  opentype == '0' ? '_blank' : 'mainFrame'});
+            onLoadMain({url: url, routeurl: '', target: opentype == '0' ? '_blank' : 'mainFrame'});
         }
     }
 

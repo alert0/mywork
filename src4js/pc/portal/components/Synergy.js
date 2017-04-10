@@ -1,4 +1,4 @@
-import { WeaTools } from 'weaCom';
+import { WeaTools } from 'ecCom';
 
 import { SYNERGY_URL, SYNERGY_ROUTER_MAPPING_URL } from '../constants/ActionTypes';
 

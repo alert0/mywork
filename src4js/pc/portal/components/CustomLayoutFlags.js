@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 //引入元素组件
-import Element from './element/';
+import ElementType from './ElementType';
 import { Provider } from 'react-redux';
 
 class CustomLayoutFlags extends React.Component {
@@ -9,7 +9,7 @@ class CustomLayoutFlags extends React.Component {
 		const { layoutFlags, layoutHtml } = this.props.layoutObj;
    		if (layoutHtml) {
 	        layoutFlags.map((layoutFlag, i) => {
-	       		let lhtml = layoutFlag.areaElements.map(ele => <Element key = { _uuid() }ele = { ele } />);
+	       		let lhtml = layoutFlag.areaElements.map(ele => <ElementType key = {_uuid()} ele = { ele } />);
 	            ReactDOM.render( <Provider store = { window.store_e9_element }><div>{ lhtml }</div></Provider>,$(".group[areaflag='" + layoutFlag.areaflag + "']")[0]);
 	        });
         }
@@ -36,7 +36,7 @@ class CustomLayoutFlags extends React.Component {
     }
 }
 
-import { WeaErrorPage, WeaTools } from 'weaCom';
+import { WeaErrorPage, WeaTools } from 'ecCom';
 class MyErrorHandler extends React.Component {
     render() {
         const hasErrorMsg = this.props.error && this.props.error !== "";

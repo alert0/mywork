@@ -2,7 +2,7 @@ import React from 'react';
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as loginActions from '../../../actions/login';
+import * as login4e9Actions from '../../../actions/login4e9';
 
 class E9BgImages extends React.Component {
     onChangeVisible() {
@@ -56,17 +56,17 @@ class E9BgImages extends React.Component {
 
 
 const mapStateToProps = (state) => {
-    const {login}=state;
+    const {login4e9}=state;
     return {
-        loginBgImages: login.get('loginBgImages'),
-        loginBgImagesVisible: login.get('loginBgImagesVisible'),
-        loginBgImage: login.get('loginBgImage')
+        loginBgImages: login4e9.get('loginBgImages'),
+        loginBgImagesVisible: login4e9.get('loginBgImagesVisible'),
+        loginBgImage: login4e9.get('loginBgImage')
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators(loginActions, dispatch)
+        actions: bindActionCreators(login4e9Actions, dispatch)
     }
 };
 

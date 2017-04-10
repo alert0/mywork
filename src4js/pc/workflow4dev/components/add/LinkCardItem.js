@@ -49,11 +49,10 @@ class LinkCardItem extends React.Component{
     }
 	render(){
 		const {width} = this.state;
-		const {wfbean,importDataShow,iscommon,num,showBeagenters,showImportWf,actions} = this.props;
+		const {wfbean,importDataShow,iscommon,num,showBeagenters,showImportWf,actions,user} = this.props;
 		const beagenters = wfbean.get("beagenters");
 		const belongtoUsers = wfbean.get("belongtoUsers");
 		const wfColl = wfbean.get("wfColl");
-		const user = wfbean.get("user");
 		const isImportWf = wfbean.get("isImportWf");
 		const wfid = wfbean.get("id");
 		const wfname = wfbean.get("name");
@@ -73,7 +72,7 @@ class LinkCardItem extends React.Component{
 				<div className="centerItem" key={wfid} onMouseLeave={this.hideOperArea.bind(this)} >
 					{iscommon && <span style={{color:colorarray[num%7],fontSize:'30px',float:'left',marginLeft:20}}><i className={'icon-New-Flow-' + (num == 9 ? '10' : ('0' + (num + 1)))} /></span>}
 					<div className="fontItem" style={{'width': iscommon ? '60%':'100%'}}>
-						<a onClick={this.onNewRequest.bind(this,wfid,0,0,0)} target="_blank" title={wfname}>{wfname}</a>
+						<a onClick={this.onNewRequest.bind(this,wfid,'',0,0)} target="_blank" title={wfname}>{wfname}</a>
 					</div>
 
 					<div className= "imageItem" style={{"display":"none"}}>
@@ -93,7 +92,7 @@ class LinkCardItem extends React.Component{
 										 			<Menu>
 											 			{belongtoUsers.map(b=>{
 															return <Menu.Item>
-																<a onClick={this.onNewRequest.bind(this,wfid,b.get("id"),0,1)} target="_blank">
+																<a onClick={this.onNewRequest.bind(this,wfid,b.get("id"),0,0)} target="_blank">
 																	{b.get("departmentName") && (b.get("departmentName"))}{b.get("jobtitlename") && ('/' + b.get("jobtitlename"))}
 																</a>
 															</Menu.Item>})
@@ -107,7 +106,7 @@ class LinkCardItem extends React.Component{
 										 			<Menu>
 											 			{beagenters.map(b=>{
 															return <Menu.Item>
-																<a onClick={this.onNewRequest.bind(this,wfid,b.get("id"),0,1)} target="_blank">
+																<a onClick={this.onNewRequest.bind(this,wfid,'',b.get("id"),1)} target="_blank">
 																	{b.get("lastname")}{b.get("departmentName") && ('/' + b.get("departmentName"))}
 																</a>
 															</Menu.Item>})
@@ -152,14 +151,16 @@ class LinkCardItem extends React.Component{
 			   )
 	}
 	//新建流程
-	onNewRequest(wfid,beagenter,f_weaver_belongto_userid,isagent,e){
+	onNewRequest(wfid,f_weaver_belongto_userid,beagenter,isagent,e){
 		//计数
 		jQuery.post('/workflow/request/AddWorkflowUseCount.jsp',{wfid:wfid});
-		jQuery('#workflowid').val(wfid);
-		jQuery('#isagent').val(isagent);
-		jQuery('#beagenter').val(beagenter);
-		jQuery('#subform').prop("action","/workflow/request/AddRequest.jsp");
-		jQuery('#subform').submit();
+//		jQuery('#workflowid').val(wfid);
+//		jQuery('#isagent').val(isagent);
+//		jQuery('#beagenter').val(beagenter);
+//		jQuery('#subform').prop("action","/workflow/request/AddRequest.jsp");
+//		jQuery('#subform').submit();
+		
+		openFullWindowHaveBar('/workflow/request/AddRequest.jsp?workflowid='+wfid+'&isagent='+isagent+'&beagenter='+beagenter+'&f_weaver_belongto_userid='+f_weaver_belongto_userid);
 	}
 	//添加收藏
 	addWorkflow(colected){
@@ -182,12 +183,12 @@ class LinkCardItem extends React.Component{
 	}
 	//流程导入
 	importWf(){
-		const {actions,wfbean,showImportWf} = this.props;
+		const {actions,wfbean,showImportWf,user} = this.props;
 		const wfid = wfbean.get("id");
 		if(showImportWf){
 			actions.setShowImportWf(wfid, false);
 		}else{
-			const userid = wfbean.get("user").get("id");
+			const userid = user.get("id");
 			const params = {
 				'f_weaver_belongto_userid':userid,
 				"f_weaver_belongto_usertype":"0",

@@ -1,8 +1,56 @@
-import {WeaTools} from 'weaCom';
+import {WeaTools} from 'ecCom';
 import * as THEME_API from '../apis/theme';
 import {THEME} from '../constants/ActionTypes';
 import {MODULE_ROUTE_MAP} from '../constants/ModuleRouteMap';
 import ECLocalStorage from '../util/ecLocalStorage';
+
+/**
+ * 加载主题信息
+ *
+ * @returns {function(*)}
+ */
+export function loadThemeInfo() {
+    const themeType = 'ecology9';
+    const themeColorType = ECLocalStorage.getStr('themeTemp', `themeColorType-${ECLocalStorage.getCacheAccount()}`, false) || '0';
+
+    return (dispatch) => {
+        dispatch({
+            type: THEME.THEME_INFO,
+            value: {
+                themeInfo: {
+                    themeType: themeType,
+                    themeColorType: themeColorType
+                }
+            }
+        });
+    }
+}
+
+
+/**
+ * 改变主题颜色类型
+ *
+ * @param type   主题颜色类型
+ *
+ * @returns {function(*, *)}
+ */
+export function changeThemeColorType(type) {
+    ECLocalStorage.set('themeTemp', `themeColorType-${ECLocalStorage.getCacheAccount()}`, type, false);
+
+    return (dispatch, getState) => {
+        const themeType = getState().theme.get('themeInfo').toJSON().themeType;
+
+        dispatch({
+            type: THEME.THEME_INFO,
+            value: {
+                themeInfo: {
+                    themeType: themeType,
+                    themeColorType: type
+                }
+            }
+        });
+    }
+}
 
 /**
  * 加载顶部 logo
@@ -11,7 +59,7 @@ import ECLocalStorage from '../util/ecLocalStorage';
  */
 export function loadTopLogo() {
     return (dispatch) => {
-        THEME_API.getTopLogo().then((result) => {
+        THEME_API.getThemeConfig().then((result) => {
             dispatch({
                 type: THEME.THEME_TOP_LOGO,
                 value: {
@@ -299,6 +347,7 @@ export function changeAccountVisible(visible) {
     }
 }
 
+
 /**
  * 左侧菜单数据格式化，将后端请求出的左侧菜单数据格式化为前端使用的统一格式
  *
@@ -319,14 +368,15 @@ function leftMenuFormat(data, type) {
             // 格式化后的levelid由父级菜单id加上菜单本身levelid
             levelid: (data[i].parentId || '0') + '-' + ('portal' == type ? data[i].levelid.split('_')[0] % 20 + '_portal' : data[i].levelid),
             origName: data[i].name,
-            name: data[i].count != undefined ? data[i].name + '(' + data[i].count + ')' : data[i].name,
+            name: data[i].name,
             icon: !data[i].icon || data[i].icon == '/images/homepage/baseelement_wev8.gif' || data[i].icon.indexOf('/images_face/') != -1 || data[i].icon.indexOf('/images/') != -1 || data[i].icon.indexOf('/image_secondary/') != -1 ? '' : data[i].icon,
             url: data[i].url && data[i].url.replace(/&#38;/g, '&'),
             // 门户返回的路由地址最前面有个“#”号，需要去除
             routeurl: 'portal' == type && data[i].routeurl ? '/portal' + data[i].routeurl.substring(1) : data[i].routeurl,
             child: data[i].child ? leftMenuFormat(data[i].child, type) : [],
             target: data[i].target || 'mainFrame',
-            count: data[i].count || '',
+            count: data[i].count != undefined ? data[i].count + '' : '',
+            countId: data[i].countId || '',
             titleUrlIcon: data[i].titleUrlIcon || '',
             titleUrl: data[i].titleUrl || '',
             tagColor: data[i].tagColor || '',
@@ -618,7 +668,7 @@ export function changeLeftMenuSelected(leftMenuSelected) {
  * @returns {function(*)}
  */
 export function changeLeftMenuMode(leftMenuMode) {
-    ECLocalStorage.set('theme', 'leftMenuMode', leftMenuMode, false);
+    ECLocalStorage.set('themeTemp', `leftMenuMode-${ECLocalStorage.getCacheAccount()}`, leftMenuMode, false);
 
     return (dispatch) => {
         dispatch({
@@ -672,13 +722,4 @@ export function onLoadMain(menu) {
             document.getElementById('e9routeMain').style.display = 'none';
         }
     }
-}
-
-/**
- * 退出
- */
-export function onLogout() {
-    top.Dialog.confirm("确定要退出系统吗？", function () {
-        THEME_API.logout().then(() => weaHistory.push({pathname: '/'}));
-    });
 }
