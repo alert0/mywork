@@ -122,9 +122,9 @@ const initwfphrasebutton = (editor,uiName) => {
 		
 		paramDiv.find("#_addPhrasebtn").bind("click", function () {
 			jQuery(this).hide();
-			jQuery("#cg_splitline").hide();
-			jQuery("#addphraseblock").show();
-			jQuery("#phraseinput")[0].focus();
+			paramDiv.find("#cg_splitline").hide();
+			paramDiv.find("#addphraseblock").show();
+			paramDiv.find("#phraseinput")[0].focus();
 			
 		});
 		

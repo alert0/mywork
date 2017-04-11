@@ -1,5 +1,11 @@
 .wea-req-forward-modal {
 	/*z-index: 105;*/
+	align-items: center;
+	display: flex;
+}
+
+.wea-req-forward-modal .ant-modal{
+	position: static;
 }
 
 .wea-req-forward-modal .ant-modal-header {
@@ -22,7 +28,6 @@
 
 .wea-req-forward-modal .wea-req-forward-content {
 	margin: 0px 20px;
-	height: 300px;
 }
 
 .wea-req-forward-modal .ant-modal-body {
@@ -84,6 +89,17 @@
 	cursor: pointer;
 	border-color: #2DB7F5;
 	box-shadow: 0 0 1px #2DB7F5
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-right {
+	margin-top: 20px;
+	width: 100%;
+	height: 20px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-right .label{
+	margin-right: 10px;
+  	margin-left: 10px;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark {

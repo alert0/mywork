@@ -728,7 +728,13 @@ export const doRetract = () => {
 			flag: 'rb'
 		}).then(data => {
 			//页面重新加载
-			dispatch(reqIsReload(true));
+			//dispatch(reqIsReload(true));
+			if(data.reqRoute){
+				//页面重新加载
+				dispatch(reqIsReload(true));
+			}else{
+				window.location.href = "/workflow/request/ViewRequest.jsp?requestid="+requestid +"&f_weaver_belongto_userid="+userid+"&f_weaver_belongto_usertype=0";
+			}
 		});
 	}
 }

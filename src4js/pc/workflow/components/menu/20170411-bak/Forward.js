@@ -1,4 +1,4 @@
-import { Modal, Row, Col, Button, Popover, message, Spin,Checkbox  } from 'antd'
+import { Modal, Row, Col, Button, Popover, message, Spin } from 'antd'
 import { WeaHrmInput, WeaTools, WeaRightMenu } from 'ecCom'
 import OGroup from './OGroup'
 import NodeOperator from './NodeOperator'
@@ -28,9 +28,7 @@ class Forward extends React.Component {
 			operatorDatas: [],
 			loading: false,
 			field5: '',
-			selectOperatorsMax: undefined, //转发人数最大限制，默认100
-			IsSubmitedOpinion:'',
-			IsBeForwardTodo:''
+			selectOperatorsMax: undefined //转发人数最大限制，默认100
 		};
 		this.setForwardOperatorMax();
 		window.FORWARD_OBJ = this;
@@ -55,6 +53,7 @@ class Forward extends React.Component {
 					forwardflag: forwardflag
 				});
 			}
+
 			if(forwardOperators && forwardOperators != '') {
 				this.setOperatorIds({ ids: forwardOperators, isAllUser: false });
 			}
@@ -72,32 +71,31 @@ class Forward extends React.Component {
 			fieldannexuploadname: '',
 			fieldannexuploadcount: '',
 			fieldannexuploadrequest: '',
-			field5: undefined,
-			IsSubmitedOpinion:'',
-			IsBeForwardTodo:''
+			field5: undefined
 		});
 	}
 
 	componentDidUpdate() {
 		const { hasinitremark, reload, signinput } = this.state;
-		if(jQuery('#forwardremark').length > 0 && !hasinitremark && reload) {
-			var _ue = UEUtil.initRemark('forwardremark', false);
-			bindRemark(_ue);
-			this.setState({ hasinitremark: true });
-			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index', '105');
-			jQuery('.wea-req-forward-modal').css('z-index', '105');
-			const { ismanagePage } = this.props;
-			const _that = this;
-			if(ismanagePage == '1') {
-				setTimeout(function() {
-					try {
-						_that.setRedPoint();
-						UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), false);
-					} catch(e) {  }
-				}, 1000);
+		const _that = this;
+		setTimeout(function() {
+			if(jQuery('#forwardremark').length > 0 && !hasinitremark && reload) {
+				var _ue = UEUtil.initRemark('forwardremark', false);
+				bindRemark(_ue);
+				_that.setState({ hasinitremark: true });
+				jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index', '105');
+				jQuery('.wea-req-forward-modal').css('z-index', '105');
+				const { ismanagePage } = _that.props;
+				if(ismanagePage == '1') {
+					setTimeout(function() {
+						try {
+							_that.setRedPoint();
+							UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), false);
+						} catch(e) {  }
+					},500);
+				}
 			}
-
-		}
+		}, 10);
 	}
 
 	//控制常用组显示、及数据
@@ -131,16 +129,10 @@ class Forward extends React.Component {
 			});
 		}
 	}
-	
-	updateState(paramName,e){
-		let params = {};
-		params[paramName] = e.target.checked ? 1 : 0;
-		this.setState(params);
-	}
 
 	render() {
 		const { showForward, requestid, onClick } = this.props;
-		const { isshownodeoperators, isshowoperategroup, signinput, operatorDatas, loading, field5, selectOperatorsMax,IsSubmitedOpinion,IsBeForwardTodo } = this.state;
+		const { isshownodeoperators, isshowoperategroup, signinput, operatorDatas, loading, field5, selectOperatorsMax } = this.state;
 		const titleName = this.state.signinput.requestname;
 		return(
 			<div>
@@ -186,36 +178,29 @@ class Forward extends React.Component {
 									</Popover>
 								</div>
 							</div>
-							{signinput.isforwardrights =='1' && 
-								<div className="wea-req-forward-content-right">
-									<div>
-										<span className="label">接收人权限</span>
-										<Checkbox checked={IsSubmitedOpinion == '1'} onChange={this.updateState.bind(this,'IsSubmitedOpinion')}>可提交意见</Checkbox>
-										<Checkbox checked={IsBeForwardTodo == '1'} onChange={this.updateState.bind(this,'IsBeForwardTodo')}>可转发</Checkbox>
+							{signinput.isHideInput == '0' &&
+								<div className="wea-req-forward-content-remark">
+									<div className='label'>
+										<span>{signinput.isSignMustInput == '1' && '*'}</span>
+										<span>签字意见</span>
+										<span style={{'color':'#d5d5d5','margin-left':'10px','font-weight':'normal'}}>{signinput.tempbeagenter != signinput.fileuserid ? `（您当前正代理${signinput.tempbeagentername}进行操作）` : ''}</span>
+									</div>
+									<div className='remark' id="forwardremark_div">
+										 <textarea name='forwardremark' id="forwardremark" style={{'width':'100%','height':'167px'}} >
+										 </textarea>
+										 <input type="hidden" id="signdocids" name="signdocids" value={this.state.signdocids}/>
+										 <input type="hidden" id="signworkflowids"name="signworkflowids" value={this.state.signworkflowids}/>
+										 <input type="hidden" name="remarkLocation" id="remarkLocation" value={this.state.remarkLocation}></input>
+										 <input type="hidden" id="field-annexupload" name="field-annexupload" value={this.state.fieldannexupload}/>
+										 <input type="hidden" id="field_annexupload_del_id" value=''/>
+										 <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={this.state.fieldannexuploadname}/>
+										 <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value={this.state.fieldannexuploadcount}/>
+										 <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value={requestid}/>
+										 <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
+										 <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
 									</div>
 								</div>
 							}
-							<div className="wea-req-forward-content-remark">
-								<div className='label'>
-									<span>{signinput.isSignMustInput == '1' && '*'}</span>
-									<span>签字意见</span>
-										<span style={{'color':'#d5d5d5','margin-left':'10px','font-weight':'normal'}}>{signinput.tempbeagenter != signinput.fileuserid ? `（您当前正代理${signinput.tempbeagentername}进行操作）` : ''}</span>
-								</div>
-								<div className='remark' id="forwardremark_div">
-									 <textarea name='forwardremark' id="forwardremark" style={{'width':'100%','height':'167px'}} >
-									 </textarea>
-									 <input type="hidden" id="signdocids" name="signdocids" value={this.state.signdocids}/>
-									 <input type="hidden" id="signworkflowids"name="signworkflowids" value={this.state.signworkflowids}/>
-									 <input type="hidden" name="remarkLocation" id="remarkLocation" value={this.state.remarkLocation}></input>
-									 <input type="hidden" id="field-annexupload" name="field-annexupload" value={this.state.fieldannexupload}/>
-									 <input type="hidden" id="field_annexupload_del_id" value=''/>
-									 <input type="hidden" name="field-annexupload-name" id="field-annexupload-name" value={this.state.fieldannexuploadname}/>
-									 <input type="hidden" name="field-annexupload-count" id="field-annexupload-count" value={this.state.fieldannexuploadcount}/>
-									 <input type="hidden" name="field-annexupload-request" id="field-annexupload-request" value={requestid}/>
-									 <input type="hidden" name="field-cancle" id="field-cancle" value=" 删除 "/>
-									 <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
-								</div>
-							</div>
 						</div>
 					</Spin>
 				</Modal>	
@@ -275,11 +260,11 @@ class Forward extends React.Component {
 
 	//提交
 	submitEvent() {
-		const { operatorDatas, forwardflag, field5, signinput , IsSubmitedOpinion,IsBeForwardTodo} = this.state;
+		const { operatorDatas, forwardflag, field5, signinput } = this.state;
 		const { fromform, controllShowForward } = this.props;
 		//验证签字意见必填
 		let flag = true;
-		if(signinput.isSignMustInput == '1') {
+		if(signinput.isSignMustInput == '1' && signinput.isHideInput == '0') {
 			let forwardremarkcontent = FCKEditorExt.getText("forwardremark");
 			flag = chekcremark(forwardremarkcontent);
 		}
@@ -287,8 +272,10 @@ class Forward extends React.Component {
 			message.warning('必要信息不完整，红色*号为必填项！', 2);
 			return;
 		}
-		let forwardremarkInfo = this.getSignInputInfo();
-		//console.log("forwardremarkInfo", forwardremarkInfo);
+		let forwardremarkInfo = {};
+		if(signinput.isHideInput == '0'){
+			forwardremarkInfo = this.getSignInputInfo();
+		}
 		this.setState({ loading: true });
 
 		let params = objectAssign({}, forwardremarkInfo, {
@@ -296,12 +283,11 @@ class Forward extends React.Component {
 			actiontype: 'remarkOperate',
 			field5: field5,
 			requestid: this.props.requestid,
-			forwardflag: forwardflag,
-			IsSubmitedOpinion:IsSubmitedOpinion,
-			IsBeForwardTodo:IsBeForwardTodo
+			forwardflag: forwardflag
 		});
 		const _this = this;
 		WeaTools.callApi('/workflow/core/ControlServlet.jsp?action=RequestSubmitAction', 'POST', params).then(data => {
+			controllShowForward(false);
 			_this.clearSignInput();
 			const forwardflag = data.forwardflag;
 			const { actions } = this.props;
@@ -322,7 +308,6 @@ class Forward extends React.Component {
 					} catch(e) {}
 				}
 			}
-			controllShowForward(false);
 		});
 	}
 
@@ -349,37 +334,48 @@ class Forward extends React.Component {
 
 	//清空签字意见内容
 	clearSignInput() {
-		let ue = UE.getEditor('forwardremark');
-		ue.setContent('');
-
-		const paramDiv = jQuery('#forwardremark_div');
-		const ids = paramDiv.find("#field-annexupload").val();
-		if(ids) {
-			let idArr = ids.split(',');
-			idArr.map(o => {
-				paramDiv.find('#li_' + o).remove();
-			});
-
-			const _targetobj = jQuery('#forwardremark').find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
-			_targetobj.addClass("wfres_1");
-			_targetobj.removeClass("wfres_1_slt");
-		}
-
-		const signdocids = paramDiv.find("#signdocids").val();
-		if(signdocids) {
-			const _targetobj = jQuery('#forwardremark').find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
-			_targetobj.addClass("wfres_2");
-			_targetobj.removeClass("wfres_2_slt");
-		}
-
-		const signworkflowids = paramDiv.find("#signworkflowids").val();
-		if(signworkflowids) {
-			_targetobj = jQuery('#forwardremark').find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
-			_targetobj.addClass("wfres_3");
-			_targetobj.removeClass("wfres_3_slt");
+		const {signinput} = this.state;
+		if(signinput.isHideInput == '0'){
+			let ue = UE.getEditor('forwardremark');
+			ue.setContent('');
+	
+			const paramDiv = jQuery('#forwardremark_div');
+			const ids = paramDiv.find("#field-annexupload").val();
+			if(ids) {
+				let idArr = ids.split(',');
+				idArr.map(o => {
+					paramDiv.find('#li_' + o).remove();
+				});
+	
+				const _targetobj = jQuery('#forwardremark').find(".edui-for-wfannexbutton").children("div").children("div").children("div").children(".edui-metro");
+				_targetobj.addClass("wfres_1");
+				_targetobj.removeClass("wfres_1_slt");
+			}
+	
+			const signdocids = paramDiv.find("#signdocids").val();
+			if(signdocids) {
+				const _targetobj = jQuery('#forwardremark').find(".edui-for-wfdocbutton").children("div").children("div").children("div").children(".edui-metro");
+				_targetobj.addClass("wfres_2");
+				_targetobj.removeClass("wfres_2_slt");
+			}
+	
+			const signworkflowids = paramDiv.find("#signworkflowids").val();
+			if(signworkflowids) {
+				_targetobj = jQuery('#forwardremark').find(".edui-for-wfwfbutton").children("div").children("div").children("div").children(".edui-metro");
+				_targetobj.addClass("wfres_3");
+				_targetobj.removeClass("wfres_3_slt");
+			}
 		}
 
 		this.clearState();
+		
+		const { hasinitremark } = this.state;
+		if(hasinitremark) {
+			UE.getEditor('forwardremark').destroy();
+			jQuery('#forwardremark_div').find('#_fileuploadphraseblock').remove();
+			jQuery('#forwardremark_div').find('#fsUploadProgressfileuploaddiv').remove();
+			jQuery('#forwardremark_div').find('#_signinputphraseblock').remove();
+		}
 	}
 
 	setRedPoint() {
@@ -407,17 +403,10 @@ class Forward extends React.Component {
 	}
 
 	initData() {
-		const { requestid } = this.props;
-		let params = { actiontype: 'signInput', requestid: requestid }
+		const { requestid ,} = this.props;
+		let params = { actiontype: 'signInput', requestid: requestid };
 		const _this = this;
 		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', params).then(data => {
-			const { hasinitremark } = _this.state;
-			if(hasinitremark) {
-				UE.getEditor('forwardremark').destroy();
-				jQuery('#forwardremark_div').find('#_fileuploadphraseblock').remove();
-				jQuery('#forwardremark_div').find('#fsUploadProgressfileuploaddiv').remove();
-				jQuery('#forwardremark_div').find('#_signinputphraseblock').remove();
-			}
 			_this.setState({ signinput: data, reload: true, hasinitremark: false });
 		});
 	}

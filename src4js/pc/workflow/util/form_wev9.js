@@ -74,7 +74,7 @@ const showalldetail = (ele, fieldid) => {
 window.showalldetail = showalldetail;
 
 jQuery(function () {
-	jQuery("html").live('mouseup', function (e) {
+	jQuery("table.excelMainTable").live('mouseup', function (e) {
 		if (jQuery("#__brow__detaildiv").is(":visible") && !!!jQuery(e.target).closest("#__brow__detaildiv")[0]) {
 			jQuery("#__brow__detaildiv").hide();
 		}

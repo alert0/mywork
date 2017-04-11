@@ -107,6 +107,13 @@ public class SignInputService {
         resultDatas.put("isbill",wfci.getIsBill(workflowid+""));
         resultDatas.put("formid",wfci.getFormId(workflowid+""));
         
+        String isforwardrights = "";
+        rs.executeSql("select isforwardrights from workflow_base where id = " + workflowid);
+        if(rs.next()){
+        	isforwardrights = rs.getString("isforwardrights");
+        }
+        resultDatas.put("isforwardrights", isforwardrights);
+        
         //判断是否显示签字意见输入框
         /**
         boolean IsBeForwardCanSubmitOpinion="true".equals(session.getAttribute(userid+"_"+requestid+"IsBeForwardCanSubmitOpinion"))?true:false;

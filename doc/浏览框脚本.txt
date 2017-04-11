@@ -1,0 +1,114 @@
+create table wf_browser_config (
+      type varchar2(100) not null,
+      clazz varchar2(2000) not null,
+      description varchar2(100)
+)
+/
+insert into wf_browser_config(type,clazz,description) values('262','com.api.browser.service.LocationBrowserService','办公地点')
+/
+insert into wf_browser_config(type,clazz,description) values('260','com.api.browser.service.JobCallBrowserService','职称')
+/
+insert into wf_browser_config(type,clazz,description) values('doccategory','com.api.browser.service.DocCategoryService','文档目录')
+/
+insert into wf_browser_config(type,clazz,description) values('58','com.api.browser.service.CityBrowserService','城市')
+/
+insert into wf_browser_config(type,clazz,description) values('cusstatus','com.api.browser.service.CustomerStatusService','客户状态')
+/
+insert into wf_browser_config(type,clazz,description) values('137','com.api.browser.service.CarInfoBrowserService','车辆')
+/
+insert into wf_browser_config(type,clazz,description) values('55','com.api.browser.service.DocNumberBrowserService','发文字号')
+/
+insert into wf_browser_config(type,clazz,description) values('35','com.api.browser.service.ContractBrowserService','业务合同')
+/
+insert into wf_browser_config(type,clazz,description) values('36','com.api.browser.service.ContractTypeBrowserService','合同性质')
+/
+insert into wf_browser_config(type,clazz,description) values('33','com.api.browser.service.HrmScheduleDiffBrowserService','加班类型')
+/
+insert into wf_browser_config(type,clazz,description) values('wf','com.api.browser.service.WorkflowBrowserService','流程')
+/
+insert into wf_browser_config(type,clazz,description) values('wftype','com.api.browser.service.WorkflowTypeBrowserService','流程类型')
+/
+insert into wf_browser_config(type,clazz,description) values('119','com.api.browser.service.SpecialityBrowserService','专业')
+/
+insert into wf_browser_config(type,clazz,description) values('245','com.api.browser.service.WorkTypeService','工作类型')
+/
+insert into wf_browser_config(type,clazz,description) values('244','com.api.browser.service.ProjectTypeService','项目类型')
+/
+insert into wf_browser_config(type,clazz,description) values('62','com.api.browser.service.CustomerSizeService','客户大小')
+/
+insert into wf_browser_config(type,clazz,description) values('63','com.api.browser.service.SectorInfoService','行业')
+/
+insert into wf_browser_config(type,clazz,description) values('60','com.api.browser.service.CustomerTypeService','客户类型')
+/
+insert into wf_browser_config(type,clazz,description) values('87','com.api.browser.service.MeetingRoomBrowserService','会议室')
+/
+insert into wf_browser_config(type,clazz,description) values('61','com.api.browser.service.CustomerDescService','客户描述')
+/
+insert into wf_browser_config(type,clazz,description) values('251','com.api.browser.service.FccBrowserService','成本中心')
+/
+insert into wf_browser_config(type,clazz,description) values('69','com.api.browser.service.LgcAssetUnitBrowserService','计量单位')
+/
+insert into wf_browser_config(type,clazz,description) values('16','com.api.browser.service.RequestBrowserService','请求')
+/
+insert into wf_browser_config(type,clazz,description) values('152','com.api.browser.service.MultiRequestBrowserService','多请求')
+/
+insert into wf_browser_config(type,clazz,description) values('171','com.api.browser.service.MultiRequestBrowserService','归档流程')
+/
+insert into wf_browser_config(type,clazz,description) values('23','com.api.browser.service.CapitalBrowserService','资产')
+/
+insert into wf_browser_config(type,clazz,description) values('24','com.api.browser.service.JobTitlesBrowserService','岗位')
+/
+insert into wf_browser_config(type,clazz,description) values('25','com.api.browser.service.CptAssortmentBrowserService','资产组')
+/
+insert into wf_browser_config(type,clazz,description) values('129','com.api.browser.service.ProjectTempletBrowserService','项目模板')
+/
+insert into wf_browser_config(type,clazz,description) values('274','com.api.browser.service.ContactLogBrowserService','商机来源')
+/
+insert into wf_browser_config(type,clazz,description) values('28','com.api.browser.service.MeetingBrowserService','会议')
+/
+insert into wf_browser_config(type,clazz,description) values('country','com.api.browser.service.CountryBrowserService','国家')
+/
+insert into wf_browser_config(type,clazz,description) values('182','com.api.browser.service.VotingInfoBrowserService','单网上调查')
+/
+insert into wf_browser_config(type,clazz,description) values('164','com.api.browser.service.OrganizationBrowserService','机构')
+/
+insert into wf_browser_config(type,clazz,description) values('7','com.api.workflow.service.CustomerBrowserService','客户')
+/
+insert into wf_browser_config(type,clazz,description) values('32','com.api.browser.service.HrmTrainPlanBrowserService','培训安排')
+/
+insert into wf_browser_config(type,clazz,description) values('160','com.api.browser.service.RoleBrowserService','角色')
+/
+insert into wf_browser_config(type,clazz,description) values('52','com.api.browser.service.DocKindBrowserService','公文种类')
+/
+insert into wf_browser_config(type,clazz,description) values('9','com.api.browser.service.DocBrowserService','文档')
+/
+insert into wf_browser_config(type,clazz,description) values('53','com.api.browser.service.DocInstancyLevelBrowserService','紧急程度')
+/
+insert into wf_browser_config(type,clazz,description) values('259','com.api.browser.service.LanguageBrowserService','语言')
+/
+insert into wf_browser_config(type,clazz,description) values('54','com.api.browser.service.DocSecretLevelBrowserService','秘密等级')
+/
+insert into wf_browser_config(type,clazz,description) values('8','com.api.browser.service.ProjectBrowserService','项目')
+/
+insert into wf_browser_config(type,clazz,description) values('89','com.api.browser.service.MeetingTypeBrowserService','会议类型')
+/
+insert into wf_browser_config(type,clazz,description) values('12','com.api.browser.service.CurrencyBrowserService','币种')
+/
+insert into wf_browser_config(type,clazz,description) values('13','com.api.browser.service.LgcAssortmentBrowserService','产品类别')
+/
+insert into wf_browser_config(type,clazz,description) values('27','com.api.browser.service.MutiCareerBrowserService','应聘人')
+/
+insert into wf_browser_config(type,clazz,description) values('29','com.api.browser.service.AwardTypeBrowserService','奖惩种类')
+/
+insert into wf_browser_config(type,clazz,description) values('30','com.api.browser.service.EduLevelBrowserService','学历')
+/
+insert into wf_browser_config(type,clazz,description) values('31','com.api.browser.service.UseKindBrowserService','用工性质')
+/
+insert into wf_browser_config(type,clazz,description) values('59','com.api.browser.service.ContacterTitleBrowserService','称呼')
+/
+insert into wf_browser_config(type,clazz,description) values('160','com.api.browser.service.RoleResourceBrowserService','角色人员')
+/
+insert into wf_browser_config(type,clazz,description) values('161','com.api.browser.service.CommonBrowserService','自定义单选')
+
+
+

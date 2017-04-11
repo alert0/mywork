@@ -1,5 +1,6 @@
 package com.api.workflow.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import weaver.general.Util;
 import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
 import weaver.hrm.group.HrmGroupTreeComInfo;
+import weaver.hrm.resource.MutilResourceBrowser;
+import weaver.hrm.resource.ResourceComInfo;
 
 import com.alibaba.fastjson.JSON;
 
@@ -48,9 +51,34 @@ public class HrmGroupService {
 		        }
 		    }
 		} else {
+			ResourceComInfo rcomInfo = new ResourceComInfo();
 			List<Map<String, String>> grouplist = hrmgrpcominfo.getHrmGroup(user);
+			List<Map<String,Object>> newgrouplist =  new ArrayList<Map<String,Object>>();
 			if (grouplist != null && grouplist.size() > 0) {
-				apidatas.put("datas", grouplist);
+				for(Map<String, String> group:grouplist){
+					Map<String,Object> newgroup = new HashMap<String,Object>();
+					String[] idArr  = Util.null2String(group.get("ids")).split(",");
+					if(idArr.length > 0){
+						List<Map<String,String>> users = new ArrayList<Map<String,String>>();
+						Map<String,String> userInfo = null;
+						for(String resourceid:idArr){
+							userInfo = new HashMap<String,String>();
+							userInfo.put("id", resourceid);
+							userInfo.put("lastname", rcomInfo.getLastname(resourceid));
+							userInfo.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(resourceid));
+							userInfo.put("icon", rcomInfo.getMessagerUrls(resourceid));
+							userInfo.put("type", "resource");
+							users.add(userInfo);
+						}
+						newgroup.put("users", users);
+					}
+					newgroup.put("id", group.get("typeid"));
+					newgroup.put("type", "group");
+					newgroup.put("nodeid", "group_" + group.get("typeid") + "x");
+					newgroup.put("lastname", group.get("typename"));
+					newgrouplist.add(newgroup);
+				}
+				apidatas.put("datas", newgrouplist);
 			}else{
 				apidatas.put("count","1");
 			}

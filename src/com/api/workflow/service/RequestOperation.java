@@ -703,15 +703,7 @@ public class RequestOperation {
 				//判断是否可以跳转到新的页面
 				
 				boolean reqRoute = ServiceUtil.isReqRoute(String.valueOf(requestid),user);
-				if(!reqRoute){
-					try {
-						request.getRequestDispatcher("/workflow/request/ViewRequest.jsp?requestid="+requestid+"&f_weaver_belongto_userid="+f_weaver_belongto_userid+"&f_weaver_belongto_usertype="+f_weaver_belongto_usertype).forward(request, response);
-					} catch (ServletException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				apidatas.put("reqRoute", reqRoute);
 			}
 		}
 		return apidatas;
