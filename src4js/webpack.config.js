@@ -11,8 +11,8 @@ var mode = "release";
 
 var node_env = null;
 
-//node_env = "development";
-//node_env = "production";
+node_env = "development";
+node_env = "production";
 const apps = {
 	"ecology9": {
 		entry: "./pc/main/index.js",
@@ -31,6 +31,11 @@ const apps = {
 		entry: "./pc/global4js/index.js",
 		output: "../spa/workflow/global.js",
 		styleUrl: "../spa/workflow/global.css",
+	},
+	"portalglobal4js": {
+		entry: "./pc/global4js/portalIndex.js",
+		output: "../spa/workflow/portalglobal.js",
+		styleUrl: "../spa/workflow/portalglobal.css",
 	},
 	"ecology9wf": {
 		entry: "./pc/workflow/index.js",

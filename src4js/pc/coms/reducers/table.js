@@ -3,8 +3,9 @@ import Immutable from 'immutable'
 import * as types from '../constants/ActionTypes'
 
 const table = Immutable.fromJS({
-	loading: false,
 	dataKey: '',
+	requireTimes: 0,
+	loading: false,
 	datas: [],
 	columns: [],
 	operates: [],

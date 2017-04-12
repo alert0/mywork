@@ -24,6 +24,7 @@ sorter = init -> ''
 export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
 	return(dispatch, getState) => {
 		const name = dataKeyNow ? dataKeyNow.split('_')[0] : getState().comsWeaTable.get('tableNow');
+		const requireTimes = getState().comsWeaTable.getIn([name, 'requireTimes']) || 0;
 		//初始化table && 清理部分状态
 		if(dataKeyNow){
 			dispatch({
@@ -32,13 +33,15 @@ export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
 				value: {
 					loading: true,
 					dataKey: dataKeyNow,
-					selectedRowKeys: []
+					selectedRowKeys: [],
+					requireTimes: requireTimes + 1
 				}
 			});
 		}else{
 			dispatch(tableUpdate({
 				loading: true,
-				selectedRowKeys: []
+				selectedRowKeys: [],
+				requireTimes: requireTimes + 1
 			},name));
 		}
 		//已初始化
@@ -55,61 +58,71 @@ export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
 					current,
 					sortParams: JSON.stringify(sortParams)
 				}).then((data) => {
-					dispatch(tableUpdate({
-						dataKey,
-						loading: false,
-						datas: data.datas,
-						columns: data.columns,
-						operates: data.ops,
-						showCheck: data.haveCheck,
-						pageAutoWrap: data.pageAutoWrap,
-						//pagination
-						pageSize: data.pageSize,
-						current,
-						sortParams
-					},name));
-					return data;
+					const requireTimesNow = getState().comsWeaTable.getIn([name, 'requireTimes']);
+					//console.log('requireTimesNow: ',requireTimesNow,'requireTimes: ',requireTimes)
+					if(requireTimesNow === requireTimes + 1) {
+						dispatch(tableUpdate({
+							dataKey,
+							loading: false,
+							datas: data.datas,
+							columns: data.columns,
+							operates: data.ops,
+							showCheck: data.haveCheck,
+							pageAutoWrap: data.pageAutoWrap,
+							//pagination
+							pageSize: data.pageSize,
+							current,
+							sortParams
+						},name));
+						return data;
+					}
 				}),
 				API_TABLE.getTableCounts({
 					dataKey
 				}).then((data) => {
-					dispatch(tableUpdate({
-						count: data.count
-					},name));
-					return data;
+					const requireTimesNow = getState().comsWeaTable.getIn([name, 'requireTimes']);
+					//console.log('requireTimesNow: ',requireTimesNow,'requireTimes: ',requireTimes)
+					if(requireTimesNow === requireTimes + 1) {
+						dispatch(tableUpdate({
+							count: data.count
+						},name));
+						return data;
+					}
 				})
 			]).then(result => {
-				const { haveCheck, ops } = result[0];
-				if(haveCheck || (ops && ops.length > 0)) {
-					const { columns, datas } = result[0];
-					let newDatas = [];
-					datas.map(data => {
-						let newData = {};
-						columns.map(column => {
-							if((column.from && column.from === "set") || column.dataIndex === "randomFieldId") {
-								newData[column.dataIndex] = data[column.dataIndex];
-							}
-						})
-						newDatas.push(newData);
-					});
-					API_TABLE.getTableChecks({
-						dataKey,
-						randomDatas: JSON.stringify(newDatas),
-					}).then(data => {
-						let resetDatas = datas.map(d => {
-							data.datas && data.datas.map(n => {
-								if(n.randomFieldId === d.randomFieldId) {
-									for(let p in n) {
-										d[p] = n[p];
-									}
+				if(result[0]){
+					const { haveCheck, ops } = result[0];
+					if(haveCheck || (ops && ops.length > 0)) {
+						const { columns, datas } = result[0];
+						let newDatas = [];
+						datas.map(data => {
+							let newData = {};
+							columns.map(column => {
+								if((column.from && column.from === "set") || column.dataIndex === "randomFieldId") {
+									newData[column.dataIndex] = data[column.dataIndex];
 								}
 							})
-							return d
+							newDatas.push(newData);
 						});
-						dispatch(tableUpdate({
-							datas: resetDatas
-						},name));
-					});
+						API_TABLE.getTableChecks({
+							dataKey,
+							randomDatas: JSON.stringify(newDatas),
+						}).then(data => {
+							let resetDatas = datas.map(d => {
+								data.datas && data.datas.map(n => {
+									if(n.randomFieldId === d.randomFieldId) {
+										for(let p in n) {
+											d[p] = n[p];
+										}
+									}
+								})
+								return d
+							});
+							dispatch(tableUpdate({
+								datas: resetDatas
+							},name));
+						});
+					}
 				}
 			});
 		}

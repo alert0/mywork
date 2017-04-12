@@ -93,6 +93,8 @@ class WeaTableRedux extends React.Component {
 	}
 }
 
+
+
 const mapStateToProps = state => {
 	const { comsWeaTable } = state;
 	const name = comsWeaTable.get('tableNow');
