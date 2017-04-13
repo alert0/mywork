@@ -1,7 +1,10 @@
 package com.api.workflow.bean;
 
-public class TreeCountCfg {
+import java.io.Serializable;
 
+public class TreeCountCfg implements Serializable{
+
+	private static final long serialVersionUID = 5546776150431129806L;
 	private String name;
 	private String title;
 	private boolean isshow;		//是否显示在树右侧

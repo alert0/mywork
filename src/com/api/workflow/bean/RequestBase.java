@@ -1,6 +1,10 @@
 package com.api.workflow.bean;
 
-public class RequestBase {
+import java.io.Serializable;
+
+public class RequestBase implements Serializable{
+
+	private static final long serialVersionUID = -8983161290347718676L;
 	private int requestid;
 	private int userid;
 	private int usertype;

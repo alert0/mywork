@@ -13,11 +13,28 @@ import javax.servlet.http.HttpServletResponse;
 public interface Browser {
 	
 	/**
-	 * 查询浏览框需要加载的数据
+	 * 获取浏览框数据
 	 * @param params 参数集合
 	 * @return
 	 */
 	public Map<String,Object> getBrowserData(Map<String,Object> params) throws Exception;
+	
+	/**
+	 * 获取浏览框查询条件
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String,Object> getBrowserConditionInfo(Map<String,Object> params) throws Exception;
+	
+	/**
+	 * 浏览框自动提示
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String,Object> browserAutoComplete(Map<String,Object> params) throws Exception;
+	
 	
 	/**
 	 * 
@@ -37,12 +54,5 @@ public interface Browser {
 	public Map<String,Object> getTreeNodeData(Map<String,Object> params) throws Exception;
 	
 	
-	/**
-	 * 获取browser查询条件条件数据
-	 * @param params
-	 * @return
-	 * @throws Exception
-	 */
-	public Map<String,Object> getBrowserConditionDatas(Map<String,Object> params) throws Exception;
 
 }

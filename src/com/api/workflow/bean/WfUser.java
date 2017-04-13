@@ -1,6 +1,10 @@
 package com.api.workflow.bean;
 
-public class WfUser {
+import java.io.Serializable;
+
+public class WfUser implements Serializable{
+
+	private static final long serialVersionUID = -7590144148055233860L;
 	private String id;
 	private String lastname;
 	private String subcompany;

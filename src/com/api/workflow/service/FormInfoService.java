@@ -175,6 +175,13 @@ public class FormInfoService {
 		String sql = "";
 		RecordSet rs1 = new RecordSet();
 		//生成系统字段信息
+		boolean messageType = false;
+		boolean chatsType = false;
+		rs.executeSql("select messageType,chatsType from workflow_base where id="+this.workflowid);
+		if(rs.next()){
+			if(rs.getInt("messageType") == 1)	messageType = true;
+			if(rs.getInt("chatsType") == 1)		chatsType = true;
+		}
 		Map<String,FieldInfo> mainfieldinfomap = tableinfomap.get("main").getFieldinfomap();
 		rs.executeSql("select fieldid,isview,isedit,ismandatory from workflow_nodeform where nodeid="+this.nodeid+" and fieldid<0");
 		while(rs.next()){
@@ -188,13 +195,15 @@ public class FormInfoService {
 				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(21192,user.getLanguage()));
 			else if(sysfieldid == -2)
 				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(15534,user.getLanguage()));
-			else if(sysfieldid == -3)
+			else if(sysfieldid == -3){
+				if(!messageType)	continue;
 				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(17582,user.getLanguage()));
-			else if(sysfieldid == -4)
+			}else if(sysfieldid == -4)
 				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(17614,user.getLanguage()));
-			else if(sysfieldid == -5)
+			else if(sysfieldid == -5){
+				if(!chatsType)		continue;
 				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(32812,user.getLanguage()));
-			else if(sysfieldid == -9)
+			}else if(sysfieldid == -9)
 				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(22308,user.getLanguage()));
 			mainfieldinfomap.put(sysfieldid+"", sysfieldbean);
 		}

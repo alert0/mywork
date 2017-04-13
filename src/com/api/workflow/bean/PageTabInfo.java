@@ -3,10 +3,8 @@ package com.api.workflow.bean;
 import java.io.Serializable;
 
 public class PageTabInfo implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 6505399999432831242L;
 	private String groupid;
 	private String title;
 	private int viewcondition;

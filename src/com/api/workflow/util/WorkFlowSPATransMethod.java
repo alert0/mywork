@@ -23,7 +23,6 @@ import weaver.hrm.User;
  * SPA模式下反射类
  * @author liuzy 2017/01/09
  */
-@Path("/workflow")
 public class WorkFlowSPATransMethod extends BaseBean {
 
 	private WorkFlowTransMethod workFlowTransMethod = new WorkFlowTransMethod();
@@ -34,7 +33,7 @@ public class WorkFlowSPATransMethod extends BaseBean {
 		return tabmap;
 	}
 
-	@GET
+	/*@GET
 	@Path("/opentab")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String openTab(@Context HttpServletRequest request, @Context HttpServletResponse response){
@@ -50,7 +49,7 @@ public class WorkFlowSPATransMethod extends BaseBean {
 		User user = HrmUserVarify.getUser(request, response);
 		this.getTabmap().remove(user.getUID()+"");
 		return "hasclose";
-	}
+	}*/
 
 	public String getWfNewLinkWithTitle(String requestname, String para2) {
 		String requestnamelink = workFlowTransMethod.getWfNewLinkWithTitle(requestname, para2);

@@ -3,10 +3,8 @@ package com.api.workflow.bean;
 import java.io.Serializable;
 
 public class PageBtnInfo implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -3833572511551700394L;
 	private String name;
 	private String title;
 	private String event;

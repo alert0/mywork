@@ -582,6 +582,11 @@ public class LayoutFormService {
 					String fieldvalue = Util.null2String(rs.getString(fieldinfo.getFieldname()));
 					fieldvaluemap.put("field"+fieldid, this.buildFieldValueBean(fieldinfo, fieldvalue));
 				}
+				//明细主键
+				FieldValueBean keybean = new FieldValueBean();
+				keybean.setValue(rs.getString("id"));
+				fieldvaluemap.put("keyid", keybean);
+				
 				fieldvaluelist.add(fieldvaluemap);
 			}
 			apidatas.put(key, fieldvaluelist);

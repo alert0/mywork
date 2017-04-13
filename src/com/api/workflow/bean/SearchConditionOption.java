@@ -1,6 +1,10 @@
 package com.api.workflow.bean;
 
-public class SearchConditionOption {
+import java.io.Serializable;
+
+public class SearchConditionOption implements Serializable{
+
+	private static final long serialVersionUID = 363769579655304111L;
 	private String key;
 	private String showname;
 	private boolean selected= false;

@@ -1,9 +1,11 @@
 package com.api.workflow.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class WfTreeNode {
+public class WfTreeNode implements Serializable{
 
+	private static final long serialVersionUID = 5044021437443378846L;
 	private String domid;
 	private String key;
 	private String name;

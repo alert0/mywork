@@ -3,10 +3,8 @@ package com.api.workflow.bean;
 import java.io.Serializable;
 
 public class FileFieldAttr implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 8747989149464249467L;
 	private int imgheight;
 	private int imgwidth;
 	

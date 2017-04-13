@@ -7,10 +7,7 @@ import java.util.Map;
 
 public class TableInfo implements Serializable{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6202231058130018352L;
 	private int tableindex;		//主表为0，明细1则为1
 	private String tablename = "";
 	private String tablecolumn = "";

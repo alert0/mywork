@@ -1,23 +1,30 @@
 package com.api.workflow.service;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import weaver.conn.RecordSet;
+import weaver.crm.Maint.CustomerInfoComInfo;
 import weaver.docs.category.SecCategoryComInfo;
 import weaver.docs.docs.DocImageManager;
 import weaver.general.AttachFileUtil;
+import weaver.general.TimeUtil;
 import weaver.general.Util;
 import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
+import weaver.hrm.resource.ResourceComInfo;
 import weaver.systeminfo.SystemEnv;
 import weaver.workflow.exceldesign.FormatFieldValue;
+import weaver.workflow.request.RequestPreAddinoperateManager;
 import weaver.workflow.request.WorkflowJspBean;
 
 import com.alibaba.fastjson.JSONObject;
@@ -82,15 +89,163 @@ public class FormDataService {
 		this.tableinfomap = (Map<String,TableInfo>) Util_TableMap.getObjVal(sessionkey);
 	}
 
-
 	/**
-	 * 生成主表数据信息
+	 * 加载主表字段数据信息
 	 */
-	public Map<String,FieldValueBean> generateMainData(HttpServletRequest request, HttpServletResponse response,Map<String,Object> params) throws Exception{
+	public Map<String,FieldValueBean> loadMainData(HttpServletRequest request, HttpServletResponse response, Map<String,Object> params) throws Exception{
 		this.init(request, response, params);
 		if(tableinfomap == null)
 			throw new Exception("generateMainData Get forminfo Empty Exception");
 		
+		if(params.get("iscreate") == "1"){
+			return this.generateCreateDefaultValue();
+		}else{
+			return this.generateMainData();
+		}
+	}
+	
+	/**
+	 * 流程创建生成主表字段默认值
+	 */
+	private Map<String,FieldValueBean> generateCreateDefaultValue() throws Exception{
+		String prjid = Util.null2String(request.getParameter("prjid"));
+		String reqid = Util.null2String(request.getParameter("reqid"));
+		String docid = Util.null2String(request.getParameter("docid"));
+		String hrmid = Util.null2String(request.getParameter("hrmid"));
+		String crmid = Util.null2String(request.getParameter("crmid"));
+		//String defhrmid = body_isagent == 1 ? Util.getIntValue(beagenter2, 0)+"" : Util.getIntValue(hrmid, 0)+"";	//代理情况默认
+		String defhrmid = Util.getIntValue(hrmid, 0)+"";
+		ResourceComInfo resourceComInfo = new ResourceComInfo();
+		CustomerInfoComInfo customerInfoComInfo = new CustomerInfoComInfo();
+
+		Map<String,FieldValueBean> maindefdata = new HashMap<String,FieldValueBean>();
+		// 获取节点前附加操作
+        RequestPreAddinoperateManager requestPreAddM = new RequestPreAddinoperateManager();
+		requestPreAddM.setCreater(user.getUID());
+		requestPreAddM.setOptor(user.getUID());
+		requestPreAddM.setWorkflowid(workflowid);
+		requestPreAddM.setNodeid(nodeid);
+		requestPreAddM.setRequestid(requestid);
+		Hashtable getPreAddRule_hs = requestPreAddM.getPreAddRule();
+		Hashtable inoperatefield_hs = (Hashtable) getPreAddRule_hs.get("inoperatefield_hs");
+		Hashtable fieldvalue_hs = (Hashtable) getPreAddRule_hs.get("inoperatevalue_hs");
+		//循环主表字段赋默认值
+		TableInfo maininfo = this.tableinfomap.get("main");
+		Map<String,FieldInfo> mainfields = maininfo.getFieldinfomap();
+		for(Map.Entry<String,FieldInfo> entry : mainfields.entrySet()){
+			FieldInfo fieldinfo = entry.getValue();
+			int fieldid = fieldinfo.getFieldid();
+			String fielddefvalue = "";
+			String inoperatefield_tmp = Util.null2String((String) inoperatefield_hs.get("inoperatefield"+fieldid));
+			if("1".equals(inoperatefield_tmp)){		//含节点前附加操作
+				fielddefvalue = Util.null2String((String) fieldvalue_hs.get("inoperatevalue"+fieldid));
+			}else{
+				if (fieldinfo.getHtmltype() == 3) {
+					int detailtype = fieldinfo.getDetailtype();
+					if ((detailtype == 8 || detailtype == 135) && !prjid.equals("")) { // 浏览按钮为项目,从参数中获得项目默认值
+						fielddefvalue = "" + Util.getIntValue(prjid, 0);
+					} else if ((detailtype == 9 || detailtype == 37) && !docid.equals("")) { // 浏览按钮为文档,从参数中获得文档默认值
+						fielddefvalue = "" + Util.getIntValue(docid, 0);
+					} else if ((detailtype == 1 || detailtype == 17 || detailtype == 165 || detailtype == 166) && !hrmid.equals("")) { 	// 浏览按钮为人,从参数中获得人默认值
+						fielddefvalue = "" + defhrmid;
+					} else if ((detailtype == 7 || detailtype == 18) && !crmid.equals("")) { // 浏览按钮为CRM,从参数中获得CRM默认值
+						fielddefvalue = "" + Util.getIntValue(crmid, 0);
+					} else if ((detailtype == 16 || detailtype == 152 || detailtype == 171) && !reqid.equals("")) { // 浏览按钮为REQ,从参数中获得REQ默认值
+						fielddefvalue = "" + Util.getIntValue(reqid, 0);
+					} else if ((detailtype == 4 || detailtype == 57 || detailtype == 167 || detailtype == 168) && !hrmid.equals("")) { // 浏览按钮为部门,从参数中获得人对应部门默认值
+						fielddefvalue = "" + Util.getIntValue(resourceComInfo.getDepartmentID(defhrmid), 0);
+					} else if ((detailtype == 164 || detailtype == 169 || detailtype == 170 || detailtype == 194) && !hrmid.equals("")) { // 浏览按钮为分部,从参数中获得人对应分部默认值
+						fielddefvalue = "" + Util.getIntValue(resourceComInfo.getSubCompanyID(defhrmid), 0);
+					} else if ((detailtype == 24 || detailtype == 278) && !hrmid.equals("")) { // 浏览按钮为职务,从参数中获得人对应职务默认值
+						fielddefvalue = "" + Util.getIntValue(resourceComInfo.getJobTitle(defhrmid), 0);
+					} else if (detailtype == 32 && !hrmid.equals("")) {	
+						fielddefvalue = "" + Util.getIntValue(request.getParameter("TrainPlanId"), 0);
+					} else if (detailtype == 2) {// 日期
+						fielddefvalue = TimeUtil.getCurrentDateString();
+					} else if (detailtype == 19) {// 时间
+						fielddefvalue = TimeUtil.getCurrentTimeString().substring(11, 16);
+					} else if (detailtype == 178) {// 年份
+						String currentdate_tmp = TimeUtil.getCurrentDateString();
+						if (currentdate_tmp != null && currentdate_tmp.indexOf("-") >= 0)
+							fielddefvalue = currentdate_tmp.substring(0, currentdate_tmp.indexOf("-"));
+					}
+					if ("0".equals(fielddefvalue))
+						fielddefvalue = "";
+				}
+			}
+			if(!"".equals(fielddefvalue)){
+				maindefdata.put("field"+fieldid, this.buildFieldValueBean(fieldinfo, fielddefvalue));
+			}
+		}
+		//URL参数传值
+		Enumeration em = request.getParameterNames();
+		while(em.hasMoreElements()){
+			String paramName = (String) em.nextElement();
+			if(Pattern.matches("field\\d+", paramName)){
+				int fieldid = Util.getIntValue(paramName.substring(5));
+				String paramValue = Util.null2String(request.getParameter(paramName));
+				if(fieldid > 0 && !"".equals(paramValue) && mainfields.containsKey(fieldid)){
+					maindefdata.put("field"+fieldid, this.buildFieldValueBean(mainfields.get(fieldid), paramValue));
+				}
+			}
+		}
+		//系统字段赋默认值
+		int defaultName = 0;
+		boolean messageType = false;
+		boolean chatsType = false;
+		int smsAlertsType = 0;
+		int chatsAlertType = 0;
+		rs.executeSql("select * from workflow_base where id="+workflowid);
+		if(rs.next()){
+			defaultName = Util.getIntValue(rs.getString("defaultName"), 0);
+			if(rs.getInt("messageType") == 1)	messageType = true;
+			if(rs.getInt("chatsType") == 1)		chatsType = true;
+			smsAlertsType = Util.getIntValue(rs.getString("smsAlertsType"), 0);
+			chatsAlertType = Util.getIntValue(rs.getString("chatsAlertType"), 0);
+		}
+		//流程标题-1
+		int requestname_isview = mainfields.containsKey("-1") ? mainfields.get("-1").getIsview() : 0;
+		if(defaultName == 1 || requestname_isview != 1){	//标题默认规则或标题字段未放置在模板上
+			String username = "";
+			if (this.user.getLogintype().equals("1"))
+				username = resourceComInfo.getLastname(defhrmid);
+			if (this.user.getLogintype().equals("2"))
+				username = customerInfoComInfo.getCustomerInfoname(defhrmid);
+			
+			weaver.general.DateUtil DateUtil = new weaver.general.DateUtil();
+			String deftitle = DateUtil.getWFTitleNew(""+workflowid, defhrmid, username, this.user.getLogintype());
+			deftitle = Util.toScreenToEdit(deftitle, user.getLanguage());
+			
+			FieldValueBean requestnamebean = new FieldValueBean();
+			requestnamebean.setValue(deftitle);
+			maindefdata.put("field-1", requestnamebean);
+		}
+		// 紧急程度-2
+		FieldValueBean requestlevelbean = new FieldValueBean();
+		requestlevelbean.setValue("0");
+		requestlevelbean.setShowname(this.transRequestLevelName(0));
+		maindefdata.put("field-2", requestlevelbean);
+		// 短信提醒-3
+		if(messageType){
+			FieldValueBean messagetypebean = new FieldValueBean();
+			messagetypebean.setValue(smsAlertsType+"");
+			messagetypebean.setShowname(this.transMessageTypeName(smsAlertsType));
+			maindefdata.put("field-3", messagetypebean);
+		}
+		// 微信提醒-5
+		if(chatsType){
+			FieldValueBean chatstypebean = new FieldValueBean();
+			chatstypebean.setValue(chatsAlertType+"");
+			chatstypebean.setShowname(this.transChatsTypeName(chatsAlertType));
+			maindefdata.put("field-5", chatstypebean);
+		}
+		return maindefdata;
+	}
+	
+	/**
+	 * 流程编辑生成主表数据信息
+	 */
+	private Map<String,FieldValueBean> generateMainData(){
 		Map<String,FieldValueBean> maindata = new HashMap<String,FieldValueBean>();
 		TableInfo maininfo = this.tableinfomap.get("main");
 		String tablename = maininfo.getTablename();
@@ -105,6 +260,7 @@ public class FormDataService {
 		}
 		rs.executeSql(recordsql);
 		if(rs.next()){
+			//自定义字段值
 			Map<String,FieldInfo> mainfields = maininfo.getFieldinfomap();
 			for(Map.Entry<String, FieldInfo> entry : mainfields.entrySet()){
 				FieldInfo fieldinfo = entry.getValue();
@@ -116,45 +272,26 @@ public class FormDataService {
 			rs.executeSql("select * from workflow_requestbase where requestid="+requestid);
 			if(rs.next()){
 				FieldValueBean requestnamebean = new FieldValueBean();
-				maindata.put("field-1", requestnamebean);
 				requestnamebean.setValue(rs.getString("requestname"));
+				maindata.put("field-1", requestnamebean);
 				
 				int requestlevel = Util.getIntValue(rs.getString("requestlevel"),0);
-				String requestlevelshowname = "";
-				if(requestlevel == 0)
-					requestlevelshowname = SystemEnv.getHtmlLabelName(225,user.getLanguage());
-				else if(requestlevel == 1)
-					requestlevelshowname = SystemEnv.getHtmlLabelName(15533,user.getLanguage());
-				else if(requestlevel == 2)
-					requestlevelshowname = SystemEnv.getHtmlLabelName(2087,user.getLanguage());
 				FieldValueBean requestlevelbean = new FieldValueBean();
-				maindata.put("field-2", requestlevelbean);
 				requestlevelbean.setValue(requestlevel+"");
-				requestlevelbean.setShowname(requestlevelshowname);
+				requestlevelbean.setShowname(this.transRequestLevelName(requestlevel));
+				maindata.put("field-2", requestlevelbean);
 				
 				int messagetype = Util.getIntValue(rs.getString("messagetype"),0);
-				String messagetypeshowname = "";
-				if(messagetype == 0)
-					messagetypeshowname = SystemEnv.getHtmlLabelName(17583,user.getLanguage());
-				else if(messagetype == 1)
-					messagetypeshowname = SystemEnv.getHtmlLabelName(17584,user.getLanguage());
-				else if(messagetype == 2)
-					messagetypeshowname = SystemEnv.getHtmlLabelName(17584,user.getLanguage());
 				FieldValueBean messagetypebean = new FieldValueBean();
-				maindata.put("field-3", messagetypebean);
 				messagetypebean.setValue(messagetype+"");
-				messagetypebean.setShowname(messagetypeshowname);
+				messagetypebean.setShowname(this.transMessageTypeName(messagetype));
+				maindata.put("field-3", messagetypebean);
 				
 				int chatstype = Util.getIntValue(rs.getString("chatstype"),0);
-				String chatstypeshowname = "";
-				if(chatstype == 0)
-					chatstypeshowname = SystemEnv.getHtmlLabelName(19782,user.getLanguage());
-				else if(chatstype == 1)
-					chatstypeshowname = SystemEnv.getHtmlLabelName(26928,user.getLanguage());
 				FieldValueBean chatstypebean = new FieldValueBean();
-				maindata.put("field-5", chatstypebean);
 				chatstypebean.setValue(chatstype+"");
-				chatstypebean.setShowname(chatstypeshowname);
+				chatstypebean.setShowname(this.transChatsTypeName(chatstype));
+				maindata.put("field-5", chatstypebean);
 			}
 			maininfo.setRecordnum(1);
 		}else{
@@ -443,6 +580,37 @@ public class FormDataService {
 		if(imageids.startsWith(","))
 			imageids = imageids.substring(1);
 		return imageids;
+	}
+	
+	private String transRequestLevelName(int requestlevel){
+		String requestlevelshowname = "";
+		if(requestlevel == 0)
+			requestlevelshowname = SystemEnv.getHtmlLabelName(225,user.getLanguage());
+		else if(requestlevel == 1)
+			requestlevelshowname = SystemEnv.getHtmlLabelName(15533,user.getLanguage());
+		else if(requestlevel == 2)
+			requestlevelshowname = SystemEnv.getHtmlLabelName(2087,user.getLanguage());
+		return requestlevelshowname;
+	}
+	
+	private String transMessageTypeName(int messagetype){
+		String messagetypeshowname = "";
+		if(messagetype == 0)
+			messagetypeshowname = SystemEnv.getHtmlLabelName(17583,user.getLanguage());
+		else if(messagetype == 1)
+			messagetypeshowname = SystemEnv.getHtmlLabelName(17584,user.getLanguage());
+		else if(messagetype == 2)
+			messagetypeshowname = SystemEnv.getHtmlLabelName(17584,user.getLanguage());
+		return messagetypeshowname;
+	}
+	
+	private String transChatsTypeName(int chatstype){
+		String chatstypeshowname = "";
+		if(chatstype == 0)
+			chatstypeshowname = SystemEnv.getHtmlLabelName(19782,user.getLanguage());
+		else if(chatstype == 1)
+			chatstypeshowname = SystemEnv.getHtmlLabelName(26928,user.getLanguage());
+		return chatstypeshowname;
 	}
 	
 	

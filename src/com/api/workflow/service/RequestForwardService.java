@@ -22,6 +22,7 @@ import weaver.general.Pinyin4j;
 import weaver.general.Util;
 import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
+import weaver.hrm.resource.MutilResourceBrowser;
 import weaver.hrm.resource.ResourceComInfo;
 
 @Path("/workflow/reqforward")
@@ -115,62 +116,65 @@ public class RequestForwardService {
 		rs.executeSql(sqlsb.toString());
 
 		ResourceComInfo rci = null;
+		List<Map<String, Object>> operators = new ArrayList<Map<String, Object>>();
 		try {
 			rci = new ResourceComInfo();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		int tmpnodeid_old = -1;
-
-		List<Map<String, String>> operators = new ArrayList<Map<String, String>>();
-		Map<String, String> operator;
-		List<String> operatorflag = new ArrayList<String>();
-		while (rs.next()) {
-			int tmpnodeid = rs.getInt("nodeid");
-			String tmpnodename = rs.getString("nodename");
-			String tmpuserid = rs.getString("userid");
-			String tmpagentorbyagentid = rs.getString("agentorbyagentid");
-			String tmpisremark = Util.null2String(rs.getString("isremark"));
-
-			if (tmpnodeid_old != tmpnodeid) {
-				tmpnodeid_old = tmpnodeid;
-				operatorflag = new ArrayList<String>();
-			}
-			operator = new HashMap<String, String>();
-			if (tmpisremark.equals("")) {
-				tmpisremark = Util.null2String(rs.getString("lastisremark"));
-			}
-			int tmpusertype = rs.getInt("usertype");
-			int tmpagenttype = rs.getInt("agenttype");
-
-			if (tmpusertype == 0) {
-				if (!operatorflag.contains(tmpuserid)) {
-					operator.put("uid", tmpuserid);
-					String username = Util.toScreen(rci.getResourcename(tmpuserid), user.getLanguage());
-					operator.put("data", username);
-					operator.put("nodeid", tmpnodeid + "");
-					operator.put("nodename", tmpnodename);
-					operator.put("datapy", Pinyin4j.spell(username));
-					operator.put("handed",tmpisremark.equals("2")?"1":"0");
-					operators.add(operator);
-					operatorflag.add(tmpuserid);
+			int tmpnodeid_old = -1;
+	
+			Map<String, Object> operator;
+			List<String> operatorflag = new ArrayList<String>();
+			while (rs.next()) {
+				int tmpnodeid = rs.getInt("nodeid");
+				String tmpnodename = rs.getString("nodename");
+				String tmpuserid = rs.getString("userid");
+				String tmpagentorbyagentid = rs.getString("agentorbyagentid");
+				String tmpisremark = Util.null2String(rs.getString("isremark"));
+	
+				if (tmpnodeid_old != tmpnodeid) {
+					tmpnodeid_old = tmpnodeid;
+					operatorflag = new ArrayList<String>();
 				}
-				if (tmpagenttype == 2) {
+				if (tmpisremark.equals("")) {
+					tmpisremark = Util.null2String(rs.getString("lastisremark"));
+				}
+				int tmpusertype = rs.getInt("usertype");
+				int tmpagenttype = rs.getInt("agenttype");
+	
+				if (tmpusertype == 0) {
 					if (!operatorflag.contains(tmpuserid)) {
-						operator = new HashMap<String, String>();
-						operator.put("uid", tmpagentorbyagentid);
-						String username = Util.toScreen(rci.getResourcename(tmpagentorbyagentid), user.getLanguage());
+						operator = new HashMap<String, Object>();
+						operator.put("uid", tmpuserid);
+						String username = Util.toScreen(rci.getResourcename(tmpuserid), user.getLanguage());
 						operator.put("data", username);
 						operator.put("nodeid", tmpnodeid + "");
 						operator.put("nodename", tmpnodename);
 						operator.put("datapy", Pinyin4j.spell(username));
 						operator.put("handed",tmpisremark.equals("2")?"1":"0");
+						operator.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(tmpuserid));
+						operator.put("icon", rci.getMessagerUrls(tmpuserid));
 						operators.add(operator);
 						operatorflag.add(tmpuserid);
 					}
+					if (tmpagenttype == 2) {
+						if (!operatorflag.contains(tmpuserid)) {
+							operator = new HashMap<String, Object>();
+							operator.put("uid", tmpagentorbyagentid);
+							String username = Util.toScreen(rci.getResourcename(tmpagentorbyagentid), user.getLanguage());
+							operator.put("data", username);
+							operator.put("nodeid", tmpnodeid);
+							operator.put("nodename", tmpnodename);
+							operator.put("datapy", Pinyin4j.spell(username));
+							operator.put("handed",tmpisremark.equals("2")?"1":"0");
+							operator.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(tmpagentorbyagentid));
+							operator.put("icon", rci.getMessagerUrls(tmpagentorbyagentid));
+							operators.add(operator);
+							operatorflag.add(tmpuserid);
+						}
+					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return JSON.toJSONString(operators);
 	}

@@ -1,13 +1,15 @@
 package com.api.workflow.bean;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import weaver.hrm.User;
 import weaver.search.SearchClause;
 
-public class RequestListParam {
+public class RequestListParam implements Serializable{
 	
+	private static final long serialVersionUID = 7286887364756096159L;
 	private User user = new User();
 	private SearchClause SearchClause = new SearchClause();
 	private Map<String,String> reqparams = new HashMap<String,String>();

@@ -1,9 +1,12 @@
 package com.api.workflow.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WfBean {
+public class WfBean implements Serializable{
+
+	private static final long serialVersionUID = 214529768535685281L;
 	private String id;
 	private String typeId;
 	private String type2;

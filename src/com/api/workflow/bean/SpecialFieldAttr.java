@@ -1,6 +1,10 @@
 package com.api.workflow.bean;
 
-public class SpecialFieldAttr {
+import java.io.Serializable;
+
+public class SpecialFieldAttr implements Serializable{
+
+	private static final long serialVersionUID = 7761393615368118002L;
 	private String displayname;
 	private String linkaddress;
 	private String descriptivetext;

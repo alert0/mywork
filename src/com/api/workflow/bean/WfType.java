@@ -1,11 +1,14 @@
 package com.api.workflow.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WfType {
+public class WfType implements Serializable{
+
+	private static final long serialVersionUID = -1476477376137409514L;
 	private String id;
 	private String type1Id;
 	private String type2;

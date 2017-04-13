@@ -1,6 +1,10 @@
 package com.api.workflow.bean;
 
-public class SelectItem {
+import java.io.Serializable;
+
+public class SelectItem implements Serializable{
+
+	private static final long serialVersionUID = -303509456854245418L;
 	//private int keyid;
 	private int selectvalue;
 	private String selectname;

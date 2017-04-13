@@ -1,9 +1,11 @@
 package com.api.workflow.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class SelectFieldAttr {
+public class SelectFieldAttr implements Serializable{
 
+	private static final long serialVersionUID = 3277734710651043432L;
 	private int childfieldid;
 	private int fieldshowtypes;
 	//private int selectitemtype;

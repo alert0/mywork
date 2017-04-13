@@ -76,6 +76,8 @@ public class HrmGroupService {
 					newgroup.put("type", "group");
 					newgroup.put("nodeid", "group_" + group.get("typeid") + "x");
 					newgroup.put("lastname", group.get("typename"));
+					newgroup.put("grouptype", group.get("type"));
+					newgroup.put("names", group.get("names"));
 					newgrouplist.add(newgroup);
 				}
 				apidatas.put("datas", newgrouplist);

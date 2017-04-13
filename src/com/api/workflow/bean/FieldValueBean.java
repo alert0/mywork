@@ -4,10 +4,7 @@ import java.io.Serializable;
 
 public class FieldValueBean implements Serializable{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3373084040465947530L;
 	private String value;
 	private String showname;
 	private String formatvalue;

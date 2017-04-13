@@ -6,7 +6,6 @@ import java.util.regex.*;
 import weaver.general.BaseBean;
 import weaver.general.Util;
 import weaver.conn.RecordSet;
-import com.api.workflow.bean.FieldAttrDynamicCfg;
 
 public class DynamicConfigUtil extends BaseBean {
 	
@@ -59,67 +58,5 @@ public class DynamicConfigUtil extends BaseBean {
 		return cfgmap;
 	}
 	
-	/**
-	 * 字段联动配置
-	 */
-	public List<String> getDataInputDynamicCfg(int wfid){
-		RecordSet rs = new RecordSet();
-		List<String> cfglist = new ArrayList<String>();
-		rs.executeSql("select triggerfieldname from workflow_datainput_entry where workflowid="+wfid);
-		while(rs.next()){
-			cfglist.add(rs.getString("triggerfieldname"));
-		}
-		return cfglist;
-	}
-	
-	/**
-	 * 字段属性联动配置
-	 */
-	public List<FieldAttrDynamicCfg> getFieldAttrDynamicCfg(int nodeid, int formid, int isbill){
-		RecordSet rs = new RecordSet();
-		List<FieldAttrDynamicCfg> cfglist = new ArrayList<FieldAttrDynamicCfg>();
-		rs.executeSql("select * from workflow_nodefieldattr where nodeid="+nodeid+" and formid="+formid+" and isbill="+isbill+" order by id");
-		Pattern p = Pattern.compile("\\$(-)?\\d+\\$");
-		Matcher m;
-		while(rs.next()){
-			int keyid = rs.getInt("id");
-			int caltype = rs.getInt("caltype");
-			if(caltype < 1)		caltype = 1;
-			int assignfield = rs.getInt("fieldid");
-			String attrcontent = rs.getString("attrcontent");
-			List<String> relatefield = new ArrayList<String>();
-			m = p.matcher(attrcontent);
-			while(m.find()){
-				String fieldid = m.group();
-				fieldid = fieldid.substring(1, fieldid.length()-1);
-				relatefield.add(fieldid);
-			}
-			m = p.matcher(attrcontent);
-			while(m.find()){
-				String trifield = m.group();
-				trifield = trifield.substring(1, trifield.length()-1);
-				FieldAttrDynamicCfg cfg = new FieldAttrDynamicCfg();
-				cfg.setKeyid(keyid);
-				cfg.setCaltype(caltype);
-				cfg.setTrifield(Util.getIntValue(trifield));
-				cfg.setRelatefield(relatefield);
-				cfg.setAssignfield(assignfield);
-				cfglist.add(cfg);
-			}
-		}
-		return cfglist;
-	}
-	
-	/**
-	 * 显示属性联动配置
-	 */
-	public Map<String,Object> getViewAttrLinkageCfg(int wfid, int nodeid){
-		RecordSet rs = new RecordSet();
-		rs.executeSql("select fieldid,selectfieldvalue,changefieldids,viewattr from workflow_viewattrlinkage where workflowid="+wfid+" and nodeid="+nodeid);
-		while(rs.next()){
-			
-		}
-		return null;
-	}
 	
 }

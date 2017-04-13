@@ -1,7 +1,10 @@
 package com.api.workflow.bean;
 
-public class RightMenu {
+import java.io.Serializable;
+
+public class RightMenu implements Serializable{
 	
+	private static final long serialVersionUID = -4448694547539992102L;
 	private String menuName;
 	private String menuFun;
 	private String target;

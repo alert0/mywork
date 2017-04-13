@@ -1,8 +1,11 @@
 package com.api.workflow.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class LinkageCfgBean {
+public class LinkageCfgBean implements Serializable{
+
+	private static final long serialVersionUID = 3354905325532362764L;
 	private String assignfield;		//赋值字段
 	private Object config;			//联动配置
 	private List<String> relatefields;	//相关取值字段

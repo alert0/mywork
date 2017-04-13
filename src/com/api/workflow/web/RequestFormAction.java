@@ -28,6 +28,7 @@ import com.api.workflow.service.RemarkOperateService;
 import com.api.workflow.service.RequestFormService;
 import com.api.workflow.service.RequestLogService;
 import com.api.workflow.service.RequestOperation;
+import com.api.workflow.service.RequestRemarkOperation;
 import com.api.workflow.service.RequestStatusLogService;
 import com.api.workflow.service.SignInputService;
 import com.api.workflow.util.PageUidFactory;
@@ -42,6 +43,233 @@ import com.cloudstore.dev.api.util.Util_TableMap;
 public class RequestFormAction {
 
 	/**
+	 * 请求相关信息接口(签字意见等)
+	 */
+	@GET
+	@Path("/loadForm")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String loadForm(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			User user = HrmUserVarify.getUser(request, response);
+			long start = System.currentTimeMillis();
+			int userid = user.getUID();
+			String requestid = Util.null2String(request.getParameter("requestid"));
+			//点击列表预加载，当表单请求到时直接返回
+			boolean ispreload = Util.getIntValue(request.getParameter("ispreload")) == 1;
+			boolean isdebug = (userid==8 || userid==80 || userid==1215||userid==1348||userid==3724||userid==4548);
+			if(isdebug){
+				System.out.println("-11-requestid-"+requestid+"-userid-"+userid+"-ispreload-"+ispreload+"-"+ (System.currentTimeMillis() - start));
+				start = System.currentTimeMillis();
+			}
+			String preloadkey = Util.null2String(request.getParameter("preloadkey"));
+			//获取预加载的内容的token
+			String preloadValKey = preloadkey;
+			//new weaver.general.BaseBean().writeLog("ispreload--"+ispreload+"---preloadkey---"+preloadkey);
+			if (!"".equals(preloadkey)) {
+				preloadkey = user.getUID() + "_" + preloadkey;
+				preloadValKey = preloadkey + "_val";
+				if (ispreload) {
+					Util_TableMap.setVal(preloadkey, "loading");
+				} else {
+					//-----------------------------------------------------------------------------
+					// 如果有预加载活动。
+					// 注：预加载的内容只能使用一次，当前线程获取预加载的内容后，其他线程需要按照正常逻辑加载。
+					//-----------------------------------------------------------------------------
+					if (Util_TableMap.containsKey(preloadkey)) {
+						//清除预加载标志
+						Util_TableMap.clearVal(preloadkey);
+						int i = 0;
+						//预加载的内容，如果还没有加载好， 线程等待5s，5s后还未加载完成， 则按照正常逻辑加载。
+						String cacheVal = null;
+						while (i < 100) {
+							cacheVal = Util_TableMap.getVal(preloadValKey);
+							if (cacheVal != null) {
+								if(isdebug){
+									System.out.println("-12-requestid-"+requestid+"-preloadValKey-"+preloadValKey+"-i-"+i);
+									System.out.println("-12-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+									start = System.currentTimeMillis();
+								}
+								Util_TableMap.clearVal(preloadValKey);
+								return cacheVal;
+							}
+							Thread.sleep(50);
+						}
+					}
+				}
+			}
+			//new weaver.general.BaseBean().writeLog("ispreload--loading--"+preloadkey);
+
+			if(isdebug){
+				System.out.println("-13-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+				start = System.currentTimeMillis();
+			}
+			Map<String,Object> params = new RequestFormService(request, response).loadCompetence();
+			apidatas.put("params", params);
+			if(isdebug){
+				System.out.println("-14-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+				start = System.currentTimeMillis();
+			}
+			apidatas.putAll(new LayoutFormService().generateFormData(request, response, params));
+			if(isdebug){
+				System.out.println("-15-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+				start = System.currentTimeMillis();
+			}
+
+			String apidatastr = JSON.toJSONString(apidatas);
+			if(isdebug){
+				System.out.println("-16-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+				start = System.currentTimeMillis();
+			}
+			int ismode = Util.getIntValue(Util.null2String(params.get("ismode")), 0);
+			int layoutid = Util.getIntValue(Util.null2String(params.get("modeid")), 0);
+			String retstr = "";
+			if (ismode == 2 && layoutid > 0) {        //设计器布局单独拼串
+				String datajson = new LayoutInfoService().getLayoutDataJson(layoutid);
+				apidatastr = apidatastr.substring(0, apidatastr.lastIndexOf("}"));
+				retstr = apidatastr + ",\"datajson\":" + datajson + "}";
+			} else {
+				retstr = apidatastr;
+			}
+			if(isdebug){
+				System.out.println("-17-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
+				start = System.currentTimeMillis();
+			}
+			//预加载结果处理
+			if (ispreload && !"".equals(preloadkey)) {
+				//预加载内容放入容器
+				Util_TableMap.setVal(preloadValKey, retstr);
+			}
+			return retstr;
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/detailData")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String detailData(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new LayoutFormService().generateDetailData(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/requestLog")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String requestLog(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestLogService(request, response, true).getRequestLogData();
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/updateRequestLogPageSize")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateRequestLogPageSize(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			new RequestLogService(request, response, false).updateRequestLogPageSize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/signInput")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String signInput(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new SignInputService().loadSignInputInfo(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/rightMenu")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String rightMenu(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestFormService(request, response).getRightMenu();
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/updateReqInfo")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateReqInfo(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestFormService(request, response).updateRequestInfoData();
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/addDocReadTag")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addDocReadTag(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestLogService(request, response, false).addDocReadTag();
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/copyCustomPageFile")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String copyCustomPageFile(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestFormService().copyCustompageFile(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	/**
 	 * 代码块接口
 	 */
 	@GET
@@ -52,143 +280,14 @@ public class RequestFormAction {
 		String scripts = new LayoutInfoService().getLayoutScripts(layoutid);
 		return scripts;
 	}
-
-	/**
-	 * 请求相关信息接口(签字意见等)
-	 */
-	@GET
-	@Path("/reqinfo")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getRequestInfo(@Context HttpServletRequest request, @Context HttpServletResponse response) {
-		Map<String,Object> apidatas = new HashMap<String,Object>();
-		try {
-			User user = HrmUserVarify.getUser(request, response);
-			String actiontype = request.getParameter("actiontype");
-			if ("loadRight".equalsIgnoreCase(actiontype)) {
-				long start = System.currentTimeMillis();
-				int userid = user.getUID();
-				boolean isdebug = (userid==8 || userid==80 || userid==1215||userid==1348||userid==3724||userid==4548);
-				String requestid = Util.null2String(request.getParameter("requestid"));
-				//点击列表预加载，当表单请求到时直接返回
-				boolean ispreload = Util.getIntValue(request.getParameter("ispreload")) == 1;
-				if(isdebug){
-					System.out.println("-11-requestid-"+requestid+"-userid-"+userid+"-ispreload-"+ispreload+"-"+ (System.currentTimeMillis() - start));
-					start = System.currentTimeMillis();
-				}
-				String preloadkey = Util.null2String(request.getParameter("preloadkey"));
-				//获取预加载的内容的token
-				String preloadValKey = preloadkey;
-				//new weaver.general.BaseBean().writeLog("ispreload--"+ispreload+"---preloadkey---"+preloadkey);
-				if (!"".equals(preloadkey)) {
-					preloadkey = user.getUID() + "_" + preloadkey;
-					preloadValKey = preloadkey + "_val";
-					if (ispreload) {
-						Util_TableMap.setVal(preloadkey, "loading");
-					} else {
-						//-----------------------------------------------------------------------------
-						// 如果有预加载活动。
-						// 注：预加载的内容只能使用一次，当前线程获取预加载的内容后，其他线程需要按照正常逻辑加载。
-						//-----------------------------------------------------------------------------
-						if (Util_TableMap.containsKey(preloadkey)) {
-							//清除预加载标志
-							Util_TableMap.clearVal(preloadkey);
-							int i = 0;
-							//预加载的内容，如果还没有加载好， 线程等待5s，5s后还未加载完成， 则按照正常逻辑加载。
-							String cacheVal = null;
-							while (i < 100) {
-								cacheVal = Util_TableMap.getVal(preloadValKey);
-								if (cacheVal != null) {
-									if(isdebug){
-										System.out.println("-12-requestid-"+requestid+"-preloadValKey-"+preloadValKey+"-i-"+i);
-										System.out.println("-12-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
-										start = System.currentTimeMillis();
-									}
-									Util_TableMap.clearVal(preloadValKey);
-									return cacheVal;
-								}
-								Thread.sleep(50);
-							}
-						}
-					}
-				}
-				//new weaver.general.BaseBean().writeLog("ispreload--loading--"+preloadkey);
-
-				if(isdebug){
-					System.out.println("-13-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
-					start = System.currentTimeMillis();
-				}
-				Map<String,Object> params = new RequestFormService(request, response).loadCompetence();
-				apidatas.put("params", params);
-				if(isdebug){
-					System.out.println("-14-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
-					start = System.currentTimeMillis();
-				}
-				apidatas.putAll(new LayoutFormService().generateFormData(request, response, params));
-				if(isdebug){
-					System.out.println("-15-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
-					start = System.currentTimeMillis();
-				}
-
-				String apidatastr = JSON.toJSONString(apidatas);
-				if(isdebug){
-					System.out.println("-16-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
-					start = System.currentTimeMillis();
-				}
-				int ismode = Util.getIntValue(Util.null2String(params.get("ismode")), 0);
-				int layoutid = Util.getIntValue(Util.null2String(params.get("modeid")), 0);
-				String retstr = "";
-				if (ismode == 2 && layoutid > 0) {        //设计器布局单独拼串
-					String datajson = new LayoutInfoService().getLayoutDataJson(layoutid);
-					apidatastr = apidatastr.substring(0, apidatastr.lastIndexOf("}"));
-					retstr = apidatastr + ",\"datajson\":" + datajson + "}";
-				} else {
-					retstr = apidatastr;
-				}
-				if(isdebug){
-					System.out.println("-17-requestid-"+requestid+"-userid-"+userid+"-"+ (System.currentTimeMillis() - start));
-					start = System.currentTimeMillis();
-				}
-				//预加载结果处理
-				if (ispreload && !"".equals(preloadkey)) {
-					//预加载内容放入容器
-					Util_TableMap.setVal(preloadValKey, retstr);
-				}
-				return retstr;
-			} else if ("detaildata".equals(actiontype)) {
-				apidatas = new LayoutFormService().generateDetailData(request, response);
-			} else if ("requestLog".equalsIgnoreCase(actiontype)) {
-				apidatas = new RequestLogService(request, response, true).getRequestLogData();
-			} else if ("updateRequestLogPageSize".equalsIgnoreCase(actiontype)) {
-				new RequestLogService(request, response, false).updateRequestLogPageSize();
-			} else if ("signInput".equalsIgnoreCase(actiontype)) {
-				apidatas = new SignInputService().loadSignInputInfo(request, response);
-			} else if ("rightMenu".equals(actiontype)) {
-				apidatas = new RequestFormService(request, response).getRightMenu();
-			} else if ("updatereqinfo".equals(actiontype)) {
-				apidatas = new RequestFormService(request, response).updateRequestInfoData();
-			} else if ("addDocReadTag".equals(actiontype)) {
-				apidatas = new RequestLogService(request, response, false).addDocReadTag();
-			} else if ("copycustompagefile".equals(actiontype)) {
-				apidatas = new RequestFormService().copyCustompageFile(request, response);
-			} else if ("rejectinfo".equals(actiontype)) {
-				apidatas = new RequestOperation().getRejectInfo(request, response);
-			} else
-				throw new Exception("actiontype unexist");
-		} catch (Exception e) {
-			e.printStackTrace();
-			apidatas.put("api_status", false);
-			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
-		}
-		return JSON.toJSONString(apidatas);
-	}
 	
-	@POST
-	@Path("/remarkOperate")
+	@GET
+	@Path("/rejectInfo")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String remarkOperate(@Context HttpServletRequest request, @Context HttpServletResponse response){
+	public String rejectInfo(@Context HttpServletRequest request, @Context HttpServletResponse response){
 		Map<String,Object> apidatas = new HashMap<String,Object>();
 		try {
-			apidatas = new RemarkOperateService().execute(request, response);
+			apidatas = new RequestOperation().getRejectInfo(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			apidatas.put("api_status", false);
@@ -196,7 +295,6 @@ public class RequestFormAction {
 		}
 		return JSON.toJSONString(apidatas);
 	}
-
 	
 	/**
 	 * 流程状态接口新
@@ -339,5 +437,82 @@ public class RequestFormAction {
 		}
 		return JSONObject.toJSONString(apidatas);
 	}
-
+	
+	/**
+	 * 流程提交
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@POST
+	@Path("/requestOperation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String requestOperation(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestOperation().execute(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	/**
+	 * 转发提交
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@POST
+	@Path("/remarkOperate")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String remarkOperate(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RemarkOperateService().execute(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	@POST
+	@Path("/functionLink")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String functionLink(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestOperation().wfFunctionManageLink(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
+	
+	/**
+	 * 批注提交
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@POST
+	@Path("/remarkOperation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String remarkOperation(@Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String,Object> apidatas = new HashMap<String,Object>();
+		try {
+			apidatas = new RequestRemarkOperation().execute(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		return JSON.toJSONString(apidatas);
+	}
 }

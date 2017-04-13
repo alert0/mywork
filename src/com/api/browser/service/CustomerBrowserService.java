@@ -1,6 +1,8 @@
 package com.api.browser.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import weaver.crm.CrmShareBase;
@@ -8,7 +10,10 @@ import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.util.BrowserConstant;
 import com.api.browser.util.SqlUtils;
+import com.api.workflow.bean.SearchConditionItem;
+import com.api.workflow.util.ConditionKeyFactory;
 import com.api.workflow.util.PageUidFactory;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
@@ -109,16 +114,25 @@ public class CustomerBrowserService extends BrowserService{
 		
 		String sessionkey = Util.getEncrypt(Util.getRandom());
 		Util_TableMap.setVal(sessionkey, tableString);
-		apidatas.put("result", sessionkey);
+		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, sessionkey);
 		return apidatas;
 	}
 
 	@Override
-	public Map<String, Object> getBrowserConditionDatas(Map<String, Object> params) throws Exception {
-		// TODO Auto-generated method stub
-		return super.getBrowserConditionDatas(params);
+	public Map<String, Object> browserAutoComplete(Map<String, Object> params) throws Exception {
+			
+		return super.browserAutoComplete(params);
 	}
 
+	@Override
+	public Map<String, Object> getBrowserConditionInfo(Map<String, Object> params) throws Exception {
+		List<SearchConditionItem> itemList =  new ArrayList<SearchConditionItem>();
+		User user = (User) params.get("user");
+		itemList.add(new SearchConditionItem(ConditionKeyFactory.KEY1, SystemEnv.getHtmlLabelName(229, user.getLanguage()),
+				"", new String[]{"requestname"}, null, 6, 18));
+		
+		return super.getBrowserConditionInfo(params);
+	}
 	
 	
 }

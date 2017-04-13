@@ -38,14 +38,14 @@ import com.cloudstore.dev.api.util.Util_TableMap;
  * @author liuzy 2017/2/22
  */
 
-@Path("/workflow/requestnew")
+@Path("/workflow/reqform")
 public class RequestFormNewAction {
 
 	
 	@GET
-	@Path("/loadRight")
+	@Path("/loadForm")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String loadRight(@Context HttpServletRequest request, @Context HttpServletResponse response){
+	public String loadForm(@Context HttpServletRequest request, @Context HttpServletResponse response){
 		Map<String,Object> apidatas = new HashMap<String,Object>();
 		try {
 			User user = HrmUserVarify.getUser(request, response);
@@ -105,7 +105,7 @@ public class RequestFormNewAction {
 			apidatas.putAll(forminfo);
 			
 			//加载主表数据
-			apidatas.put("maindata", new FormDataService().generateMainData(request, response, params));
+			apidatas.put("maindata", new FormDataService().loadMainData(request, response, params));
 
 			//拼接布局datajson，字符串拼接方式优化性能
 			String apidatastr = JSON.toJSONString(apidatas);
@@ -154,7 +154,7 @@ public class RequestFormNewAction {
 			apidatas.put("api_status", false);
 			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
 		}
-		return JSONObject.toJSONString(apidatas);
+		return JSON.toJSONString(apidatas);
 	}
 	
 	

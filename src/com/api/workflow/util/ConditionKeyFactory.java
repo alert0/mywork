@@ -18,4 +18,15 @@ public class ConditionKeyFactory {
 	public final static String KEY14 = "e0c49795-4144-49fb-837b-59e911d81696";
 	public final static String KEY15 = "6e139e9b-6b83-4750-beac-851ba6a5926f";
 	
+	
+	/**
+	 * 组件KEY规则
+	 * 1：根据billfield表中 fieldhtmltype_type 格式生成
+	 * 2：不在billfield表中的字段
+	 * 
+	 * 
+	 */
+	
+	
+	
 }

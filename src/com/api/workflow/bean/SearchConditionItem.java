@@ -1,8 +1,12 @@
 package com.api.workflow.bean;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class SearchConditionItem {
+public class SearchConditionItem implements Serializable{
+
+	private static final long serialVersionUID = -7372241015882160206L;
+
 	/**标识参数*/
 	private String key;
 	
