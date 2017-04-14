@@ -3,7 +3,7 @@ class PictureCom extends React.Component {
 	componentDidMount() {
 		const { eid, esetting } = this.props;
 		const { width, speed, open } = esetting;
-		initPictureJs(eid, width, speed, open);
+		loadPictureJs(eid, width, speed, open);
 	}
 	render() {
 		let aStyle = {
@@ -89,72 +89,6 @@ class PictureCom extends React.Component {
     </div>)
 	}
 }
-
-function initPictureJs(eid, picturewidth, autoShowSpeed, highopen) {
-	var width = $("#jCarouselLite_" + eid).parent().width();
-	var count = parseInt(width / picturewidth);
-	if ($('#jCarouselLite_' + eid).find("ul").length > 0) {
-		var auto = autoShowSpeed * 50;
-		if ($('#jCarouselLite_' + eid).find("li").length < count) {
-			auto = 0;
-			count = $('#jCarouselLite_' + eid).find("li").length;
-			$('#jCarouselLite_' + eid).jCarouselLite({
-				btnPrev: '#pictureback_' + eid,
-				btnNext: '#picturenext_' + eid,
-				auto: auto,
-				speed: 1000,
-				visible: count,
-				scroll: 1,
-				circular: false
-			});
-			$("#pictureback_" + eid).hide();
-			$("#picturenext_" + eid).hide();
-			$("#picturetd_" + eid).attr("align", "center");
-			var settingWidth = parseInt(count * picturewidth);
-			$("#jCarouselLite_" + eid).width(settingWidth);
-		} else {
-			$('#jCarouselLite_' + eid).jCarouselLite({
-				btnPrev: '#pictureback_' + eid,
-				btnNext: '#picturenext_' + eid,
-				auto: auto,
-				speed: 1000,
-				visible: count,
-				scroll: 1,
-				circular: true
-			});
-			$("#jCarouselLite_" + eid).width(width);
-		}
-	}
-	if ("1" === highopen) {
-		$('#jCarouselLite_' + eid).find("a").each(function() {
-			var $img = $(this);
-			$($img).fancybox({
-				wrapCSS: 'fancybox-custom',
-				closeClick: true,
-				closeBtn: false,
-				openEffect: 'none',
-				helpers: {
-					title: {
-						type: 'inside'
-					},
-					overlay: {
-						css: {
-							'background': 'rgba(238,238,238,0.85)'
-						}
-					}
-				},
-				afterLoad: function() {
-					var refstr = $($img).attr("data-ref");
-					if ($.trim(refstr) != "#") {
-						this.title = '<a href="' + refstr + '" style="color:#000000!important;text-decoration:none!important;" target="_blank">' + this.title + '</a> ';
-					}
-				}
-			});
-		})
-	}
-}
-
-
 import { WeaErrorPage, WeaTools } from 'ecCom';
 class MyErrorHandler extends React.Component {
 	render() {

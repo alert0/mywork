@@ -1,8 +1,7 @@
-export const getCellAttr = (cellObj,cellColAttrs,rowHeight) =>{
+export const getCellAttr = (cellObj,colCusAttr,rowHeight) =>{
     let cellAttr = {};
     let styleObj = {};
     let innerStyleObj = {};
-    let className = "";
 
     //单元格边框
     appendBorder(cellObj, styleObj);
@@ -15,17 +14,16 @@ export const getCellAttr = (cellObj,cellColAttrs,rowHeight) =>{
         innerStyleObj["height"] = "100%";
     }
     //列自定义属性
-    if(cellColAttrs && cellColAttrs.get("hide")==="y")
+    if(colCusAttr && colCusAttr.get("hide")==="y")
         styleObj["display"] = "none";
-    if(cellColAttrs && cellColAttrs.get("class"))
-        className += " "+cellColAttrs.get("class");
+    if(colCusAttr && colCusAttr.get("class"))
+        cellAttr.tdClass = colCusAttr.get("class");
     //单元格自定义属性
     const cusattrs = cellObj.get("attrs");
     cusattrs && appendCusAttrObj(cellAttr, cusattrs, innerStyleObj);
     
     cellAttr.styleObj = styleObj;
     cellAttr.innerStyleObj = innerStyleObj;
-    cellAttr.class = className;
     return cellAttr;
 }
 
@@ -52,7 +50,7 @@ export const getRowAttr = (rowHeight, rowCusAttr) =>{
     let rowAttr = {};
     rowAttr.id = rowCusAttr ? rowCusAttr.get("id") : "";
     rowAttr.name = rowCusAttr ? rowCusAttr.get("name") : "";
-    rowAttr.class = rowCusAttr ? rowCusAttr.get("class") : "";
+    rowAttr.trClass = rowCusAttr ? rowCusAttr.get("class") : "";
     let styleObj = {};
     styleObj["height"] = rowHeight;
     if(rowCusAttr && rowCusAttr.get("hide")==="y")

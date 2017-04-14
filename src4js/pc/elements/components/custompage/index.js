@@ -17,7 +17,7 @@ class CustomPage extends React.Component {
         return !Immutable.is(config,nextProps.config) || !Immutable.is(data,nextProps.data) || nextProps.refresh !== refresh
     }
     render() {
-        const { data, actions } = this.props;
+        const { data, refresh, actions } = this.props;
         let config = this.props.config.toJSON();
         const { isHasRight, item } = config;
         const { eid, ebaseid, content, header, contentview } = item;
@@ -29,6 +29,10 @@ class CustomPage extends React.Component {
             }
         }else{
             EContentHtml = <NoRightCom/>
+        }
+        const portalParams = window.store_e9_element.getState().portal.get("params").toJSON();
+        if (refresh && portalParams.loadIframe === 'false') {
+            EContentHtml = <Spin>{EContentHtml}</Spin>
         }
         return <div className = "item" style = { { marginTop: '10px' } } id = { `item_${eid}` } data-eid = { eid } data-ebaseid = { ebaseid } data-needRefresh = { item.needRefresh } data-cornerTop = { item.cornerTop } data-cornerTopRadian = { item.cornerTopRadian } data-cornerBottom = { item.cornerBottom } data-cornerBottomRadian = { item.cornerBottomRadian }>
             <EHeader config = {config} handleRefresh={actions.handleRefresh.bind(this)}/>

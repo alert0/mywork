@@ -5,54 +5,40 @@ import { WeaErrorPage, WeaTools } from 'ecCom';
 //引入元素组件
 import LayoutFlags from './LayoutFlags';
 import * as PortalAction from '../actions/';
+
+import objectAssign from 'object-assign';
 //门户组件
 class Portal extends React.Component {
+    componentWillMount() {
+       const { params, actions } = this.props;
+       actions.setParamsState(params.toJSON());
+    }
     componentDidMount() {
-        const { actions, hpid, requestid } = this.props;
-        let params = this.props.params;
-        if (hpid) params = { hpid, requestid }
-        window.isPortalRender = true;
-        actions.getPortalDatas(params);
+        const { params, actions } = this.props;
+        actions.getPortalDatas(params.toJSON());
         this.refs.btnWfCenterReload.setAttribute("onclick","elmentReLoad('8')");
     }
     _isRender(props,nextProps){
-        const { params, hpdata, requestid } = props;
-        let hpid = props.hpid;
-        let nhpid = nextProps.hpid
-        let subCompanyId = '-1';
-        let nsubCompanyId = '-1';
-        if(!hpid) {
-            hpid = params.hpid;
-            subCompanyId = params.subCompanyId;
-        }
-        if(!nhpid) {
-            nhpid = nextProps.params.hpid;
-            nsubCompanyId = nextProps.params.subCompanyId;
-        }
-        return nextProps.isRender || !Immutable.is(hpdata,nextProps.hpdata) || hpid !== nhpid || subCompanyId !== nsubCompanyId || requestid !== nextProps.requestid; 
+        const { params, hpdata } = props;
+        return nextProps.isRender || !Immutable.is(hpdata,nextProps.hpdata) || !Immutable.is(params,nextProps.params); 
     }
     shouldComponentUpdate(nextProps){
         return this._isRender(this.props,nextProps);
     }
     componentWillReceiveProps(nextProps) {
         if(nextProps.isRender){
-            const { actions, hpid, hpdata, requestid } = nextProps;
-            let params = nextProps.params;
-            if (hpid) params = { hpid, requestid };
-            actions.getPortalDatas(params);
+            window.isPortalRender = false;
+            const { params, hpdata, actions } = nextProps;
+            actions.setParamsState(params.toJSON());
+            actions.getPortalDatas(params.toJSON());
         }
     }
     render() {
-        const { params, hpid } = this.props;
+        const params = this.props.params.toJSON();
         //协同区门户
-        if(hpid || !_isEmpty(params)){
-            if(hpid){
-                window.global_hpid = hpid;
-                window.global_subCompanyId = "-1"; 
-            }else{
-                window.global_hpid = params.hpid;
-                window.global_subCompanyId = params.subCompanyId; 
-            }
+        if(params.hpid){
+            window.global_hpid = params.hpid;
+            window.global_subCompanyId = params.subCompanyId; 
             let hpdata = this.props.hpdata.toJSON();
             let hpHtml = null;
             let styleStr = "";
@@ -89,8 +75,7 @@ class Portal extends React.Component {
 class MyErrorHandler extends React.Component {
     render() {
         const hasErrorMsg = this.props.error && this.props.error !== "";
-        return ( <WeaErrorPage msg = { hasErrorMsg ? this.props.error : "对不起，该页面异常，请联系管理员！" }
-            />
+            return ( <WeaErrorPage msg = { hasErrorMsg ? this.props.error : "对不起，该页面异常，请联系管理员！" }/>
         );
     }
 }
@@ -99,7 +84,8 @@ Portal = WeaTools.tryCatch(React, MyErrorHandler, { error: "" })(Portal);
 const mapStateToProps = state => {
     const { portal } = state;
     return ({
-        hpdata: portal.get("hpdata")
+        hpdata: portal.get("hpdata"),
+        params: portal.get("params")
     })
 }
 
@@ -108,14 +94,18 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-    let hpid = ownProps.hpid;
-    if(!hpid) hpid = ownProps.params.hpid;
+    let query = {};
+    if(ownProps.location) query = ownProps.location.query
+    let params = objectAssign({},ownProps.params,query);
+    if(ownProps.hpid) {
+        params['hpid'] = ownProps.hpid;
+        params['requestid'] = ownProps.requestid;
+        params['subCompanyId'] = '-1';
+    }
     return {
-        hpdata: stateProps.hpdata.get(hpid) ||  Immutable.fromJS(ecLocalStorage.getObj("portal-" + hpid, "hpdata", true) || {}),
-        params: ownProps.params || {},
-        hpid: ownProps.hpid,
-        isRender:window.isPortalRender || false,
-        requestid: ownProps.requestid,
+        hpdata: stateProps.hpdata.get(params.hpid) || Immutable.fromJS(ecLocalStorage.getObj("portal-" + params.hpid, "hpdata", true) || {}),
+        params: Immutable.fromJS(params),
+        isRender: window.isPortalRender || false,
         actions: dispatchProps.actions
     };
 }

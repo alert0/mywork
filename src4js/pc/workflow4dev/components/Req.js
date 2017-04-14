@@ -1,6 +1,8 @@
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as ReqAction from '../actions/req'
+import * as ReqFormAction from '../actions/reqForm'
+import * as ReqLogListAction from '../actions/reqLogList'
 
 import {Button,Table,Spin,Popover } from 'antd'
 import FormLayout from './form/FormLayout'
@@ -36,8 +38,8 @@ class Req extends React.Component {
         jQuery(".req-workflow-map").height(height-5);
     }
     componentWillReceiveProps(nextProps,nextState){
-        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.formValue && nextProps.formValue.getIn(['field-1','value']) && document.title !== nextProps.formValue.getIn(['field-1','value']))
-            document.title = nextProps.formValue.getIn(['field-1','value'])
+        if(window.location.pathname.indexOf('/spa/workflow/index') >= 0 && nextProps.mainData && nextProps.mainData.getIn(['field-1','value']) && document.title !== nextProps.mainData.getIn(['field-1','value']))
+            document.title = nextProps.mainData.getIn(['field-1','value'])
     }
     componentDidMount() {
         const {actions,isShowSignInput,reqIsReload,params} = this.props;
@@ -97,10 +99,6 @@ class Req extends React.Component {
         return this.props.loading!==nextProps.loading||
         !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
         !is(this.props.params,nextProps.params)||
-        !is(this.props.tableInfo,nextProps.tableInfo)||
-        !is(this.props.formValue,nextProps.formValue)||
-        !is(this.props.formLayout,nextProps.formLayout)||
-        !is(this.props.formValue4Detail,nextProps.formValue4Detail)||
         !is(this.props.reqTabKey,nextProps.reqTabKey)||
         !is(this.props.wfStatus,nextProps.wfStatus)||
         !is(this.props.logList,nextProps.logList)||
@@ -109,17 +107,20 @@ class Req extends React.Component {
         !is(this.props.resourcesTabKey,nextProps.resourcesTabKey)||
         !is(this.props.rightMenu,nextProps.rightMenu)||
         !is(this.props.reqIsSubmit,nextProps.reqIsSubmit)||
-        !is(this.props.cellInfo,nextProps.cellInfo)||
         !is(this.props.reqIsReload,nextProps.reqIsReload)||
         !is(this.props.isShowSignInput,nextProps.isShowSignInput)||
-        this.props.scriptcontent !== nextProps.scriptcontent||
-        this.props.custompagehtml !== nextProps.custompagehtml||
         this.props.reqsubmiterrormsghtml !== nextProps.reqsubmiterrormsghtml||
         !is(this.props.rightMenuStatus,nextProps.rightMenuStatus)||
         this.props.signFields !== nextProps.signFields||
         this.props.showBackToE8 !== nextProps.showBackToE8||
         this.props.showSearchDrop !== nextProps.showSearchDrop||
         !is(this.props.isShowUserheadimg,nextProps.isShowUserheadimg)||
+        //表单内容相关
+        !is(this.props.layout,nextProps.layout)||
+        !is(this.props.conf,nextProps.conf)||
+        !is(this.props.mainData,nextProps.mainData)||
+        !is(this.props.detailData,nextProps.detailData)||
+        !is(this.props.fieldVariable,nextProps.fieldVariable)||
         //性能测试
         this.props.reqLoadDuration !== nextProps.reqLoadDuration ||
         this.props.jsLoadDuration !== nextProps.jsLoadDuration ||
@@ -138,22 +139,16 @@ class Req extends React.Component {
     }
     render() {
         const {comsWeaTable,reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
-            signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,wfStatus,actions,logParams,
-            resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
-            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
+            signFields,showSearchDrop,params,layout,loading,markInfo,logList,location,logCount,wfStatus,actions,logParams,
+            resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,
+            isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
+        const hasInitLayout = layout.get("hasInit");
         const titleName = params?params.get("titlename"):"";
         const isshared = params?params.get("isshared"):"";
         const userId = params?params.get("f_weaver_belongto_userid"):"";
         const ismanagePage = params?params.get('ismanagePage'):'';
-        const etables = formLayout.getIn(["eformdesign","etables"]);
         const workflowid = params?params.get("workflowid"):"";
-        const colheads = etables?etables.getIn(["emaintable","colheads"]):null;
-        const rowheads = etables?etables.getIn(["emaintable","rowheads"]):null;
-        const colattrs = etables?etables.getIn(["emaintable","colattrs"]):null;
-        const rowattrs = etables?etables.getIn(["emaintable","rowattrs"]):null;
-        const ec = etables?etables.getIn(["emaintable","ec"]):null;
-        const ecMap = ec?Immutable.Map(ec.map(v => [v.get('id'), v])):null;
         const requestLogParams = Immutable.fromJS(logParams.get('requestLogParams') ? JSON.parse(logParams.get('requestLogParams')) : {});
         const forward = rightMenu?rightMenu.get('forward'):'';
         const current = logListTabKey > 2 ? (relLogParams.get('pgnumber') ? relLogParams.get('pgnumber') :1):(logParams.get('pgnumber') ? logParams.get('pgnumber') : 1 );
@@ -166,52 +161,6 @@ class Req extends React.Component {
         if(requestid > 0 && isshared && isshared == '1' && false){
             tabDatas.push({title:'流程共享',key:"5"})
         }
-        let style = {margin:"0 auto"};
-        let find = false;
-        colheads && colheads.map((v,k)=>{
-            if(v.indexOf("%")>=0) {
-                find = true;
-            }
-        })
-        if(find) style.width = "100%";
-        let hiddenarea = [];
-        params.get('hiddenarea') && params.get('hiddenarea').mapEntries(o =>{
-            hiddenarea.push(<input type="hidden" id={o[0]} name={o[0]} value={o[1]}/>)
-        })
-        let formarea = [];
-        formValue.mapEntries && formValue.mapEntries(f => {
-            let domfieldid = f[0];
-            let domfieldvalue = f[1] && f[1].get("value");
-            if(domfieldid == "field-1")
-                domfieldid = "requestname";
-            else if(domfieldid == "field-2")
-                domfieldid = "requestlevel";
-            else if(domfieldid == "field-3")
-                domfieldid = "messageType"
-            else if(domfieldid == "field-5")
-                domfieldid = "chatsType";
-            formarea.push(<input type="hidden" id={domfieldid} name={domfieldid} value={domfieldvalue} />)
-        });
-        formValue4Detail && formValue4Detail.map((v,k) => {
-            const detailindex = parseInt(k.substring(7))-1;
-            let submitdtlid = "";
-            v && v.map((datas, rowindex) => {
-                submitdtlid += rowindex+",";
-                datas.mapEntries && datas.mapEntries(f => {
-                    const domfieldvalue = f[1] && f[1].get("value"); 
-                    if(f[0] === "keyid"){
-                        formarea.push(<input type="hidden" name={`dtl_id_${detailindex}_${rowindex}`} value={domfieldvalue} />);
-                    }else{
-                        const domfieldid = f[0]+"_"+rowindex;
-                        formarea.push(<input type="hidden" id={domfieldid} name={domfieldid} value={domfieldvalue} />);
-                    }
-                })
-            })
-            formarea.push(<input type="hidden" id={`nodesnum${detailindex}`} name={`nodesnum${detailindex}`} value={v.size} />);
-            formarea.push(<input type="hidden" id={`indexnum${detailindex}`} name={`indexnum${detailindex}`} value={v.size} />);
-            formarea.push(<input type="hidden" id={`submitdtlid${detailindex}`} name={`submitdtlid${detailindex}`} value={submitdtlid} />);
-            formarea.push(<input type="hidden" id={`deldtlid${detailindex}`} name={`deldtlid${detailindex}`} value="" />);
-        })
         return (
             <div>
                 <WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
@@ -234,28 +183,19 @@ class Req extends React.Component {
                                 <div id="reqsubmiterrormsghtml" dangerouslySetInnerHTML={{__html:reqsubmiterrormsghtml}}></div>
                             }
                             <div className='wea-req-workflow-form' style={{display:reqTabKey == '1' ? 'block' : 'none',margin:"0 auto"}}>
-                                {etables&&
-                                <FormLayout
+                                {hasInitLayout && <FormLayout
+                                    params={params}
                                     symbol="emaintable"
-                                    className="excelMainTable"
-                                    etables={etables}
-                                    colheads={colheads}
-                                    rowheads={rowheads}
-                                    rowattrs={rowattrs}
-                                    colattrs={colattrs}
-                                    ecMap={ecMap}
-                                    cellInfo={cellInfo}
-                                    style={style}
-                                    tableInfo={tableInfo}
-                                    formValue={formValue}
-                                    formValue4Detail={formValue4Detail}  />
+                                    layout={layout}
+                                    conf={this.props.conf}
+                                    mainData={this.props.mainData}
+                                    detailData={this.props.detailData}  
+                                    fieldVariable={this.props.fieldVariable} />
                                 }
                             </div>
-                            <div id="scriptcontent" style={{display:reqTabKey == '1' ? 'block' : 'none'}}></div>
-                            <div id="custompage" style={{display:reqTabKey == '1' ? 'block' : 'none'}}></div>
                             <input type="hidden" id="e9form_review" value='1'/>
                             <div className='wea-req-workflow-loglist' style={{display:reqTabKey == '1' ? 'block' : 'none'}}>
-                                {etables &&<Sign
+                                {hasInitLayout && <Sign
                                     signinputinfo={params.get('signinputinfo')}
                                     logList={logList}
                                     actions={actions}
@@ -276,8 +216,8 @@ class Req extends React.Component {
                                     params={params}
                                     showuserlogids={showuserlogids}
                                     reqRequestId={reqRequestId}
-                                    isLoadingLog={isLoadingLog}
-                                />}
+                                    isLoadingLog={isLoadingLog} />
+                                }
                             </div>
                         {
                             <div className='wea-req-workflow-picture' style={{display:reqTabKey == '2' ? 'block' : 'none'}}>
@@ -301,7 +241,7 @@ class Req extends React.Component {
                             reqTabKey == '5' && false &&
                                 <Share />
                         }
-                        { reqTabKey == '1' && etables && window.location.pathname.indexOf('/spa/workflow/index') >= 0 &&
+                        { reqTabKey == '1' && hasInitLayout && window.location.pathname.indexOf('/spa/workflow/index') >= 0 &&
                             <Popover trigger="click" content={
                                 <div>
                                     <p>js加载耗时: {jsLoadDuration} 毫秒</p>
@@ -318,11 +258,7 @@ class Req extends React.Component {
                     </WeaPopoverHrm>
                 </WeaReqTop>
                 </WeaRightMenu>
-                <form>
-                    {hiddenarea}
-                    {formarea}
-                </form>
-				<Forward showForward={rightMenuStatus.get('showForward')} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} titleName={titleName} controllShowForward={this.controllShowForward.bind(this)}/>
+				<Forward showForward={rightMenuStatus.get('showForward')} ismanagePage={ismanagePage} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} controllShowForward={this.controllShowForward.bind(this)}/>
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}
@@ -356,13 +292,14 @@ class Req extends React.Component {
         }
     }
     getRightMenu(){
-        const {rightMenu} = this.props;
+        const {rightMenu,loading} = this.props;
         let btnArr = [];
         rightMenu && !is(rightMenu,Immutable.fromJS({})) && rightMenu.get('rightMenus').map(m=>{
             let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
             btnArr.push({
                 icon: <i className={m.get('menuIcon')} />,
-                content: m.get('menuName')
+                content: m.get('menuName'),
+                disabled:loading
             })
         });
         return btnArr
@@ -438,53 +375,53 @@ class MyErrorHandler extends React.Component {
 Req = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(Req);
 
 function mapStateToProps(state) {
-    const {workflowReq,workflowlistDoing,comsWeaTable} = state;
-    const name = workflowReq.get('resourcesKey') ? workflowReq.get('resourcesKey').split('_')[0] : 'init';
+    const {workflowReq,workflowReqForm,workflowReqLogList,workflowlistDoing,comsWeaTable} = state;
     return {
-        params:workflowReq.get("params"),
+        params:workflowReq.get("params"),   //基础参数
         loading:workflowReq.get("loading"),
-        formLayout:workflowReq.get("formLayout"),
-        tableInfo:workflowReq.get("tableInfo"),
-        formValue:workflowReq.get("formValue"),
-        formValue4Detail:workflowReq.get("formValue4Detail"),
-        logList:workflowReq.get("logList"),
-        logParams:workflowReq.get("logParams"),
-        logCount:workflowReq.get("logCount"),
-        logListTabKey:workflowReq.get("logListTabKey"),
-        cellInfo:workflowReq.get("cellInfo"),
-        wfStatus:workflowReq.get("wfStatus"),
-        resourcesTabKey:workflowReq.get("resourcesTabKey"),
-        rightMenu:workflowReq.get("rightMenu"),
-        reqTabKey:workflowReq.get("reqTabKey"),
-        reqIsSubmit:workflowReq.get("reqIsSubmit"),
+        wfStatus:workflowReq.get("wfStatus"),       //流程状态
+        resourcesTabKey:workflowReq.get("resourcesTabKey"),     //相关资源tab
+        rightMenu:workflowReq.get("rightMenu"),//右键按钮
+        reqTabKey:workflowReq.get("reqTabKey"), //表单tab标识
+        reqIsSubmit:workflowReq.get("reqIsSubmit"),//流程提交关闭
         pathBack:workflowlistDoing.get("nowRouterWfpath"),
-        reqIsReload:workflowReq.get("reqIsReload"),
-        requestid:workflowReq.get("params").get('requestid'),
-        isShowSignInput:workflowReq.get('isShowSignInput')?workflowReq.get('isShowSignInput'):false,
-        scriptcontent:workflowReq.get("scriptcontent"),
-        custompagehtml:workflowReq.get('custompagehtml'),
-        isShowUserheadimg:workflowReq.get('isShowUserheadimg'),
-        reqsubmiterrormsghtml:workflowReq.getIn(['dangerouslyhtml','reqsubmiterrormsghtml']),
-        rightMenuStatus:workflowReq.get('rightMenuStatus'),
-        signFields:workflowReq.get('signFields'),
-        showSearchDrop:workflowReq.get('showSearchDrop'),
+        reqIsReload:workflowReq.get("reqIsReload"), //是否需要reload表单
+        isShowSignInput:workflowReq.get('isShowSignInput')?workflowReq.get('isShowSignInput'):false,//是否显示签字意见输入框
+        reqsubmiterrormsghtml:workflowReq.getIn(['dangerouslyhtml','reqsubmiterrormsghtml']), //流程提交错误信息
+        rightMenuStatus:workflowReq.get('rightMenuStatus'), //按钮状态相关
         showBackToE8:workflowReq.get('showBackToE8'),
-        showuserlogids:workflowReq.get('showuserlogids'),
-        reqRequestId:workflowReq.get('reqRequestId'),
-        relLogParams:workflowReq.get('relLogParams'),
-        isLoadingLog:workflowReq.get('isLoadingLog'),
-        reqLoadDuration:workflowReq.get('reqLoadDuration'),
+        reqLoadDuration:workflowReq.get('reqLoadDuration'), //
         jsLoadDuration: workflowReq.get('jsLoadDuration'),
         apiDuration: workflowReq.get('apiDuration'),
         dispatchDuration: workflowReq.get('dispatchDuration'),
+        
+        //签字意见列表相关
+        logList:workflowReqLogList.get("logList"),//签字意见列表
+        logParams:workflowReqLogList.get("logParams"), //签字意见查询参数
+        logCount:workflowReqLogList.get("logCount"), //签字意见总数
+        logListTabKey:workflowReqLogList.get("logListTabKey"),//签字意见tabkey
+        isShowUserheadimg:workflowReqLogList.get('isShowUserheadimg'),//是否显示签字意见操作人头像
+        signFields:workflowReqLogList.get('signFields'), //签字意见查询相关
+        showSearchDrop:workflowReqLogList.get('showSearchDrop'), //签字意见搜索按钮点击控制
+        showuserlogids:workflowReqLogList.get('showuserlogids'), //签字意见显示所有人控制
+        reqRequestId:workflowReqLogList.get('reqRequestId'),  //主子流程请求ID
+        relLogParams:workflowReqLogList.get('relLogParams'), //主子流程签字意见查询参数
+        isLoadingLog:workflowReqLogList.get('isLoadingLog'), //签字意见加载是否中
+        
+        //表单内容相关
+        layout: workflowReqForm.get("layout"),   //布局
+        conf: workflowReqForm.get("conf"),     //Req相关不变配置信息
+        mainData: workflowReqForm.get("mainData"),     //主表数据
+        detailData: workflowReqForm.get("detailData"),   //明细数据
+        fieldVariable: workflowReqForm.get("fieldVariable"),    //字段相关可变值
         //table
-        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(ReqAction, dispatch)
+        actions: bindActionCreators({...ReqAction,...ReqFormAction,...ReqLogListAction}, dispatch),
     }
 }
 

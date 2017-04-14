@@ -12,8 +12,8 @@ class DetailSumCell extends React.Component{
         const fieldid = fieldObj && fieldObj.get("fieldid");
         const detailtype = fieldObj?fieldObj.get("detailtype"):"";
         //linkageCfg属性一级级传输太繁琐，暂时全局获取，做编辑时再考虑方案
-        const workflowReq = window.store_e9_workflow.getState().workflowReq;
-        const coltrifields = workflowReq && workflowReq.getIn(["linkageCfg", "coltrifields"]);
+        const workflowReqForm = window.store_e9_workflow.getState().workflowReqForm;
+        const coltrifields = workflowReqForm && workflowReqForm.getIn(["linkageCfg", "coltrifields"]);
         let needSum = false;
         coltrifields && coltrifields.map(v =>{
             v === (fieldid+"") && (needSum = true);

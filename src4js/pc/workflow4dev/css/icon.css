@@ -9,7 +9,7 @@
   font-style: normal;
 }
 
-[class^="icon-Right-menu-"], [class*=" icon-Right-menu-"],[class^="icon-form-"], [class*=" icon-form-"] {
+[class^="icon-Right-menu-"], [class*=" icon-Right-menu-"],[class^="icon-form-"], [class*=" icon-form-"], [class^="icon-Browse-box-"], [class*=" icon-Browse-box-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'form' !important;
   speak: none;
@@ -24,6 +24,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-Browse-box-add-all:before {
+  content: "\e90e";
+}
+.icon-Browse-box-Add-to:before {
+  content: "\e90f";
+}
+.icon-Browse-box-Delete-all:before {
+  content: "\e910";
+}
+.icon-Browse-box-delete:before {
+  content: "\e911";
+}
 .icon-Right-menu-Batch-sharing:before {
   content: "\e90a";
 }

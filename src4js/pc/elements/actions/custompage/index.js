@@ -28,7 +28,8 @@ const getCustomPageDatas = (params,refresh) => {
                dispatch(initTitleData(eid,data.currenttab));
                dispatch(initCustomPageTabDatas(eid, data.currenttab, data.data));
             }
-            if(refresh){
+            const portalParams = getState().portal.get("params").toJSON();
+            if(refresh && portalParams.loadIframe !== 'false'){
                 dispatch(setLoadingVisible(false, eid, data.currenttab));
                 var obj = {
                     eid,
@@ -61,7 +62,6 @@ const handleImmutableData = (eid, refresh, data) => {
 
 const handleRefresh = (params) => {
     return (dispatch, getState) => {
-
         const { eid } = params;
         const irefresh = getState().elements.get("refresh");
         dispatch({

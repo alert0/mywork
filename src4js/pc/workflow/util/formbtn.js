@@ -67,11 +67,11 @@ window.doSupervise = doSupervise;
 
 //表单---转发，zdialog
 const doReviewE9 = (destuserid) => {
-	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
-	const requestid = formstate.get('requestid');
-	const userid = formstate.get('f_weaver_belongto_userid');
-	doReview(requestid, userid);
-//	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(true));
+//	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
+//	const requestid = formstate.get('requestid');
+//	const userid = formstate.get('f_weaver_belongto_userid');
+//	doReview(requestid, userid);
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(true));
 }
 
 window.doReviewE9 = doReviewE9;
@@ -255,7 +255,7 @@ window.doSubmitDirect = doSubmitDirect;
 
 const doLocationHref = (resourceid, forwardflag,needwfback) => {
 	const params = window.store_e9_workflow.getState().workflowReq.get('params');
-	const requestname = window.store_e9_workflow.getState().workflowReq.get('formValue').getIn(['field-1', 'value']);
+	const requestname = window.store_e9_workflow.getState().workflowReqForm.get('formValue').getIn(['field-1', 'value']);
 
 	const id = params.get('requestid');
 	const f_weaver_belongto_userid = params.get('f_weaver_belongto_userid');

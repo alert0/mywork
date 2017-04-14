@@ -20,7 +20,7 @@ class EContent extends React.Component {
         params['tabid'] = tabid;
         let tabdata = data.toJSON();
         if (!_isEmpty(tabdata)) {
-            contentHtml =  <AddWfCom eid={eid} data={tabdata} esetting={esetting} />
+            contentHtml = <AddWfCom eid={eid} data={tabdata} esetting={esetting} />
         }
         if(refresh) contentHtml = <Spin>{ contentHtml }</Spin>
         return <div>

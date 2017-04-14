@@ -41,23 +41,16 @@
              let lfhtml = <td></td>;
              if (!_isEmpty(layoutFlags)) {
                  lfhtml = layoutFlags.map((layoutFlag, i) => {
-                     return <td width = { layoutFlag.areasize }
-                     className = "valign"><GroupDiv key = {layoutFlag.areaflag}
-                     layoutFlag = { layoutFlag }
-                     /></td>
+                     return <td width={layoutFlag.areasize} className="valign"><GroupDiv key={layoutFlag.areaflag} layoutFlag={layoutFlag}/></td>
                  });
              }
-             eHtml = <table id = "Container">
-                 <tbody>
-                 <tr>{ lfhtml }</tr></tbody></table>
+             eHtml = <table id="Container"><tbody><tr>{lfhtml}</tr></tbody></table>
              break;
          case "4": //其他布局1
-             eHtml = <SYSOtherRowOne layoutFlags = { layoutFlags }
-             />;
+             eHtml = <SYSOtherRowOne layoutFlags={layoutFlags}/>;
              break;
          case "5": //其他布局2
-             eHtml = <SYSOtherRowTwo layoutFlags = { layoutFlags }
-             />;
+             eHtml = <SYSOtherRowTwo layoutFlags={layoutFlags}/>;
              break;
          default:
              break;

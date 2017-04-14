@@ -5,38 +5,38 @@ import {is} from 'immutable'
 
 class FormTabLayout extends React.Component {
     shouldComponentUpdate(nextProps) {
-        return !is(this.props.etables,nextProps.etables)
-               ||!is(this.props.tableInfo,nextProps.tableInfo)
-               ||!is(this.props.formValue,nextProps.formValue)
-               ||!is(this.props.formValue4Detail,nextProps.formValue4Detail)
-               ||!is(this.props.cellInfo,nextProps.cellInfo)
-               ||!is(this.props.style,nextProps.style)
-               ||!is(this.props.tab,nextProps.tab);
+        return !is(this.props.mainData, nextProps.mainData)
+                || !is(this.props.detailData, nextProps.detailData)
+                || !is(this.props.fieldVariable, nextProps.fieldVariable)
+                || !is(this.props.tab, nextProps.tab)
+                || !is(this.props.layout, nextProps.layout)
+                || !is(this.props.conf, nextProps.conf)
+                || this.props.cellMark !== nextProps.cellMark;
     }
     render() {
         let _this = this;
-        const {style,tab} = this.props;
-        if(!style) return (<div></div>)
-        const {etables,tableInfo,formValue,formValue4Detail,cellInfo,cellid} = this.props;
-        //console.log("tab:",tab.toJS()," style :",style && style.toJS());
+        const {cellMark,tab,layout,conf,mainData,detailData,fieldVariable} = this.props;
+        const style = conf ? conf.getIn(["cellInfo","emaintable_"+cellMark,"stylejson"]) : null;
+        if(!style)
+            return <div>Empty TabArea Style</div>
+
         let defShow = 0;
         let tabArr = new Array();
         tab.map((v,k)=>{
-            //console.log("v:",v," k:",k);
-            if(k.indexOf("order")===0) {
+            if(k.indexOf("order") === 0) {
                 const arr = v?v.split(","):[];
                 tabArr.push({
                     id:arr[0]?arr[0]:"",
                     name:arr[1]?arr[1]:""
                 });
             }
-            if(k==="defshow") {
+            if(k === "defshow") {
                 defShow = v;
             }
         });
-        const taId = "tabarea_"+cellid.replace(",","_");
+        const tabAreaId = "tabarea_"+cellMark;
         return (
-            <div className={taId}>
+            <div className={tabAreaId}>
                 <div className="tab_top">
                     <div className="tab_movebtn tab_turnleft" style={{display:"none"}}></div>
                     <div className="tab_head" style={{width:"100%"}}>
@@ -48,7 +48,6 @@ class FormTabLayout extends React.Component {
                             {
                                 tabArr.map((v,k)=>{
                                     let tabArrInner = new Array();
-                                    //let isSel = k===defShow;
                                     const sel = k===defShow?"sel":"unsel";
                                     let middleStyle = {
                                         backgroundImage:"url('"+style.get(sel+"_bgmiddle")+"')!important",
@@ -61,7 +60,7 @@ class FormTabLayout extends React.Component {
                                     if(style && style.get(sel+"_italic") == "1")
                                         middleStyle["font-style"] = "italic !important";
                                     tabArrInner.push(
-                                        <div id={v.id} className={"t_"+sel} onClick={_this.changeTab.bind(this,v.id,tabArr,taId,style.toJS())}>
+                                        <div id={v.id} className={"t_"+sel} onClick={_this.changeTab.bind(this,v.id,tabArr,tabAreaId,style.toJS())}>
                                             <div className={"t_"+sel+"_left norepeat"}
                                                 style={{
                                                     backgroundImage:"url('"+style.get(sel+"_bgleft")+"')!important",
@@ -90,34 +89,16 @@ class FormTabLayout extends React.Component {
                 <div className="tab_bottom">
                     {
                         tabArr.map((v,k)=>{
-                            const isSel = k===defShow;
-                            const tabObj = etables.get(v.id);
-                            let rowheads = tabObj.get("rowheads");
-                            const colheads = tabObj.get("colheads");
-                            const ec = tabObj.get("ec");
-                            const ecMap = Immutable.Map(ec.map((v,k) => {
-                                if(v.get("etype")==="8") {
-                                    headRow = parseInt(v.get("id").split(",")[0]);
-                                }
-                                if(v.get("etype")==="9") {
-                                    bodyRow = parseInt(v.get("id").split(",")[0]);
-                                }
-                                return [v.get('id'), v]
-                            }));
+                            const tabid = v.id;
                             return (
-                                <div className="tab_content" id={v.id+"_content"} style={!isSel?{display:"none"}:{}}>
+                                <div className="tab_content" id={tabid+"_content"} style={k===defShow ? {} : {display:"none"}}>
                                     <FormLayout 
-                                        symbol="tabtable"
-                                        className="excelTabTable tablefixed" 
-                                        formValue={formValue}
-                                        etables={etables} 
-                                        tableInfo={tableInfo} 
-                                        colheads={colheads} 
-                                        rowheads={rowheads}
-                                        ecMap={ecMap} 
-                                        cellInfo={cellInfo}
-                                        style={{width:"100%"}}
-                                        formValue4Detail={formValue4Detail}  />
+                                        symbol={tabid}
+                                        layout={layout}
+                                        conf={conf}
+                                        mainData={mainData}
+                                        detailData={detailData}  
+                                        fieldVariable={fieldVariable} />
                                 </div>
                             )
                         })
@@ -127,17 +108,7 @@ class FormTabLayout extends React.Component {
         )
     }
     changeTab(id,tabArr,tabAreaClass,styleJson) {
-        //console.log("switchTab id:",id," tabAreaClass:",tabAreaClass," styleJson:",styleJson," obj:",jQuery("#"+id));
         switchTab(tabAreaClass,styleJson,jQuery("#"+id));
-        // tabArr.map((v,k)=>{
-        //     if(v.id!==id) {
-        //         jQuery("#"+v.id+"_content").hide();
-        //     }
-        //     else {
-        //         jQuery("#"+v.id+"_content").show();
-        //     }
-        // });
-        
     }
 }
 

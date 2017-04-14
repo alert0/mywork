@@ -12,11 +12,11 @@
 	color: #fff;
 }
 
-.wea-workflow-batchsubmit {
+/*.wea-workflow-batchsubmit {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-}
+}*/
 
 .wea-workflow-phrases-popover .ant-popover-inner{
 	min-width: 120px;

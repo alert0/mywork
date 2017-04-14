@@ -19,4 +19,3 @@ require('./init_wev8.js')
 require('./default_wev8.js')
 require('./weaver_wev8.js');
 require('./ActiveX_wev8.js')
-require('./overwritefn.js')

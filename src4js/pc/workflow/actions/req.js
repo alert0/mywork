@@ -10,6 +10,7 @@ const WeaTableAction = WeaTable.action;
 import * as types from '../constants/ActionTypes'
 import * as API_REQ from '../apis/req'
 import * as API_TABLE from '../apis/table'
+import * as ReqFormAction from './reqForm'
 import objectAssign from 'object-assign'
 import Immutable from 'immutable'
 
@@ -20,8 +21,7 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 	return (dispatch, getState) => {
 		dispatch({type:types.FORM_LOADING,loading:true});
 		const apiLoadStart = new Date().getTime();
-		API_REQ.getFormReqInfo({
-			actiontype:"loadRight",
+		API_REQ.loadForm({
 			requestid: reqId,
 			preloadkey: preloadkey,
 			comemessage:comemessage
@@ -29,7 +29,9 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			const params = data.params;
 			const dispatchStart = new Date().getTime();
 			const apiDuration = dispatchStart - apiLoadStart;
-			dispatch({type: types.INIT_FORMVALUE,params:params,formLayout:data.datajson,formValue:data.maindata,cellInfo:data.cellinfo,tableInfo:data.tableinfo,linkageCfg:data.linkageCfg});
+			//布局、表单内容
+			dispatch({type: types.REQ_INIT_PARAMS, params:params});
+			dispatch(ReqFormAction.initFormInfo(data));
 			//性能测试
 			dispatch({type: 'TEST_PAGE_LOAD_DURATION',
 				reqLoadDuration:(new Date().getTime() - (window.REQ_PAGE_LOAD_START ? window.REQ_PAGE_LOAD_START : 0)),
@@ -37,45 +39,13 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 				apiDuration: apiDuration,
 				dispatchDuration: new Date().getTime() - dispatchStart
 			})
-			
-			formImgLazyLoad(jQuery('.wea-new-top-req-content'));        //图片懒加载
-			const tableinfo = data.tableinfo;
-			let details = "";
-			for(p in tableinfo) {
-				if(p!=="main") {
-					details += p+",";
-				}
-			}
-			if(details!="") {
-				details = details.substring(0,details.length-1);
-			}
-			if(details!=="") {
-				//console.log("details:",details);
-				API_REQ.getFormReqInfo({
-					actiontype:"detaildata",
-					requestid:reqId,
-					workflowid:params.workflowid,
-					nodeid:params.nodeid,
-					formid:params.formid,
-					isbill:params.isbill,
-					ismode:params.ismode,
-					modeid:params.modeid,
-					detailmark:details
-				}).then((data)=>{
-					//console.log("getFormLayout detail:",data);
-					dispatch({type: types.INIT_FORMVALUE4DETAIL,formValue4Detail:data});
-					//typeof window.FormReady === "function" && window.FormReady();
-					dispatch(loadScript(params));
-				});
-			}
-			else {
-				dispatch(loadScript(params));
-				//typeof window.FormReady === "function" && window.FormReady();
-			}
+			//图片懒加载
+			formImgLazyLoad(jQuery('.wea-new-top-req-content'));
+			//明细数据加载
+			dispatch(ReqFormAction.loadDetailValue());
 			
 			//获取右键菜单
-			API_REQ.getFormReqInfo({
-				actiontype:"rightMenu",
+			API_REQ.getRightMenu({
 				requestid:reqId,
 				isviewonly:1,
 				ismanagePage:params.ismanagePage
@@ -84,8 +54,7 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			});
 			
 			//其它处理，前端不用处理
-			API_REQ.getFormReqInfo({
-				actiontype:"updatereqinfo",
+			API_REQ.updateReqInfo({
 				requestid:reqId,
 				ismanagePage:params.ismanagePage,
 				currentnodetype:params.currentnodetype,
@@ -96,7 +65,6 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			//判断是否是滚动加载
 			const loadmethod = params.signListType ? 'scroll' : 'split';
 			let logParamsInit = {
-				actiontype:"requestLog",
 				requestid:reqId,
 				pgnumber:1,
 				firstload:true,
@@ -107,34 +75,6 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 				nodeid:params.nodeid
 			};
 			dispatch(setlogParams(logParamsInit));
-
-			// //加载代码块
-			// API_REQ.loadScriptContent({
-			// 	layoutid:params.modeid,
-			// 	usebak:1
-			// }).then(scriptcontent =>{
-			// 	dispatch({type:types.SET_LAYOUT_SCRIPTS,scriptcontent:scriptcontent});
-			// });
-			
-			// //加载custompage
-			// const custompage = params.custompage;
-			// {custompage && 
-			// 	API_REQ.getFormReqInfo({
-			// 		actiontype:"copycustompagefile",
-			// 		custompage:custompage,
-			// 		workflowid:params.workflowid
-			// 	}).then(data=>{
-			// 		const custompagee9  = data.custompagee9;
-			// 		{custompagee9 &&
-			// 			API_REQ.loadCustompage({
-			// 				custompage:custompagee9,
-			// 				custompageparam:params.hiddenarea
-			// 			}).then(custompagehtml=>{
-			// 				dispatch(setCustompageHtml(custompagehtml));
-			// 			});
-			// 		}
-			// 	});
-			// }
 			
 			//刷待办
 			try{
@@ -148,47 +88,12 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 	}
 }
 
-export const loadScript = (params)=> {
-	//console.log("loadScript!");
-	return (dispatch, getState) => {
-		Promise.all([
-			API_REQ.loadScriptContent({
-				layoutid:params.modeid,
-				usebak:1
-			}),
-			API_REQ.getFormReqInfo({
-				actiontype:"copycustompagefile",
-				custompage:params.custompage,
-				workflowid:params.workflowid
-			}).then(data=>{
-				if(data.custompagee9=="") {
-					return new Promise((resolve)=>{
-						resolve("");
-					});
-				}
-				else {
-					return API_REQ.loadCustompage({
-						custompage:data.custompagee9,
-						custompageparam:params.hiddenarea
-					});
-				}
-			})
-		]).then((result)=>{
-			jQuery("#scriptcontent").html("").append(result[0]);
-			jQuery("#custompage").html("").append(result[1]);
-			// dispatch({type:types.SET_LAYOUT_SCRIPTS,scriptcontent:result[0]});
-			// dispatch(setCustompageHtml(result[1]));
-			typeof window.formReady === "function" && window.formReady();
-		});
-	};
-}
-
-export const doLoading = () => {
-	return {type:types.LOADING,loading:true}
-}
 
 export const clearForm = () => {
-	return {type:types.CLEAR_FORM}
+	return (dispatch, getState) => {
+		dispatch({type:types.REQ_CLEAR_INFO});
+		dispatch({type:types.REQFORM_CLEAR_INFO});
+	}
 }
 
 export const setCustompageHtml = (custompagehtml) => {
@@ -214,7 +119,7 @@ export const setMarkInfo = () => {
 		}
 		let logCount = getState().workflowReq.get('logCount');
 		dispatch(setIsLoadingLog(true));
-		API_REQ.getFormReqInfo(logParams).then(data=>{
+		API_REQ.loadRequestLog(logParams).then(data=>{
 			let value = data;
 			let templogparams  = value.requestLogParams ? {requestLogParams: JSON.stringify(value.requestLogParams),logpagesize: value.requestLogParams.wfsignlddtcnt} : {};
 			templogparams.maxrequestlogid = value.maxrequestlogid;
@@ -230,10 +135,9 @@ export const setMarkInfo = () => {
 //设置签字意见页码
 export const setLogPagesize = params => {
 	return (dispatch, getState) => {
-		let paramsNew = {actiontype:'updateRequestLogPageSize'};
-		paramsNew.logpagesize = params.logpagesize;
+		let paramsNew = {logpagesize:params.logpagesize};
 		dispatch({type:types.FORM_LOADING,loading:true});
-		API_REQ.getFormReqInfo(paramsNew).then(data=>{
+		API_REQ.updateRequestLogPageSize(paramsNew).then(data=>{
 			let logParamsInit = {
 				pgnumber:1,
 				firstload:true,
@@ -325,8 +229,8 @@ export const setHiddenArea = value => {
 
 export const getformdatas = () =>{
 	return (dispatch, getState) => {
-		const formValue = getState().workflowReq.get('formValue');
-		const formValue4Detail = getState().workflowReq.get('formValue4Detail');
+		const formValue = getState().workflowReqForm.get('formValue');
+		const formValue4Detail = getState().workflowReqForm.get('formValue4Detail');
 		let formarea = {};
         formValue.mapEntries && formValue.mapEntries(f => {
         	f[1].mapEntries(o =>{
@@ -617,10 +521,11 @@ export const reqIsReload = bool => {
 			const {routing,workflowReq} = getState();
 			const {search} = routing.locationBeforeTransitions;
 			const params = workflowReq.get("params");
-			if(params.get("ismanagePage") == "1") {
-				//console.log("is de:",params.get("ismanagePage") == "1");
-				//console.log("UEUtil:",UE.getEditor("remark"));
-				UE.getEditor("remark").destroy();
+			if(UE.editors.contains('remark')){
+				UE.getEditor('remark').destroy();
+			}
+			if(UE.editors.contains('forwardremark')){
+				UE.getEditor('forwardremark').destroy();
 			}
 			dispatch({type:types.CLEAR_ALL});
 			weaWfHistory && weaWfHistory.push("/main/workflow/ReqReload"+search);
@@ -835,8 +740,7 @@ export const loadRejectNodeInfo = () => {
 		const params = getState().workflowReq.get('params').toJS();
 		const {nodeid,workflowid,requestid,currentnodeid,f_weaver_belongto_userid} = params;
 		
-		API_REQ.getFormReqInfo({
-			actiontype:'rejectinfo',
+		API_REQ.getRejectInfo({
 			nodeid:nodeid,
 			workflowid:workflowid,
 			requestid:requestid,
@@ -895,10 +799,19 @@ export const updateHiddenSysFieldname = (fieldname) => {
 			return fieldname;
 	}
 }
-
-export const setShowForward = (bool,forwarduserid) =>{
+//转发 意见征询 转办 控制
+export const setShowForward = (bool, forwarduserid, forwardflag, needwfback) => {
 	return(dispatch, getState) => {
-		dispatch({type:types.SET_SHOW_FORWARD,bool:bool,forwarduserid:forwarduserid?forwarduserid:''});
+		let forwardParams = {
+			showForward: bool,
+			forwarduserid: forwarduserid ? forwarduserid : '',
+			forwardflag: forwardflag ? forwardflag : '',
+			needwfback: needwfback ? needwfback : ''			
+		};
+		dispatch({
+			type: types.SET_SHOW_FORWARD,
+			forwardParams : forwardParams
+		});
 	}
 }
 
@@ -963,7 +876,7 @@ export const loadRefReqSignInfo = (params) =>{
 	return (dispatch, getState) => { 
 		dispatch({type:types.SET_REL_REQ_LOG_PARAMS,relLogParams:params});
 		let logParams = getState().workflowReq.get('relLogParams').merge(getState().workflowReq.get('logSearchParams')).toJS();
-		API_REQ.getFormReqInfo(logParams).then(data=>{
+		API_REQ.loadRequestLog(logParams).then(data=>{
 			let value = data;
 			dispatch({type:types.SET_MARK_INFO,logList:value.log_loglist,logCount:value.totalCount ? value.totalCount : 0});
 			dispatch(setmaxrequestlogid(value.maxrequestlogid,true));
@@ -999,7 +912,7 @@ export const scrollLoadSign = (params) => {
 				logParams.requestLogParams = JSON.stringify(requestLogParams);
 			}
 		}
-		API_REQ.getFormReqInfo(logParams).then(data=>{
+		API_REQ.loadRequestLog(logParams).then(data=>{
 			const logList = getState().workflowReq.get('logList');
 			let logListnew = logList.concat(Immutable.fromJS(data.log_loglist));
 			dispatch({type:types.SET_SCROLL_MARK_INFO,logList:logListnew});

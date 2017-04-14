@@ -192,12 +192,3 @@ export const operPhrases = phrasesObj =>{
 		dispatch({type: types.LISTDOING_OPER_PHRASES, value: phrasesObj});
 	}
 }
-
-export const setSpaForm = isSpaForm => {
-	return (dispatch, getState) => {
-		const viewScope = getState().workflowlistDoing.get('nowRouterWfpath');
-	    const {ls} = WeaTools;
-	    ls.set("isSpaForm",isSpaForm?"true":"false");
-		dispatch({type: viewScope + '_' + types.SET_SPAFORM,isSpaForm:isSpaForm})
-	}
-}

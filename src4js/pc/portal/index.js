@@ -9,9 +9,7 @@ import './css/esetting.css';
 import './css/esetting.css';
 
 //门户依赖相关js
-import './util/portal';
-//元素设置相关js
-import './util/esetting';
+import './util/';
 
 //协同区组件
 import Synergy from './components/Synergy';

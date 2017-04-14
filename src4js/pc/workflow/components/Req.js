@@ -1,6 +1,7 @@
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as ReqAction from '../actions/req'
+import * as ReqFormAction from '../actions/reqForm'
 
 import {Button,Table,Spin,Popover } from 'antd'
 import FormLayout from './form/FormLayout'
@@ -112,8 +113,6 @@ class Req extends React.Component {
         !is(this.props.cellInfo,nextProps.cellInfo)||
         !is(this.props.reqIsReload,nextProps.reqIsReload)||
         !is(this.props.isShowSignInput,nextProps.isShowSignInput)||
-        this.props.scriptcontent !== nextProps.scriptcontent||
-        this.props.custompagehtml !== nextProps.custompagehtml||
         this.props.reqsubmiterrormsghtml !== nextProps.reqsubmiterrormsghtml||
         !is(this.props.rightMenuStatus,nextProps.rightMenuStatus)||
         this.props.signFields !== nextProps.signFields||
@@ -139,8 +138,8 @@ class Req extends React.Component {
     render() {
         const {comsWeaTable,reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
             signFields,showSearchDrop,params,formLayout,tableInfo,formValue,formValue4Detail,loading,markInfo,logList,cellInfo,location,logCount,wfStatus,actions,logParams,
-            resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,scriptcontent,
-            custompagehtml,isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
+            resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,
+            isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
         const titleName = params?params.get("titlename"):"";
         const isshared = params?params.get("isshared"):"";
@@ -322,7 +321,18 @@ class Req extends React.Component {
                     {hiddenarea}
                     {formarea}
                 </form>
-				<Forward showForward={rightMenuStatus.get('showForward')} ismanagePage={ismanagePage} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} controllShowForward={this.controllShowForward.bind(this)}/>
+				
+				<Forward
+					showForward={rightMenuStatus.get('showForward')} 
+					forwardOperators={rightMenuStatus.get('forwarduserid')} 
+					forwardflag={rightMenuStatus.get('forwardflag')}
+					needwfback={rightMenuStatus.get('needwfback')}
+					ismanagePage={ismanagePage} 
+					fromform={true} 
+					actions={actions} 
+					requestid={requestid} 
+					controllShowForward={this.controllShowForward.bind(this)}/>
+				
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}
@@ -343,26 +353,16 @@ class Req extends React.Component {
             let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
             Number(key) == i && eval(fn)
         });
-        if(key == '0'){
-            actions.doSearch();
-            actions.setShowSearchAd(false)
-        }
-        if(key == '1'){
-            actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`})
-        }
-        if(key == '2'){
-            actions.setColSetVisible(true);
-            actions.tableColSet(true)
-        }
     }
     getRightMenu(){
-        const {rightMenu} = this.props;
+        const {rightMenu,loading} = this.props;
         let btnArr = [];
         rightMenu && !is(rightMenu,Immutable.fromJS({})) && rightMenu.get('rightMenus').map(m=>{
             let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
             btnArr.push({
                 icon: <i className={m.get('menuIcon')} />,
-                content: m.get('menuName')
+                content: m.get('menuName'),
+                disabled:loading
             })
         });
         return btnArr
@@ -438,19 +438,14 @@ class MyErrorHandler extends React.Component {
 Req = WeaTools.tryCatch(React, MyErrorHandler, {error: ""})(Req);
 
 function mapStateToProps(state) {
-    const {workflowReq,workflowlistDoing,comsWeaTable} = state;
+    const {workflowReq,workflowReqForm,workflowlistDoing,comsWeaTable} = state;
     return {
         params:workflowReq.get("params"),   //基础参数
         loading:workflowReq.get("loading"),
-        formLayout:workflowReq.get("formLayout"),   //布局
-        tableInfo:workflowReq.get("tableInfo"),     //字段信息
-        formValue:workflowReq.get("formValue"),     //主表数据
-        formValue4Detail:workflowReq.get("formValue4Detail"),   //明细数据
         logList:workflowReq.get("logList"),//签字意见列表
         logParams:workflowReq.get("logParams"), //签字意见查询参数
         logCount:workflowReq.get("logCount"), //签字意见总数
         logListTabKey:workflowReq.get("logListTabKey"),//签字意见tabkey
-        cellInfo:workflowReq.get("cellInfo"),       //单元格内容信息(节点意见、二维码等)
         wfStatus:workflowReq.get("wfStatus"),       //流程状态
         resourcesTabKey:workflowReq.get("resourcesTabKey"),     //相关资源tab
         rightMenu:workflowReq.get("rightMenu"),//右键按钮
@@ -458,10 +453,7 @@ function mapStateToProps(state) {
         reqIsSubmit:workflowReq.get("reqIsSubmit"),//流程提交关闭
         pathBack:workflowlistDoing.get("nowRouterWfpath"),
         reqIsReload:workflowReq.get("reqIsReload"), //是否需要reload表单
-        requestid:workflowReq.get("params").get('requestid'),
         isShowSignInput:workflowReq.get('isShowSignInput')?workflowReq.get('isShowSignInput'):false,//是否显示签字意见输入框
-        scriptcontent:workflowReq.get("scriptcontent"),     //代码块
-        custompagehtml:workflowReq.get('custompagehtml'),   //自定义页面内容
         isShowUserheadimg:workflowReq.get('isShowUserheadimg'),//是否显示签字意见操作人头像
         reqsubmiterrormsghtml:workflowReq.getIn(['dangerouslyhtml','reqsubmiterrormsghtml']), //流程提交错误信息
         rightMenuStatus:workflowReq.get('rightMenuStatus'), //按钮状态相关
@@ -472,10 +464,17 @@ function mapStateToProps(state) {
         reqRequestId:workflowReq.get('reqRequestId'),  //主子流程请求ID
         relLogParams:workflowReq.get('relLogParams'), //主子流程签字意见查询参数
         isLoadingLog:workflowReq.get('isLoadingLog'), //签字意见加载是否中
+        //性能相关
         reqLoadDuration:workflowReq.get('reqLoadDuration'), //
         jsLoadDuration: workflowReq.get('jsLoadDuration'),
         apiDuration: workflowReq.get('apiDuration'),
         dispatchDuration: workflowReq.get('dispatchDuration'),
+        //表单内容相关
+        formLayout: workflowReqForm.get("formLayout"),   //布局
+        tableInfo: workflowReqForm.get("tableInfo"),     //字段信息
+        cellInfo: workflowReqForm.get("cellInfo"),       //单元格内容信息(节点意见、二维码等)
+        formValue: workflowReqForm.get("formValue"),     //主表数据
+        formValue4Detail: workflowReqForm.get("formValue4Detail"),   //明细数据
         //table
         comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
@@ -483,7 +482,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(ReqAction, dispatch)
+        actions: bindActionCreators({...ReqAction,...ReqFormAction}, dispatch),
     }
 }
 

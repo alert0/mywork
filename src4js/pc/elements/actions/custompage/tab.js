@@ -26,7 +26,8 @@ const getCustomPageTabDatas = (params,refresh) => {
             if(tabidObj[eid] === tabid){
                 dispatch(handleImmutableData(params, false, data));
             }
-            if(refresh){
+            const portalParams = getState().portal.get("params").toJSON();
+            if(refresh && portalParams.loadIframe !== 'false'){
                 dispatch(setLoadingVisible(false, eid, tabid));
                 var obj = {
                     eid,

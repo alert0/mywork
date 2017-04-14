@@ -4,25 +4,18 @@ import {Checkbox} from 'antd'
 
 class FormField extends React.Component {
     shouldComponentUpdate(nextProps) {
-        const cellObj = this.props.cellObj;
-        const cellObjNext = nextProps.cellObj;
-        const formValue = this.props.formValue;
-        const formValueNext = nextProps.formValue;
-        const obj = formValue?formValue.get("field"+cellObj.get("field")):"";
-        const objNext = formValueNext?formValueNext.get("field"+cellObjNext.get("field")):"";
-        return !is(obj,objNext)
-            ||!is(this.props.cellObj,nextProps.cellObj)
-            ||!is(this.props.fieldObj,nextProps.fieldObj);
+        return !is(this.props.fieldValue, nextProps.fieldValue)
+            ||!is(this.props.cellObj, nextProps.cellObj)
+            ||!is(this.props.fieldObj, nextProps.fieldObj);
     }
     render() {
-        const {cellObj,fieldObj,formValue} = this.props;
+        const {cellObj,fieldObj,fieldValue} = this.props;
         const htmltype = fieldObj?fieldObj.get("htmltype"):"";
         const detailtype = fieldObj?fieldObj.get("detailtype"):"";
         const fieldid = cellObj.get("field");
         const isdetail = fieldObj && (fieldObj.get("isdetail") == "1");
         
-        const fieldValueObj = formValue && formValue.get("field"+fieldid);
-        let theValue = fieldValueObj && fieldValueObj.has("value") ? fieldValueObj.get("value").toString() : "";
+        let theValue = fieldValue && fieldValue.has("value") ? fieldValue.get("value").toString() : "";
         if(htmltype == "1"){       //文本类型
             const financial = cellObj.get("financial");
             if(financial && financial.indexOf("2-") > -1){      //财务表览
@@ -49,14 +42,14 @@ class FormField extends React.Component {
                 )
             }
             if(detailtype == "1" || detailtype == "2" || detailtype == "3" || detailtype == "5"){
-                fieldValueObj && fieldValueObj.has("showname") && (theValue = fieldValueObj.get("showname"));
-                fieldValueObj && fieldValueObj.has("formatvalue") && (theValue = fieldValueObj.get("formatvalue"));
+                fieldValue && fieldValue.has("showname") && (theValue = fieldValue.get("showname"));
+                fieldValue && fieldValue.has("formatvalue") && (theValue = fieldValue.get("formatvalue"));
                 if(detailtype == "1")
                     return <span id={"field"+fieldid+"span"} dangerouslySetInnerHTML={{__html: theValue}}></span>
                 else
                     return <span id={"field"+fieldid+"span"}>{theValue}</span>
             }else if(detailtype == "4"){
-                const specialobj = fieldValueObj && fieldValueObj.get("specialobj");
+                const specialobj = fieldValue && fieldValue.get("specialobj");
                 const thousandsVal = specialobj && specialobj.get("thousandsVal");
                 const upperVal = specialobj && specialobj.get("upperVal");
                 if(isdetail)
@@ -75,17 +68,17 @@ class FormField extends React.Component {
             else
                 return <div style={{overflowX:"auto",overflowY:"hidden"}} dangerouslySetInnerHTML={{__html: theValue}} />
         }else if(htmltype == "3"){      //浏览框
-            let showname = fieldValueObj && fieldValueObj.get("showname");
-            if(fieldValueObj && fieldValueObj.has("formatvalue"))
-                showname = fieldValueObj.get("formatvalue");
+            let showname = fieldValue && fieldValue.get("showname");
+            if(fieldValue && fieldValue.has("formatvalue"))
+                showname = fieldValue.get("formatvalue");
             return <span id={"field"+fieldid+"span"} dangerouslySetInnerHTML={{__html: showname}} />
         }else if(htmltype == "4"){      //check框
             return <Checkbox checked={theValue=="1"} disabled />
         }else if(htmltype == "5"){      //选择框
-            let showname = fieldValueObj && fieldValueObj.get("showname");
+            let showname = fieldValue && fieldValue.get("showname");
             return <span id={"field"+fieldid+"span"}>{showname}</span>
         }else if(htmltype == "6"){      //附件上传
-            return <FileField fieldObj={fieldObj} fieldValueObj={fieldValueObj} />
+            return <FileField fieldObj={fieldObj} fieldValue={fieldValue} />
         }
         else if(htmltype == "7"){      //特殊字符
             if(detailtype == "1"){
@@ -102,7 +95,7 @@ class FormField extends React.Component {
             }
         }
         
-        fieldValueObj && fieldValueObj.has("showname") && (theValue = fieldValueObj.get("showname"));
+        fieldValue && fieldValue.has("showname") && (theValue = fieldValue.get("showname"));
         return <div dangerouslySetInnerHTML={{__html: theValue}} />
     }
 }

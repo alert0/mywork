@@ -4,15 +4,14 @@ import {Row,Col,Button,Icon} from 'antd'
 class FileField extends React.Component {
     shouldComponentUpdate(nextProps) {
         return !is(this.props.fieldObj, nextProps.fieldObj)
-            || !is(this.props.fieldValueObj, nextProps.fieldValueObj);
+            || !is(this.props.fieldValue, nextProps.fieldValue);
     }
     render() {
-        const {fieldObj,fieldValueObj} = this.props;
+        const {fieldObj,fieldValue} = this.props;
         const detailtype = fieldObj && fieldObj.get("detailtype");
-        const fileobj = fieldValueObj && fieldValueObj.get("specialobj");
+        const fileobj = fieldValue && fieldValue.get("specialobj");
         const filedatas = fileobj && fileobj.get("filedatas");
-        let theValue = fieldValueObj && fieldValueObj.has("value") ? fieldValueObj.get("value").toString() : "";
-        //console.log("fieldObj",fieldObj.toJS(),"fieldValueObj",fieldValueObj.toJS())
+        let theValue = fieldValue && fieldValue.has("value") ? fieldValue.get("value").toString() : "";
         return (
             <div className="field-filearea">
                 {filedatas && filedatas.map((obj) => 

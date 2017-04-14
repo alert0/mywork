@@ -12,17 +12,11 @@ const initialState = Immutable.fromJS({
 	
 	loading:false,
     params:{},
-    formLayout:{},
-    formValue:[],
-    formValue4Detail:{},
     markInfo:{},
     logList:[],
     logListTabKey:'1',
     logParams:{},
     logCount:0,
-    cellInfo:{},
-    tableInfo:{},
-    linkageCfg:{},
     wfStatus:{},
     reqTabKey:'1',
     resourcesKey: '',
@@ -41,6 +35,10 @@ const initialState = Immutable.fromJS({
 
 export default function req(state = initialState, action) {
     switch (action.type) {
+        case types.REQ_INIT_PARAMS:
+            return state.merge({loading:false,params:action.params,});
+        case types.REQ_CLEAR_INFO:
+            return state.merge({logList:[],logParams:{},markInfo:{},logCount:0,wfStatus:{}});
     	case types.SET_SHOWBACK_TO_E8:
           	return state.merge({showBackToE8:action.bool});
     	case types.SET_SHOW_SEARCHDROP:
@@ -71,14 +69,6 @@ export default function req(state = initialState, action) {
 				apiDuration: action.apiDuration,
 				dispatchDuration: action.dispatchDuration,
             });
-//      case types.INIT_FORMLAYOUT:
-//          return state.merge({});
-        case types.INIT_FORMVALUE:
-            return state.merge({params:action.params,formLayout:action.formLayout,loading:false,formValue:action.formValue,loading:false,cellInfo:action.cellInfo,tableInfo:action.tableInfo,linkageCfg:action.linkageCfg});
-        case types.INIT_FORMVALUE4DETAIL:
-            return state.merge({formValue4Detail:action.formValue4Detail});
-        case types.CLEAR_FORM:
-            return state.merge({formValue:[],formLayout:{},formValue4Detail:{},logList:[],logParams:{},markInfo:{},logCount:0,wfStatus:{}});
        	case types.SET_LOG_PARAMS:
             return state.merge({logParams:state.get('logParams').merge(action.logParams)});
         case types.SET_MARK_INFO:
@@ -117,16 +107,12 @@ export default function req(state = initialState, action) {
         	return state.merge({reqIsReload:action.bool});
     	case types.CONTROLL_SIGN_INPUT:
     		return state.merge({isShowSignInput:action.bool});
-        case types.SET_LAYOUT_SCRIPTS:
-            return state.merge({scriptcontent:action.scriptcontent});
-    	case types.SET_CUSTOMPAGE_HTML:
-    		return state.merge({custompagehtml:action.custompagehtml});
     	case types.IS_SHOW_USER_HEAD_IMG:
     		return state.merge({isShowUserheadimg:action.bool});
     	case types.SET_REQ_SUBMIT_ERROR_MSG_HTML:
     		return state.merge({dangerouslyhtml:{reqsubmiterrormsghtml:action.msghtml}});
     	case types.SET_SHOW_FORWARD:
-    		return state.merge({rightMenuStatus:{showForward:action.bool,forwarduserid:action.forwarduserid}});
+    		return state.merge({rightMenuStatus:action.forwardParams});
     	case types.SET_OPERATE_INFO:
     		return state.mergeDeep({params:{hiddenarea:action.updateinfo}});
     	case types.UPDATE_SHOW_USER_LOGID:

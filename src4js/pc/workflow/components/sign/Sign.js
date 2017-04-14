@@ -228,7 +228,6 @@ class Sign extends React.Component {
     					wfsignlddtcnt:requestLogParams.get('wfsignlddtcnt')
     				});
     				params.pgnumber = 1;
-    				params.actiontype = 'requestLog';
     				params.firstload = false;
     				params.maxrequestlogid = 0;
     				params.loadmethod = 'split';

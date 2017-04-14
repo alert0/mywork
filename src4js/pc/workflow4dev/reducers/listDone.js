@@ -74,8 +74,6 @@ export default function list(state = initialState, action) {
           	return state.merge({leftTreeCount:action.leftTreeCount,topTabCount:action.topTabCount});
         case types.LISTDONE_INIT_TOPTABCOUNT:
           	return state.merge({topTabCount:action.topTabCount});
-        case types.LISTDONE_SET_SELECTED_ROWKEYS:
-          	return state.merge({selectedRowKeys:action.selectedRowKeys});
         case types.LISTDONE_SET_SELECTED_TREEKEYS:
           	return state.merge({selectedTreeKeys:action.selectedTreeKeys});
         case types.LISTDONE_SAVE_ORDER_FIELDS:

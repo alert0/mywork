@@ -293,7 +293,6 @@ ListMine = createForm({
 
 function mapStateToProps(state) {
     const {workflowlistMine,comsWeaTable} = state;
-	const name = workflowlistMine.get('dataKey') ? workflowlistMine.get('dataKey').split('_')[0] : 'init';
     return {
         title: workflowlistMine.get('title'),
 		leftTree: workflowlistMine.get('leftTree'),
@@ -314,7 +313,7 @@ function mapStateToProps(state) {
 		phrasesObj: workflowlistMine.get('phrasesObj'),
 		sharearg: workflowlistMine.get('sharearg'),
 		//table
-        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 

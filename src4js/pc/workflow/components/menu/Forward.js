@@ -1,4 +1,4 @@
-import { Modal, Row, Col, Button, Popover, message, Spin,Checkbox  } from 'antd'
+import { Modal, Row, Col, Button, Popover, message, Spin, Checkbox } from 'antd'
 import { WeaHrmInput, WeaTools, WeaRightMenu } from 'ecCom'
 import OGroup from './OGroup'
 import NodeOperator from './NodeOperator'
@@ -12,7 +12,6 @@ class Forward extends React.Component {
 		this.state = {
 			isshowoperategroup: false,
 			isshownodeoperators: false,
-			showForward: false,
 			signinput: {},
 			hasinitremark: false,
 			reload: false,
@@ -23,17 +22,18 @@ class Forward extends React.Component {
 			fieldannexuploadname: '',
 			fieldannexuploadcount: '',
 			fieldannexuploadrequest: '',
-			forwardflag: '',
 			forwardremark: '',
 			operatorDatas: [],
 			loading: false,
 			field5: '',
 			selectOperatorsMax: undefined, //转发人数最大限制，默认100
-			IsSubmitedOpinion:'',
-			IsBeForwardTodo:''
+			IsSubmitedOpinion: '1',
+			IsBeForwardTodo: '1',
+			isdisabledbtns: false
 		};
 		this.setForwardOperatorMax();
 		window.FORWARD_OBJ = this;
+		this.initData();
 	}
 
 	componentDidMount() {
@@ -41,9 +41,8 @@ class Forward extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const { showForward, fromform, actions, requestid, forwardflag, forwardOperators } = nextProps;
+		const { showForward, fromform, actions, requestid, forwardOperators } = nextProps;
 		if(showForward && !this.props.showForward) {
-			this.initData();
 			if(fromform) {
 				const remarkDiv = jQuery('#remark_div');
 				this.setState({
@@ -52,11 +51,21 @@ class Forward extends React.Component {
 					remarkLocation: remarkDiv.find('#remarkLocation').val(),
 					fieldannexupload: remarkDiv.find('#field-annexupload').val(),
 					fieldannexuploadname: remarkDiv.find('#field-annexupload-name').val(),
-					forwardflag: forwardflag
 				});
 			}
+			const { ismanagePage } = this.props;
+			const _that = this;
+			if(ismanagePage == '1') {
+				setTimeout(function() {
+					try {
+						_that.setRedPoint();
+						UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), false);
+					} catch(e) {console.log(e)}
+				}, 1000);
+			}
+			
 			if(forwardOperators && forwardOperators != '') {
-				this.setOperatorIds({ ids: forwardOperators, isAllUser: false });
+				this.setOperatorIds({ ids: forwardOperators, isAllUser: false, isLoad: true });
 			}
 		}
 	}
@@ -73,30 +82,20 @@ class Forward extends React.Component {
 			fieldannexuploadcount: '',
 			fieldannexuploadrequest: '',
 			field5: undefined,
-			IsSubmitedOpinion:'',
-			IsBeForwardTodo:''
+			IsSubmitedOpinion: '1',
+			IsBeForwardTodo: '1',
+			isdisabledbtns: false
 		});
 	}
 
 	componentDidUpdate() {
 		const { hasinitremark, reload, signinput } = this.state;
-		if(jQuery('#forwardremark').length > 0 && !hasinitremark && reload) {
+		if(jQuery('#forwardremark').length > 0 && !hasinitremark && reload && signinput.isHideInput != '1') {
 			var _ue = UEUtil.initRemark('forwardremark', false);
 			bindRemark(_ue);
 			this.setState({ hasinitremark: true });
 			jQuery('.wea-req-forward-modal').parent().find('.ant-modal-mask').css('z-index', '105');
 			jQuery('.wea-req-forward-modal').css('z-index', '105');
-			const { ismanagePage } = this.props;
-			const _that = this;
-			if(ismanagePage == '1') {
-				setTimeout(function() {
-					try {
-						_that.setRedPoint();
-						UE.getEditor('forwardremark').setContent(FCKEditorExt.getHtml('remark'), false);
-					} catch(e) {  }
-				}, 1000);
-			}
-
 		}
 	}
 
@@ -118,36 +117,53 @@ class Forward extends React.Component {
 	//更新操作者
 	setOperatorIds(params) {
 		if(params.isAllUser) {
+			let selectOperatorsMax = this.state.selectOperatorsMax;
+			if(selectOperatorsMax) {
+				if(params.count < selectOperatorsMax) {
+					this.setState({ isdisabledbtns: true });
+				}
+			} else {
+				this.setState({ isdisabledbtns: true });
+			}
 			const allUser = [{ type: 'all', lastname: '所有人', ids: params.ids, count: params.count, id: 'all_users' }];
 			this.setState({ operatorDatas: allUser });
 		} else {
-			WeaTools.callApi('/api/workflow/org/resource', 'GET', { types: params.ids }).then(data => {
-				if(params.groupname) {
-					data && data.map(o => {
-						o.lastname = params.groupname;
-					});
-				}
-				this.setState({ operatorDatas: data });
-			});
+			if(params.isLoad) {
+				WeaTools.callApi('/api/workflow/org/resource', 'GET', { types: params.ids }).then(data => {
+					this.setState({ operatorDatas: data });
+				});
+			} else {
+				this.setState({ operatorDatas: params.datas });
+			}
 		}
 	}
-	
-	updateState(paramName,e){
+
+	updateState(paramName, e) {
 		let params = {};
 		params[paramName] = e.target.checked ? 1 : 0;
 		this.setState(params);
 	}
 
+	dropAllUserGroup() {
+		this.setState({ isdisabledbtns: false });
+	}
+
 	render() {
-		const { showForward, requestid, onClick } = this.props;
-		const { isshownodeoperators, isshowoperategroup, signinput, operatorDatas, loading, field5, selectOperatorsMax,IsSubmitedOpinion,IsBeForwardTodo } = this.state;
+		const { showForward, requestid, forwardflag } = this.props;
+		const { isshownodeoperators, isshowoperategroup, signinput, operatorDatas, loading, field5, selectOperatorsMax, IsSubmitedOpinion, IsBeForwardTodo, isdisabledbtns } = this.state;
 		const titleName = this.state.signinput.requestname;
+		
+		let _forwardheight = signinput.isforwardrights == '1' ? 479 : 439;
+		const ishideinput = signinput.isHideInput == '1';
+		if(ishideinput){
+			_forwardheight = _forwardheight - 175;
+		}
 		return(
 			<div>
-				<Modal title={this.getTopTitle(titleName)} 
+				<Modal title={this.getTopTitle(titleName,forwardflag)} 
 					visible ={showForward}	
 					wrapClassName = "wea-req-forward-modal"
-					style={{'min-width':'1100px'}}
+					style={{'min-width':ishideinput ? '800px' :'1100px','margin-top':(jQuery(window).height()-_forwardheight)/2}}
 					maskClosable={false}
 					onCancel={this.cancelEvent.bind(this)}
 					footer={[
@@ -155,34 +171,30 @@ class Forward extends React.Component {
 		                <Button type="ghost" size="large" disabled={loading} onClick={this.cancelEvent.bind(this)}>关闭</Button>
 					]} 
 				>
-					<Spin spinning={loading} tip="正在提交，请稍等...">
+					<Spin spinning={loading} tip="正在提交，请稍等..." style={{'color':'#484848'}}>
 						<div className="wea-req-forward-content">
-							<div className="wea-req-forward-content-receive">
+							<div className="wea-req-forward-content-receive clearfix">
 								<div className='label'>
 									<span>*</span>
 									<span>转发接收人</span>
 								</div>
 								<div className='input'>
-									<WeaHrmInput mult onChange={(o)=>{this.setState({field5:o})}} value={field5} opsDatas={operatorDatas} maxLength={selectOperatorsMax}/>
+									<WeaHrmInput mult onChange={(o)=>{this.setState({field5:o,operatorDatas:[]})}} dropAllUserGroup={this.dropAllUserGroup.bind(this)} value={field5} opsDatas={operatorDatas} maxLength={selectOperatorsMax}/>
 								</div>
 								<div className='btns'>
-									<Popover placement="bottomLeft" title="" content={<OGroup handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
+									<Popover placement="bottomLeft" title="" content={<OGroup isshowoperategroup={isshowoperategroup} handleVisibleChange={this.handleVisibleChange.bind(this)} setOperatorIds={this.setOperatorIds.bind(this)}/>} 
 											 trigger="click"
 											 onVisibleChange={this.handleVisibleChange.bind(this)}
 											 visible={isshowoperategroup}
 											 overlayClassName="wea-req-forward-customer-me">
-										<div className='wea-workflow-icon'>
-											<i className='icon-customer-me'/>
-										</div>
+										<Button type="large" disabled={isdisabledbtns} title="快捷选择人员"><i className='icon-customer-me'/></Button>
 									</Popover>
 									<Popover placement="bottomLeft" title="" content={<NodeOperator requestid={requestid} setOperatorIds={this.setOperatorIds.bind(this)} handleShowNodeOperator={this.handleShowNodeOperator.bind(this)}/>} 
 											 trigger="click"
 											 onVisibleChange={this.handleShowNodeOperator.bind(this)}
 											 visible={isshownodeoperators}
 											 overlayClassName="wea-req-forward-node-operator">
-										<div className='wea-workflow-icon'>
-											<i className='icon-New-Flow-channel'/>
-										</div>
+										 <Button type="large" style={{'margin-left':'5px'}} disabled={isdisabledbtns} title="选择节点参与人作为转发对象"><i className='icon-New-Flow-channel' /></Button>
 									</Popover>
 								</div>
 							</div>
@@ -195,11 +207,11 @@ class Forward extends React.Component {
 									</div>
 								</div>
 							}
-							<div className="wea-req-forward-content-remark">
+							<div className="wea-req-forward-content-remark" style={{'display':ishideinput ? 'none':'block'}}>
 								<div className='label'>
 									<span>{signinput.isSignMustInput == '1' && '*'}</span>
-									<span>签字意见</span>
-										<span style={{'color':'#d5d5d5','margin-left':'10px','font-weight':'normal'}}>{signinput.tempbeagenter != signinput.fileuserid ? `（您当前正代理${signinput.tempbeagentername}进行操作）` : ''}</span>
+									<span style={{'margin-left': (signinput.isSignMustInput == '1') ? '0px':'5px'}}>签字意见</span>
+									<span style={{'color':'#d5d5d5','margin-left':'10px','font-weight':'normal'}}>{signinput.tempbeagenter != signinput.fileuserid ? `（您当前正代理${signinput.tempbeagentername}进行操作）` : ''}</span>
 								</div>
 								<div className='remark' id="forwardremark_div">
 									 <textarea name='forwardremark' id="forwardremark" style={{'width':'100%','height':'167px'}} >
@@ -216,6 +228,7 @@ class Forward extends React.Component {
 									 <input type="hidden" name="field-add-name" id="field-add-name" value="点击添加附件 "/>
 								</div>
 							</div>
+							{ishideinput && <div style={{'width':'100%','height':'60px'}}></div>}
 						</div>
 					</Spin>
 				</Modal>	
@@ -247,27 +260,24 @@ class Forward extends React.Component {
 			let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
 			Number(key) == i && eval(fn)
 		});
-		if(key == '0') {
-			actions.doSearch();
-			actions.setShowSearchAd(false)
-		}
-		if(key == '1') {
-			actions.batchSubmitClick({ checkedKeys: `${selectedRowKeys.toJS()}` })
-		}
-		if(key == '2') {
-			actions.setColSetVisible(true);
-			actions.tableColSet(true)
-		}
 	}
 
-	getTopTitle(titlename) {
+	getTopTitle(titlename,forwardflag) {
+		let titlenameprefix = "流程转发："
+		if(forwardflag == '2'){
+			titlenameprefix = "意见征询：";
+		}
+		if(forwardflag == '3'){
+			titlenameprefix = "流程转办：";
+		}
+		
 		return(
 			<Row>
                 <Col span="16" style={{paddingLeft:20, lineHeight:"45px"}}>
                     <div className="wea-workflow-icon">
                         <i className='icon-portal-workflow' />
                     </div>
-                    <span dangerouslySetInnerHTML={{__html:titlename}}></span>
+                    <span dangerouslySetInnerHTML={{__html:titlenameprefix+titlename}}></span>
                 </Col>
             </Row>
 		)
@@ -275,8 +285,8 @@ class Forward extends React.Component {
 
 	//提交
 	submitEvent() {
-		const { operatorDatas, forwardflag, field5, signinput , IsSubmitedOpinion,IsBeForwardTodo} = this.state;
-		const { fromform, controllShowForward } = this.props;
+		const { operatorDatas , field5, signinput, IsSubmitedOpinion, IsBeForwardTodo } = this.state;
+		const { fromform, controllShowForward ,forwardflag,needwfback} = this.props;
 		//验证签字意见必填
 		let flag = true;
 		if(signinput.isSignMustInput == '1') {
@@ -288,20 +298,19 @@ class Forward extends React.Component {
 			return;
 		}
 		let forwardremarkInfo = this.getSignInputInfo();
-		//console.log("forwardremarkInfo", forwardremarkInfo);
 		this.setState({ loading: true });
 
 		let params = objectAssign({}, forwardremarkInfo, {
 			operate: 'save',
-			actiontype: 'remarkOperate',
 			field5: field5,
 			requestid: this.props.requestid,
 			forwardflag: forwardflag,
-			IsSubmitedOpinion:IsSubmitedOpinion,
-			IsBeForwardTodo:IsBeForwardTodo
+			needwfback:needwfback,
+			IsSubmitedOpinion: IsSubmitedOpinion,
+			IsBeForwardTodo: IsBeForwardTodo
 		});
 		const _this = this;
-		WeaTools.callApi('/workflow/core/ControlServlet.jsp?action=RequestSubmitAction', 'POST', params).then(data => {
+		WeaTools.callApi('/api/workflow/request/remarkOperate', 'POST', params).then(data => {
 			_this.clearSignInput();
 			const forwardflag = data.forwardflag;
 			const { actions } = this.props;
@@ -408,9 +417,8 @@ class Forward extends React.Component {
 
 	initData() {
 		const { requestid } = this.props;
-		let params = { actiontype: 'signInput', requestid: requestid }
 		const _this = this;
-		WeaTools.callApi('/api/workflow/request/reqinfo', 'GET', params).then(data => {
+		WeaTools.callApi('/api/workflow/request/signInput', 'GET', { requestid: requestid }).then(data => {
 			const { hasinitremark } = _this.state;
 			if(hasinitremark) {
 				UE.getEditor('forwardremark').destroy();
@@ -424,7 +432,7 @@ class Forward extends React.Component {
 	//选择人数控制
 	setForwardOperatorMax() {
 		WeaTools.callApi('/api/workflow/org/selectMaxRight', 'GET', {}).then(data => {
-			this.setState({ selectOperatorsMax: data.right ? undefined : 100 });
+			this.setState({ selectOperatorsMax: data.right ? undefined : 10000 });
 		});
 	}
 }

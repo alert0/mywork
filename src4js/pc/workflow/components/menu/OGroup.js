@@ -1,5 +1,5 @@
 import { Icon } from 'antd'
-import { WeaTools } from 'ecCom'
+import { WeaTools ,WeaScroll} from 'ecCom'
 
 export default class OGroup extends React.Component {
 	constructor(props) {
@@ -16,6 +16,12 @@ export default class OGroup extends React.Component {
 		WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', {}).then(data => {
 			_this.setState({ hrmgroups: data.datas });
 		});
+	}
+	
+	componentWillReceiveProps(nextProps) {
+		if(!nextProps.isshowoperategroup){
+			this.setState({showall:false});
+		}
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -42,16 +48,13 @@ export default class OGroup extends React.Component {
 
 	add(setOperatorIds, handleVisibleChange, groupobj) {
 		//公共組
-		let params = {};
-		if(groupobj.type == '4') {
-			params.ids = "group|" + groupobj.typeid;
-			params.isAllUser = false;
-			params.groupname = groupobj.typename;
+		let params = {isAllUser:false};
+		if(groupobj.grouptype == '4') {
+			params.datas = [groupobj];
 		}
 
-		if(groupobj.type == '6') {
-			params.ids  = groupobj.ids;
-			params.isAllUser = false;
+		if(groupobj.grouptype == '6') {
+			params.datas = groupobj.users;
 		}
 		setOperatorIds(params);
 		handleVisibleChange(false);
@@ -73,27 +76,29 @@ export default class OGroup extends React.Component {
 	render() {
 		const { handleVisibleChange, setOperatorIds } = this.props;
 		const { showall, hrmgroups, showAllUser, allUserCount } = this.state;
-
+		
 		return(
 			<div className="wea-req-operate-group">
 				<div className="wea-req-all-operators" onClick={this.showAllOperators.bind(this)}>
 					<span>所有人{showAllUser && "（"+allUserCount+"）"}</span>
 				</div>
 				<div className="wea-req-operate-content">
-					<ul>
-						{hrmgroups && 
-							hrmgroups.map((o,index)=>{
-								if(index > 2 && !showall){
-									return true;
-								}
-								const count = o.ids.split(',').length;
-								return  <li onClick={this.add.bind(this,setOperatorIds,handleVisibleChange,o)}>
-											<span className='cg_title'>{`${o.typename}（${count}人）`}</span>
-											<span className='cg_detail'>{o.names}</span>
-										</li>
-							})
-						}
-					</ul>
+					<WeaScroll className="wea-scroll" typeClass="scrollbar-macosx" >
+						<ul>
+							{hrmgroups && 
+								hrmgroups.map((o,index)=>{
+									if(index > 2 && !showall){
+										return true;
+									}
+									const count = o.users.length;
+									return  <li onClick={this.add.bind(this,setOperatorIds,handleVisibleChange,o)}>
+												<span className='cg_title'>{`${o.lastname}（${count}人）`}</span>
+												<span className='cg_detail'>{o.names}</span>
+											</li>
+								})
+							}
+						</ul>
+					</WeaScroll>
 				</div>
 				{hrmgroups.length > 3 && !showall &&
 					<div className="wea-req-operate-load-more" onClick={()=>this.setState({showall:true})}>

@@ -1,5 +1,23 @@
 .wea-req-forward-modal {
 	/*z-index: 105;*/
+	/*align-items: center;
+	display: flex;*/
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.clearfix {
+	display: block;
+}
+
+.wea-req-forward-modal .ant-modal {
+	position: static;
 }
 
 .wea-req-forward-modal .ant-modal-header {
@@ -22,7 +40,6 @@
 
 .wea-req-forward-modal .wea-req-forward-content {
 	margin: 0px 20px;
-	height: 300px;
 }
 
 .wea-req-forward-modal .ant-modal-body {
@@ -33,7 +50,6 @@
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive {
 	margin-top: 30px;
 	width: 100%;
-	height: 28px;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .label {
@@ -54,18 +70,23 @@
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input {
 	width: 490px;
 	float: left;
-	height: 32px;
 }
 
-.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input .ant-select-selection__rendered{
-	max-height: 55px;
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input .ant-select-selection__rendered {
+	max-height: 60px;
 }
-
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns {
-	width: 100px;
 	float: left;
 	margin-left: 10px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns .ant-btn {
+	padding: 0px;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	font-size: 21px;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns .wea-workflow-icon {
@@ -84,6 +105,17 @@
 	cursor: pointer;
 	border-color: #2DB7F5;
 	box-shadow: 0 0 1px #2DB7F5
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-right {
+	margin-top: 20px;
+	width: 100%;
+	height: 20px;
+}
+
+.wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-right .label {
+	margin-right: 10px;
+	margin-left: 10px;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark {
@@ -106,7 +138,7 @@
 	margin-top: 15px;
 	border: 1px solid #c3c3c3;
 	height: 200px;
-	width:100%;
+	width: 100%;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-remark .remark textarea {
@@ -131,14 +163,13 @@
 	display: none;
 }
 
-.wea-req-operate-group .wea-req-operate-content {
-	max-height: 165px;
-	overflow-y: auto;
+.wea-req-operate-group .wea-req-operate-content .wea-scroll {
+	height: 165px;
 }
 
 .wea-req-operate-group .wea-req-operate-content ul li {
-	height: 55px;
-	padding-top: 10px
+	/*height: 55px;*/
+	padding: 7.5px 10px;
 }
 
 .wea-req-operate-group .wea-req-operate-content ul li:hover {
@@ -148,7 +179,10 @@
 
 .wea-req-operate-group .wea-req-operate-content .cg_title {
 	color: #323232;
-	margin-left: 15px;
+	word-break: break-all;
+	display: block;
+	white-space: pre-wrap;
+	overflow: hidden;
 }
 
 .wea-req-operate-group .wea-req-operate-content .cg_detail {
@@ -158,7 +192,6 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	color: #bfbfc0;
-	margin-left: 15px;
 }
 
 .wea-req-operate-group .wea-req-operate-load-more {
@@ -181,11 +214,13 @@
 .wea-req-operate-group .wea-req-all-operators {
 	height: 55px;
 	line-height: 55px;
-	padding-left: 15px;
+	padding-left: 10px;
 	color: #323232;
 	cursor: pointer;
+	border-bottom: 1px solid #e8e8e8;
 }
-.wea-req-operate-group .wea-req-all-operators:hover{
+
+.wea-req-operate-group .wea-req-all-operators:hover {
 	background: #ECF7FD;
 	cursor: pointer;
 }
@@ -221,8 +256,44 @@
 
 .wea-req-forward-node-operator .wea-req-node-operator .content {}
 
+.wea-req-forward-node-operator .wea-req-node-operator .content .wea-scroll{
+	height: 165px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-table {
+	display: table;
+	width: 100%;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .all-operator-name {
+	width: 430px;
+	padding: 15px;
+	float: left;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .btn-back {
+	width: 31px;
+	margin-top: 15px;
+	height: 50px;
+	float: left;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .btn-back i{
+  width: 18px;
+  height: 18px;
+  padding-top: 3px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .btn-back i:hover{
+	background-color: #2db7f5;
+	color: #fff;
+	cursor: pointer;
+}
+
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item {
+	display: table-row;
 	height: 55px;
+	width: 100%;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item:hover {
@@ -233,45 +304,49 @@
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .checkbox {
 	padding-left: 15px;
 	width: 38px;
-	float: left;
-	margin-top: 18px;
+	display: table-cell;
+	vertical-align: middle;
+	height: 55px;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .nodename {
 	width: 80px;
-	float: left;
-	/*display: table;*/
-	margin: 0 auto;
 	height: 100%;
-	padding-top: 18px;
-}
-
-.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .nodename span {
-	/*display: table-cell;*/
-	/*vertical-align: middle;*/
-	/*white-space: nowrap;*/
-	/*text-overflow: ellipsis;*/
+	display: table-cell;
+	vertical-align: middle;
+	height: 55px;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .operatos {
-	width: 300px;
-	float: left;
-	/*display: table;*/
-	margin: 0 auto;
 	height: 55px;
-	padding-top:18px;
-	word-wrap: break-word;
-  	overflow: hidden;
+	display: table-cell;
+	vertical-align: middle;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .content .node-item .operatos span {
-	/*display: table-cell;*/
-	/*vertical-align: middle;*/
+	width: 310px;
+	height: 40px;
+	word-wrap: break-word;
+	overflow: hidden;
+	display: block;
 }
-.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .viewmore{
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .viewmore {
 	height: 55px;
-	padding-top: 35px;
-	display: none;
+	display: table-cell;
+	width: 20px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .viewmore i {
+	margin-top: 28px;
+	height: 16px;
+	width: 14px;
+	padding-top: 3px;
+}
+
+.wea-req-forward-node-operator .wea-req-node-operator .content .node-item .viewmore i:hover {
+	background-color: #2db7f5;
+	color: #fff;
 }
 
 .wea-req-forward-node-operator .wea-req-node-operator .footer {
@@ -294,7 +369,7 @@
 	margin-bottom: 0px;
 }
 
-.wea-req-forward-node-operator .wea-req-node-operator .content .no-data{
+.wea-req-forward-node-operator .wea-req-node-operator .content .no-data {
 	height: 55px;
 	width: 100%;
 	line-height: 55px;

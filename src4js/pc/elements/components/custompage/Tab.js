@@ -18,8 +18,12 @@ class EContent extends React.Component {
         const { eid } = params;
         params['tabid'] = tabid;
         let tabdata = data.toJSON();
-        if (!_isEmpty(tabdata)) {
+        const portalParams = window.store_e9_element.getState().portal.get("params").toJSON();
+        if (!_isEmpty(tabdata) && portalParams.loadIframe !== 'false') {
             contentHtml = <Iframe data={tabdata} eid={eid} tabid={tabid}/>
+        }
+        if(refresh && portalParams.loadIframe === 'false'){
+            contentHtml = <Spin>{contentHtml}</Spin>
         }
         return <div>
             <TitleContainer params={params} config={config} titles={titles} tabids={tabids} handleRefresh={handleRefresh}/>

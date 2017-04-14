@@ -202,7 +202,7 @@ class ListDoing extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field)}
+                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field, jQuery('.wea-advanced-searchsAd')[0])}
                     </FormItem>),
                 colSpan:1
             })
@@ -332,7 +332,7 @@ window.openSPA4Single = function(routeUrl,id,opentab) {
     let obj = jQuery("#hiddenPreLoader").length>0?jQuery("#hiddenPreLoader"):jQuery("#hiddenPreLoaderSingle");
 
     const preLoadReqInfo = routeUrl =>{
-        let url = "/api/workflow/request/reqinfo?actiontype=loadRight&ispreload=1&";
+        let url = "/api/workflow/request/loadForm?ispreload=1&";
         url += routeUrl.split("?")[1];
         jQuery.ajax({
             type : "GET",

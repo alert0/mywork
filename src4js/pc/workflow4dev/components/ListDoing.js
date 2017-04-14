@@ -202,7 +202,7 @@ class ListDoing extends React.Component {
                     label={`${field.label}`}
                     labelCol={{span: `${field.labelcol}`}}
                     wrapperCol={{span: `${field.fieldcol}`}}>
-                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field)}
+                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field, jQuery('.wea-advanced-searchsAd')[0])}
                     </FormItem>),
                 colSpan:1
             })
@@ -332,7 +332,7 @@ window.openSPA4Single = function(routeUrl,id,opentab) {
     let obj = jQuery("#hiddenPreLoader").length>0?jQuery("#hiddenPreLoader"):jQuery("#hiddenPreLoaderSingle");
 
     const preLoadReqInfo = routeUrl =>{
-        let url = "/api/workflow/request/reqinfo?actiontype=loadRight&ispreload=1&";
+        let url = "/api/workflow/request/loadForm?ispreload=1&";
         url += routeUrl.split("?")[1];
         jQuery.ajax({
             type : "GET",
@@ -399,7 +399,6 @@ ListDoing = createForm({
 
 function mapStateToProps(state) {
 	const {workflowlistDoing,comsWeaTable} = state;
-	const name = workflowlistDoing.get('dataKey') ? workflowlistDoing.get('dataKey').split('_')[0] : 'init';
     return {
         title: workflowlistDoing.get('title'),
 		leftTree: workflowlistDoing.get('leftTree'),
@@ -420,7 +419,7 @@ function mapStateToProps(state) {
 		phrasesObj: workflowlistDoing.get('phrasesObj'),
 		sharearg: workflowlistDoing.get('sharearg'),
 		//table
-        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 

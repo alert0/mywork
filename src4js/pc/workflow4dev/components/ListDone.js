@@ -294,7 +294,6 @@ ListDone = createForm({
 
 function mapStateToProps(state) {
 	const {workflowlistDone,comsWeaTable} = state;
-	const name = workflowlistDone.get('dataKey') ? workflowlistDone.get('dataKey').split('_')[0] : 'init';
     return {
         title: workflowlistDone.get('title'),
 		leftTree: workflowlistDone.get('leftTree'),
@@ -314,8 +313,8 @@ function mapStateToProps(state) {
 		showBatchSubmit: workflowlistDone.get('showBatchSubmit'),
 		phrasesObj: workflowlistDone.get('phrasesObj'),
 		sharearg: workflowlistDone.get('sharearg'),
-		//table
-        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
+        //table
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 

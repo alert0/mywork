@@ -13,7 +13,7 @@ class Toolbar extends React.Component {
            const { lock, refresh, setting, close, more } = toolbar;
            let params = config.params;
            if(!_isRe(ebaseid)){
-                params['url'] =  config.item.contentview.url;
+                params['url'] = config.item.contentview.url;
            }
            return <span className="toolbar" style={{position: 'absolute'}} id={`toolbar_${eid}`}>
                   <ul>

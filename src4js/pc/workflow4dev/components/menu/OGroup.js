@@ -1,5 +1,5 @@
 import { Icon } from 'antd'
-import { WeaTools } from 'ecCom'
+import { WeaTools ,WeaScroll} from 'ecCom'
 
 export default class OGroup extends React.Component {
 	constructor(props) {
@@ -17,6 +17,12 @@ export default class OGroup extends React.Component {
 			_this.setState({ hrmgroups: data.datas });
 		});
 	}
+	
+	componentWillReceiveProps(nextProps) {
+		if(!nextProps.isshowoperategroup){
+			this.setState({showall:false});
+		}
+	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return this.state.hrmgroups !== nextState.hrmgroups ||
@@ -29,10 +35,9 @@ export default class OGroup extends React.Component {
 	addgroup(handleVisibleChange) {
 		handleVisibleChange(false);
 		const languageid = readCookie("languageidweaver");
-		const title = SystemEnv.getHtmlNoteName(4672, languageid);
 		const dialog = new window.top.Dialog();
 		dialog.currentWindow = window;
-		dialog.Title = title;
+		dialog.Title = '新建自定义组';
 		dialog.Width = 550;
 		dialog.Height = 550;
 		dialog.Drag = true;
@@ -43,14 +48,15 @@ export default class OGroup extends React.Component {
 
 	add(setOperatorIds, handleVisibleChange, groupobj) {
 		//公共組
-		if(groupobj.type == '4') {
-			setOperatorIds("group|" + groupobj.typeid, false);
+		let params = {isAllUser:false};
+		if(groupobj.grouptype == '4') {
+			params.datas = [groupobj];
 		}
 
-		if(groupobj.type == '6') {
-			setOperatorIds(groupobj.ids, false);
+		if(groupobj.grouptype == '6') {
+			params.datas = groupobj.users;
 		}
-
+		setOperatorIds(params);
 		handleVisibleChange(false);
 	}
 
@@ -58,7 +64,8 @@ export default class OGroup extends React.Component {
 		const { showAllUser, allUserIds, allUserCount } = this.state;
 		if(showAllUser) {
 			const { handleVisibleChange, setOperatorIds } = this.props;
-			setOperatorIds(allUserIds, true, allUserCount);
+			let params  = {ids:allUserIds,isAllUser:true,count:allUserCount};
+			setOperatorIds(params);
 			handleVisibleChange(false);
 		} else {
 			WeaTools.callApi('/api/workflow/hrmgroup/datas', 'GET', { isgetallres: '1' }).then(data => {
@@ -69,27 +76,29 @@ export default class OGroup extends React.Component {
 	render() {
 		const { handleVisibleChange, setOperatorIds } = this.props;
 		const { showall, hrmgroups, showAllUser, allUserCount } = this.state;
-
+		
 		return(
 			<div className="wea-req-operate-group">
 				<div className="wea-req-all-operators" onClick={this.showAllOperators.bind(this)}>
 					<span>所有人{showAllUser && "（"+allUserCount+"）"}</span>
 				</div>
 				<div className="wea-req-operate-content">
-					<ul>
-						{hrmgroups && 
-							hrmgroups.map((o,index)=>{
-								if(index > 2 && !showall){
-									return true;
-								}
-								const count = o.ids.split(',').length;
-								return  <li onClick={this.add.bind(this,setOperatorIds,handleVisibleChange,o)}>
-											<span className='cg_title'>{`${o.typename}（${count}人）`}</span>
-											<span className='cg_detail'>{o.names}</span>
-										</li>
-							})
-						}
-					</ul>
+					<WeaScroll className="wea-scroll" typeClass="scrollbar-macosx" >
+						<ul>
+							{hrmgroups && 
+								hrmgroups.map((o,index)=>{
+									if(index > 2 && !showall){
+										return true;
+									}
+									const count = o.users.length;
+									return  <li onClick={this.add.bind(this,setOperatorIds,handleVisibleChange,o)}>
+												<span className='cg_title'>{`${o.lastname}（${count}人）`}</span>
+												<span className='cg_detail'>{o.names}</span>
+											</li>
+								})
+							}
+						</ul>
+					</WeaScroll>
 				</div>
 				{hrmgroups.length > 3 && !showall &&
 					<div className="wea-req-operate-load-more" onClick={()=>this.setState({showall:true})}>
@@ -99,7 +108,7 @@ export default class OGroup extends React.Component {
 				}
 				<div className="wea-req-operate-add" onClick={() => this.addgroup(handleVisibleChange)}>
 					<span style={{'color':'#59b632'}}><Icon type="plus-square" /></span>
-					<span style={{'color':'#323232','margin-left':'10px'}}>添加常用组</span>
+					<span style={{'color':'#323232','margin-left':'10px'}} >添加常用组</span>
 				</div>
 			</div>
 		)

@@ -36,7 +36,7 @@ class TitleContainer extends React.Component {
         return <div id={ `titleContainer_${eid}` } className={`titlecontainer ${className}`}>
                 {<div id={`tabnavprev_${eid}`} className="picturebackhp" onClick={backMarqueeDiv8.bind(this,eid)}></div>}
                 <div id={ `tabContainer_${eid}` } className="tabcontainer tab2">
-                    <table style={ { tableLayout: "fixed", borderCollapse: 'collapse'} } height="32" width={ 77 * tabids.length }>
+                    <table style={ { tableLayout: "fixed", borderCollapse: 'collapse'} } height="32">
                       <tbody height="32">
                         <tr height="32">
                             { tHtml } 

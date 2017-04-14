@@ -1,12 +1,9 @@
 import { ELEMENT_TYPES } from '../constants/ActionTypes';
 const _isRe = (ebaseid) => {
     for(var key in ELEMENT_TYPES){
-        if(ebaseid === ELEMENT_TYPES[key]){
-            return true;
-        }else{
-            return false;
-        }
+        if(ebaseid === ELEMENT_TYPES[key]) return true;
     }
+    return false;
 }
 
 //无权访问的元素的组件
@@ -30,18 +27,18 @@ const handleHeight = (style) => {
     return style;
 }
 
-const backMarqueeDiv8 = (eid) =>{
+const backMarqueeDiv8 = (eid) => {
     $("#tabContainer_"+eid).scrollTo( {top:'0px',left:($("#tabContainer_"+eid).get(0).scrollLeft - 77 + 'px')}, 500 );
 }
 
-const nextMarqueeDiv8 = (eid) =>{
+const nextMarqueeDiv8 = (eid) => {
     $("#tabContainer_"+eid).scrollTo( {top:'0px',left:($("#tabContainer_"+eid).get(0).scrollLeft + 77 + 'px')}, 500 );
 }
 
 const initheight = (eid,length,canHeadbar) => {
-    let divWidth=length*77+36;
-    let hpWidth=$("#content_"+eid).width();
-    var titleWidth=hpWidth-10;
+    var divWidth = length*77+36;
+    var hpWidth = $("#content_"+eid).width();
+    var titleWidth = hpWidth-10;
     if(canHeadbar === 'false'){
          hpWidth = hpWidth - $("#content_"+eid).find(".optoolbar").width() - 15;
     }
@@ -49,7 +46,7 @@ const initheight = (eid,length,canHeadbar) => {
         $("#tabnavprev_"+eid).css("display","block");
         $("#tabnavnext_"+eid).css("display","block");
         if(length>1){
-            if(toolbar){
+            if(canHeadbar === 'false'){
                 $("#tabContainer_"+eid).css("width", hpWidth - 55);
                 $("#tabnavnext_"+eid).css("right","110px");
             }else{
@@ -81,8 +78,8 @@ const initheight = (eid,length,canHeadbar) => {
          $("#tabContainer_"+eid).css("display", "none"); 
         }
     }
+    $("#tabContainer_"+eid+" table").css("width", length*77);
 }
-
 module.exports = {
     NoRightCom,
     handleHeight,

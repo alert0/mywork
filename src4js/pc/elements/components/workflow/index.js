@@ -30,15 +30,13 @@ class Workflow extends React.Component {
         }else{
             EContentHtml = <NoRightCom/>
         }
-        if (refresh) {
-            EContentHtml = <Spin>{ EContentHtml }</Spin>
-        }
+        if (refresh) EContentHtml = <Spin>{ EContentHtml }</Spin>
         const cvStyle = handleHeight(contentview.style);
         return <div className = "item" style = { { marginTop: '10px' } } id = { `item_${eid}` } data-eid = { eid } data-ebaseid = { ebaseid } data-needRefresh = { item.needRefresh } data-cornerTop = { item.cornerTop } data-cornerTopRadian = { item.cornerTopRadian } data-cornerBottom = { item.cornerBottom } data-cornerBottomRadian = { item.cornerBottomRadian }>
             <EHeader config = {config} handleRefresh={actions.handleRefresh.bind(this)}/>
             <div className = "content" id = { `content_${eid}` } style = { { width: 'auto', _width: '100%' } }>
                 <div className = "content_view" id = { `content_view_id_${eid}` } style = { cvStyle }>
-                    {EContentHtml }
+                    {EContentHtml}
                 </div>
                 <div style = { { textAlign: 'right' }} id = { `footer_${eid}` }></div>
             </div>

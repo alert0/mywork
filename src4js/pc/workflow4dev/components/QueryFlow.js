@@ -331,7 +331,6 @@ QueryFlow = createForm({
 
 function mapStateToProps(state) {
     const {workflowqueryFlow,comsWeaTable} = state;
-	const name = workflowqueryFlow.get('dataKey') ? workflowqueryFlow.get('dataKey').split('_')[0] : 'init';
     return {
         title: workflowqueryFlow.get('title'),
         condition: workflowqueryFlow.get('condition'),
@@ -344,7 +343,7 @@ function mapStateToProps(state) {
         searchParams:workflowqueryFlow.get('searchParams'),
         selectedTreeKeys:workflowqueryFlow.get('selectedTreeKeys'),
         //table
-        comsWeaTable:comsWeaTable.get(name) || comsWeaTable.get('init'), //绑定整个table
+        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
     }
 }
 

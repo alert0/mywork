@@ -1,4 +1,4 @@
-import { PORTAL_HPDATA } from '../constants/ActionTypes';
+import { PORTAL_HPDATA, PORTAL_PARAMS } from '../constants/ActionTypes';
 import ecLocalStorage from '../util/ecLocalStorage.js';
 import { reqPortalDatas } from '../apis/portal';
 import Immutable from 'immutable';
@@ -33,6 +33,16 @@ const handleImmutableData = (key, data) => {
     }
 }
 
+const setParamsState = (params) => {
+    return (dispatch, getState) => {
+        dispatch({
+            type: PORTAL_PARAMS,
+            params: params
+        });
+    }
+}
+
 module.exports = {
-    getPortalDatas
+    getPortalDatas,
+    setParamsState
 };

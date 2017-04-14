@@ -30,10 +30,12 @@ const PORTAL_URL = "/api/portal/homepage/hpdata";          // 初始化门户配
 
 // 门户相关
 const PORTAL_HPDATA = "portal_hpdata";                     //门户组件状态常量
+const PORTAL_PARAMS = "portal_params";                     //门户组件状态常量
 
 module.exports = {
     PORTAL_URL,
     PORTAL_HPDATA,
+    PORTAL_PARAMS,
     SYNERGY_URL,
     SYNERGY_ROUTER_MAPPING_URL
 }

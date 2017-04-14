@@ -34,6 +34,7 @@ class BatchSubmit extends React.Component{
         );
         return (
             <Modal wrapClassName="wea-workflow-batchsubmit" 
+                style={{top: (jQuery(window).height()-337)/2}}
                 visible={showBatchSubmit}
                 maskClosable={false}
                 title={this.getTopTitle()}
