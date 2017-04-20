@@ -1,7 +1,9 @@
 package com.api.browser.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,8 +13,11 @@ import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.bean.SplitTableBean;
+import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.Browser;
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.SplitTableUtil;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
 /**
@@ -65,38 +70,36 @@ public class CommonBrowserService extends BrowserService {
 				fieldsize = browser.getShowfieldMap().size();
 			}
 		}
-		String PageConstId = PageIdConst.CommonBrowser + "_" + type;
-		String tableString = "";
 		if (fieldsize > 0) {
 			String requestjson = requestToSpitParam1(params);
 			int colwidth = 100 / (fieldsize);
 			if (!from.equals("2")) {
-				tableString = ""
-						+ "<table instanceid=\"BrowseTable\" pageId=\"\" pagesize=\"10\"  datasource=\"weaver.interfaces.workflow.browser.BaseBrowserDataSource.getDataResourceList3\" sourceparams=\""
-						+ Util.toHtmlForSplitPage(requestjson) + "\" tabletype=\"none\" pageBySelf=\"true\">"
-						+ "<sql backfields=\"*\"  sqlform=\"temp\" sqlorderby=\"id\"  sqlprimarykey=\"id\" sqlsortway=\"desc\"  />" + "<head>";
-				tableString += "<col width=\"0%\" hide=\"true\" text=\"" + SystemEnv.getHtmlLabelName(413, user.getLanguage()) + "\" column=\"ids\" orderkey=\"ids\"/>";
-				tableString += "<col width=\"" + colwidth + "%\"  text=\"" + Util.null2String(browser.getNameHeader()) + "\" column=\"names\" orderkey=\"names\"/>";
-				tableString += "<col width=\"" + colwidth + "%\"  text=\"" + Util.null2String(browser.getDescriptionHeader()) + "\" column=\"descs\" orderkey=\"descs\"/>" + "</head>" + "</table>";
+				List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+				cols.add(new SplitTableColBean("true", "ids"));
+				cols.add(new SplitTableColBean(colwidth + "%", Util.null2String(browser.getNameHeader()), "names", "names"));
+				cols.add(new SplitTableColBean(colwidth + "%", Util.null2String(browser.getDescriptionHeader()), "descs", "descs"));
+				SplitTableBean tableBean = new SplitTableBean(" * ", "temp", "", "id", "id", cols);
+				tableBean.setDatasource("weaver.interfaces.workflow.browser.BaseBrowserDataSource.getDataResourceList3");
+				tableBean.setSourceparams(Util.toHtmlForSplitPage(requestjson));
+				SplitTableUtil.getTableString(apidatas, tableBean);
 			} else {
 				Set keyset = showfieldMap.keySet();
-				tableString = "<table instanceid=\"BrowseTable\" pageId=\"\" pagesize=\"" + PageIdConst.getPageSize(PageConstId, user.getUID(), PageIdConst.Browser)
-						+ "\"  datasource=\"weaver.interfaces.workflow.browser.BaseBrowserDataSource.getDataResourceList3\" sourceparams=\"" + Util.toHtmlForSplitPage(requestjson)
-						+ "\" tabletype=\"none\" pageBySelf=\"true\">" + "<sql backfields=\"*\"  sqlform=\"temp\" sqlorderby=\"id\"  sqlprimarykey=\"id\" sqlsortway=\"desc\"  />" + "<head>";
-				tableString += "<col width=\"0%\" hide=\"true\" text=\"" + SystemEnv.getHtmlLabelName(413, user.getLanguage()) + "\" column=\"ids\" orderkey=\"ids\"/>";
+				List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+				cols.add(new SplitTableColBean("true", "ids"));
 				for (Iterator it = keyset.iterator(); it.hasNext();) {
 					String keyname = (String) it.next();
 					String showname = Util.null2String((String) showfieldMap.get(keyname));
 					if ("".equals(showname))
 						continue;
-					tableString += "<col width=\"" + colwidth + "%\"  text=\"" + Util.null2String(showname) + "\" column=\"" + keyname + "s\" orderkey=\"" + keyname + "s\"/>";
+					cols.add(new SplitTableColBean(colwidth + "%", Util.null2String(showname), keyname + "s", keyname + "s"));
 				}
-				tableString += "</head>" + "</table>";
+
+				SplitTableBean tableBean = new SplitTableBean(" * ", "temp", "", "id", "id", cols);
+				tableBean.setDatasource("weaver.interfaces.workflow.browser.BaseBrowserDataSource.getDataResourceList3");
+				tableBean.setSourceparams(Util.toHtmlForSplitPage(requestjson));
+				SplitTableUtil.getTableString(apidatas, tableBean);
 			}
 		}
-		String sessionkey = Util.getEncrypt(Util.getRandom());
-		Util_TableMap.setVal(sessionkey, tableString);
-		apidatas.put("result", sessionkey);
 		return apidatas;
 	}
 

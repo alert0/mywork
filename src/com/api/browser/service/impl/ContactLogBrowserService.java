@@ -10,7 +10,10 @@ import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.bean.SplitTableBean;
+import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.SplitTableUtil;
 
 /**
  * 商机来源
@@ -35,58 +38,38 @@ public class ContactLogBrowserService extends BrowserService {
 			CustomerID = "0";
 		}
 
-		if (!"".equals(sqlwhere)) {
-			sqlwhere = sqlwhere.replace("where", " and");
-		}
-
 		String userId = String.valueOf(user.getUID());
 		String userType = user.getLogintype();
-
 		String crmId = CustomerID;
-
-		String sql = "";
-
-		if (recordSet.getDBType().equals("oracle"))
-			sql = " SELECT id, begindate, begintime, description, name " + " FROM WorkPlan WHERE id IN ( " + " SELECT DISTINCT a.id FROM WorkPlan a, WorkPlanShareDetail b " + " WHERE a.id = b.workid"
-					+ " AND (CONCAT(CONCAT(',',a.crmid),',')) LIKE '%," + crmId + ",%'" + " AND b.usertype = " + userType + " AND b.userid = " + userId + " AND a.type_n = '3')";
-		else if (recordSet.getDBType().equals("db2"))
-			sql = " SELECT id, begindate, begintime, description, name " + " FROM WorkPlan WHERE id IN ( " + " SELECT DISTINCT a.id FROM WorkPlan a, WorkPlanShareDetail b " + " WHERE a.id = b.workid"
-					+ " AND (CONCAT(CONCAT(',',a.crmid),',')) LIKE '%," + crmId + ",%'" + " AND b.usertype = " + userType + " AND b.userid = " + userId + " AND a.type_n = '3')";
-		else
-			sql = "SELECT id, begindate , begintime, description, name " + " FROM WorkPlan WHERE id IN ( " + " SELECT DISTINCT a.id FROM WorkPlan a,  WorkPlanShareDetail b WHERE a.id = b.workid"
-					+ " AND (',' + a.crmid + ',') LIKE '%," + crmId + ",%'" + " AND b.usertype = " + userType + " AND b.userid = " + userId + " AND a.type_n = '3')";
-		sql += " ORDER BY begindate DESC, begintime DESC";
-		recordSet.executeSql(sql);
-
-		// 设置table表头
-		List<Map<String, Object>> columns = new ArrayList<Map<String, Object>>();
-		Map<String, Object> column = new HashMap<String, Object>();
-		column.put("dataIndex", "name");
-		column.put("title", SystemEnv.getHtmlLabelName(229, user.getLanguage()));
-		columns.add(column);
-
-		column = new HashMap<String, Object>();
-		column.put("dataIndex", "description");
-		column.put("title", SystemEnv.getHtmlLabelName(345, user.getLanguage()));
-		columns.add(column);
-
-		column = new HashMap<String, Object>();
-		column.put("dataIndex", "begindate");
-		column.put("title", SystemEnv.getHtmlLabelName(621, user.getLanguage()));
-		columns.add(column);
-		apidatas.put("columns", columns);
-
-		List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
-		Map<String, Object> contactLogInfo = null;
-		while (recordSet.next()) {
-			contactLogInfo = new HashMap<String, Object>();
-			contactLogInfo.put("name", Util.toScreen(recordSet.getString("name"), user.getLanguage()));
-			contactLogInfo.put("description", Util.toScreen(recordSet.getString("description"), user.getLanguage()));
-			contactLogInfo.put("begindate", recordSet.getString("begindate") + " " + recordSet.getString("begintime"));
-			datas.add(contactLogInfo);
+		
+		if (recordSet.getDBType().equals("oracle")){
+			sqlwhere = "id IN (SELECT DISTINCT a.id FROM WorkPlan a, WorkPlanShareDetail b WHERE a.id = b.workid AND (CONCAT(CONCAT(',',a.crmid),',')) LIKE '%," + crmId + ",%' AND b.usertype = " + userType + " AND b.userid = " + userId + " AND a.type_n = '3')";
+		}else if (recordSet.getDBType().equals("db2")){
+			sqlwhere = "id IN (SELECT DISTINCT a.id FROM WorkPlan a, WorkPlanShareDetail b WHERE a.id = b.workid AND (CONCAT(CONCAT(',',a.crmid),',')) LIKE '%," + crmId + ",%' AND b.usertype = " + userType + " AND b.userid = " + userId + " AND a.type_n = '3')";
+		}else{
+			sqlwhere = "id IN (SELECT DISTINCT a.id FROM WorkPlan a, WorkPlanShareDetail b WHERE a.id = b.workid AND (',' + a.crmid + ',') LIKE '%," + crmId + ",%' AND b.usertype = " + userType + " AND b.userid = " + userId + " AND a.type_n = '3')";
 		}
-		apidatas.put("datas", datas);
+		//sql += " ORDER BY begindate DESC, begintime DESC";
+		
+		String backfields = "id, begindate, begintime, description, name";
+		String fromSql = "WorkPlan";
+		String sqlorderby = "begindate,begintime";
+		
+		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+		cols.add(new SplitTableColBean("true", "id"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(229, user.getLanguage()),"name","name"));
+		cols.add(new SplitTableColBean("40%",SystemEnv.getHtmlLabelName(345, user.getLanguage()),"description","description"));
+		cols.add(new SplitTableColBean("40%",SystemEnv.getHtmlLabelName(621, user.getLanguage()),"begindate","begindate","com.api.browser.service.impl.ContactLogBrowserService.getBeginDateInfo","column:begintime"));
+		
+		SplitTableBean tableBean  =  new SplitTableBean(backfields,fromSql,sqlwhere,sqlorderby,"id",cols);
+		SplitTableUtil.getTableString(apidatas,tableBean);
 		return apidatas;
 	}
+	
+	public String getBeginDateInfo(String begindate,String para){
+		return Util.null2String(begindate) + " " + Util.null2String(para);
+	}
+	
+	
 
 }

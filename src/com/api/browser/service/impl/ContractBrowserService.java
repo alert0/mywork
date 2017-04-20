@@ -1,16 +1,19 @@
 package com.api.browser.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import weaver.crm.CrmShareBase;
-import weaver.general.PageIdConst;
 import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.bean.SplitTableBean;
+import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
-import com.cloudstore.dev.api.util.Util_TableMap;
+import com.api.browser.util.SplitTableUtil;
 
 /**
  * 业务合同
@@ -55,19 +58,15 @@ public class ContractBrowserService extends BrowserService {
 		
 		String backfields = " t1.* ";
 		String orderby = "t1.id";
-		String tableString =" <table id='BrowseTable' instanceid='BrowseTable' tabletype='none' pagesize=\""+PageIdConst.getPageSize(PageIdConst.CRM_Contract,user.getUID(),PageIdConst.CRM)+"\">"+ 
-							"<sql backfields=\""+backfields+"\" sqlform=\""+Util.toHtmlForSplitPage(fromSql)+"\" sqlwhere=\""+sqlwhere+"\"  sqlorderby=\""+orderby+"\"  sqlprimarykey=\"t1.id\" sqlsortway=\"Desc\"/>"+
-							"<head>"+
-							"<col width=\"15%\" text=\""+SystemEnv.getHtmlLabelName(84,user.getLanguage())+"\" orderkey=\"id\" column=\"id\"/>"+ 
-							"<col width=\"45%\"  text=\""+ SystemEnv.getHtmlLabelName(195,user.getLanguage()) +"\" orderkey=\"name\" column=\"name\"/>"+ 
-							"<col width=\"20%\"  text=\""+ SystemEnv.getHtmlLabelName(6083,user.getLanguage()) +"\" orderkey=\"typeid\" column=\"typeid\""+ " transmethod=\"weaver.crm.Maint.ContractTypeComInfo.getContractTypename\"/>"+ 
-							"<col width=\"20%\"  text=\""+SystemEnv.getHtmlLabelName(602,user.getLanguage())+"\" column=\"status\" orderkey=\"status\" otherpara='"+user.getLanguage()+ "' transmethod=\"weaver.crm.Maint.CRMTransMethod.getContractStatus\"/>"+
-							"</head>"+   			
-							"</table>";
-
-		String sessionkey = Util.getEncrypt(Util.getRandom());
-		Util_TableMap.setVal(sessionkey, tableString);
-		apidatas.put("result", sessionkey);
+		
+		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+		cols.add(new SplitTableColBean("15%",SystemEnv.getHtmlLabelName(84, user.getLanguage()),"id","id"));
+		cols.add(new SplitTableColBean("45%",SystemEnv.getHtmlLabelName(195, user.getLanguage()),"name","name"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(6083, user.getLanguage()),"typeid","typeid","weaver.crm.Maint.ContractTypeComInfo.getContractTypename"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(602, user.getLanguage()),"status","status","weaver.crm.Maint.CRMTransMethod.getContractStatus",String.valueOf(user.getLanguage())));
+		
+		SplitTableBean tableBean  =  new SplitTableBean(backfields,fromSql,sqlwhere,orderby,"t1.id",cols);
+		SplitTableUtil.getTableString(apidatas,tableBean);
 		return apidatas;
 	}
 

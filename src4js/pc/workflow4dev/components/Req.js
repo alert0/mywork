@@ -5,13 +5,14 @@ import * as ReqFormAction from '../actions/reqForm'
 import * as ReqLogListAction from '../actions/reqLogList'
 
 import {Button,Table,Spin,Popover } from 'antd'
-import FormLayout from './form/FormLayout'
-import Sign from './sign/Sign'
-import ImgZoom from './sign/ImgZoom'
-import WfStatus from './status/WfStatus'
-import Resources from './resources/Resources'
-import Share from './share/Share'
-import Forward from './menu/Forward'
+import FormLayout from './form/layout/FormLayout'
+import Sign from './form/sign/Sign'
+import SignInput from './form/sign/SignInput'
+import ImgZoom from './form/sign/ImgZoom'
+import WfStatus from './form/WfStatus'
+import Resources from './form/Resources'
+import Share from './form/Share'
+import Forward from './form/forward/Forward'
 
 
 import {WeaReqTop,WeaRightMenu} from 'ecCom'
@@ -29,9 +30,8 @@ class Req extends React.Component {
     }
     constructor(props) {
         super(props);
-        const {requestid,preloadkey,comemessage} = props.location.query;
         const {actions} = props;
-        actions.initFormLayout(requestid, preloadkey,comemessage);
+        actions.initFormLayout(props.location.query);
     }
     resetHeight(){
         let height = jQuery(".wea-new-top-req-content").height() ? jQuery(".wea-new-top-req-content").height() : 500;
@@ -116,11 +116,11 @@ class Req extends React.Component {
         this.props.showSearchDrop !== nextProps.showSearchDrop||
         !is(this.props.isShowUserheadimg,nextProps.isShowUserheadimg)||
         //表单内容相关
-        !is(this.props.layout,nextProps.layout)||
-        !is(this.props.conf,nextProps.conf)||
         !is(this.props.mainData,nextProps.mainData)||
         !is(this.props.detailData,nextProps.detailData)||
         !is(this.props.fieldVariable,nextProps.fieldVariable)||
+        this.props.conf.size !== nextProps.conf.size||      //conf判断size即可，同时layout布局判断放在conf后面，基本上conf存在变化直接返回true
+        !is(this.props.layout, nextProps.layout)||
         //性能测试
         this.props.reqLoadDuration !== nextProps.reqLoadDuration ||
         this.props.jsLoadDuration !== nextProps.jsLoadDuration ||
@@ -143,11 +143,11 @@ class Req extends React.Component {
             resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,
             isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
-        const hasInitLayout = layout.get("hasInit");
+        const hasInitLayout = layout.size > 0;
         const titleName = params?params.get("titlename"):"";
         const isshared = params?params.get("isshared"):"";
         const userId = params?params.get("f_weaver_belongto_userid"):"";
-        const ismanagePage = params?params.get('ismanagePage'):'';
+        const requestType = params?params.get('requestType'):'';
         const workflowid = params?params.get("workflowid"):"";
         const requestLogParams = Immutable.fromJS(logParams.get('requestLogParams') ? JSON.parse(logParams.get('requestLogParams')) : {});
         const forward = rightMenu?rightMenu.get('forward'):'';
@@ -184,6 +184,7 @@ class Req extends React.Component {
                             }
                             <div className='wea-req-workflow-form' style={{display:reqTabKey == '1' ? 'block' : 'none',margin:"0 auto"}}>
                                 {hasInitLayout && <FormLayout
+                                    actions={actions}
                                     params={params}
                                     symbol="emaintable"
                                     layout={layout}
@@ -194,9 +195,9 @@ class Req extends React.Component {
                                 }
                             </div>
                             <input type="hidden" id="e9form_review" value='1'/>
+                            {requestType > 0 && <SignInput requestType = {requestType} isShowSignInput={isShowSignInput} actions ={actions} signinputinfo={params.get('signinputinfo')} requestType={requestType} />}
                             <div className='wea-req-workflow-loglist' style={{display:reqTabKey == '1' ? 'block' : 'none'}}>
-                                {hasInitLayout && <Sign
-                                    signinputinfo={params.get('signinputinfo')}
+                                {hasInitLayout && requestType != 2 && <Sign
                                     logList={logList}
                                     actions={actions}
                                     logListTabKey={logListTabKey}
@@ -208,8 +209,6 @@ class Req extends React.Component {
                                     pagesize={logParams.get('logpagesize') ? logParams.get('logpagesize') : 10}
                                     total={logCount ? logCount : 0}
                                     onPageSizeChange={n=>actions.setLogPagesize({logpagesize:n})}
-                                    ismanagePage={ismanagePage}
-                                    isShowSignInput={isShowSignInput}
                                     signFields={signFields}
                                     showSearchDrop={showSearchDrop}
                                     forward={forward}
@@ -258,7 +257,7 @@ class Req extends React.Component {
                     </WeaPopoverHrm>
                 </WeaReqTop>
                 </WeaRightMenu>
-				<Forward showForward={rightMenuStatus.get('showForward')} ismanagePage={ismanagePage} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} controllShowForward={this.controllShowForward.bind(this)}/>
+				<Forward showForward={rightMenuStatus.get('showForward')} requestType={requestType} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} controllShowForward={this.controllShowForward.bind(this)}/>
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}
@@ -269,7 +268,7 @@ class Req extends React.Component {
                     </div>
                 </div>
                 <ImgZoom />
-                <Synergy pathname='/workflow/req' workflowid={workflowid} requestid={requestid} />
+                <Synergy pathname='/workflow/req' workflowid={workflowid} requestid={requestid?requestid:-1} />
             </div>
         )
     }
@@ -322,13 +321,13 @@ class Req extends React.Component {
     getButtons() {
         const {rightMenu,pathBack,loading,actions,params} = this.props;
         const {router} = this.context;
-        const ismanagePage = params?params.get('ismanagePage'):'';
+        const requestType = params?params.get('requestType'):'';
         let btnArr = [];
         rightMenu && !is(rightMenu,Immutable.fromJS({})) && rightMenu.get('rightMenus').map(m=>{
             let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
             m.get('isTop') == '1' && btnArr.length < 4 && btnArr.push(<Button type="primary" disabled={loading} onClick={()=>{eval(fn)}}>{m.get('menuName')}</Button>)
         });
-        window.location.pathname.indexOf('/spa/workflow/index') < 0 && btnArr.push(<Button type="ghost" onClick={this.gobackpage.bind(this,router,ismanagePage)}>返回</Button>)
+        window.location.pathname.indexOf('/spa/workflow/index') < 0 && btnArr.push(<Button type="ghost" onClick={this.gobackpage.bind(this,router,requestType)}>返回</Button>)
 //      btnArr.push(<Button type="ghost" onClick={()=>{router.push(`/main/workflow/${pathBack}`)}}>返回</Button>)
 
         return btnArr
@@ -344,8 +343,8 @@ class Req extends React.Component {
     }
 
 
-    gobackpage(router,ismanagePage){
-        if(ismanagePage == '1'){
+    gobackpage(router,requestType){
+        if(requestType == 1){
             UEUtil.getUEInstance('remark').destroy();
         }
         router.goBack();

@@ -25,9 +25,10 @@ import com.api.workflow.service.FormDataService;
 import com.api.workflow.service.FormInfoService;
 import com.api.workflow.service.LayoutInfoService;
 import com.api.workflow.service.LinkageCfgService;
-import com.api.workflow.service.RequestFormService;
+import com.api.workflow.service.RequestFormNewService;
 import com.api.workflow.service.RequestLogService;
 import com.api.workflow.service.RequestOperation;
+import com.api.workflow.service.RequestRightMenuService;
 import com.api.workflow.service.RequestStatusLogService;
 import com.api.workflow.service.SignInputService;
 import com.api.workflow.util.PageUidFactory;
@@ -97,12 +98,19 @@ public class RequestFormNewAction {
 			}
 
 			//权限加载判断、基础信息参数获取
-			Map<String,Object> params = new RequestFormService(request, response).loadCompetence();
+			Map<String,Object> params = new RequestFormNewService(request, response).loadCompetence();
 			apidatas.put("params", params);
 			
 			//加载表单信息，包括字段信息、明细信息等
 			Map<String,Object> forminfo = new FormInfoService().generateFormInfo(request, response, params);
 			apidatas.putAll(forminfo);
+			
+			//加载联动配置信息
+			int wfid = Util.getIntValue(params.get("workflowid")+"");
+			int nodeid = Util.getIntValue(params.get("nodeid")+"");
+			int formid = Util.getIntValue(params.get("formid")+"");
+			int isbill = Util.getIntValue(params.get("isbill")+"");
+			apidatas.put("linkageCfg", new LinkageCfgService(wfid, nodeid, formid, isbill).getAllLinkageCfg());
 			
 			//加载主表数据
 			apidatas.put("maindata", new FormDataService().loadMainData(request, response, params));
@@ -224,7 +232,7 @@ public class RequestFormNewAction {
 	public String rightMenu(@Context HttpServletRequest request, @Context HttpServletResponse response){
 		Map<String,Object> apidatas = new HashMap<String,Object>();
 		try {
-			apidatas = new RequestFormService(request, response).getRightMenu();
+			apidatas = new RequestRightMenuService(request, response).getRightMenu();
 		} catch (Exception e) {
 			e.printStackTrace();
 			apidatas.put("api_status", false);
@@ -239,7 +247,7 @@ public class RequestFormNewAction {
 	public String updateReqInfo(@Context HttpServletRequest request, @Context HttpServletResponse response){
 		Map<String,Object> apidatas = new HashMap<String,Object>();
 		try {
-			apidatas = new RequestFormService(request, response).updateRequestInfoData();
+			apidatas = new RequestFormNewService(request, response).updateRequestInfoData();
 		} catch (Exception e) {
 			e.printStackTrace();
 			apidatas.put("api_status", false);
@@ -269,7 +277,7 @@ public class RequestFormNewAction {
 	public String copyCustomPageFile(@Context HttpServletRequest request, @Context HttpServletResponse response){
 		Map<String,Object> apidatas = new HashMap<String,Object>();
 		try {
-			apidatas = new RequestFormService().copyCustompageFile(request, response);
+			apidatas = new RequestFormNewService().copyCustompageFile(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			apidatas.put("api_status", false);

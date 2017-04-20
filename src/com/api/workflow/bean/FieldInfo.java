@@ -9,6 +9,7 @@ public class FieldInfo implements Serializable{
 	private int isview;
 	private int isedit;
 	private int ismand;
+	private int viewattr;
 	private String fieldname;
 	private String fieldlabel;
 	private String fielddbtype;
@@ -62,6 +63,14 @@ public class FieldInfo implements Serializable{
 
 	public void setIsmand(int ismand) {
 		this.ismand = ismand;
+	}
+
+	public int getViewattr() {
+		return viewattr;
+	}
+
+	public void setViewattr(int viewattr) {
+		this.viewattr = viewattr;
 	}
 
 	public String getFieldname() {

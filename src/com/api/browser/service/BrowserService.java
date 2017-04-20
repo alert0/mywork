@@ -32,7 +32,7 @@ public abstract class BrowserService extends BaseBean implements Browser {
 	}
 
 	@Override
-	public Map<String, Object> browserAutoComplete(Map<String, Object> params) throws Exception {
+	public Map<String, Object> browserAutoComplete(String type,HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

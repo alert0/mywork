@@ -17,6 +17,8 @@ import weaver.conn.RecordSet;
 import weaver.general.Util;
 import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
+import weaver.hrm.company.DepartmentComInfo;
+import weaver.hrm.company.SubCompanyComInfo;
 import weaver.hrm.resource.MutilResourceBrowser;
 import weaver.hrm.resource.ResourceComInfo;
 
@@ -43,6 +45,8 @@ public class LoadOrgResourceService {
 		try {
 			MutilResourceBrowser mrb = new MutilResourceBrowser();
 			ResourceComInfo rcomInfo = new ResourceComInfo();
+			DepartmentComInfo deptComInfo = new DepartmentComInfo();
+			SubCompanyComInfo subCompanyComInfo = new SubCompanyComInfo();
 			String alllevel = "1";
 			String isNoAccount = "1";
 			String sqlwhere = "";
@@ -68,17 +72,10 @@ public class LoadOrgResourceService {
 
 					String[] resourceidArr = Util.TokenizerString2(resourceids, ",");
 					List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
-					Map<String, Object> userInfo = null;
 					for (String resourceid : resourceidArr) {
 						if ("".equals(Util.null2String(resourceid)))
 							continue;
-						userInfo = new HashMap<String, Object>();
-						userInfo.put("id", resourceid);
-						userInfo.put("lastname", rcomInfo.getLastname(resourceid));
-						userInfo.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(resourceid));
-						userInfo.put("icon", rcomInfo.getMessagerUrls(resourceid));
-						userInfo.put("type", "resource");
-						users.add(userInfo);
+						users.add(getUserInfo(resourceid,rcomInfo,deptComInfo,subCompanyComInfo));
 					}
 
 					Map<String, Object> typeresult = new HashMap<String, Object>();
@@ -90,20 +87,29 @@ public class LoadOrgResourceService {
 				} else {
 					if ("".equals(Util.null2String(typeInfo)))
 						continue;
-					Map<String, Object> userInfo = new HashMap<String, Object>();
-					userInfo.put("id", typeInfo);
-					userInfo.put("lastname", rcomInfo.getLastname(typeInfo));
-					userInfo.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(typeInfo));
-					userInfo.put("icon", rcomInfo.getMessagerUrls(typeInfo));
-					userInfo.put("type", "resource");
-					userInfo.put("nodeid", "resource_" + typeInfo + "x");
-					apidatas.add(userInfo);
+					apidatas.add(getUserInfo(typeInfo,rcomInfo,deptComInfo,subCompanyComInfo));
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return JSONObject.toJSONString(apidatas);
+	}
+	
+	private Map<String, Object> getUserInfo(String userid,ResourceComInfo rcomInfo,DepartmentComInfo deptComInfo,SubCompanyComInfo subCompanyComInfo) throws Exception{
+		Map<String, Object> userInfo = new HashMap<String, Object>();
+		userInfo.put("id", userid);
+		userInfo.put("lastname", rcomInfo.getLastname(userid));
+		userInfo.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(userid));
+		userInfo.put("icon", rcomInfo.getMessagerUrls(userid));
+		userInfo.put("type", "resource");
+		userInfo.put("nodeid", "resource_" + userid + "x");
+		userInfo.put("departmentname", deptComInfo.getDepartmentname(rcomInfo.getDepartmentID(userid)));
+		String subcompanyid  = deptComInfo.getSubcompanyid1(rcomInfo.getDepartmentID(userid));
+		String parentsubcompanyid  = subCompanyComInfo.getSupsubcomid(subcompanyid);
+		userInfo.put("subcompanyname", subCompanyComInfo.getSubcompanyname(subcompanyid));
+		userInfo.put("supsubcompanyname", subCompanyComInfo.getSubcompanyname(parentsubcompanyid));
+		return userInfo;
 	}
 	
 	@GET

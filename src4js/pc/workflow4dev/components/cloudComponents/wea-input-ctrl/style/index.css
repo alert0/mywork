@@ -1,0 +1,35 @@
+.wea-input-ctrl {
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    color: #000;
+    position: relative;
+    display: inline-block;
+}
+
+.wea-input-ctrl .text {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.wea-input-ctrl .ant-input {
+    height: inherit;
+    font-size: inherit;
+    padding: 0;
+}
+
+.wea-input-ctrl .ant-input-wrapper {
+    width: 100%;
+    display: inline-block;
+    height: inherit;
+}
+
+.required:after {
+    content: "*";
+    font-size: 14px;
+    color: #ff0000;
+    position: absolute;
+    right: -10px;
+    top: 0px;
+}

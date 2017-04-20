@@ -13,6 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 public interface Browser {
 	
 	/**
+	 * 自动提示查询的数据总数
+	 */
+	public static final int PAGENUM = 30;
+	
+	/**
 	 * 获取浏览框数据
 	 * @param params 参数集合
 	 * @return
@@ -33,8 +38,7 @@ public interface Browser {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String,Object> browserAutoComplete(Map<String,Object> params) throws Exception;
-	
+	public Map<String, Object> browserAutoComplete(String type,HttpServletRequest request,HttpServletResponse response) throws Exception;
 	
 	/**
 	 * 

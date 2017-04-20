@@ -1,12 +1,18 @@
 package com.api.browser.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import weaver.general.Util;
 import weaver.hrm.User;
+import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.bean.SplitTableBean;
+import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.SplitTableUtil;
 import com.api.workflow.util.PageUidFactory;
 import com.cloudstore.dev.api.util.Util_TableMap;
 
@@ -70,19 +76,16 @@ public class CountryBrowserService extends BrowserService {
 				sqlwhere += "%'";
 			}
 		}
-		String pageUid = PageUidFactory.getBrowserUID("hrmcountrylist");
-
-		String tableString = "<table instanceid='BrowseTable' tabletype='none' pageUid =\"" + pageUid
-				+ "\">"
-				+ "<sql backfields=\""
-				+ "id,countryname,countrydesc"// backfields
-				+ "\" sqlform=\"" + Util.toHtmlForSplitPage("HrmCountry") + "\" sqlwhere=\"" + sqlwhere + "\"  sqlorderby=\"" + "id" + "\"  sqlprimarykey=\"id\" sqlsortway=\"Desc\"/>" + "<head>"
-				+ "   <col width=\"0%\"  text=\"" + "id" + "\" display=\"false\" orderkey=\"id\" column=\"id\"/>" + "   <col width=\"40%\"  text=\"" + "简称"
-				+ "\" display=\"true\" orderkey=\"countryname\" column=\"countryname\"/>" + "   <col width=\"60%\"  text=\"" + "国家"
-				+ "\" display=\"true\" orderkey=\"countrydesc\" column=\"countrydesc\"/>" + "</head>" + "</table>";
-		String sessionkey = Util.getEncrypt(Util.getRandom());
-		Util_TableMap.setVal(sessionkey, tableString);
-		apidatas.put("result", sessionkey);
+		String backfields = "id,countryname,countrydesc";
+		String fromSql = "HrmCountry";
+		
+		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+		cols.add(new SplitTableColBean("hide","id"));
+		cols.add(new SplitTableColBean("40%",SystemEnv.getHtmlLabelName(399, user.getLanguage()),"countryname","countryname"));
+		cols.add(new SplitTableColBean("60%",SystemEnv.getHtmlLabelName(377, user.getLanguage()),"countrydesc","countrydesc"));
+		
+		SplitTableBean tableBean  =  new SplitTableBean(backfields,fromSql,sqlwhere,"id","id",cols);
+		SplitTableUtil.getTableString(apidatas,tableBean);
 		return apidatas;
 	}
 }

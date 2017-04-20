@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import weaver.conn.RecordSet;
 import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.bean.SplitTableBean;
+import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.SplitTableUtil;
 import com.api.browser.util.SqlUtils;
 
 /**
@@ -39,39 +41,17 @@ public class ContacterTitleBrowserService extends BrowserService {
 			sqlwhere += "%'";
 		}
 		sqlwhere = SqlUtils.replaceFirstAnd(sqlwhere);
-
-		// 设置表头
-		List<Map<String, Object>> columns = new ArrayList<Map<String, Object>>();
-		Map<String, Object> column = new HashMap<String, Object>();
-		column.put("dataIndex", "id");
-		column.put("title", SystemEnv.getHtmlLabelName(84, user.getLanguage()));
-		columns.add(column);
+			
+		String backfields = " id,fullname,description ";
+		String fromSql  = "CRM_ContacterTitle";
 		
-		column = new HashMap<String, Object>();
-		column.put("dataIndex", "fullname");
-		column.put("title", SystemEnv.getHtmlLabelName(399, user.getLanguage()));
-		columns.add(column);
-
-		column = new HashMap<String, Object>();
-		column.put("dataIndex", "description");
-		column.put("title", SystemEnv.getHtmlLabelName(433, user.getLanguage()));
-		columns.add(column);
-
-		apidatas.put("columns", columns);
-		// 加载数据
-		RecordSet rs = new RecordSet();
-		rs.executeSql("select id,fullname,description from CRM_ContacterTitle " + sqlwhere);
-		List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
-		Map<String, Object> eduInfo = null;
-		while (rs.next()) {
-			eduInfo = new HashMap<String, Object>();
-			eduInfo.put("id", rs.getString("id"));
-			eduInfo.put("fullname", rs.getString("fullname"));
-			eduInfo.put("description", rs.getString("description"));
-			datas.add(eduInfo);
-		}
-
-		apidatas.put("datas", datas);
+		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(84, user.getLanguage()),"id","id"));
+		cols.add(new SplitTableColBean("40%",SystemEnv.getHtmlLabelName(399, user.getLanguage()),"fullname","fullname"));
+		cols.add(new SplitTableColBean("40%",SystemEnv.getHtmlLabelName(433, user.getLanguage()),"description","description"));
+		
+		SplitTableBean tableBean  =  new SplitTableBean(backfields,fromSql,sqlwhere,"","id",cols);
+		SplitTableUtil.getTableString(apidatas,tableBean);
 		return apidatas;
 	}
 }

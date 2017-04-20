@@ -73,6 +73,20 @@ public class ServiceUtil {
 	}*/
 	
 	/**
+	 * 判断流程创建是否创建SPA模式
+	 * @param type 0:PC端  2:手机端
+	 */
+	public static boolean judgeWfCreateSPA(String workflowid, int type) {
+		RecordSet rs = new RecordSet();
+		rs.executeSql("select id from workflow_nodehtmllayout where workflowid="+workflowid+" and nodeid in ( "
+			+ "select nb.id from workflow_nodebase nb,workflow_flownode fn where fn.workflowid="+workflowid+" and nb.isstart=1 and nb.id=fn.nodeid and fn.ismode=2 "
+			+ ") and version=2 and type="+type+" and isactive=1 ");
+		if(rs.next())
+			return true;
+		return false;
+	}
+	
+	/**
 	 * 判断SPA模式下是否请求到路由或原地址
 	 * @return true:请求路径地址   false：请求原地址
 	 */

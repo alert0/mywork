@@ -7,7 +7,6 @@ const List = Immutable.List;
 //初始化签字意见查询参数
 export const initLogParams = (formParams) => {
 	return (dispatch, getState) => {
-		console.log("formParams",formParams);
 		const loadmethod = formParams.signListType ? 'scroll' : 'split';
 		let logParamsInit = {
 			requestid:formParams.requestid,
@@ -15,7 +14,7 @@ export const initLogParams = (formParams) => {
 			firstload:true,
 			maxrequestlogid:0,
 			loadmethod:loadmethod,
-			submit:formParams.ismanagePage,
+			submit:formParams.requestType,
 			workflowid:formParams.workflowid,
 			nodeid:formParams.nodeid
 		};
@@ -26,7 +25,6 @@ export const initLogParams = (formParams) => {
 //设置签字意见分页信息
 export const setlogParams = params => {
 	return (dispatch, getState) => {
-		console.log("params",params);
 		dispatch({type:types.LOGLIST_SET_LOG_PARAMS,logParams:params});
 		dispatch(setMarkInfo());
 	}
@@ -51,9 +49,7 @@ export const setMarkInfo = () => {
 			let value = data;
 			let templogparams  = value.requestLogParams ? {requestLogParams: JSON.stringify(value.requestLogParams),logpagesize: value.requestLogParams.wfsignlddtcnt} : {};
 			templogparams.maxrequestlogid = value.maxrequestlogid;
-			console.log("data",data);
 			dispatch({type:types.LOGLIST_SET_MARK_INFO,logList:value.log_loglist,logCount:value.totalCount ? value.totalCount : logCount,logParams:templogparams});
-			console.log(new Date());
 			{!logParams.requestLogParams &&
 				dispatch(setIsShowUserheadimg(value.requestLogParams.txStatus == '1'));
 			}

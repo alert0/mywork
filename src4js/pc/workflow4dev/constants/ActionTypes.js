@@ -4,6 +4,10 @@
 export const REQFORM_INIT_INFO = 'reqform_init_info'
 export const REQFORM_SET_DETAILVALUE = 'reqform_set_detailvalue'
 export const REQFORM_CLEAR_INFO = 'reqform_clear_info'
+export const REQFORM_CHANGE_MAIN_VALUE = 'reqform_change_main_value'
+export const REQFORM_CHANGE_DETAIL_VALUE = 'reqform_change_detail_value'
+export const REQFORM_SET_FIELD_VARIABLE = 'reqform_set_field_variable'
+export const REQFORM_CLEAR_FIELD_VARIABLE = 'reqform_clear_field_variable'
 
 
 /**

@@ -19,6 +19,7 @@ public class ConditionKeyFactory {
 	public final static String KEY15 = "6e139e9b-6b83-4750-beac-851ba6a5926f";
 	
 	
+	
 	/**
 	 * 组件KEY规则
 	 * 1：根据billfield表中 fieldhtmltype_type 格式生成
@@ -26,6 +27,19 @@ public class ConditionKeyFactory {
 	 * 
 	 * 
 	 */
+	
+	public final static String KEY_3_58 =  "3_58"; //城市
+	public final static String KEY_3_60 =  "3_60"; //客户类型
+	public final static String KEY_3_61 =  "3_61"; //客户描述
+	public final static String KEY_3_62 =  "3_62"; //客户大小
+	public final static String KEY_3_63 =  "3_63"; //行业
+	
+	public final static String KEY_CUSTOMER_STATUS =  "customer_status"; //客户类型
+	public final static String KEY_COUNTRY =  "country"; //国家
+	
+	
+	
+		
 	
 	
 	

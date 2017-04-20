@@ -373,9 +373,7 @@ public class RequestDoingService {
 			sqlsb.append("select a.workflowtype, a.workflowid, a.viewtype, count(distinct a.requestid) workflowcount ");
 		}
 		sqlsb.append("	  from workflow_currentoperator a ");
-		sqlsb.append("	  where (((isremark='0' and (takisremark is null or takisremark=0 )) and isprocessed is null) ");
-		sqlsb.append("	         or isremark = '1' or ");
-		sqlsb.append("	        isremark = '8' or isremark = '9' or isremark = '7') ");
+		sqlsb.append("	  where ((isremark='0' and (takisremark is null or takisremark=0 )) or isremark in ('1','7','8','9'))");
 		sqlsb.append("	    and islasttimes = 1 ");
 		if (!"".equals(cursltwftypeid)) {
 			sqlsb.append("   and workflowtype in (").append(cursltwftypeid).append(")");

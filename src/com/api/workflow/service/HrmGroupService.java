@@ -16,6 +16,8 @@ import javax.ws.rs.core.MediaType;
 import weaver.general.Util;
 import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
+import weaver.hrm.company.DepartmentComInfo;
+import weaver.hrm.company.SubCompanyComInfo;
 import weaver.hrm.group.HrmGroupTreeComInfo;
 import weaver.hrm.resource.MutilResourceBrowser;
 import weaver.hrm.resource.ResourceComInfo;
@@ -52,6 +54,8 @@ public class HrmGroupService {
 		    }
 		} else {
 			ResourceComInfo rcomInfo = new ResourceComInfo();
+			DepartmentComInfo deptComInfo = new DepartmentComInfo();
+			SubCompanyComInfo subCompanyComInfo = new SubCompanyComInfo();
 			List<Map<String, String>> grouplist = hrmgrpcominfo.getHrmGroup(user);
 			List<Map<String,Object>> newgrouplist =  new ArrayList<Map<String,Object>>();
 			if (grouplist != null && grouplist.size() > 0) {
@@ -68,6 +72,11 @@ public class HrmGroupService {
 							userInfo.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(resourceid));
 							userInfo.put("icon", rcomInfo.getMessagerUrls(resourceid));
 							userInfo.put("type", "resource");
+							userInfo.put("departmentname", deptComInfo.getDepartmentname(rcomInfo.getDepartmentID(resourceid)));
+							String subcompanyid  = deptComInfo.getSubcompanyid1(rcomInfo.getDepartmentID(resourceid));
+							String parentsubcompanyid  = subCompanyComInfo.getSupsubcomid(subcompanyid);
+							userInfo.put("subcompanyname", subCompanyComInfo.getSubcompanyname(subcompanyid));
+							userInfo.put("supsubcompanyname", subCompanyComInfo.getSubcompanyname(parentsubcompanyid));
 							users.add(userInfo);
 						}
 						newgroup.put("users", users);

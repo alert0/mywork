@@ -1,15 +1,19 @@
 package com.api.browser.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.bean.SplitTableBean;
+import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.SplitTableUtil;
 import com.api.browser.util.SqlUtils;
-import com.cloudstore.dev.api.util.Util_TableMap;
 
 /**
  * 奖惩种类
@@ -47,19 +51,17 @@ public class AwardTypeBrowserService extends BrowserService{
 		
 		String backfields = " id,name,awardtype,description ";
 		String fromSql = " HrmAwardType  ";
-		String tableString =" <table id='BrowseTable' instanceid='BrowseTable' tabletype='none' pagesize=\"10\">"+ 
-							" <sql backfields=\""+backfields+"\" sqlform=\""+Util.toHtmlForSplitPage(fromSql)+"\" sqlwhere=\""+sqlwhere+"\"  sqlorderby=\"\"  sqlprimarykey=\"id\" sqlsortway=\"Desc\"/>"+
-							"	<head>"+
-							"		<col hide=\"true\" orderkey=\"id\" column=\"id\"/>"+ 
-							"		<col width=\"20%\"  text=\""+ SystemEnv.getHtmlLabelName(195,user.getLanguage()) +"\" orderkey=\"name\" column=\"name\"/>"+ 
-							"		<col width=\"20%\"  text=\""+ SystemEnv.getHtmlLabelName(63,user.getLanguage()) +"\"  display=\"true\" orderkey=\"awardtype\" column=\"awardtype\" otherpara=\""+user.getLanguage()+"\" transmethod=\"com.api.browser.service.AwardTypeBrowserService.getAwardtypeLabel\"/>"+ 
-							"		<col width=\"60%\"  text=\""+ SystemEnv.getHtmlLabelName(15667,user.getLanguage()) +"\" orderkey=\"description\" column=\"description\"/>"+ 
-							"	</head>"+   			
-							" </table>";
-
-		String sessionkey = Util.getEncrypt(Util.getRandom());
-		Util_TableMap.setVal(sessionkey, tableString);
-		apidatas.put("result", sessionkey);
+		
+		String pageUID = "ec842e08-4961-4cce-acfe-6da52d3e104e";
+		
+		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+		cols.add(new SplitTableColBean("true","id"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(195, user.getLanguage()),"name","name"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(63, user.getLanguage()),"awardtype","awardtype","com.api.browser.service.AwardTypeBrowserService.getAwardtypeLabel",String.valueOf(user.getLanguage())));
+		cols.add(new SplitTableColBean("60%",SystemEnv.getHtmlLabelName(15667, user.getLanguage()),"description","description"));
+		
+		SplitTableBean tableBean  =  new SplitTableBean(pageUID,backfields,fromSql,sqlwhere,"","id","Desc",cols);
+		SplitTableUtil.getTableString(apidatas,tableBean);
 		return apidatas;
 	}
 	

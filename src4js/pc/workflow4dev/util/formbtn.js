@@ -70,8 +70,8 @@ const doReviewE9 = (destuserid) => {
 	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
 	const requestid = formstate.get('requestid');
 	const userid = formstate.get('f_weaver_belongto_userid');
-	doReview(requestid, userid);
-//	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(true));
+//	doReview(requestid, userid);
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(true));
 }
 
 window.doReviewE9 = doReviewE9;

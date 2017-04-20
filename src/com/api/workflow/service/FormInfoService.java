@@ -188,9 +188,14 @@ public class FormInfoService {
 			FieldInfo sysfieldbean = new FieldInfo();
 			int sysfieldid = Util.getIntValue(rs.getString("fieldid"),0);
 			sysfieldbean.setFieldid(sysfieldid);
-			sysfieldbean.setIsview(ServiceUtil.convertInt(rs.getString("isview")));
-			sysfieldbean.setIsedit(ServiceUtil.convertInt(rs.getString("isedit")));
-			sysfieldbean.setIsmand(ServiceUtil.convertInt(rs.getString("ismandatory")));
+			if(ServiceUtil.convertInt(rs.getString("ismandatory")) == 1)
+				sysfieldbean.setViewattr(3);
+			else if(ServiceUtil.convertInt(rs.getString("isedit")) == 1)
+				sysfieldbean.setViewattr(2);
+			else if(ServiceUtil.convertInt(rs.getString("isview")) == 1)
+				sysfieldbean.setViewattr(1);
+			else
+				sysfieldbean.setViewattr(0);
 			if(sysfieldid == -1)
 				sysfieldbean.setFieldlabel(SystemEnv.getHtmlLabelName(21192,user.getLanguage()));
 			else if(sysfieldid == -2)
@@ -255,9 +260,14 @@ public class FormInfoService {
 			FieldInfo bean = new FieldInfo();
 			fieldinfomap.put(fieldid+"", bean);
 			bean.setFieldid(fieldid);
-			bean.setIsview(ServiceUtil.convertInt(rs.getString("isview")));
-			bean.setIsedit(ServiceUtil.convertInt(rs.getString("isedit")));
-			bean.setIsmand(ServiceUtil.convertInt(rs.getString("ismandatory")));
+			if(ServiceUtil.convertInt(rs.getString("ismandatory")) == 1)
+				bean.setViewattr(3);
+			else if(ServiceUtil.convertInt(rs.getString("isedit")) == 1)
+				bean.setViewattr(2);
+			else if(ServiceUtil.convertInt(rs.getString("isview")) == 1)
+				bean.setViewattr(1);
+			else
+				bean.setViewattr(0);
 			bean.setFieldname(fieldname);
 			if(isbill == 0)
 				bean.setFieldlabel(ServiceUtil.convertChar(rs.getString("fieldlable")));

@@ -15,18 +15,15 @@ import * as ReqLogListAction from './reqLogList'
 import objectAssign from 'object-assign'
 import Immutable from 'immutable'
 
-const List = Immutable.List;
+
 
 //初始化表单
-export const initFormLayout = (reqId,preloadkey,comemessage) => {
+export const initFormLayout = (queryParams) => {
 	return (dispatch, getState) => {
 		dispatch({type:types.FORM_LOADING,loading:true});
 		const apiLoadStart = new Date().getTime();
-		API_REQ.loadForm({
-			requestid: reqId,
-			preloadkey: preloadkey,
-			comemessage:comemessage
-		}).then((data)=>{
+		const reqId = queryParams.requestid;
+		API_REQ.loadForm(queryParams).then((data)=>{
 			const params = data.params;
 			const dispatchStart = new Date().getTime();
 			const apiDuration = dispatchStart - apiLoadStart;
@@ -46,24 +43,21 @@ export const initFormLayout = (reqId,preloadkey,comemessage) => {
 			dispatch(ReqFormAction.loadDetailValue());
 			
 			//获取右键菜单
-			API_REQ.getRightMenu({
-				requestid:reqId,
-				isviewonly:1,
-				ismanagePage:params.ismanagePage
-			}).then(data=>{
+			API_REQ.getRightMenu(params).then(data=>{
 				dispatch(setRightMenuInfo(data));
 			});
 			
 			//其它处理，前端不用处理
-			API_REQ.updateReqInfo({
-				requestid:reqId,
-				ismanagePage:params.ismanagePage,
-				currentnodetype:params.currentnodetype,
-				wfmonitor:params.wfmonitor,
-				isurger:params.isurger
-			}).then(data=>{});
-		
-			dispatch(ReqLogListAction.initLogParams(params));
+			if(queryParams.iscreate != '1'){
+				API_REQ.updateReqInfo({
+					requestid:reqId,
+					currentnodetype:params.currentnodetype,
+					wfmonitor:params.wfmonitor,
+					isurger:params.isurger
+				}).then(data=>{});
+			
+				dispatch(ReqLogListAction.initLogParams(params));
+			}
 			
 			//刷待办
 			try{
@@ -170,20 +164,25 @@ export const getformdatas = () =>{
         });
         
         detailData && detailData.map((v,k) => {
-            const detailindex = parseInt(k.substring(7))-1;
+            const detailIndex = parseInt(k.substring(7))-1;
             let submitdtlid = "";
-            v && v.map((datas, rowindex) => {
-                submitdtlid += rowindex+",";
+            v && v.map((datas, rowKey) => {
+				const rowIndex = parseInt(rowKey.substring(4));
+                submitdtlid += rowIndex+",";
                 datas.mapEntries && datas.mapEntries(f => {
-                    let domfieldid = f[0] === "keyid" ? `dtl_id_${detailindex}_${rowindex}` : `${f[0]}_${rowindex}`;
-                    const domfieldvalue = f[1] && f[1].get("value"); 
-                    formarea[domfieldid] = domfieldvalue;
+					if(f[0] === "keyid"){
+						formarea[`dtl_id_${detailIndex}_${rowIndex}`] = f[1];
+					}else if(f[0].indexOf("field") > -1){
+						const domfieldvalue = f[1] && f[1].get("value");
+						const domfieldid = f[0]+"_"+rowIndex;
+						formarea[domfieldid] = domfieldvalue;
+					}
                 })
             })
-            formarea['nodesnum'+detailindex] = v.size;
-            formarea['indexnum'+detailindex] = v.size;
-            formarea['submitdtlid'+detailindex] = submitdtlid;
-            formarea['deldtlid'+detailindex] = '';
+            formarea['nodesnum'+detailIndex] = v.size;
+            formarea['indexnum'+detailIndex] = v.size;
+            formarea['submitdtlid'+detailIndex] = submitdtlid;
+            formarea['deldtlid'+detailIndex] = '';
         });
         return formarea;
 	}

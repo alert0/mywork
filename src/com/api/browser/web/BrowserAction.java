@@ -41,18 +41,9 @@ public class BrowserAction {
 	}
 
 	@GET
-	@Path("/{type}")
+	@Path("/data/{type}")
 	public String getBrowserData(@PathParam("type") String type, @Context HttpServletRequest request, @Context HttpServletResponse response) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		Enumeration<String> em = request.getParameterNames();
-		while(em.hasMoreElements()){
-			String paramname = em.nextElement();
-			params.put(paramname, request.getParameter(paramname));
-		}
-		String f_weaver_belongto_userid = request.getParameter("f_weaver_belongto_userid");
-		String f_weaver_belongto_usertype = request.getParameter("f_weaver_belongto_usertype");// 需要增加的代码
-		User user = HrmUserVarify.getUser(request, response, f_weaver_belongto_userid, f_weaver_belongto_usertype);// 需要增加的代码
-		params.put("user", user);
+		Map<String, Object> params = getRequestParams(request,response);
 		String browserClassName = BROWSER_CONFIG.get(type);
 		Map<String, Object> apidatas = new HashMap<String, Object>();
 
@@ -71,17 +62,9 @@ public class BrowserAction {
 	@GET
 	@Path("/node/{type}")
 	public String getTreeNodeData(@PathParam("type") String type, @Context HttpServletRequest request, @Context HttpServletResponse response) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		Enumeration<String> em = request.getParameterNames();
-		while(em.hasMoreElements()){
-			String paramname = em.nextElement();
-			params.put(paramname, request.getParameter(paramname));
-		}		
-		User user = HrmUserVarify.getUser(request, response);
-		params.put("user", user);
+		Map<String, Object> params = getRequestParams(request,response);
 		String browserClassName = BROWSER_CONFIG.get(type);
 		Map<String, Object> apidatas = new HashMap<String, Object>();
-
 		try {
 			Browser browser = (Browser) Class.forName(browserClassName).newInstance();
 			apidatas = browser.getTreeNodeData(params);
@@ -92,6 +75,56 @@ public class BrowserAction {
 		}
 
 		return JSONObject.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/complete/{type}")
+	public String browserAutoComplete(@PathParam("type") String type, @Context HttpServletRequest request, @Context HttpServletResponse response){
+		String browserClassName = BROWSER_CONFIG.get(type);
+		Map<String, Object> apidatas = new HashMap<String, Object>();
+		try {
+			Browser browser = (Browser) Class.forName(browserClassName).newInstance();
+			apidatas = browser.browserAutoComplete(type,request,response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		
+		return JSONObject.toJSONString(apidatas);
+	}
+	
+	@GET
+	@Path("/condition/{type}")
+	public String getBrowserConditionInfo(@PathParam("type") String type, @Context HttpServletRequest request, @Context HttpServletResponse response){
+		Map<String, Object> params = getRequestParams(request,response);
+		String browserClassName = BROWSER_CONFIG.get(type);
+		Map<String, Object> apidatas = new HashMap<String, Object>();
+		try {
+			Browser browser = (Browser) Class.forName(browserClassName).newInstance();
+			apidatas = browser.getBrowserConditionInfo(params);
+		} catch (Exception e) {
+			e.printStackTrace();
+			apidatas.put("api_status", false);
+			apidatas.put("api_errormsg", "catch exception : " + e.getMessage());
+		}
+		
+		return JSONObject.toJSONString(apidatas);
+	}
+	
+	
+	private Map<String,Object> getRequestParams(HttpServletRequest request,HttpServletResponse response){
+		Map<String, Object> params = new HashMap<String, Object>();
+		Enumeration<String> em = request.getParameterNames();
+		while(em.hasMoreElements()){
+			String paramname = em.nextElement();
+			params.put(paramname, request.getParameter(paramname));
+		}	
+		String f_weaver_belongto_userid = request.getParameter("f_weaver_belongto_userid");
+		String f_weaver_belongto_usertype = request.getParameter("f_weaver_belongto_usertype");// 需要增加的代码
+		User user = HrmUserVarify.getUser(request, response, f_weaver_belongto_userid, f_weaver_belongto_usertype);// 需要增加的代码
+		params.put("user", user);
+		return params;
 	}
 	
 }

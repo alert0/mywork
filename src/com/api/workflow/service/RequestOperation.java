@@ -538,6 +538,7 @@ public class RequestOperation {
 				}
 			}
 		}
+		System.out.println("----------------resultInfo : " + resultInfo.get("type"));
 
 		return resultInfo;
 	}

@@ -4,14 +4,10 @@ import Immutable from 'immutable'
 
 export const initFormInfo = (data) =>{
     return (dispatch, getState) => {
-        const layout = data.datajson.eformdesign;
-        layout["hasInit"] = true;
         dispatch({
             type: types.REQFORM_INIT_INFO,
-            layout: layout,
-            tableInfo: data.tableinfo,
-            cellInfo: data.cellinfo,
-            linkageCfg: data.linkageCfg,
+            layout: data.datajson.eformdesign,
+            conf: {tableInfo: data.tableinfo, cellInfo: data.cellinfo, linkageCfg: data.linkageCfg},
             mainData: data.maindata
         });
     }
@@ -75,4 +71,68 @@ export const loadScript = (params)=> {
 			typeof window.formReady === "function" && window.formReady();
 		});
 	};
+}
+
+//修改字段值
+export const changeFieldValue = (fieldInfo, valueInfo) =>{
+    return (dispatch, getState) => {
+        const tableMark = fieldInfo.tableMark;
+        const fieldid = fieldInfo.fieldid;
+        if(tableMark === "main"){
+            dispatch(changeMainFieldsValue({[`field${fieldid}`]: valueInfo}));
+        }else{
+            dispatch(changeDetailFieldsValue({[`field${fieldid}`]: valueInfo}, tableMark, fieldInfo.rowIndex));
+        }
+    }
+}
+
+//修改Redux主表字段值，可多个同时修改
+export const changeMainFieldsValue = fieldsValue =>{
+    return (dispatch, getState) => {
+        dispatch({type:types.REQFORM_CHANGE_MAIN_VALUE, fieldsValue});
+    }
+}
+
+//修改Redux某个明细表某行字段值，可多个同时修改
+export const changeDetailFieldsValue = (fieldsValue, detailMark, rowIndex) =>{
+    return (dispatch, getState) => {
+        dispatch({type:types.REQFORM_CHANGE_DETAIL_VALUE, fieldsValue, detailMark, rowIndex});
+    }
+}
+
+const getFieldValue = (fieldid, tableMark, rowIndex) =>{
+    if(tableMark === "main"){
+
+    }
+}
+
+//页面加载初始化时触发联动
+export const initTriLinkage = (fieldInfo) =>{
+    return (dispatch, getState) => {
+
+    }
+}
+
+//触发联动
+export const triggerAllLinkage = (fieldInfo) =>{
+    return (dispatch, getState) => {
+        console.log("triggerAllLinkage",fieldInfo);
+        dispatch(triViewAttrLinkage(fieldInfo));    //显示属性联动
+    }
+}
+
+//显示属性联动
+export const triViewAttrLinkage = (fieldInfo) =>{
+    return (dispatch, getState) => {
+        const tableMark = fieldInfo.tableMark;
+        const triFieldid = fieldInfo.fieldid;
+        const isdetail = tableMark.indexOf("detail")>-1 ? 1 : 0;
+        const viewAttrCfg = getState().workflowReqForm.getIn(["conf","linkageCfg","viewAttrCfg"]);
+        if(!viewAttrCfg || !viewAttrCfg.has(`${triFieldid}_${isdetail}`))
+            return;
+
+        const cfg = viewAttrCfg.get(`${triFieldid}_${isdetail}`);
+        const relatedFields = cfg.get("related");
+        console.log("cfg-",cfg.toJS());
+    }
 }

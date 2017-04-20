@@ -92,14 +92,15 @@ const initwfphrasebutton = (editor,uiName) => {
 		//从隐藏的select中获取常用批示语
 		
 		var _ul = paramDiv.find("#_signinputphrasecontentblock ul");
-	    for (var i=0; i<phraseInfo.length; i++) {
-			
-			var _style = "";			
-	    	if (_ul.children("li").length > 3)  {
-				//_style = " style='display:none;' ";
-			}
-			_ul.append("<li " + _style + " class=\"cg_item\"><span class='cg_detail'>" + phraseInfo[i].workflowPhrases + "</span><input type='hidden' value='"+phraseInfo[i].workflowPhrasesContent+"'/></li>");
-	    }
+		if(phraseInfo){
+		    for (var i=0; i<phraseInfo.length; i++) {
+				var _style = "";			
+		    	if (_ul.children("li").length > 3)  {
+					//_style = " style='display:none;' ";
+				}
+				_ul.append("<li " + _style + " class=\"cg_item\"><span class='cg_detail'>" + phraseInfo[i].workflowPhrases + "</span><input type='hidden' value='"+phraseInfo[i].workflowPhrasesContent+"'/></li>");
+		    }
+		}
 	    //删除‘添加常用批示语’ 文字
 		if (paramDiv.find("#_signinputphrasecontentblock ul li").length > 1) {
 	    	jQuery(paramDiv).find("#cg_splitline").show();

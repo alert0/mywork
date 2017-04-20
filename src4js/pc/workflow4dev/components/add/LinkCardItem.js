@@ -160,7 +160,7 @@ class LinkCardItem extends React.Component{
 //		jQuery('#subform').prop("action","/workflow/request/AddRequest.jsp");
 //		jQuery('#subform').submit();
 		
-		openFullWindowHaveBar('/workflow/request/AddRequest.jsp?workflowid='+wfid+'&isagent='+isagent+'&beagenter='+beagenter+'&f_weaver_belongto_userid='+f_weaver_belongto_userid);
+		openFullWindowHaveBar('/workflow/request/CreateRequestForward.jsp?workflowid='+wfid+'&isagent='+isagent+'&beagenter='+beagenter+'&f_weaver_belongto_userid='+f_weaver_belongto_userid);
 	}
 	//添加收藏
 	addWorkflow(colected){

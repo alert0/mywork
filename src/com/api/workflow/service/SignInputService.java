@@ -81,9 +81,10 @@ public class SignInputService {
         int currentnodeid = Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "currentnodeid"), 0);
         
         //测试先从session中取数据
-        workflowid = Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "workflowid"), 0);
-        nodeid = Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "nodeid"), 0);
-        currentnodeid = Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "currentnodeid"), 0);
+        
+        workflowid = workflowid == 0 ? Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "workflowid"), 0) : workflowid;
+        nodeid = nodeid == 0 ? Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "nodeid"), 0) : nodeid;
+        currentnodeid = currentnodeid == 0 ? Util.getIntValue((String) session.getAttribute(userid + "_" + requestid + "currentnodeid"), 0) : currentnodeid;
         if(workflowid == 0 || nodeid == 0){
         	String sql = "select t.nodeid,t.workflowid from workflow_currentoperator t left join workflow_nodebase t1 on t.nodeid  = t1.id  where t.requestid=? and t.userid=? and t.usertype=? order by t.id desc";
         	rs.executeQuery(sql, requestid, userid, usertype);
@@ -100,7 +101,6 @@ public class SignInputService {
         		}
         	}
         }
-        
 
         resultDatas.put("workflowid",workflowid);
         resultDatas.put("nodeid",nodeid);

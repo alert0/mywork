@@ -1,6 +1,8 @@
 package com.api.browser.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import weaver.conn.RecordSet;
@@ -8,9 +10,11 @@ import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 
+import com.api.browser.bean.SplitTableBean;
+import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.SplitTableUtil;
 import com.api.browser.util.SqlUtils;
-import com.cloudstore.dev.api.util.Util_TableMap;
 
 /**
  * 车辆
@@ -76,25 +80,19 @@ public class CarInfoBrowserService extends BrowserService {
 		sqlwhere  = SqlUtils.replaceFirstAnd(sqlwhere);
 
 		String orderby =" id ";
-		int perpage=6;
 		String backfields = " id,factoryno,carno,cartype,driver,buydate";
 		String fromSql  = " CarInfo ";
 
-		String tableString =" <table instanceid=\"BrowseTable\" id=\"BrowseTable\" tabletype=\"none\" pagesize=\""+perpage+"\" >"+
-			                "       <sql backfields=\""+backfields+"\" sqlform=\""+fromSql+"\" sqlwhere=\""+Util.toHtmlForSplitPage(sqlwhere)+"\"  sqlorderby=\""+orderby+"\"  sqlprimarykey=\"id\" sqlsortway=\"desc\" sqlisdistinct=\"true\" />"+
-			                "       <head>"+
-			                "           <col hide=\"true\"  text=\""+"ID"+"\" column=\"id\"    />"+
-			                "           <col width=\"15%\"  text=\""+SystemEnv.getHtmlLabelName(20319,user.getLanguage())+"\" column=\"carno\" orderkey=\"carno\" />"+ //车牌号
-			                "           <col width=\"20%\"  text=\""+SystemEnv.getHtmlLabelName(20318,user.getLanguage())+"\" column=\"factoryno\" orderkey=\"factoryno\"   />"+ //厂牌型号
-			                "           <col width=\"10%\"  text=\""+SystemEnv.getHtmlLabelName(22256,user.getLanguage())+"\" column=\"cartype\" orderkey=\"cartype\" transmethod='weaver.car.CarTypeComInfo.getCarTypename'  />"+ //类型
-			                "           <col width=\"10%\"  text=\""+SystemEnv.getHtmlLabelName(17649,user.getLanguage())+"\" column=\"driver\" orderkey=\"driver\" transmethod='weaver.hrm.resource.ResourceComInfo.getResourcename'  />"+ //司机
-			                "           <col width=\"10%\"  text=\""+SystemEnv.getHtmlLabelName(16914,user.getLanguage())+"\" column=\"buydate\" orderkey=\"buydate\" />"+ //购置日期
-			                "       </head>"+
-			                " </table>";
-
-		String sessionkey = Util.getEncrypt(Util.getRandom());
-		Util_TableMap.setVal(sessionkey, tableString);
-		apidatas.put("result", sessionkey);
+		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
+		cols.add(new SplitTableColBean("true","id"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(20319, user.getLanguage()),"carno","carno"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(20318, user.getLanguage()),"factoryno","factoryno","weaver.car.CarTypeComInfo.getCarTypename"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(22256, user.getLanguage()),"cartype","cartype","weaver.hrm.resource.ResourceComInfo.getResourcename"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(17649, user.getLanguage()),"driver","driver"));
+		cols.add(new SplitTableColBean("20%",SystemEnv.getHtmlLabelName(16914, user.getLanguage()),"buydate","buydate"));
+		
+		SplitTableBean tableBean  =  new SplitTableBean(backfields,fromSql,sqlwhere,orderby,"id",cols);
+		SplitTableUtil.getTableString(apidatas,tableBean);
 		return apidatas;
 	}
 
