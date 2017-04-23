@@ -3,112 +3,113 @@ create table wf_browser_config (
       clazz varchar2(2000) not null,
       description varchar2(100)
 )
+
 /
-insert into wf_browser_config(type,clazz,description) values('262','com.api.browser.service.LocationBrowserService','°ì¹«µØµã')
+insert into wf_browser_config(type,clazz,description) values('262','com.api.browser.service.LocationBrowserService','ï¿½ì¹«ï¿½Øµï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('260','com.api.browser.service.JobCallBrowserService','Ö°³Æ')
+insert into wf_browser_config(type,clazz,description) values('260','com.api.browser.service.JobCallBrowserService','Ö°ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('doccategory','com.api.browser.service.DocCategoryService','ÎÄµµÄ¿Â¼')
+insert into wf_browser_config(type,clazz,description) values('doccategory','com.api.browser.service.DocCategoryService','ï¿½Äµï¿½Ä¿Â¼')
 /
-insert into wf_browser_config(type,clazz,description) values('58','com.api.browser.service.CityBrowserService','³ÇÊÐ')
+insert into wf_browser_config(type,clazz,description) values('58','com.api.browser.service.CityBrowserService','ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('cusstatus','com.api.browser.service.CustomerStatusService','¿Í»§×´Ì¬')
+insert into wf_browser_config(type,clazz,description) values('cusstatus','com.api.browser.service.CustomerStatusService','ï¿½Í»ï¿½×´Ì¬')
 /
-insert into wf_browser_config(type,clazz,description) values('137','com.api.browser.service.CarInfoBrowserService','³µÁ¾')
+insert into wf_browser_config(type,clazz,description) values('137','com.api.browser.service.CarInfoBrowserService','ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('55','com.api.browser.service.DocNumberBrowserService','·¢ÎÄ×ÖºÅ')
+insert into wf_browser_config(type,clazz,description) values('55','com.api.browser.service.DocNumberBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½Öºï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('35','com.api.browser.service.ContractBrowserService','ÒµÎñºÏÍ¬')
+insert into wf_browser_config(type,clazz,description) values('35','com.api.browser.service.ContractBrowserService','Òµï¿½ï¿½ï¿½Í¬')
 /
-insert into wf_browser_config(type,clazz,description) values('36','com.api.browser.service.ContractTypeBrowserService','ºÏÍ¬ÐÔÖÊ')
+insert into wf_browser_config(type,clazz,description) values('36','com.api.browser.service.ContractTypeBrowserService','ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('33','com.api.browser.service.HrmScheduleDiffBrowserService','¼Ó°àÀàÐÍ')
+insert into wf_browser_config(type,clazz,description) values('33','com.api.browser.service.HrmScheduleDiffBrowserService','ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('wf','com.api.browser.service.WorkflowBrowserService','Á÷³Ì')
+insert into wf_browser_config(type,clazz,description) values('wf','com.api.browser.service.WorkflowBrowserService','ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('wftype','com.api.browser.service.WorkflowTypeBrowserService','Á÷³ÌÀàÐÍ')
+insert into wf_browser_config(type,clazz,description) values('wftype','com.api.browser.service.WorkflowTypeBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
 insert into wf_browser_config(type,clazz,description) values('119','com.api.browser.service.SpecialityBrowserService','×¨Òµ')
 /
-insert into wf_browser_config(type,clazz,description) values('245','com.api.browser.service.WorkTypeService','¹¤×÷ÀàÐÍ')
+insert into wf_browser_config(type,clazz,description) values('245','com.api.browser.service.WorkTypeService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('244','com.api.browser.service.ProjectTypeService','ÏîÄ¿ÀàÐÍ')
+insert into wf_browser_config(type,clazz,description) values('244','com.api.browser.service.ProjectTypeService','ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('62','com.api.browser.service.CustomerSizeService','¿Í»§´óÐ¡')
+insert into wf_browser_config(type,clazz,description) values('62','com.api.browser.service.CustomerSizeService','ï¿½Í»ï¿½ï¿½ï¿½Ð¡')
 /
-insert into wf_browser_config(type,clazz,description) values('63','com.api.browser.service.SectorInfoService','ÐÐÒµ')
+insert into wf_browser_config(type,clazz,description) values('63','com.api.browser.service.SectorInfoService','ï¿½ï¿½Òµ')
 /
-insert into wf_browser_config(type,clazz,description) values('60','com.api.browser.service.CustomerTypeService','¿Í»§ÀàÐÍ')
+insert into wf_browser_config(type,clazz,description) values('60','com.api.browser.service.CustomerTypeService','ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('87','com.api.browser.service.MeetingRoomBrowserService','»áÒéÊÒ')
+insert into wf_browser_config(type,clazz,description) values('87','com.api.browser.service.MeetingRoomBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('61','com.api.browser.service.CustomerDescService','¿Í»§ÃèÊö')
+insert into wf_browser_config(type,clazz,description) values('61','com.api.browser.service.CustomerDescService','ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('251','com.api.browser.service.FccBrowserService','³É±¾ÖÐÐÄ')
+insert into wf_browser_config(type,clazz,description) values('251','com.api.browser.service.FccBrowserService','ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('69','com.api.browser.service.LgcAssetUnitBrowserService','¼ÆÁ¿µ¥Î»')
+insert into wf_browser_config(type,clazz,description) values('69','com.api.browser.service.LgcAssetUnitBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»')
 /
-insert into wf_browser_config(type,clazz,description) values('16','com.api.browser.service.RequestBrowserService','ÇëÇó')
+insert into wf_browser_config(type,clazz,description) values('16','com.api.browser.service.RequestBrowserService','ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('152','com.api.browser.service.MultiRequestBrowserService','¶àÇëÇó')
+insert into wf_browser_config(type,clazz,description) values('152','com.api.browser.service.MultiRequestBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('171','com.api.browser.service.MultiRequestBrowserService','¹éµµÁ÷³Ì')
+insert into wf_browser_config(type,clazz,description) values('171','com.api.browser.service.MultiRequestBrowserService','ï¿½éµµï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('23','com.api.browser.service.CapitalBrowserService','×Ê²ú')
+insert into wf_browser_config(type,clazz,description) values('23','com.api.browser.service.CapitalBrowserService','ï¿½Ê²ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('24','com.api.browser.service.JobTitlesBrowserService','¸ÚÎ»')
+insert into wf_browser_config(type,clazz,description) values('24','com.api.browser.service.JobTitlesBrowserService','ï¿½ï¿½Î»')
 /
-insert into wf_browser_config(type,clazz,description) values('25','com.api.browser.service.CptAssortmentBrowserService','×Ê²ú×é')
+insert into wf_browser_config(type,clazz,description) values('25','com.api.browser.service.CptAssortmentBrowserService','ï¿½Ê²ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('129','com.api.browser.service.ProjectTempletBrowserService','ÏîÄ¿Ä£°å')
+insert into wf_browser_config(type,clazz,description) values('129','com.api.browser.service.ProjectTempletBrowserService','ï¿½ï¿½Ä¿Ä£ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('274','com.api.browser.service.ContactLogBrowserService','ÉÌ»úÀ´Ô´')
+insert into wf_browser_config(type,clazz,description) values('274','com.api.browser.service.ContactLogBrowserService','ï¿½Ì»ï¿½ï¿½ï¿½Ô´')
 /
-insert into wf_browser_config(type,clazz,description) values('28','com.api.browser.service.MeetingBrowserService','»áÒé')
+insert into wf_browser_config(type,clazz,description) values('28','com.api.browser.service.MeetingBrowserService','ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('country','com.api.browser.service.CountryBrowserService','¹ú¼Ò')
+insert into wf_browser_config(type,clazz,description) values('country','com.api.browser.service.CountryBrowserService','ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('182','com.api.browser.service.VotingInfoBrowserService','µ¥ÍøÉÏµ÷²é')
+insert into wf_browser_config(type,clazz,description) values('182','com.api.browser.service.VotingInfoBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('164','com.api.browser.service.OrganizationBrowserService','»ú¹¹')
+insert into wf_browser_config(type,clazz,description) values('164','com.api.browser.service.OrganizationBrowserService','ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('7','com.api.workflow.service.CustomerBrowserService','¿Í»§')
+insert into wf_browser_config(type,clazz,description) values('7','com.api.workflow.service.CustomerBrowserService','ï¿½Í»ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('32','com.api.browser.service.HrmTrainPlanBrowserService','ÅàÑµ°²ÅÅ')
+insert into wf_browser_config(type,clazz,description) values('32','com.api.browser.service.HrmTrainPlanBrowserService','ï¿½ï¿½Ñµï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('160','com.api.browser.service.RoleBrowserService','½ÇÉ«')
+insert into wf_browser_config(type,clazz,description) values('160','com.api.browser.service.RoleBrowserService','ï¿½ï¿½É«')
 /
-insert into wf_browser_config(type,clazz,description) values('52','com.api.browser.service.DocKindBrowserService','¹«ÎÄÖÖÀà')
+insert into wf_browser_config(type,clazz,description) values('52','com.api.browser.service.DocKindBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('9','com.api.browser.service.DocBrowserService','ÎÄµµ')
+insert into wf_browser_config(type,clazz,description) values('9','com.api.browser.service.DocBrowserService','ï¿½Äµï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('53','com.api.browser.service.DocInstancyLevelBrowserService','½ô¼±³Ì¶È')
+insert into wf_browser_config(type,clazz,description) values('53','com.api.browser.service.DocInstancyLevelBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('259','com.api.browser.service.LanguageBrowserService','ÓïÑÔ')
+insert into wf_browser_config(type,clazz,description) values('259','com.api.browser.service.LanguageBrowserService','ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('54','com.api.browser.service.DocSecretLevelBrowserService','ÃØÃÜµÈ¼¶')
+insert into wf_browser_config(type,clazz,description) values('54','com.api.browser.service.DocSecretLevelBrowserService','ï¿½ï¿½ï¿½ÜµÈ¼ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('8','com.api.browser.service.ProjectBrowserService','ÏîÄ¿')
+insert into wf_browser_config(type,clazz,description) values('8','com.api.browser.service.ProjectBrowserService','ï¿½ï¿½Ä¿')
 /
-insert into wf_browser_config(type,clazz,description) values('89','com.api.browser.service.MeetingTypeBrowserService','»áÒéÀàÐÍ')
+insert into wf_browser_config(type,clazz,description) values('89','com.api.browser.service.MeetingTypeBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('12','com.api.browser.service.CurrencyBrowserService','±ÒÖÖ')
+insert into wf_browser_config(type,clazz,description) values('12','com.api.browser.service.CurrencyBrowserService','ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('13','com.api.browser.service.LgcAssortmentBrowserService','²úÆ·Àà±ð')
+insert into wf_browser_config(type,clazz,description) values('13','com.api.browser.service.LgcAssortmentBrowserService','ï¿½ï¿½Æ·ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('27','com.api.browser.service.MutiCareerBrowserService','Ó¦Æ¸ÈË')
+insert into wf_browser_config(type,clazz,description) values('27','com.api.browser.service.MutiCareerBrowserService','Ó¦Æ¸ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('29','com.api.browser.service.AwardTypeBrowserService','½±³ÍÖÖÀà')
+insert into wf_browser_config(type,clazz,description) values('29','com.api.browser.service.AwardTypeBrowserService','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('30','com.api.browser.service.EduLevelBrowserService','Ñ§Àú')
+insert into wf_browser_config(type,clazz,description) values('30','com.api.browser.service.EduLevelBrowserService','Ñ§ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('31','com.api.browser.service.UseKindBrowserService','ÓÃ¹¤ÐÔÖÊ')
+insert into wf_browser_config(type,clazz,description) values('31','com.api.browser.service.UseKindBrowserService','ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½ï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('59','com.api.browser.service.ContacterTitleBrowserService','³Æºô')
+insert into wf_browser_config(type,clazz,description) values('59','com.api.browser.service.ContacterTitleBrowserService','ï¿½Æºï¿½')
 /
-insert into wf_browser_config(type,clazz,description) values('160','com.api.browser.service.RoleResourceBrowserService','½ÇÉ«ÈËÔ±')
+insert into wf_browser_config(type,clazz,description) values('160','com.api.browser.service.RoleResourceBrowserService','ï¿½ï¿½É«ï¿½ï¿½Ô±')
 /
-insert into wf_browser_config(type,clazz,description) values('161','com.api.browser.service.CommonBrowserService','×Ô¶¨Òåµ¥Ñ¡')
+insert into wf_browser_config(type,clazz,description) values('161','com.api.browser.service.CommonBrowserService','ï¿½Ô¶ï¿½ï¿½åµ¥Ñ¡')
 
 
 
