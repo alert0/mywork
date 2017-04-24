@@ -7,11 +7,11 @@ class main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value:props.value ?props.value:"" 
+            value:props.value ?props.value:""
         };
     }
     componentWillReceiveProps(nextProps) {
-        if(this.props.value!==nextProps.value) {
+        if(this.state.value!==nextProps.value) {
             this.setState({
                 value:nextProps.value
             });

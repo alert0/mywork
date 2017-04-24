@@ -35,7 +35,7 @@ class Main extends React.Component {
         if (viewattr === 1 || viewattr === '1') {
             eles = <span className="text">{value}</span>
         } else {
-            eles = <Input type="text" {...theProps} onChange={this.setText.bind(this)} onBlur={this.onBlur.bind(this)} onFocus={this.onFocus.bind(this)} />
+            eles = <Input type="text" {...theProps}  onChange={this.setText.bind(this)} onBlur={this.onBlur.bind(this)} onFocus={this.onFocus.bind(this)} />
         }
         return (
             <div className={`wea-input-ctrl ${req}`} style={style}>
