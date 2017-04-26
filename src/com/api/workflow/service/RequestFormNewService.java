@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +26,6 @@ import weaver.cowork.CoworkDAO;
 import weaver.cpt.util.CptWfUtil;
 import weaver.crm.Maint.CustomerInfoComInfo;
 import weaver.file.FileUpload;
-import weaver.file.Prop;
 import weaver.formmode.setup.ModeRightInfo;
 import weaver.general.BaseBean;
 import weaver.general.GCONST;
@@ -38,36 +36,24 @@ import weaver.hrm.resource.ResourceComInfo;
 import weaver.meeting.MeetingShareUtil;
 import weaver.mobile.webservices.common.ChatResourceShareManager;
 import weaver.mobile.webservices.workflow.soa.RequestPreProcessing;
-import weaver.rdeploy.portal.PortalUtil;
-import weaver.rtx.RTXConfig;
 import weaver.system.SysWFLMonitor;
 import weaver.systeminfo.SystemEnv;
-import weaver.wechat.util.WechatPropConfig;
 import weaver.workflow.msg.PoppupRemindInfoUtil;
 import weaver.workflow.report.ReportAuthorization;
 import weaver.workflow.request.RequestAddShareMode;
 import weaver.workflow.request.RequestCheckUser;
-import weaver.workflow.request.RequestDetailImport;
 import weaver.workflow.request.RequestDoc;
 import weaver.workflow.request.RequestShare;
 import weaver.workflow.request.SubWorkflowManager;
-import weaver.workflow.request.SubWorkflowTriggerService;
 import weaver.workflow.request.WFCoadjutantManager;
 import weaver.workflow.request.WFForwardManager;
 import weaver.workflow.request.WFLinkInfo;
 import weaver.workflow.request.WFShareAuthorization;
 import weaver.workflow.request.WFUrgerManager;
-import weaver.workflow.request.WorkflowIsFreeStartNode;
 import weaver.workflow.workflow.WFManager;
-import weaver.workflow.workflow.WfForceDrawBack;
-import weaver.workflow.workflow.WfForceOver;
-import weaver.workflow.workflow.WfFunctionManageUtil;
 import weaver.workflow.workflow.WorkflowComInfo;
-import weaver.workflow.workflow.WorkflowVersion;
 import weaver.worktask.worktask.WTRequestManager;
 
-import com.api.workflow.bean.RightMenu;
-import com.api.workflow.util.RequestMenuType;
 import com.api.workflow.util.RequestType;
 
 /**
@@ -1501,6 +1487,7 @@ public class RequestFormNewService extends BaseBean {
 		apidatas.put("titlename", titlename);
 		apidatas.put("requestType", RequestType.CREATE_REQ.getId());
 		apidatas.put("isviewonly", "0");
+		apidatas.put("iscreate", "1");
 		return apidatas;
 	}
 

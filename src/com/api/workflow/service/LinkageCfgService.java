@@ -208,33 +208,30 @@ public class LinkageCfgService extends BaseBean{
 		Map<String,List<String>> allRelateField = new HashMap<String,List<String>>();
 		while(rs.next()){
 			String trifield = Util.null2String(rs.getString("selectfieldid"));
-			String selectfieldvalue = Util.null2String(rs.getString("selectfieldvalue"));
+			String trifieldvalue = Util.null2String(rs.getString("selectfieldvalue"));
 			if(trifield.indexOf("_") == -1)	
 				continue;
-			Map<String,Object> fieldcfg = viewAttrCfg.containsKey(trifield) ? (Map<String,Object>)viewAttrCfg.get(trifield) : new HashMap<String,Object>();
-			viewAttrCfg.put(trifield, fieldcfg);
+			Map<String,Object> fieldCfg = viewAttrCfg.containsKey(trifield) ? (Map<String,Object>)viewAttrCfg.get(trifield) : new HashMap<String,Object>();
+			viewAttrCfg.put(trifield, fieldCfg);
 			
-			List<Map<String,String>> changecfg = fieldcfg.containsKey(selectfieldvalue) ? (List<Map<String,String>>)fieldcfg.get(selectfieldvalue) : new ArrayList<Map<String,String>>();
-			fieldcfg.put(selectfieldvalue, changecfg);
+			Map<String,Object> changeValueCfg = fieldCfg.containsKey(trifieldvalue) ? (Map<String,Object>)fieldCfg.get(trifieldvalue) : new HashMap<String,Object>();
+			fieldCfg.put(trifieldvalue, changeValueCfg);
 			
-			List<String> relatefieldlist = allRelateField.containsKey(trifield) ? allRelateField.get(trifield) : new ArrayList<String>();
-			allRelateField.put(trifield, relatefieldlist);
+			List<String> relateFieldList = allRelateField.containsKey(trifield) ? allRelateField.get(trifield) : new ArrayList<String>();
+			allRelateField.put(trifield, relateFieldList);
 			
 			List<String> changefieldlist = Util.TokenizerString(Util.null2String(rs.getString("changefieldids")), ",");
 			String viewattr = Util.null2String(rs.getString("viewattr"));
-			for(String changefieldid : changefieldlist){
-				Map<String,String> map = new HashMap<String,String>();
-				map.put("changefieldid", changefieldid);
-				map.put("viewattr", viewattr);
-				changecfg.add(map);
-				if(relatefieldlist.indexOf(changefieldid) == -1)
-					relatefieldlist.add(changefieldid);
+			for(String changefield : changefieldlist){
+				changeValueCfg.put(changefield, viewattr);
+				if(relateFieldList.indexOf(changefield) == -1)
+					relateFieldList.add(changefield);
 			}
 		}
 		for(Map.Entry<String, Object> entry : viewAttrCfg.entrySet()){
-			Map<String,Object> fieldcfg = (Map<String,Object>)entry.getValue();
+			Map<String,Object> fieldCfg = (Map<String,Object>)entry.getValue();
 			if(allRelateField.containsKey(entry.getKey())){
-				fieldcfg.put("related", allRelateField.get(entry.getKey()));
+				fieldCfg.put("relateFields", allRelateField.get(entry.getKey()));
 			}
 		}
 	}

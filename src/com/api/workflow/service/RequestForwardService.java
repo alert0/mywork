@@ -2,7 +2,6 @@ package com.api.workflow.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,15 +14,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.alibaba.fastjson.JSON;
-
 import weaver.conn.RecordSet;
 import weaver.general.Pinyin4j;
 import weaver.general.Util;
 import weaver.hrm.HrmUserVarify;
 import weaver.hrm.User;
+import weaver.hrm.company.DepartmentComInfo;
+import weaver.hrm.company.SubCompanyComInfo;
 import weaver.hrm.resource.MutilResourceBrowser;
 import weaver.hrm.resource.ResourceComInfo;
+
+import com.alibaba.fastjson.JSON;
 
 @Path("/workflow/reqforward")
 public class RequestForwardService {
@@ -116,12 +117,14 @@ public class RequestForwardService {
 		rs.executeSql(sqlsb.toString());
 
 		ResourceComInfo rci = null;
+		
 		List<Map<String, Object>> operators = new ArrayList<Map<String, Object>>();
 		try {
 			rci = new ResourceComInfo();
 			int tmpnodeid_old = -1;
+			DepartmentComInfo deptComInfo = new DepartmentComInfo();
+			SubCompanyComInfo subCompanyComInfo = new SubCompanyComInfo();
 	
-			Map<String, Object> operator;
 			List<String> operatorflag = new ArrayList<String>();
 			while (rs.next()) {
 				int tmpnodeid = rs.getInt("nodeid");
@@ -142,32 +145,12 @@ public class RequestForwardService {
 	
 				if (tmpusertype == 0) {
 					if (!operatorflag.contains(tmpuserid)) {
-						operator = new HashMap<String, Object>();
-						operator.put("uid", tmpuserid);
-						String username = Util.toScreen(rci.getResourcename(tmpuserid), user.getLanguage());
-						operator.put("data", username);
-						operator.put("nodeid", tmpnodeid + "");
-						operator.put("nodename", tmpnodename);
-						operator.put("datapy", Pinyin4j.spell(username));
-						operator.put("handed",tmpisremark.equals("2")?"1":"0");
-						operator.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(tmpuserid));
-						operator.put("icon", rci.getMessagerUrls(tmpuserid));
-						operators.add(operator);
+						operators.add(setRequestOperatorInfo(tmpuserid,rci,deptComInfo,subCompanyComInfo,user.getLanguage(),tmpnodeid,tmpnodename,tmpisremark));
 						operatorflag.add(tmpuserid);
 					}
 					if (tmpagenttype == 2) {
 						if (!operatorflag.contains(tmpuserid)) {
-							operator = new HashMap<String, Object>();
-							operator.put("uid", tmpagentorbyagentid);
-							String username = Util.toScreen(rci.getResourcename(tmpagentorbyagentid), user.getLanguage());
-							operator.put("data", username);
-							operator.put("nodeid", tmpnodeid);
-							operator.put("nodename", tmpnodename);
-							operator.put("datapy", Pinyin4j.spell(username));
-							operator.put("handed",tmpisremark.equals("2")?"1":"0");
-							operator.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(tmpagentorbyagentid));
-							operator.put("icon", rci.getMessagerUrls(tmpagentorbyagentid));
-							operators.add(operator);
+							operators.add(setRequestOperatorInfo(tmpagentorbyagentid,rci,deptComInfo,subCompanyComInfo,user.getLanguage(),tmpnodeid,tmpnodename,tmpisremark));
 							operatorflag.add(tmpuserid);
 						}
 					}
@@ -178,4 +161,24 @@ public class RequestForwardService {
 		}
 		return JSON.toJSONString(operators);
 	}
+	
+	private Map<String,Object> setRequestOperatorInfo(String userid,ResourceComInfo rci,DepartmentComInfo deptComInfo,SubCompanyComInfo subCompanyComInfo,int languageid,int tmpnodeid,String tmpnodename,String tmpisremark) throws Exception{
+		Map<String,Object> operator = new HashMap<String, Object>();
+		operator.put("uid", userid);
+		String username = Util.toScreen(rci.getResourcename(userid), languageid);
+		operator.put("data", username);
+		operator.put("nodeid", tmpnodeid);
+		operator.put("nodename", tmpnodename);
+		operator.put("datapy", Pinyin4j.spell(username));
+		operator.put("handed",tmpisremark.equals("2")?"1":"0");
+		operator.put("jobtitlename", MutilResourceBrowser.getJobTitlesname(userid));
+		operator.put("icon", rci.getMessagerUrls(userid));
+		operator.put("departmentname", deptComInfo.getDepartmentname(rci.getDepartmentID(userid)));
+		String subcompanyid  = deptComInfo.getSubcompanyid1(rci.getDepartmentID(userid));
+		String parentsubcompanyid  = subCompanyComInfo.getSupsubcomid(subcompanyid);
+		operator.put("subcompanyname", subCompanyComInfo.getSubcompanyname(subcompanyid));
+		operator.put("supsubcompanyname", subCompanyComInfo.getSubcompanyname(parentsubcompanyid));
+		return operator;
+	}
+	
 }

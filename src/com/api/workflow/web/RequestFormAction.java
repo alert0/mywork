@@ -416,7 +416,7 @@ public class RequestFormAction {
 			                "	<sql backfields=\""+backfields+"\" sqlform=\""+fromSql+"\" sqlwhere=\""+Util.toHtmlForSplitPage(sqlWhere)+"\" sqlorderby=\"" + orderby + "\" sqlprimarykey=\"id\" sqlsortway=\"ASC\" sqlisdistinct=\"true\" />"+
 			                "	<head>"+
 			                "		<col width=\"5%\" text=\"\" _key=\"imagehtml\" column=\"resname\" orderkey=\"resname\" transmethod=\"weaver.workflow.request.RequestResources.getResImageHtml\" otherpara=\"column:restype\" />"+
-			                "		<col width=\"45%\" text=\""+SystemEnv.getHtmlLabelName(15924,user.getLanguage())+"\" _key=\"reshtml\" column=\"resname\" orderkey=\"resname\" transmethod=\"weaver.workflow.request.RequestResources.getResDisplayHtml\" otherpara=\"column:id+column:restype+" + requestid + "+" +  userid +"\" />"+
+			                "		<col width=\"45%\" text=\""+SystemEnv.getHtmlLabelName(15924,user.getLanguage())+"\" _key=\"reshtml\" column=\"resname\" orderkey=\"resname\" transmethod=\"weaver.workflow.request.RequestResources.getResDisplayHtmlSPA\" otherpara=\"column:id+column:restype+" + requestid + "+" +  userid +"\" />"+
 			                "		<col width=\"20%\" text=\""+SystemEnv.getHtmlLabelName(882,user.getLanguage())+"\" column=\"creator\" otherpara=\"0\" orderkey=\"creator\" transmethod=\"weaver.general.WorkFlowTransMethod.getWFSearchResultName\" />"+
 			                "		<col width=\"30%\" text=\""+SystemEnv.getHtmlLabelName(1339,user.getLanguage())+"\" column=\"createdate\" orderkey=\"createdate\" />"+
 			                "	</head>"+

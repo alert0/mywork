@@ -1,6 +1,6 @@
 package com.api.browser.bean;
 
-import com.api.browser.util.BrowseDataType;
+import com.api.browser.util.BrowserDataType;
 
 /**
  * 
@@ -12,7 +12,7 @@ public class BrowserData {
 	/**
 	 * 返回的数据类型
 	 */
-	private BrowseDataType type; 
+	private BrowserDataType type; 
 	
 	/**
 	 * 返回的数据
@@ -20,11 +20,11 @@ public class BrowserData {
 	private String browserData;
 	
 
-	public BrowseDataType getType() {
+	public BrowserDataType getType() {
 		return type;
 	}
 
-	public void setType(BrowseDataType type) {
+	public void setType(BrowserDataType type) {
 		this.type = type;
 	}
 

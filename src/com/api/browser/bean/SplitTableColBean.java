@@ -55,6 +55,16 @@ public class SplitTableColBean {
 		this.otherpara = otherpara;
 	}
 
+	public SplitTableColBean(String width, String text, String column, String orderkey, String transmethod, String otherpara, String isHighlight) {
+		this.width = width;
+		this.text = text;
+		this.column = column;
+		this.orderkey = orderkey;
+		this.transmethod = transmethod;
+		this.otherpara = otherpara;
+		this.isHighlight = isHighlight;
+	}
+
 	public String getHide() {
 		return hide == null ? "false" : hide;
 	}
@@ -112,7 +122,7 @@ public class SplitTableColBean {
 	}
 
 	public String getIsHighlight() {
-		return isHighlight;
+		return isHighlight == null ? "false" : isHighlight;
 	}
 
 	public void setIsHighlight(String isHighlight) {

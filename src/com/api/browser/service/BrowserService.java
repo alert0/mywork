@@ -1,5 +1,6 @@
 package com.api.browser.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,9 +34,9 @@ public abstract class BrowserService extends BaseBean implements Browser {
 
 	@Override
 	public Map<String, Object> browserAutoComplete(String type,HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Object> apidatas = new HashMap<String, Object>();
+		BrowserAutoCompleteService autoCompleteService  =  new BrowserAutoCompleteService();
+		apidatas.put("datas", autoCompleteService.getCompleteData(type,request, response));
+		return apidatas;
 	}
-	
-	
 }

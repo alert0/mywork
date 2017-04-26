@@ -28,6 +28,8 @@ import weaver.workflow.request.RequestPreAddinoperateManager;
 import weaver.workflow.request.WorkflowJspBean;
 
 import com.alibaba.fastjson.JSONObject;
+import com.api.browser.bean.BrowserValueInfo;
+import com.api.browser.service.BrowserValueInfoService;
 import com.api.workflow.bean.FieldInfo;
 import com.api.workflow.bean.FieldValueBean;
 import com.api.workflow.bean.SelectItem;
@@ -97,7 +99,7 @@ public class FormDataService {
 		if(tableinfomap == null)
 			throw new Exception("generateMainData Get forminfo Empty Exception");
 		
-		if(params.get("iscreate") == "1"){
+		if("1".equals(Util.null2String(params.get("iscreate")))){
 			return this.generateCreateDefaultValue();
 		}else{
 			return this.generateMainData();
@@ -318,6 +320,7 @@ public class FormDataService {
 			if(detailinfo == null)
 				continue;
 			int tableindex = detailinfo.getTableindex();
+			Map<String,FieldInfo> fieldinfomap = detailinfo.getFieldinfomap();
 			String tablename = detailinfo.getTablename();
 			String tablecolumn = detailinfo.getTablecolumn();
 			if(tablecolumn.endsWith(","))
@@ -333,19 +336,29 @@ public class FormDataService {
 					recordsql = "select id,"+tablecolumn+" from "+tablename+" where mainid="+billmainid+" order by id";
 			}
 			rs.executeSql(recordsql);
-			Map<String,FieldInfo> fieldinfomap = detailinfo.getFieldinfomap();
-			List<Map<String,FieldValueBean>> fieldvaluelist = new ArrayList<Map<String,FieldValueBean>>();
+			
+			Map<String,Object> rowdatas = new HashMap<String,Object>();
+			int rowindex = 0;
 			while(rs.next()){
-				Map<String,FieldValueBean> fieldvaluemap = new HashMap<String,FieldValueBean>();
+				Map<String,Object> fieldvaluemap = new HashMap<String,Object>();
 				for(Map.Entry<String, FieldInfo> entry : fieldinfomap.entrySet()){
 					FieldInfo fieldinfo = entry.getValue();
 					int fieldid = fieldinfo.getFieldid();
 					String fieldvalue = Util.null2String(rs.getString(fieldinfo.getFieldname()));
 					fieldvaluemap.put("field"+fieldid, this.buildFieldValueBean(fieldinfo, fieldvalue));
 				}
-				fieldvaluelist.add(fieldvaluemap);
+				//明细主键、顺序
+				fieldvaluemap.put("keyid", Util.getIntValue(rs.getString("id")));
+				fieldvaluemap.put("orderid", rowindex+1);
+				
+				rowdatas.put("row_"+rowindex, fieldvaluemap);
+				rowindex++;
 			}
-			apidatas.put(key, fieldvaluelist);
+			Map<String,Object> detailmap = new HashMap<String,Object>();
+			detailmap.put("indexnum", rowindex);
+			detailmap.put("addRowDefValue", "");	//添加行字段默认值
+			detailmap.put("rowDatas", rowdatas);
+			apidatas.put(key, detailmap);
 		}
 		return apidatas;
 	}
@@ -386,6 +399,12 @@ public class FormDataService {
 			bean.setValue(ServiceUtil.manageImgLazyLoad(fieldvalue));
 		}else if(htmltype == 3){
 			bean.setShowname(ServiceUtil.convertChar(this.getBrowserShowName(fieldinfo, fieldvalue)));
+			BrowserValueInfoService browserValueInfoService  = new BrowserValueInfoService();
+			try {
+				bean.setSpecialobj(browserValueInfoService.getBrowserValueInfo(fieldinfo, fieldvalue, user.getLanguage(),requestid));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			if(detailtype == 16 || detailtype == 152){	//流程，多流程
 				ServiceUtil.addRelatedWfSession(this.request, this.requestid, fieldvalue);
 			}
@@ -398,7 +417,7 @@ public class FormDataService {
 				bean.setSpecialobj(this.getFileFieldSpecialObj(fieldvalue));
 			}
 		}
-		String formatstr = fieldinfo.getFormatcfg();
+		/*String formatstr = fieldinfo.getFormatcfg();
 		if(formatstr != null && !"".equals(formatstr) && !"".equals(fieldvalue)){
 			JSONObject formatcfg = JSONObject.parseObject(formatstr);
 			boolean needforamt = false;
@@ -414,7 +433,7 @@ public class FormDataService {
 				formatstr = formatstr.substring(formatstr.indexOf("{")+1, formatstr.lastIndexOf("}"));
 				bean.setFormatvalue(FormatFieldValue.FormatValue(fieldvalue, formatstr, htmltype, detailtype));
 			}
-		}
+		}*/
 		return bean;
 	}
 	

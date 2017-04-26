@@ -109,11 +109,11 @@ public class ServiceUtil {
 		}
 		boolean reqRoute = nodeSupportSPA(nodeid);
 		//待办暂只支持只读字段
-		if(reqRoute && ("0".equals(isremark) || "5".equals(isremark))){
-			rs.executeSql("select count(1) from workflow_nodeform where nodeid="+nodeid+" and isedit=1");
-			if(rs.next() && rs.getInt(1) > 0)
-				reqRoute = false;
-		}
+//		if(reqRoute && ("0".equals(isremark) || "5".equals(isremark))){
+//			rs.executeSql("select count(1) from workflow_nodeform where nodeid="+nodeid+" and isedit=1");
+//			if(rs.next() && rs.getInt(1) > 0)
+//				reqRoute = false;
+//		}
 		return reqRoute;
 	}
 	

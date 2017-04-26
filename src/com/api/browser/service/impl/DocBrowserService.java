@@ -91,7 +91,6 @@ public class DocBrowserService extends BrowserService{
 		
         DocManager dm = new DocManager();
         sqlwhere += dm.getDateDuringSql(date2during);
-        sqlwhere  = SqlUtils.replaceFirstAnd(sqlwhere);
         
 		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
 		cols.add(new SplitTableColBean("hide","id"));

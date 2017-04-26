@@ -1,17 +1,20 @@
 package com.api.browser.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import weaver.common.util.xtree.TreeNode;
 import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.hrm.city.CityComInfo;
+import weaver.hrm.country.CountryComInfo;
+import weaver.hrm.province.ProvinceComInfo;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.api.browser.bean.BrowserTreeNode;
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.BrowserConstant;
+import com.api.browser.util.BrowserDataType;
 
 /**
  * 获取城市信息
@@ -24,66 +27,100 @@ public class CityBrowserService extends BrowserService{
 	public Map<String, Object> getBrowserData(Map<String, Object> params) throws Exception {
 		Map<String, Object> apidatas = new HashMap<String, Object>();
 		User user = (User) params.get("user");
-		apidatas.put("result", false);
-		if (user == null)
+		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowserDataType.TREE_DATA.getTypeid());
+		if(user == null){
+			apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, null);
 			return apidatas;
-		String type = Util.null2String(params.get("type"));
-		String id = Util.null2String(params.get("id"));
-		String nodeid = Util.null2String(params.get("nodeid"));
-		String init = Util.null2String(params.get("init"));
-		try {
-			CityComInfo cci = new CityComInfo();
-			if ("".equals(type))
-				type = "glob";
-			TreeNode envelope = new TreeNode();
-			envelope.setTitle("envelope");
-
-			if ((!init.equals("")) && (id.equals(""))) {
-				envelope = cci.getCityTreeList(envelope, "glob", "0", 3);
-			} else {
-				envelope = cci.getCityTreeList(envelope, type, id, 1);
-			}
-
-			JSONArray TreeNodeArray = JSONArray.parseArray(JSON
-					.toJSONString(envelope.getTreeNode()));
-			for (int i = 0; i < TreeNodeArray.size(); i++) {
-				JSONObject jo = TreeNodeArray.getJSONObject(i);
-				boolean needgetId = false;
-				if (jo.containsKey("nodeXmlSrc")) {
-					jo.put("isParent", true);
-					String xmlString = jo.getString("nodeXmlSrc");
-					if (-1 < xmlString.indexOf(".jsp?")) {
-						String[] list = xmlString.substring(
-								xmlString.indexOf(".jsp?") + 5).split("&");
-						for (int j = 0; j < list.length; j++) {
-							String[] typelist = list[j].split("=");
-							if ("type".equals(typelist[0])) {
-								jo.put("type", typelist[1]);
-							}
-
-							if ("id".equals(typelist[0])) {
-								jo.put("id", typelist[1]);
-							}
-
-						}
-						needgetId = true;
-					}
-				}
-				if (!needgetId) {
-					jo.put("isParent", false);
-					String nodeId = jo.getString("nodeId");
-					String[] nodeidlist = nodeId.split("_");
-					jo.put("id", nodeidlist[1]);
-					jo.put("type", nodeidlist[0]);
-				}
-				jo.put("name", jo.getString("title"));
-				TreeNodeArray.set(i, jo);
-			}
-			apidatas.put("result", TreeNodeArray);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		String isLoadAll = Util.null2String(params.get("isLoadAll"));
+		String type = Util.null2s(Util.null2String(params.get("type")),CityComInfo.TYPE_GLOBAL);
+		String id = Util.null2String(params.get("id"));
+		List<BrowserTreeNode> nodeDatas = getTreeNodeInfo(type,id,isLoadAll);
+		apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, nodeDatas);
 		return apidatas;
 	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param pid
+	 * @return
+	 * @throws Exception 
+	 */
+	private List<BrowserTreeNode> getTreeNodeInfo(String type,String pid,String isLoadAll) throws Exception{
+		List<BrowserTreeNode> nodes  = new ArrayList<BrowserTreeNode>();
+		pid = Util.null2String(pid);
+		//加载国家
+		if(CityComInfo.TYPE_GLOBAL.equals(type)){
+            CountryComInfo rs = new CountryComInfo();
+            rs.setTofirstRow();
+            while (rs.next()) {
+            	String canceled = rs.getCountryiscanceled();
+            	if("1".equals(canceled)) continue;
+                String id = rs.getCountryid();
+                String name = rs.getCountryname();
+                BrowserTreeNode node = new BrowserTreeNode(id,name,pid,hasChild(CityComInfo.TYPE_COUNTRY, id));
+                node.setType(CityComInfo.TYPE_COUNTRY);
+                node.setIcon("/images/treeimages/country_wev8.gif");
+                if("1".equals(isLoadAll)){
+                	node.setSubs(getTreeNodeInfo(CityComInfo.TYPE_COUNTRY,id,isLoadAll));
+                }
+                nodes.add(node);
+            }
+		}else if(type.equals(CityComInfo.TYPE_COUNTRY)){ 
+			ProvinceComInfo provs = new ProvinceComInfo();
+            provs.setTofirstRow();
+            while (provs.next()) {
+            	String canceledProvs = provs.getProvinceiscanceled();
+            	if("1".equals(canceledProvs)) continue;
+                if (!provs.getProvincecountryid().equals(pid)) continue;
+                String provid = provs.getProvinceid();
+                String provname = provs.getProvincename();
+                BrowserTreeNode node = new BrowserTreeNode(provid,provname,pid,hasChild(CityComInfo.TYPE_PROVINCE,provid));
+                node.setType(CityComInfo.TYPE_PROVINCE);
+                node.setIcon("/images/treeimages/Home_wev8.gif");
+                if("1".equals(isLoadAll)){
+                	node.setSubs(getTreeNodeInfo(CityComInfo.TYPE_PROVINCE,provid,isLoadAll));
+                }
+                nodes.add(node);
+            }
+		}else if(type.equals(CityComInfo.TYPE_PROVINCE)){
+			CityComInfo cityComInfo = new CityComInfo();
+			cityComInfo.setTofirstRow();
+            while (cityComInfo.next()) {
+                if (!cityComInfo.getCityprovinceid().equals(pid)) continue;
+                String canceledCity = cityComInfo.getCitycanceled();
+            	if("1".equals(canceledCity)) continue;
+                String cityid = cityComInfo.getCityid();
+                String cityname = cityComInfo.getCityname();
+                BrowserTreeNode node = new BrowserTreeNode(cityid,cityname,pid,false);
+                node.setType(CityComInfo.TYPE_CITY);
+                node.setIcon("/images/treeimages/subCopany_Colse_wev8.gif");
+                nodes.add(node);
+            }
+		}
+		return nodes;
+	}
+	
+    private boolean hasChild(String type, String id) throws Exception {
+        if (type.equals(CityComInfo.TYPE_COUNTRY)) {
+            ProvinceComInfo provs = new ProvinceComInfo();
+            provs.setTofirstRow();
+            while (provs.next()) {
+                if (provs.getProvincecountryid().equals(id)&&!"1".equals(provs.getProvinceiscanceled())) {
+                    return true;
+                }
+            }
+        } else if (type.equals(CityComInfo.TYPE_PROVINCE)) {
+        	CityComInfo cityComInfo = new CityComInfo();
+        	cityComInfo.setTofirstRow();
+            while (cityComInfo.next()) {
+                if (cityComInfo.getCityprovinceid().equals(id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

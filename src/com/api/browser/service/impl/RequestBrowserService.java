@@ -10,7 +10,6 @@ import java.util.Map;
 import weaver.conn.RecordSet;
 import weaver.fna.general.FnaCommon;
 import weaver.general.BaseBean;
-import weaver.general.PageIdConst;
 import weaver.general.Util;
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
@@ -22,7 +21,6 @@ import com.api.browser.bean.SplitTableBean;
 import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
 import com.api.browser.util.SplitTableUtil;
-import com.api.browser.util.SqlUtils;
 
 /**
  * 流程
@@ -44,7 +42,6 @@ public class RequestBrowserService extends BrowserService {
 		int _bdf_wfid = Util.getIntValue(Util.null2String(params.get("bdf_wfid")));
 		int _bdf_fieldid = Util.getIntValue(Util.null2String(params.get("bdf_fieldid")));
 		String f_weaver_belongto_userid = Util.fromScreen(Util.null2String(params.get("f_weaver_belongto_userid")), user.getLanguage());
-		String f_weaver_belongto_usertype = Util.null2String(params.get("f_weaver_belongto_usertype"));// 需要增加的代码
 		String userID = String.valueOf(user.getUID());
 		int userid = user.getUID();
 		if (!f_weaver_belongto_userid.equals(userID) && !"".equals(f_weaver_belongto_userid)) {
@@ -171,7 +168,6 @@ public class RequestBrowserService extends BrowserService {
 					+ "	GROUP BY fbi.advanceRequestId, fbi.advanceRequestIdDtlId \n" + " ) fbi1 \n" + " where fbi1.sum_amountAdvance > 0 \n"
 					+ " and fbi1.advanceRequestId = workflow_requestbase.requestId \n" + " ) \n";
 		}
-		sqlwhere  = SqlUtils.replaceFirstAnd(sqlwhere);
 		/* end：处理还款流程请求浏览按钮过滤逻辑代码 */
 		int olddate2during = 0;
 		BaseBean baseBean = new BaseBean();
@@ -409,7 +405,7 @@ public class RequestBrowserService extends BrowserService {
 			sqlwhere += " and (isnull(workflow_requestbase.currentstatus,-1) = -1 or (isnull(workflow_requestbase.currentstatus,-1)=0 and workflow_requestbase.creater=" + user.getUID() + "))";
 		}
 
-		String backfields = " * ";
+		String backfields = " t.* ";
 		String formsql = "";
 		if ("1".equals(belongtoshow)) {
 			if (rs.getDBType().equals("oracle") || rs.getDBType().equals("db2")) {
@@ -440,16 +436,15 @@ public class RequestBrowserService extends BrowserService {
 						+ " and workflow_requestbase.workflowid = workflow_base.id and (workflow_base.isvalid='1' or workflow_base.isvalid='3') " + " ) t ";
 			}
 		}
-		String orderby = "createdate desc , createtime desc";
+		String orderby = "createdate , createtime ";
 		
 		List<SplitTableColBean> cols = new ArrayList<SplitTableColBean>();
 		cols.add(new SplitTableColBean("true","requestid"));
-		cols.add(new SplitTableColBean("60%",SystemEnv.getHtmlLabelName(648, user.getLanguage()),"requestname","requestname","weaver.workflow.request.RequestBrowser.getWfNewLink","column:requestid+" + user.getLanguage()));
+		cols.add(new SplitTableColBean("60%",SystemEnv.getHtmlLabelName(648, user.getLanguage()),"requestname","requestname","weaver.workflow.request.RequestBrowser.getWfNewLink","column:requestid+" + user.getLanguage(),"true"));
 		cols.add(new SplitTableColBean("150%",SystemEnv.getHtmlLabelName(882, user.getLanguage()),"creater","creater","weaver.workflow.request.RequestBrowser.getWfCreaterName","column:creatertype+" + user.getLanguage()));
 		cols.add(new SplitTableColBean("25%",SystemEnv.getHtmlLabelName(1339, user.getLanguage()),"createtimes","createtimes","weaver.general.KnowledgeTransMethod.forHtml"));
 		
 		SplitTableBean tableBean  =  new SplitTableBean(backfields,formsql,"",orderby,"requestid",cols);
-		tableBean.setSqlsortway("ASC");
 		tableBean.setSqlisdistinct("true");
 		SplitTableUtil.getTableString(apidatas,tableBean);
 		return apidatas;

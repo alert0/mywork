@@ -15,8 +15,8 @@ import weaver.systeminfo.SystemEnv;
 
 import com.api.browser.bean.ListHeadBean;
 import com.api.browser.service.BrowserService;
-import com.api.browser.util.BrowseDataType;
 import com.api.browser.util.BrowserConstant;
+import com.api.browser.util.BrowserDataType;
 import com.api.browser.util.SqlUtils;
 
 /**
@@ -90,7 +90,7 @@ public class HrmTrainPlanBrowserService extends BrowserService {
 		
 		apidatas.put(BrowserConstant.BROWSER_RESULT_COLUMN, tableHeadColumns);
 		apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, datas);
-		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowseDataType.LIST_ALL_DATA.getTypeid());
+		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowserDataType.LIST_ALL_DATA.getTypeid());
 		return apidatas;
 	}
 }

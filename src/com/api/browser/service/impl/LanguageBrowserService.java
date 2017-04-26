@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.api.browser.service.BrowserService;
-
 import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 import weaver.systeminfo.language.LanguageComInfo;
+
+import com.api.browser.bean.ListHeadBean;
+import com.api.browser.service.BrowserService;
+import com.api.browser.util.BrowserConstant;
+import com.api.browser.util.BrowserDataType;
 
 /**
  * 语言
@@ -23,19 +26,6 @@ public class LanguageBrowserService extends BrowserService {
 		Map<String, Object> apidatas = new HashMap<String, Object>();
 		User user = (User) params.get("user");
 		
-		//设置表头
-		List<Map<String,Object>> columns = new ArrayList<Map<String,Object>>();
-		Map<String,Object> column = new HashMap<String,Object>();
-		column.put("dataIndex", "languageid");
-		column.put("title", SystemEnv.getHtmlLabelName(84,user.getLanguage()));
-		columns.add(column);
-		
-		column = new HashMap<String,Object>();
-		column.put("dataIndex", "languagename");
-		column.put("title", SystemEnv.getHtmlLabelName(195,user.getLanguage()));
-		columns.add(column);
-		apidatas.put("columns", columns);
-		
 		//加载数据
 		List<Map<String,Object>> datas = new ArrayList<Map<String,Object>>();
 		LanguageComInfo languageComInfo = new LanguageComInfo();
@@ -47,6 +37,16 @@ public class LanguageBrowserService extends BrowserService {
 			datas.add(lanaguageInfo);
 		}
 		apidatas.put("datas", datas);
+		
+		//设置表头
+		List<ListHeadBean> tableHeadColumns =  new ArrayList<ListHeadBean>();
+		tableHeadColumns.add(new ListHeadBean("languageid",SystemEnv.getHtmlLabelName(84,user.getLanguage())));
+		tableHeadColumns.add(new ListHeadBean("languagename",SystemEnv.getHtmlLabelName(195,user.getLanguage())));
+		
+		apidatas.put(BrowserConstant.BROWSER_RESULT_COLUMN, tableHeadColumns);
+		apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, datas);
+		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowserDataType.LIST_ALL_DATA.getTypeid());
+
 		return apidatas;
 	}
 }

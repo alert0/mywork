@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.api.browser.service.BrowserService;
-
 import weaver.cpt.maintenance.CapitalAssortmentComInfo;
 import weaver.general.Util;
+
+import com.api.browser.bean.BrowserTreeNode;
+import com.api.browser.service.BrowserService;
+import com.api.browser.util.BrowserConstant;
+import com.api.browser.util.BrowserDataType;
 
 /**
  * 资产组
@@ -20,32 +23,29 @@ public class CptAssortmentBrowserService extends BrowserService {
 	@Override
 	public Map<String, Object> getBrowserData(Map<String, Object> params) throws Exception {
 		Map<String, Object> apidatas = new HashMap<String, Object>();
-		String subId = Util.null2String(params.get("id"));
+		String parentId = Util.null2s(Util.null2String(params.get("id")),"0");
 		String checkType = Util.null2String(params.get("checktype"));
 		String onlyEndNode = Util.null2String(params.get("onlyendnode")); // 如果需要check是否仅仅只是没有孩子的节点
 		String showCptCount = Util.null2String(params.get("showcptcount")); // 是否显示资产资料数量
 
 		CapitalAssortmentComInfo rs = new CapitalAssortmentComInfo();
 		rs.setTofirstRow();
-		List<Map<String, Object>> nodes = new ArrayList<Map<String, Object>>();
+		List<BrowserTreeNode> nodes = new ArrayList<BrowserTreeNode>();
 		while (rs.next()) {
-			String supCptAssortmentId = rs.getSupAssortmentId();
-			if (supCptAssortmentId.equals(""))
-				supCptAssortmentId = "0";
-			if (!supCptAssortmentId.equals(subId))
+			String supCptAssortmentId = Util.null2String(rs.getSupAssortmentId(),"0");
+			if (!supCptAssortmentId.equals(parentId))
 				continue;
 
 			String id = rs.getAssortmentId();
 			String name = rs.getAssortmentName();
 			String cptcount = rs.getCapitalCount();
-			Map<String, Object> node = new HashMap<String, Object>();
 			boolean flag = "y".equals(showCptCount.toLowerCase()) && Integer.parseInt(cptcount) > 0;
-			node.put("title", flag ? name + " (" + cptcount + ")" : name);
-			node.put("id", id);
-			node.put("isParent", hasChild(id));
-			nodes.add(node);
+			String _name  = flag ? name + " (" + cptcount + ")" : name;
+			boolean isParent  = hasChild(id);
+			nodes.add(new BrowserTreeNode(id,_name,parentId,isParent));
 		}
-		apidatas.put("data", nodes);
+		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowserDataType.TREE_DATA.getTypeid());
+		apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, nodes);
 		return apidatas;
 	}
 

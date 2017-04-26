@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.api.browser.service.BrowserService;
+import com.api.browser.util.BrowserConstant;
+import com.api.browser.util.BrowserDataType;
 
 import weaver.general.Util;
 import weaver.hrm.User;
@@ -23,77 +25,80 @@ public class OrganizationBrowserService extends BrowserService{
 	
 	@Override
 	public Map<String, Object> getBrowserData(Map<String, Object> params) throws Exception {
-		Map<String,Object> apidatas = new HashMap<String,Object>();
-		User user = (User) params.get("user");
-		// 虚拟组织
-		String virtualCompanyid = Util.null2String(params.get("virtualCompanyid"));
-		// 是否加载部门
-		boolean isLoadSubDepartment = "1".equals(Util.null2String(params.get("isLoadSubDepartment")));
-		// 是否加载所有下级数据
-		boolean isLoadAllSub = "1".equals(Util.null2String(params.get("isLoadAllSub")));
+		String id = Util.null2String(params.get("id"));
+		if("".equals(id)){
+			Map<String,Object> apidatas = new HashMap<String,Object>();
+			User user = (User) params.get("user");
+			// 虚拟组织
+			String virtualCompanyid = Util.null2String(params.get("virtualCompanyid"));
+			// 是否加载部门
+			boolean isLoadSubDepartment = "1".equals(Util.null2String(params.get("isLoadSubDepartment")));
+			// 是否加载所有下级数据
+			boolean isLoadAllSub = "1".equals(Util.null2String(params.get("isLoadAllSub")));
 
-		CompanyComInfo companyComInfo = null;
-		CompanyVirtualComInfo companyVirtualComInfo = null;
-		// 加载顶级分部一级分部
-		try {
-			companyComInfo = new CompanyComInfo();
-			companyVirtualComInfo = new CompanyVirtualComInfo();
-			companyVirtualComInfo.setUser(user);
-		} catch (Exception e) {
-		}
+			CompanyComInfo companyComInfo = null;
+			CompanyVirtualComInfo companyVirtualComInfo = null;
+			// 加载顶级分部一级分部
+			try {
+				companyComInfo = new CompanyComInfo();
+				companyVirtualComInfo = new CompanyVirtualComInfo();
+				companyVirtualComInfo.setUser(user);
+			} catch (Exception e) {
+			}
 
-		List<OrgBean> companys = new ArrayList<OrgBean>();
+			List<OrgBean> companys = new ArrayList<OrgBean>();
 
-		// 加载虚拟组织列表
-		if ("".equals(virtualCompanyid) && companyVirtualComInfo.getCompanyNum() > 0) {
-			OrgBean companyInfo = null;
-			if (companyComInfo.getCompanyNum() > 0) {
-				companyComInfo.setTofirstRow();
-				while (companyComInfo.next()) {
+			// 加载虚拟组织列表
+			if ("".equals(virtualCompanyid) && companyVirtualComInfo.getCompanyNum() > 0) {
+				OrgBean companyInfo = null;
+				if (companyComInfo.getCompanyNum() > 0) {
+					companyComInfo.setTofirstRow();
+					while (companyComInfo.next()) {
+						companyInfo = new OrgBean();
+						companyInfo.setCompanyid(companyComInfo.getCompanyid());
+						companyInfo.setName(companyComInfo.getCompanyname());
+						companyInfo.setIsVirtual("0");
+						companys.add(companyInfo);
+					}
+				}
+
+				companyVirtualComInfo.setTofirstRow();
+				while (companyVirtualComInfo.next()) {
 					companyInfo = new OrgBean();
-					companyInfo.setCompanyid(companyComInfo.getCompanyid());
-					companyInfo.setName(companyComInfo.getCompanyname());
-					companyInfo.setIsVirtual("0");
+					companyInfo.setCompanyid(companyVirtualComInfo.getCompanyid());
+					companyInfo.setName(companyVirtualComInfo.getVirtualType());
+					companyInfo.setIsVirtual("1");
 					companys.add(companyInfo);
 				}
 			}
+			apidatas.put("companys", companys);
+			String companyname = companyComInfo.getCompanyname("1");
+			OrgBean root = new OrgBean();
+			if ("".equals(virtualCompanyid)) {
+				root.setId("0");
+				root.setCompanyid("1");
+				root.setName(companyname);
+				root.setType("0");
+				root.setIsVirtual("0");
 
-			companyVirtualComInfo.setTofirstRow();
-			while (companyVirtualComInfo.next()) {
-				companyInfo = new OrgBean();
-				companyInfo.setCompanyid(companyVirtualComInfo.getCompanyid());
-				companyInfo.setName(companyVirtualComInfo.getVirtualType());
-				companyInfo.setIsVirtual("1");
-				companys.add(companyInfo);
+				// 加载下级分部
+				loadSubCompanys(root, isLoadSubDepartment, isLoadAllSub, user);
+			} else {
+				// 虚拟组织
+				root.setId("0");
+				root.setCompanyid(virtualCompanyid);
+				root.setName(companyname);
+				root.setType("0");
+				root.setIsVirtual("1");
+				loadVirtualSubCompanyInfo(root, isLoadSubDepartment, isLoadAllSub, user);
 			}
+			
+			apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowserDataType.TREE_DATA.getTypeid());
+			apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, root);
+			return apidatas;
+		}else{
+			return getTreeNodeData(params);
 		}
-
-		Map<String, Object> resultDatas = new HashMap<String, Object>();
-		resultDatas.put("companys", companys);
-
-		String companyname = companyComInfo.getCompanyname("1");
-		OrgBean root = new OrgBean();
-		if ("".equals(virtualCompanyid)) {
-			root.setId("0");
-			root.setCompanyid("1");
-			root.setName(companyname);
-			root.setType("0");
-			root.setIsVirtual("0");
-
-			// 加载下级分部
-			loadSubCompanys(root, isLoadSubDepartment, isLoadAllSub, user);
-		} else {
-			// 虚拟组织
-			root.setId("0");
-			root.setCompanyid(virtualCompanyid);
-			root.setName(companyname);
-			root.setType("0");
-			root.setIsVirtual("1");
-			loadVirtualSubCompanyInfo(root, isLoadSubDepartment, isLoadAllSub, user);
-		}
-		resultDatas.put("rootCompany", root);
-		apidatas.put("result", resultDatas);
-		return apidatas;
 	}
 
 	/**
@@ -122,8 +127,8 @@ public class OrganizationBrowserService extends BrowserService{
 		}
 
 		List<OrgBean> subOrgs = null;
-		if (parentOrg.getSubOrgs() != null) {
-			subOrgs = parentOrg.getSubOrgs();
+		if (parentOrg.getSubs() != null) {
+			subOrgs = parentOrg.getSubs();
 		} else {
 			subOrgs = new ArrayList<OrgBean>();
 		}
@@ -158,7 +163,7 @@ public class OrganizationBrowserService extends BrowserService{
 			orgBean.setIsVirtual("0");
 			subOrgs.add(orgBean);
 
-			parentOrg.setIsParent("1");
+			parentOrg.setIsParent(true);
 
 			// 加载下级分部
 			if (isLoadAllSub) {
@@ -168,7 +173,7 @@ public class OrganizationBrowserService extends BrowserService{
 				validOrgIsParent(orgBean, isLoadSubDepartment, user);
 			}
 		}
-		parentOrg.setSubOrgs(subOrgs);
+		parentOrg.setSubs(subOrgs);
 	}
 
 	/**
@@ -208,7 +213,7 @@ public class OrganizationBrowserService extends BrowserService{
 					continue;
 			}
 
-			parentOrg.setIsParent("1");
+			parentOrg.setIsParent(true);
 			break;
 		}
 	}
@@ -239,9 +244,9 @@ public class OrganizationBrowserService extends BrowserService{
 					.equals("0")))))
 				continue;
 
-			pSubCompany.setIsParent("1");
+			pSubCompany.setIsParent(true);
 			if (pDepartment != null) {
-				pDepartment.setIsParent("1");
+				pDepartment.setIsParent(true);
 			}
 
 			break;
@@ -270,8 +275,8 @@ public class OrganizationBrowserService extends BrowserService{
 		String pId = pDepartment == null ? pSubCompany.getId() : pDepartment.getId();
 
 		List<OrgBean> subOrgs = null;
-		if (pDepartment == null && pSubCompany.getSubOrgs() != null) {
-			subOrgs = pSubCompany.getSubOrgs();
+		if (pDepartment == null && pSubCompany.getSubs() != null) {
+			subOrgs = pSubCompany.getSubs();
 		} else {
 			subOrgs = new ArrayList<OrgBean>();
 		}
@@ -299,9 +304,9 @@ public class OrganizationBrowserService extends BrowserService{
 			orgBean.setIsVirtual("0");
 			orgBean.setPsubcompanyid(pSubCompany.getId());
 
-			pSubCompany.setIsParent("1");
+			pSubCompany.setIsParent(true);
 			if (pDepartment != null) {
-				pDepartment.setIsParent("1");
+				pDepartment.setIsParent(true);
 			}
 
 			subOrgs.add(orgBean);
@@ -314,9 +319,9 @@ public class OrganizationBrowserService extends BrowserService{
 		}
 
 		if (pDepartment == null) {
-			pSubCompany.setSubOrgs(subOrgs);
+			pSubCompany.setSubs(subOrgs);
 		} else {
-			pDepartment.setSubOrgs(subOrgs);
+			pDepartment.setSubs(subOrgs);
 		}
 	}
 
@@ -346,8 +351,8 @@ public class OrganizationBrowserService extends BrowserService{
 		}
 		
 		List<OrgBean> subOrgs = null;
-		if (parentOrg.getSubOrgs() != null) {
-			subOrgs = parentOrg.getSubOrgs();
+		if (parentOrg.getSubs() != null) {
+			subOrgs = parentOrg.getSubs();
 		} else {
 			subOrgs = new ArrayList<OrgBean>();
 		}
@@ -388,7 +393,7 @@ public class OrganizationBrowserService extends BrowserService{
 			virtualOrgBean.setType("1");
 			virtualOrgBean.setIsVirtual("1");
 
-			parentOrg.setIsParent("1");
+			parentOrg.setIsParent(true);
 
 			subOrgs.add(virtualOrgBean);
 
@@ -398,7 +403,7 @@ public class OrganizationBrowserService extends BrowserService{
 				validVirtualOrgIsParent(virtualOrgBean, isLoadSubDepartment, user);
 			}
 		}
-		parentOrg.setSubOrgs(subOrgs);
+		parentOrg.setSubs(subOrgs);
 	}
 
 	/**
@@ -425,8 +430,8 @@ public class OrganizationBrowserService extends BrowserService{
 
 		String pId = pVDepartment == null ? pVCompany.getId() : pVDepartment.getId();
 		List<OrgBean> subOrgs = null;
-		if (pVDepartment == null && pVCompany.getSubOrgs() != null) {
-			subOrgs = pVCompany.getSubOrgs();
+		if (pVDepartment == null && pVCompany.getSubs() != null) {
+			subOrgs = pVCompany.getSubs();
 		} else {
 			subOrgs = new ArrayList<OrgBean>();
 		}
@@ -454,9 +459,9 @@ public class OrganizationBrowserService extends BrowserService{
 			virtualOrgBean.setIsVirtual("1");
 			virtualOrgBean.setPsubcompanyid(pVCompany.getId());
 
-			pVCompany.setIsParent("1");
+			pVCompany.setIsParent(true);
 			if (pVDepartment != null) {
-				pVDepartment.setIsParent("1");
+				pVDepartment.setIsParent(true);
 			}
 
 			subOrgs.add(virtualOrgBean);
@@ -469,9 +474,9 @@ public class OrganizationBrowserService extends BrowserService{
 		}
 
 		if (pVDepartment == null) {
-			pVCompany.setSubOrgs(subOrgs);
+			pVCompany.setSubs(subOrgs);
 		} else {
-			pVDepartment.setSubOrgs(subOrgs);
+			pVDepartment.setSubs(subOrgs);
 		}
 	}
 
@@ -519,7 +524,7 @@ public class OrganizationBrowserService extends BrowserService{
 				}
 			}
 
-			parentOrg.setIsParent("1");
+			parentOrg.setIsParent(true);
 			break;
 		}
 	}
@@ -550,9 +555,9 @@ public class OrganizationBrowserService extends BrowserService{
 			if (!(rsDepartment.getSubcompanyid1().equals(subcompanyid) && (supdepid.equals(departmentId) || (!rsDepartment.getSubcompanyid1(supdepid).equals(subcompanyid) && departmentId.equals("0")))))
 				continue;
 
-			pVCompany.setIsParent("1");
+			pVCompany.setIsParent(true);
 			if (pVDepartment != null) {
-				pVDepartment.setIsParent("1");
+				pVDepartment.setIsParent(true);
 			}
 
 			break;
@@ -592,7 +597,7 @@ public class OrganizationBrowserService extends BrowserService{
 			} else {
 				loadVirtualSubCompanyInfo(psubOrgBean, isLoadSubDepartment, false, user);
 			}
-			result = psubOrgBean.getSubOrgs();
+			result = psubOrgBean.getSubs();
 		} else if ("1".equals(type)) {
 			psubOrgBean.setId(id);
 			psubOrgBean.setType(type);
@@ -602,7 +607,7 @@ public class OrganizationBrowserService extends BrowserService{
 			} else {
 				loadVirtualSubCompanyInfo(psubOrgBean, isLoadSubDepartment, false, user);
 			}
-			result = psubOrgBean.getSubOrgs();
+			result = psubOrgBean.getSubs();
 		} else if ("2".equals(type)) {
 			psubOrgBean.setId(psubcompanyid);
 
@@ -614,16 +619,16 @@ public class OrganizationBrowserService extends BrowserService{
 			} else {
 				loadVirtualSubDepartments(psubOrgBean, pdepOrgBean, false);
 			}
-			result = pdepOrgBean.getSubOrgs();
+			result = pdepOrgBean.getSubs();
 		}
-
-		apidatas.put("result", result);
+		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowserDataType.TREE_DATA.getTypeid());
+		apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, result);
 		return apidatas;
 	}
 
 	private class OrgBean {
 		private String id;
-		private String isParent;
+		private boolean isParent;
 		private String name;
 		private String pid;
 		private String type; // 0 公司 1 分部 2 部门
@@ -631,7 +636,7 @@ public class OrganizationBrowserService extends BrowserService{
 		private String isVirtual;
 		private String psubcompanyid;
 
-		private List<OrgBean> subOrgs;
+		private List<OrgBean> subs;
 
 		public String getId() {
 			return id;
@@ -641,11 +646,11 @@ public class OrganizationBrowserService extends BrowserService{
 			this.id = id;
 		}
 
-		public String getIsParent() {
+		public boolean getIsParent() {
 			return isParent;
 		}
 
-		public void setIsParent(String isParent) {
+		public void setIsParent(boolean isParent) {
 			this.isParent = isParent;
 		}
 
@@ -681,12 +686,12 @@ public class OrganizationBrowserService extends BrowserService{
 			this.companyid = companyid;
 		}
 
-		public List<OrgBean> getSubOrgs() {
-			return subOrgs;
+		public List<OrgBean> getSubs() {
+			return subs;
 		}
 
-		public void setSubOrgs(List<OrgBean> subOrgs) {
-			this.subOrgs = subOrgs;
+		public void setSubs(List<OrgBean> subs) {
+			this.subs = subs;
 		}
 
 		public String getIsVirtual() {

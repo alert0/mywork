@@ -186,7 +186,7 @@ public class SplitTableBean implements Serializable {
 	}
 
 	public String getSqlwhere() {
-		sqlwhere = SqlUtils.replaceFirstAnd(sqlwhere);
+		//sqlwhere = SqlUtils.replaceFirstAnd(sqlwhere);
 		return sqlwhere;
 	}
 

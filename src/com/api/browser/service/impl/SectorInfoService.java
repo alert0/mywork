@@ -9,7 +9,12 @@ import weaver.general.Util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.api.browser.service.BrowserService;
-
+/**
+ * 行业 
+ * type:63
+ * @author jhy Apr 26, 2017
+ *
+ */
 public class SectorInfoService extends BrowserService{
 
 	@Override

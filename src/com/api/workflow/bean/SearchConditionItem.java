@@ -1,12 +1,16 @@
 package com.api.workflow.bean;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+
+import com.api.browser.bean.BrowserBean;
+import com.api.workflow.util.ConditionType;
 
 public class SearchConditionItem implements Serializable{
 
 	private static final long serialVersionUID = -7372241015882160206L;
 
+	private ConditionType conditionType;
 	/**标识参数*/
 	private String key;
 	
@@ -20,6 +24,9 @@ public class SearchConditionItem implements Serializable{
 	private int labelcol;
 	private int fieldcol;
 	
+	/**组件参数*/
+	private BrowserBean browserConditionParam;
+	
 	public SearchConditionItem(){}
 	
 	public SearchConditionItem(String key, String label, String relatekey, 
@@ -31,6 +38,30 @@ public class SearchConditionItem implements Serializable{
 		this.options = options;
 		this.labelcol = labelcol;
 		this.fieldcol = fieldcol;
+	}
+
+	public SearchConditionItem(ConditionType conditionType, String label, String relatekey, String[] domkey, List<SearchConditionOption> options, int labelcol, int fieldcol,
+			BrowserBean browserConditionParam) {
+		super();
+		this.conditionType = conditionType;
+		this.label = label;
+		this.relatekey = relatekey;
+		this.domkey = domkey;
+		this.options = options;
+		this.labelcol = labelcol;
+		this.fieldcol = fieldcol;
+		this.browserConditionParam = browserConditionParam;
+	}
+
+	public SearchConditionItem(String key, String label, String relatekey, String[] domkey, List<SearchConditionOption> options, int labelcol, int fieldcol, BrowserBean browserConditionParam) {
+		this.key = key;
+		this.label = label;
+		this.relatekey = relatekey;
+		this.domkey = domkey;
+		this.options = options;
+		this.labelcol = labelcol;
+		this.fieldcol = fieldcol;
+		this.browserConditionParam = browserConditionParam;
 	}
 
 	public String getKey() {
@@ -88,6 +119,20 @@ public class SearchConditionItem implements Serializable{
 	public void setFieldcol(int fieldcol) {
 		this.fieldcol = fieldcol;
 	}
-	
-	
+
+	public BrowserBean getBrowserConditionParam() {
+		return browserConditionParam;
+	}
+
+	public void setBrowserConditionParam(BrowserBean browserConditionParam) {
+		this.browserConditionParam = browserConditionParam;
+	}
+
+	public ConditionType getConditionType() {
+		return conditionType;
+	}
+
+	public void setConditionType(ConditionType conditionType) {
+		this.conditionType = conditionType;
+	}
 }

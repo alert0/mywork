@@ -7,21 +7,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import weaver.general.PageIdConst;
 import weaver.general.StaticObj;
 import weaver.general.Util;
 import weaver.hrm.User;
-import weaver.systeminfo.SystemEnv;
 
 import com.api.browser.bean.SplitTableBean;
 import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.Browser;
 import com.api.browser.service.BrowserService;
 import com.api.browser.util.SplitTableUtil;
-import com.cloudstore.dev.api.util.Util_TableMap;
 
 /**
  * 自定义单选
+ * 
+ * 根据datafrom 判断
+ * 1： 则返回 sql 
+ * 2： WebService
+ * 3： 其他
+ * 
+ * 如果是datafrom 是数据源则拿到对应的SQL 
  * 
  * @author jhy Apr 5, 2017
  * 

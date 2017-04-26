@@ -16,6 +16,7 @@ import weaver.hrm.User;
 import weaver.systeminfo.SystemEnv;
 import weaver.workflow.browserdatadefinition.ConditionField;
 
+import com.api.browser.bean.BrowserBean;
 import com.api.browser.bean.SplitTableBean;
 import com.api.browser.bean.SplitTableColBean;
 import com.api.browser.service.BrowserService;
@@ -23,6 +24,7 @@ import com.api.browser.util.SplitTableUtil;
 import com.api.browser.util.SqlUtils;
 import com.api.workflow.bean.SearchConditionItem;
 import com.api.workflow.util.ConditionKeyFactory;
+import com.api.workflow.util.ConditionType;
 
 /**
  * 客户浏览框
@@ -102,9 +104,9 @@ public class CustomerBrowserService extends BrowserService {
 		String fromSql = " CRM_CustomerInfo t1";
 		if (user.getLogintype().equals("1")) {
 			fromSql += " left join " + leftjointable + " t2 on t1.id = t2.relateditemid ";
-			sqlwhere = " t1.deleted<>1 and t1.id = t2.relateditemid " + sqlwhere;
+			sqlwhere = " where t1.deleted<>1 and t1.id = t2.relateditemid " + sqlwhere;
 		} else {
-			sqlwhere = "  t1.deleted<>1 and t1.agent=" + user.getUID() + sqlwhere;
+			sqlwhere = " where t1.deleted<>1 and t1.agent=" + user.getUID() + sqlwhere;
 		}
 		sqlwhere = Util.toHtmlForSplitPage(sqlwhere);
 		sqlwhere = SqlUtils.replaceFirstAnd(sqlwhere);
@@ -210,9 +212,12 @@ public class CustomerBrowserService extends BrowserService {
 		Map<String, Object> apidatas = new HashMap<String, Object>();
 		List<SearchConditionItem> conditions = new ArrayList<SearchConditionItem>();
 		User user = (User) params.get("user");
-		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY1, SystemEnv.getHtmlLabelName(1268, user.getLanguage()), "", new String[] { "name" }, null, 6, 18));
-		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY1, SystemEnv.getHtmlLabelName(17080, user.getLanguage()), "", new String[] { "crmcode" }, null, 6, 18));
-		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY_3_60, SystemEnv.getHtmlLabelName(63, user.getLanguage()), "", new String[] { "type" }, null, 6, 18));
+		
+		conditions.add(new SearchConditionItem(ConditionType.INPUT, SystemEnv.getHtmlLabelName(1268, user.getLanguage()), "", new String[] { "name" }, null, 6, 18,null));
+		conditions.add(new SearchConditionItem(ConditionType.INPUT, SystemEnv.getHtmlLabelName(17080, user.getLanguage()), "", new String[] { "crmcode" }, null, 6, 18,null));
+		conditions.add(new SearchConditionItem(ConditionType.BROWSER, SystemEnv.getHtmlLabelName(63, user.getLanguage()), "", new String[] { "type" }, null, 6, 18,new BrowserBean("60","type","客户类型")));
+
+		/*
 		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY_CUSTOMER_STATUS, SystemEnv.getHtmlLabelName(602, user.getLanguage()), "", new String[] { "customerStatus" }, null, 6, 18));
 		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY_COUNTRY, SystemEnv.getHtmlLabelName(377, user.getLanguage()), "", new String[] { "country1" }, null, 6, 18));
 		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY_3_58, SystemEnv.getHtmlLabelName(493, user.getLanguage()), "", new String[] { "City" }, null, 6, 18));
@@ -221,6 +226,7 @@ public class CustomerBrowserService extends BrowserService {
 		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY_3_61, SystemEnv.getHtmlLabelName(433, user.getLanguage()), "", new String[] { "customerDesc" }, null, 6, 18));
 		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY_3_62, SystemEnv.getHtmlLabelName(576, user.getLanguage()), "", new String[] { "customerSize" }, null, 6, 18));
 		conditions.add(new SearchConditionItem(ConditionKeyFactory.KEY_3_63, SystemEnv.getHtmlLabelName(575, user.getLanguage()), "", new String[] { "sectorInfo" }, null, 6, 18));
+		*/
 		apidatas.put("conditions",conditions);
 		return apidatas;
 	}

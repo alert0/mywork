@@ -72,7 +72,7 @@ public class SplitTableUtil {
 		String sessionkey = Util.getEncrypt(Util.getRandom());
 		Util_TableMap.setVal(sessionkey, getTableString(splitTable));
 		System.out.println(Util_TableMap.getVal(sessionkey));
-		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowseDataType.LIST_SPLIT_DATA.getTypeid());
+		apidatas.put(BrowserConstant.BROWSER_RESULT_TYPE, BrowserDataType.LIST_SPLIT_DATA.getTypeid());
 		apidatas.put(BrowserConstant.BROWSER_RESULT_DATA, sessionkey);
 	}
 }

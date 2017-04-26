@@ -70,7 +70,10 @@ public class ProjectBrowserService extends BrowserService {
 				resourcenames = "";
 			}
 		}
-
+		if("".equals(sqlwhere)){
+			sqlwhere += " where 1 = 1 ";
+		}
+		
 		if (!name.equals("")) {
 			sqlwhere += " and t1.name like '%" + Util.fromScreen2(name, user.getLanguage()) + "%' ";
 		}
