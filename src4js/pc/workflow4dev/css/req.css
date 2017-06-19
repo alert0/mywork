@@ -14,7 +14,7 @@
 /*表单签字意见样式*/
 
 .wea-workflow-req-sign {
-	margin: 20px auto 30px;
+	margin: 0px auto 30px;
 	box-sizing: border-box;
 }
 
@@ -54,7 +54,6 @@
 	line-height: 36px;
 	padding-left: 20px;
 	color: #9b9b9b;
-	margin-left: -1px;
 	border: 1px solid #d0d0d0;
 }
 

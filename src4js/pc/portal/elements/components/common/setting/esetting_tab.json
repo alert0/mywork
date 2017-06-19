@@ -1,0 +1,409 @@
+{
+  "comment_1": "----- RSS阅读器 -------",
+  "eTabs_1": {
+    "tabNew": {
+      "id": "",
+      "title": "",
+      "showContent": "",
+      "position": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "标题中"
+          },
+          {
+            "key": "2",
+            "value": "内容中"
+          }
+        ]
+      },
+      "searchGroup": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "and"
+          },
+          {
+            "key": "2",
+            "value": "or"
+          }
+        ]
+      },
+      "readType": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "客户端"
+          },
+          {
+            "key": "2",
+            "value": "服务器"
+          }
+        ]
+      }
+    },
+    "tabCount": 2,
+    "tabIds": ["1", "2"],
+    "tabList": [
+      {
+        "key": "1",
+        "tabId": "1",
+        "tabTitle": "泛微",
+        "data": {
+          "id": "1",
+          "title": "泛微",
+          "showContent": "泛微",
+          "position": "1",
+          "searchGroup": "1",
+          "readType": "2"
+        }
+      },
+      {
+        "key": "2",
+        "tabId": "2",
+        "tabTitle": "百度",
+        "data": {
+          "id": "2",
+          "title": "百度",
+          "showContent": "百度",
+          "position": "1",
+          "searchGroup": "1",
+          "readType": "2"
+        }
+      }
+    ]
+  },
+  "comment_7": "----- 文档中心 -------",
+  "eTabs_7": {
+    "tabNew": {
+      "id": "",
+      "title": "",
+      "topDocs": "",
+      "docSourceType": {
+        "selected": "1",
+        "options": [
+          {
+            "value": "1",
+            "label": "新闻中心"
+          },
+          {
+            "value": "2",
+            "label": "文档目录"
+          },
+          {
+            "value": "3",
+            "label": "虚拟目录"
+          },
+          {
+            "value": "4",
+            "label": "指定文档"
+          }
+        ]
+      },
+      "showMode": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "列表式"
+          },
+          {
+            "key": "2",
+            "value": "列表式2"
+          },
+          {
+            "key": "3",
+            "value": "上图式"
+          }
+        ]
+      },
+      "scrollDirection": {
+        "selected": "0",
+        "options": [
+          {
+            "key": "0",
+            "value": "无"
+          },
+          {
+            "key": "1",
+            "value": "向上"
+          },
+          {
+            "key": "2",
+            "value": "向右"
+          },
+          {
+            "key": "3",
+            "value": "向下"
+          },
+          {
+            "key": "4",
+            "value": "向左"
+          }
+        ]
+      },
+      "isOpenAttachment": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "不是"
+          },
+          {
+            "key": "2",
+            "value": "是"
+          }
+        ]
+      }
+    },
+    "tabCount": 2,
+    "tabIds": ["1", "2"],
+    "tabList": [
+      {
+        "key": "1",
+        "tabId": "1",
+        "tabTitle": "新闻",
+        "data": {
+          "id": "1",
+          "title": "新闻",
+          "topDocs": "",
+          "docSourceType": 1,
+          "docSourceValue": "1,2,3",
+          "showMode": "1",
+          "scrollDirection": "0",
+          "isOpenAttachment": "1"
+        }
+      },
+      {
+        "key": "2",
+        "tabId": "2",
+        "tabTitle": "通知",
+        "data": {
+          "id": "2",
+          "title": "通知",
+          "topDocs": "",
+          "docSourceType": 2,
+          "docSourceValue": "2,2,3",
+          "showMode": "1",
+          "scrollDirection": "0",
+          "isOpenAttachment": "1"
+        }
+      }
+    ]
+  },
+  "comment_8": "流程中心",
+  "eTabs_8": {
+    "tabNew": {
+      "id": "",
+      "title": "",
+      "viewType": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "待办事宜"
+          },
+          {
+            "key": "2",
+            "value": "已办事宜"
+          },
+          {
+            "key": "3",
+            "value": "办结事宜"
+          }
+        ]
+      },
+      "isComplete": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "0",
+            "value": "所有的"
+          },
+          {
+            "key": "1",
+            "value": "未完成"
+          },
+          {
+            "key": "2",
+            "value": "已完成"
+          }
+        ]
+      },
+      "showCopy": false,
+      "showCount": false,
+      "isExclude": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "显示以下所选类型流程"
+          },
+          {
+            "key": "2",
+            "value": "排除以下所选类型流程(一般会影响到系统性能)"
+          }
+        ]
+      },
+      "workflowSource": ""
+    },
+    "tabCount": 2,
+    "tabIds": ["1", "2"],
+    "tabList": [
+      {
+        "key": "1",
+        "tabId": "1",
+        "tabTitle": "待办",
+        "data": {
+          "id": "1",
+          "title": "待办",
+          "viewType": "1",
+          "isComplete": "0",
+          "showCopy": true,
+          "showCount": false,
+          "isExclude": "1",
+          "workflowSource": ""
+        }
+      },
+      {
+        "key": "2",
+        "tabId": "2",
+        "tabTitle": "已办",
+        "data": {
+          "id": "2",
+          "title": "已办",
+          "viewType": "2",
+          "isComplete": "0",
+          "showCopy": false,
+          "showCount": true,
+          "isExclude": "1",
+          "workflowSource": ""
+        }
+      }
+    ]
+  },
+  "comment_29": "自定义页面",
+  "eTabs_29": {
+    "tabNew": {
+      "id": "",
+      "title": "",
+      "href": "",
+      "moreHref": "",
+      "pageHeight": ""
+    },
+    "tabCount": 2,
+    "tabIds": ["1", "2"],
+    "tabList": [
+      {
+        "key": "1",
+        "tabId": "1",
+        "tabTitle": "百度",
+        "data": {
+          "id": "1",
+          "title": "百度",
+          "href": "www.baidu.com",
+          "moreHref": "www.baidu.com",
+          "pageHeight": "100"
+        }
+      },
+      {
+        "key": "2",
+        "tabId": "2",
+        "tabTitle": "谷歌",
+        "data": {
+          "id": "2",
+          "title": "谷歌",
+          "href": "www.google.com",
+          "moreHref": "www.google.com",
+          "pageHeight": "105"
+        }
+      }
+    ]
+  },
+  "comment_reportForm": "图表元素",
+  "eTabs_reportForm": {
+    "tabNew": {
+      "id": "",
+      "title": "",
+      "reportFormType": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "柱形图 2D"
+          },
+          {
+            "key": "2",
+            "value": "柱形图 3D"
+          },
+          {
+            "key": "3",
+            "value": "线形图"
+          },
+          {
+            "key": "4",
+            "value": "面积图"
+          }
+        ]
+      },
+      "decimalDigits": "0",
+      "reportFormWidth": "200",
+      "reportFormHeight": "200",
+      "dataSource": {
+        "selected": "1",
+        "options": [
+          {
+            "key": "1",
+            "value": "默认数据源"
+          },
+          {
+            "key": "2",
+            "value": "portal"
+          },
+          {
+            "key": "3",
+            "value": "hrm"
+          }
+        ]
+      },
+      "reportFormSql": ""
+    },
+    "tabCount": 2,
+    "tabIds": ["1", "2"],
+    "tabList": [
+      {
+        "key": "1",
+        "tabId": "1",
+        "tabTitle": "公司部门人员统计",
+        "data": {
+          "id": "1",
+          "title": "公司部门人员统计",
+          "reportFormType": "1",
+          "decimalDigits": "0",
+          "reportFormWidth": "200",
+          "reportFormHeight": "200",
+          "dataSource": "1",
+          "reportFormSql": " select a, b from c "
+        }
+      },
+      {
+        "key": "2",
+        "tabId": "2",
+        "tabTitle": "公司人员性别统计",
+        "data": {
+          "id": "2",
+          "title": "公司人员性别统计",
+          "reportFormType": "1",
+          "decimalDigits": "0",
+          "reportFormWidth": "200",
+          "reportFormHeight": "200",
+          "dataSource": "1",
+          "reportFormSql": " select d, e from f "
+        }
+      }
+    ]
+  }
+}

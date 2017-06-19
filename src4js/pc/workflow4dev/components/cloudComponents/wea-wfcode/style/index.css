@@ -1,0 +1,13 @@
+.wea-wfcode{
+	position: relative;
+}
+
+.wea-wfcode .ant-input{
+	margin-bottom: 5px;
+	border-radius:3px;
+}
+
+.wea-wfcode .ant-btn-sm{
+	border-radius:3px;
+	margin-right: 5px;
+}

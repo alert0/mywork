@@ -4,6 +4,7 @@
  * editor@按钮
  * index 27
  */
+
 UE.registerUI('wfatbutton', function(editor, uiName) {
 	return initwfatbutton(editor, uiName);
 }, 27, 'remark,forwardremark');
@@ -14,23 +15,14 @@ const initwfatbutton = (editor, uiName) => {
 	var labelname = "@";
 
 	//获取参数
-	const params = {};
-	if('remark' == editor.key){
-		const paramDiv = jQuery('#remark_div');
-		params.requestid = paramDiv.find('#requestid_param').val();
-		params.workflowid = paramDiv.find('#workflowid_param').val();
-		params.nodeid = paramDiv.find('#nodeid_param').val();
-		params.isbill = paramDiv.find('#isbill_param').val();
-		params.formid = paramDiv.find('#formid_param').val();
-	}else{
-		const paramDiv = jQuery('#forwardremark_hidden_area');
-		params.requestid = paramDiv.find('#requestid').val();
-		params.workflowid = paramDiv.find('#workflowid').val();
-		params.nodeid = paramDiv.find('#nodeid').val();
-		params.isbill = paramDiv.find('#isbill').val();
-		params.formid = paramDiv.find('#formid').val();
-	}
-
+	const reqParams = window.store_e9_workflow.getState().workflowReq.get('params');
+	const params = {
+		requestid:reqParams.get('requestid'),
+		workflowid:reqParams.get('workflowid'),
+		nodeid:reqParams.get("nodeid"),
+		isbill:reqParams.get("isbill"),
+		formid:reqParams.get("formid"),
+	};
 	let atitems = [];
 	jQuery.ajax({
 		url: '/workflow/request/WorkflowRequestPictureForJson.jsp',

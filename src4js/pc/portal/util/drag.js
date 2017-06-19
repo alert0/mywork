@@ -287,6 +287,7 @@ function createtmpl(e){
 
 window.createtmpl = createtmpl;
 
+
 //处理拖放至边界外的情况
 window.groups=$(".group");
 	for(var j=0;j<groups.length;j++){
@@ -300,3 +301,65 @@ window.groups=$(".group");
 	}
 }
 /** --------- 元素拖动功能js函数 -----------**/
+
+/**-----------左边栏baseelement拖动特效------------**/
+window.dragJQuery=drag_jquery;
+ function drag_jquery(ebaseid){
+    var hoveritem=undefined;
+    var itemholder=$("#itemholder");
+    var itemholderClass=$(".itemholderClass");
+    var index=0;
+    $(".portal-setting-left-hpbaseelement-item div a" ).draggable({
+        helper: "clone",
+        start: function( event, ui ) {
+            var helper=ui.helper;
+            helper.addClass("dragitemholder");
+
+        }, drag:function( event, ui ){
+            if(hoveritem!==undefined){
+                var items=hoveritem.find(".item");
+                var itemtemp;
+                var offset=ui.offset;
+                var itemoffset;
+                var itemheight;
+                var flag=true;
+                for(var i=0,len=items.length;i<len;i++){
+                    itemtemp=$(items[i]);
+                    itemoffset=itemtemp.offset();
+                    itemheight=itemtemp.height();
+                    if(offset.top>itemoffset.top  && offset.top<itemoffset.top+itemheight){
+                        if(itemtemp.prev()===itemholder) {return;}
+                        itemholder.insertBefore(itemtemp);
+                        // console.log("offset.top"+offset.top+"---itemoffset.top"+itemoffset.top+"--------itemheight"+itemheight)
+                        itemholder.show();
+                        index=i;
+                        return;
+                    }
+                    if(i===(len-1))
+                        flag=false;
+                }
+                if(!flag || items.length===0){
+                    hoveritem.find(".group").append(itemholder);
+                    itemholder.show();
+                }
+            }
+        }
+    });
+     //将td注册drop事件
+     $(".group").parent().droppable({
+         over: function( event, ui ) {
+             hoveritem=$(event.target);
+         },
+         drop: function( event, ui ) {
+             var areaflag=hoveritem.find(".group").attr("data-areaflag");
+             if(ebaseid==null){
+                 return;
+             }
+             window.store_e9_element.dispatch(window.action_e9_element.HpBaseElementAction.onAddReactElement(ebaseid,areaflag,index));
+             //鼠标移除则隐藏占位框
+         },out: function(event,ui) {
+             // itemholderClass.hide();
+             $(".dragitemholder").hide();
+         }
+     });
+}

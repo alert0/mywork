@@ -4,25 +4,26 @@ import { Checkbox } from 'antd'
 class main extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			value: props.value ? props.value : '0'
-		};
 	}
 
 	doChange(e){
 		const value  = e.target.checked ? '1':'0';
-		this.state = {
-			value: value
-		};
-		
 		this.props.onChange && this.props.onChange(value);
 	}
-
+	
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextProps.value !== this.props.value ||
+			nextProps.viewAttr !== this.props.viewAttr ||
+			nextProps.fieldName !== this.props.fieldName;
+	}
 
 	render() {
-		const { fieldid ,value} = this.props;
+		const { viewAttr,fieldName ,value} = this.props;
 		return (
-			<Checkbox defaultChecked={value == '1'} id={`field${fieldid}`} name={`field${fieldid}`} onChange={this.doChange.bind(this)}/>
+			<div className="wea-checkbox-ctrl" style={{margin:"0"}}>
+				<Checkbox disabled = {viewAttr === 1} checked={value == '1'} onChange={this.doChange.bind(this)}/>
+				<input type='hidden' id={fieldName} name={fieldName} value={value}/>
+			</div>
 		)
 	}
 }

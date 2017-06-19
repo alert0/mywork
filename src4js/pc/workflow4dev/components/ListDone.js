@@ -71,7 +71,6 @@ class ListDone extends React.Component {
         !is(this.props.leftTreeCountType,nextProps.leftTreeCountType)||
         !is(this.props.topTab,nextProps.topTab)||
         !is(this.props.topTabCount,nextProps.topTabCount)||
-        !is(this.props.columns,nextProps.columns)||
         !is(this.props.loading,nextProps.loading)||
         !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
@@ -80,7 +79,6 @@ class ListDone extends React.Component {
         !is(this.props.orderFields,nextProps.orderFields)||
         !is(this.props.showSearchAd,nextProps.showSearchAd)||
         !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
-        !is(this.props.isSpaForm,nextProps.isSpaForm)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
     }
@@ -92,16 +90,17 @@ class ListDone extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
-        const loading = comsWeaTable.get('loading');
-        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
+        const {dataKey,loading,comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
+        const tablekey = dataKey ? dataKey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+		const loadingTable = tableNow.get('loading');
         return (
             <div>
             	{isSingle && <WeaPopoverHrm />}
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
             	<WeaTop
                 	title={title}
-                	loading={loading}
+                	loading={loading || loadingTable}
                 	icon={<i className='icon-portal-workflow' />}
                 	iconBgcolor='#55D2D4'
                 	buttons={this.getButtons()}
@@ -128,6 +127,7 @@ class ListDone extends React.Component {
                         countParam="groupid" //数量
                         onChange={this.changeData.bind(this)} />
                     <WeaTable 
+                    	sessionkey={dataKey}
                     	hasOrder={true}
                     	needScroll={true}
                     	/>
@@ -139,21 +139,17 @@ class ListDone extends React.Component {
         )
     }
     onRightMenuClick(key){
-    	const {actions,comsWeaTable} = this.props;
-    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
+    	const { actions, dataKey } = this.props;
     	if(key == '0'){
     		actions.doSearch();
     		actions.setShowSearchAd(false)
     	}
     	if(key == '1'){
-    		actions.setColSetVisible(true);
-    		actions.tableColSet(true)
+    		actions.setColSetVisible(dataKey,true);
+    		actions.tableColSet(dataKey,true)
     	}
     }
     getRightMenu(){
-    	const {comsWeaTable,sharearg,actions} = this.props;
-    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
-        const hasBatchBtn = sharearg && sharearg.get("hasBatchBtn");
     	let btns = [];
     	btns.push({
     		icon: <i className='icon-Right-menu--search'/>,
@@ -166,37 +162,25 @@ class ListDone extends React.Component {
     	return btns
     }
     getSearchs() {
-        return [
-            (<WeaSearchGroup needTigger={true} title={this.getTitle()} showGroup={this.isShowFields()} items={this.getFields()}/>),
-            (<WeaSearchGroup needTigger={true} title={this.getTitle(1)} showGroup={this.isShowFields(1)} items={this.getFields(1)}/>)
-        ]
-    }
-    getTitle(index = 0) {
-        const {conditioninfo} = this.props;
-        return !isEmpty(conditioninfo.toJS()) && conditioninfo.toJS()[index].title
-    }
-    isShowFields(index = 0) {
-        const {conditioninfo} = this.props;
-        return !isEmpty(conditioninfo.toJS()) && conditioninfo.toJS()[index].defaultshow
-    }
-    // 0 常用条件，1 其他条件
-    getFields(index = 0) {
-        const {conditioninfo} = this.props;
-        const fieldsData = !isEmpty(conditioninfo.toJS()) && conditioninfo.toJS()[index].items;
-        let items = [];
-        forEach(fieldsData, (field) => {
-            items.push({
-                com:(<FormItem
-                    label={`${field.label}`}
-                    labelCol={{span: `${field.labelcol}`}}
-                    wrapperCol={{span: `${field.fieldcol}`}}>
-                        {WeaTools.switchComponent(this.props, field.key, field.domkey, field)}
-                    </FormItem>),
-                colSpan:1
-            })
-        })
-        return items;
-    }
+        const { conditioninfo } = this.props;
+		let group = [];
+		conditioninfo.toJS().map(c =>{
+			let items = [];
+			c.items.map(fields => {
+				items.push({
+	                com:(<FormItem
+	                    label={`${fields.label}`}
+	                    labelCol={{span: `${fields.labelcol}`}}
+	                    wrapperCol={{span: `${fields.fieldcol}`}}>
+	                        { WeaTools.switchComponent(this.props, fields.key, fields.domkey, fields )}
+	                    </FormItem>),
+	                colSpan:1
+	            })
+			});
+			group.push(<WeaSearchGroup needTigger={true} title={c.title} showGroup={c.defaultshow} items={items}/>)
+		});
+		return group
+   	}
     changeData(theKey) {
         const {actions} = this.props;
         //const keyArr = theKey?theKey.split("_"):[];
@@ -206,14 +190,13 @@ class ListDone extends React.Component {
         },{});
     }
     getTree() {
-        const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys,loading} = this.props;
+        const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys} = this.props;
         return (
             <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 counts={leftTreeCount && leftTreeCount.toJS()}
                 countsType={leftTreeCountType && leftTreeCountType.toJS()}
                 selectedKeys={selectedTreeKeys && selectedTreeKeys.toJS()}
-                loading={loading}
                 onFliterAll={()=>{
                 	actions.setShowSearchAd(false);
                 	actions.setSelectedTreeKeys([]);
@@ -295,6 +278,8 @@ ListDone = createForm({
 function mapStateToProps(state) {
 	const {workflowlistDone,comsWeaTable} = state;
     return {
+    	dataKey: workflowlistDone.get('dataKey'),
+    	loading: workflowlistDone.get('loading'),
         title: workflowlistDone.get('title'),
 		leftTree: workflowlistDone.get('leftTree'),
 		leftTreeCount: workflowlistDone.get('leftTreeCount'),
@@ -306,7 +291,6 @@ function mapStateToProps(state) {
 		orderFields: workflowlistDone.get('orderFields'),
 		showSearchAd: workflowlistDone.get('showSearchAd'),
 		selectedTreeKeys: workflowlistDone.get('selectedTreeKeys'),
-		isSpaForm: workflowlistDone.get('isSpaForm'),
 		isClearNowPageStatus: workflowlistDone.get('isClearNowPageStatus'),
 		sortParams: workflowlistDone.get('sortParams'),
 		conditioninfo: workflowlistDone.get('conditioninfo'),
@@ -314,7 +298,7 @@ function mapStateToProps(state) {
 		phrasesObj: workflowlistDone.get('phrasesObj'),
 		sharearg: workflowlistDone.get('sharearg'),
         //table
-        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
+        comsWeaTable, //绑定整个table
     }
 }
 

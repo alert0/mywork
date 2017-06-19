@@ -22,12 +22,12 @@ const table = Immutable.fromJS({
 	colSetdatas: [],
 	colSetKeys: []
 });
-const tables = Immutable.fromJS({ tableNow: 'init' }).merge({ init: table });
+const tables = Immutable.fromJS({ init: table });
 
 export default comsWeaTable = (state = tables, action) => {
 	switch(action.type) {
-		case types.TABLE_INIT:
-			return state.merge({tableNow: action.name,[action.name]: table.merge(state.get(action.name) || {}).merge(action.value)});
+//		case types.TABLE_INIT:
+//			return state.merge({[action.name]: table.merge(state.get(action.name) || {}).merge(action.value)});
 		case types.TABLE_UPDATE:
 			return state.merge({[action.name]: table.merge(state.get(action.name) || {}).merge(action.value)});
 		default:

@@ -436,4 +436,25 @@ const openDialog = (title, url) => {　
 	dlg.show();
 	window.dialog = dlg;
 }
-
+//流程共享
+const doShare  = () =>{
+	const params = window.store_e9_workflow.getState().workflowReq.get('params');
+	const requestid  = params.get("requestid");
+	const requestname = params.get("requestname");
+	
+	var returnjson = '[{"sharetype":"workflow","sharetitle":"'+requestname+'","objectname":"FW:CustomShareMsg","shareid":"'+requestid+'"}]';
+    var url="/social/im/SocialHrmBrowserForShare.jsp?sharejson="+encodeURIComponent(returnjson);
+    var diag =new window.top.Dialog();
+    diag.currentWindow = window; 
+    diag.Modal = true;
+    diag.Drag=true;
+    diag.Width =400;	
+    diag.Height =500;
+    diag.ShowButtonRow=false;
+    diag.Title = "分享";
+    diag.URL =url;
+    diag.openerWin = window;
+    diag.show();
+    document.body.click();
+}
+window.doShare = doShare;

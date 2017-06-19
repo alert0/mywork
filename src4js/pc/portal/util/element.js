@@ -1,4 +1,13 @@
 /** --------- 通用js函数 -----------**/
+//是否加载iframe元素
+var _isLoadIframe = function(){
+	const paramsObj = window.store_e9_element.getState().portal.get("params").toJSON();
+	const params = paramsObj[window.global_hpid+"-"+window.global_isSetting];
+	if(params) return params.loadIframe !== 'false';
+	return true;
+}
+window._isLoadIframe = _isLoadIframe;
+
 //获取html自定义属性名称
 var _handleAttrName = function(attr){
 	var arr = ['1','2','3','4','5']; 
@@ -260,27 +269,25 @@ var clickCalendarDay = function(obj,eid){
 		window.getMyCalendarDatas(currentSelectDate,"month",eid);
 	}
 	var dom = $(obj).find(".ant-fullcalendar-event");
-	var size = _s2Int($(dom).attr("size"));
+	var size = _str2Int($(dom).attr("size"),0);
 	var htmlArr = new Array;
+	var height = size * 34;
+	htmlArr.push("<div id='planDataEvent' class='planDataEvent' style='height:"+(height+1)+"px; overflow-y: hidden; outline: none;'><div id='planDataEventchd' style='height:"+height+"px;'>");
 	for (var i = 0; i < size; i++) {
 		var event = $(dom).attr("event"+i);
 		if(!_isEmpty(event)){
 			var arr = event.split("-split-");
-			htmlArr.push("<div style='height:34px; line-height:34px; border-left:3px solid #a32929;'>");
-			htmlArr.push("&nbsp;&nbsp;&nbsp;");
-			htmlArr.push("<a href='javascript:void(0);' style='color:#000000;' onclick='clickData(" + arr[0] + "," + eid + ")'>");
-			htmlArr.push("<span>" + arr[2] + "</span>");
-			htmlArr.push("&nbsp;&nbsp;&nbsp;");
-			htmlArr.push("<span>" + arr[3] + "</span>");
-			htmlArr.push("&nbsp;&nbsp;&nbsp;");
-			htmlArr.push("<span>" + arr[1] + "</span>");
-			htmlArr.push("</a>");
+			htmlArr.push("<div class='hand dataEvent' height='34px' onclick='clickData(" + arr[0] + "," + eid + ")' title="+arr[1]+">");
+			htmlArr.push("<div class='dataEvent1' style='background:#a32929;'></div>");
+			htmlArr.push("<div class='dataEvent2'><div class='dataEvent2_1'>"+arr[2]+"&nbsp;&nbsp;"+arr[3]+"</div></div>");
+			htmlArr.push("<div class='dataEvent3'>"+arr[1]+"</div>");
 			htmlArr.push("</div>");
 		}
 	}
+	htmlArr.push("</div></div>");
 	$("#calendar_content"+eid).html(htmlArr.join(''));
-
 }
+
 
 window.clickCalendarDay = clickCalendarDay;
 
@@ -359,8 +366,8 @@ function loadPictureJs(eid, picturewidth, autoShowSpeed, highopen) {
 				scroll: 1,
 				circular: false
 			});
-			$("#pictureback_" + eid).hide();
-			$("#picturenext_" + eid).hide();
+/*			$("#pictureback_" + eid).hide();
+			$("#picturenext_" + eid).hide();*/
 			$("#picturetd_" + eid).attr("align", "center");
 			var settingWidth = parseInt(count * picturewidth);
 			$("#jCarouselLite_" + eid).width(settingWidth);

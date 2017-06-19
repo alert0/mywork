@@ -1,0 +1,14 @@
+.wea-system-field{
+	position: relative;
+}
+.wea-system-field .ant-radio-group .ant-radio-wrapper{
+	margin-right: 10px;
+}
+.remark_required:after {
+    content: "*";
+    font-size: 14px;
+    color: #ff0000;
+    position: absolute;
+    right: 2px;
+    top: 48%;
+}

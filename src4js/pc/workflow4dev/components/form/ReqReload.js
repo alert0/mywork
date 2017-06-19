@@ -5,9 +5,14 @@ class ReqReload extends React.Component {
         router: PropTypes.routerShape
     }
     componentDidMount() {
-        const {requestid,preloadkey,comemessage} = this.props.location.query;
+        const {requestid,preloadkey,comemessage,isaffirmance,reEdit} = this.props.location.query;
         const {router} = this.context;
-        router.push("/main/workflow/Req?requestid="+requestid+"&preloadkey="+preloadkey+"&comemessage="+comemessage);
+        let tempURL = "/main/workflow/Req?requestid="+requestid;
+        if(preloadkey) tempURL += "&preloadkey="+preloadkey;
+        if(comemessage) tempURL += "&comemessage="+comemessage;
+        if(isaffirmance) tempURL += "&isaffirmance="+isaffirmance;
+        if(reEdit) tempURL += "&reEdit="+reEdit;
+        router.push(tempURL);
     }
     render() {
         return (

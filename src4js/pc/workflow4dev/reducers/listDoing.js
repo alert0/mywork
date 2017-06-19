@@ -9,6 +9,7 @@ const {ls} = WeaTools;
 
 const initState = {
     title:"待办事宜",
+    loading:false,
 	leftTree:ls.getJSONObj("listDoingleftTree") || [],
     leftTreeCount:{},
     leftTreeCountType:[
@@ -64,6 +65,8 @@ export default function list(state = initialState, action) {
     switch (action.type) {
     	case types.SET_NOW_ROUTER_PATH:
       		return state.merge({nowRouterWfpath: action.path});
+      	case types.LISTDOING_LOADING: 
+      		return state.merge({loading: action.loading});
     	case types.LISTDOING_CLEAR_PAGE_STATUS:
       		return state.merge({isClearNowPageStatus:action.isToReq});
     	case types.LISTDOING_UNMOUNT_CLEAR:

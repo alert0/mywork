@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+import * as reqUtil from './reqUtil'
 
 const bindRemark = (_uEditor) => {
 	var remarkHide = function(e) {
@@ -19,7 +20,7 @@ const bindRemark = (_uEditor) => {
 					//jQuery("html").unbind('mouseup', remarkHide);
 					//jQuery(".remarkDiv").hide();
 					//jQuery("#remarkShadowDiv").show();
-					if(_uEditor.key == 'remark'){
+					if(_uEditor.key == 'remark' && window.store_e9_workflow.getState().workflowReq.get("isShowSignInput")){
 						window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.controlSignInput(false))
 					}
 				}
@@ -39,7 +40,7 @@ window.bindRemark = bindRemark;
 
 const onShowSignBrowser4signinput = (url, linkurl, inputname, spanname, type1, countEleID,editorykey) => {
 	//关闭表单签章显示,防止某些IE版本下,表单签章显示白色和弹窗冲突
-	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
+	const formstate = window.store_e9_workflow.getState().workflowReq.get('submitParams');
 	const requestid = formstate.get('requestid');
 	const userid = formstate.get('f_weaver_belongto_userid');
 	const isFormSignature = formstate.get('isFormSignature');
@@ -324,7 +325,7 @@ const quoteClick = (data) => {
 //			scrolltop = jQuery('.wea-new-top-req-content').scrollTop() - remarktop - jQuery('.wea-new-top-req').height() -100;
 //			jQuery('.wea-new-top-req-content').animate({ scrollTop: scrolltop + "px" }, 500);
 //		}
-		window.action_e9_workflow.WorkflowReqAction.signmustinputtips();
+		reqUtil.signmustinputtips();
 	} catch(e) {}
 }
 

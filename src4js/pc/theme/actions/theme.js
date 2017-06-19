@@ -450,7 +450,7 @@ export function loadLeftMenu(pathname, hasReload) {
     let moduleRoute = '';
     let moduleMenuRoute = '';
     let parentId = 0;
-    if (routes && routes.length == 3) {
+    if (routes && routes.length >= 3) {
         moduleRoute = routes[1];
         moduleMenuRoute = routes[2];
         parentId = MODULE_ROUTE_MAP[moduleRoute].id;

@@ -20,17 +20,16 @@ import './css/signInput_wev9.css'
 import './css/worflowmessage_wev8.css'
 import './css/forward.css'
 
-import reducers from './reducers/'
-import { comsReducer } from '../coms/index'
+import reducer from './reducers/'
 import * as WorkflowListAction from './actions/list'
 import * as WorkflowReqAction from './actions/req'
 import * as WorkflowQueryAction from './actions/queryFlow'
 
-const reducer = { ...reducers, ...comsReducer }
-
 require("./util/doing");
 require("./util/formbtn");
 require("./util/form_wev9");
+require("./util/formatUtil");
+require("./util/interface");
 require("./util/appwfat_wev8");
 require("./util/appwfPhraseBtn_wev9");
 require("./util/appwf_wf_wev8");
@@ -42,6 +41,7 @@ require('./util/error_msg');
 require('./util/weaverautocomplete_wev8');
 require('./util/img_zoom')
 require('./util/applocation_wev8')
+require('./util/weaver_wev9')
 
 import { WeaTools } from 'ecCom';
 

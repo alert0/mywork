@@ -17,35 +17,35 @@ export const tableUpdate = (value = {}, name) => {
 
 //获取table数据
 /*
-dataKeyNow = init -> required
+sessionkey = init -> required
 currentNow = init -> required
 sorter = init -> ''
 */
-export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
+export const getDatas = (sessionkey, currentNow, pageSizeNow, sorter = '') => {
 	return(dispatch, getState) => {
-		const name = dataKeyNow ? dataKeyNow.split('_')[0] : getState().comsWeaTable.get('tableNow');
+		const name = sessionkey ? sessionkey.split('_')[0] : 'init';
 		const requireTimes = getState().comsWeaTable.getIn([name, 'requireTimes']) || 0;
 		//初始化table && 清理部分状态
-		if(dataKeyNow){
-			dispatch({
-				type: types.TABLE_INIT,
-				name,
-				value: {
-					loading: true,
-					dataKey: dataKeyNow,
-					selectedRowKeys: [],
-					requireTimes: requireTimes + 1
-				}
-			});
-		}else{
+//		if(sessionkey){
+//			dispatch({
+//				type: types.TABLE_INIT,
+//				name,
+//				value: {
+//					loading: true,
+//					dataKey: sessionkey,
+//					selectedRowKeys: [],
+//					requireTimes: requireTimes + 1
+//				}
+//			});
+//		}else{
 			dispatch(tableUpdate({
 				loading: true,
 				selectedRowKeys: [],
 				requireTimes: requireTimes + 1
 			},name));
-		}
+//		}
 		//已初始化
-		const dataKey = dataKeyNow ? dataKeyNow : getState().comsWeaTable.getIn([name, 'dataKey']);
+		const dataKey = sessionkey ? sessionkey : getState().comsWeaTable.getIn([name, 'dataKey']);
 		const pageSizeChange = pageSizeNow && pageSizeNow !== getState().comsWeaTable.getIn([name, 'pageSize']);
 		const pageSize = pageSizeNow ? pageSizeNow : getState().comsWeaTable.getIn([name, 'pageSize']);
 		const current = pageSizeChange ? 1 : (currentNow ? currentNow : getState().comsWeaTable.getIn([name, 'current']));
@@ -59,7 +59,7 @@ export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
 					sortParams: JSON.stringify(sortParams)
 				}).then((data) => {
 					const requireTimesNow = getState().comsWeaTable.getIn([name, 'requireTimes']);
-					//console.log('requireTimesNow: ',requireTimesNow,'requireTimes: ',requireTimes)
+					//console.log('requireTimesNow: ',requireTimesNow,'requireTimes: ',requireTimes,'dataKey: ',dataKey);
 					if(requireTimesNow === requireTimes + 1) {
 						dispatch(tableUpdate({
 							dataKey,
@@ -81,7 +81,7 @@ export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
 					dataKey
 				}).then((data) => {
 					const requireTimesNow = getState().comsWeaTable.getIn([name, 'requireTimes']);
-					//console.log('requireTimesNow: ',requireTimesNow,'requireTimes: ',requireTimes)
+					//console.log('requireTimesNow: ',requireTimesNow,'requireTimes: ',requireTimes,'dataKey: ',dataKey);
 					if(requireTimesNow === requireTimes + 1) {
 						dispatch(tableUpdate({
 							count: data.count
@@ -108,19 +108,23 @@ export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
 							dataKey,
 							randomDatas: JSON.stringify(newDatas),
 						}).then(data => {
-							let resetDatas = datas.map(d => {
-								data.datas && data.datas.map(n => {
-									if(n.randomFieldId === d.randomFieldId) {
-										for(let p in n) {
-											d[p] = n[p];
+							const requireTimesNow = getState().comsWeaTable.getIn([name, 'requireTimes']);
+							//console.log('requireTimesNow: ',requireTimesNow,'requireTimes: ',requireTimes,'dataKey: ',dataKey);
+							if(requireTimesNow === requireTimes + 1) {
+								let resetDatas = datas.map(d => {
+									data.datas && data.datas.map(n => {
+										if(n.randomFieldId === d.randomFieldId) {
+											for(let p in n) {
+												d[p] = n[p];
+											}
 										}
-									}
-								})
-								return d
-							});
-							dispatch(tableUpdate({
-								datas: resetDatas
-							},name));
+									})
+									return d
+								});
+								dispatch(tableUpdate({
+									datas: resetDatas
+								},name));
+							}
 						});
 					}
 				}
@@ -137,22 +141,27 @@ export const getDatas = (dataKeyNow, currentNow, pageSizeNow, sorter = '') => {
 }
 
 //选中row
-export const setSelectedRowKeys = (selectedRowKeys = []) => {
+export const setSelectedRowKeys = (sessionkey, selectedRowKeys = []) => {
+	const name = sessionkey ? sessionkey.split('_')[0] : 'init';
 	return(dispatch, getState) => {
 		dispatch(tableUpdate({
 			selectedRowKeys
-		}));
+		},name));
 	}
 }
 
 //table自定义列接口数据
-export const tableColSet = isInit => {
+export const tableColSet = (sessionkey, isInit) => {
 	return(dispatch, getState) => {
-		const name = getState().comsWeaTable.get('tableNow');
+		const name = sessionkey ? sessionkey.split('_')[0] : 'init';
 		const dataKey = getState().comsWeaTable.getIn([name, 'dataKey']);
 		const colSetKeys = getState().comsWeaTable.getIn([name, 'colSetKeys']);
 		const method = isInit ? 'GET' : 'POST';
-
+		
+		dispatch(tableUpdate({
+			loading: true
+		},name));
+		
 		API_TABLE.tableColSet(isInit ? {
 			dataKey
 		} : {
@@ -168,14 +177,16 @@ export const tableColSet = isInit => {
 					datas.map(d => newDatas.push({ key: d.id, name: d.name, description: d.name }))
 					dispatch(tableUpdate({
 						colSetKeys: keys,
-						colSetdatas: newDatas
-					}));
+						colSetdatas: newDatas,
+						loading: false
+					},name));
 				} else {
 					dispatch(tableUpdate({
 						colSetVisible: false,
 						colSetKeys: [],
-					}));
-					dispatch(getDatas());
+						loading: false
+					},name));
+					dispatch(getDatas(dataKey));
 				}
 			} else {
 				Modal.error({
@@ -187,19 +198,21 @@ export const tableColSet = isInit => {
 }
 
 //table自定义列显示项
-export const setTableColSetkeys = (colSetKeys = []) => {
+export const setTableColSetkeys = (sessionkey,colSetKeys = []) => {
+	const name = sessionkey ? sessionkey.split('_')[0] : 'init';
 	return(dispatch, getState) => {
 		dispatch(tableUpdate({
 			colSetKeys
-		}));
+		},name));
 	}
 }
 
 //table自定义列visible
-export const setColSetVisible = (colSetVisible = false) => {
+export const setColSetVisible = (sessionkey,colSetVisible = false) => {
+	const name = sessionkey ? sessionkey.split('_')[0] : 'init';
 	return(dispatch, getState) => {
 		dispatch(tableUpdate({
 			colSetVisible
-		}));
+		},name));
 	}
 }

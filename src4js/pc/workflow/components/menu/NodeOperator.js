@@ -1,5 +1,5 @@
 import { Tabs, Button, Checkbox, Icon } from 'antd'
-import { WeaTools ,WeaScroll} from 'ecCom'
+import { WeaTools, WeaScroll } from 'ecCom'
 import NodeItem from './NodeItem'
 const TabPane = Tabs.TabPane;
 
@@ -20,37 +20,56 @@ class NodeOperator extends React.Component {
 	}
 
 	componentDidMount() {
-		const { requestid } = this.props;
+		const {
+			requestid
+		} = this.props;
 		const _this = this;
 		WeaTools.callApi('/api/workflow/reqforward/' + requestid, 'GET', {}).then(data => {
-			_this.setState({ alldatas: data });
+			_this.setState({
+				alldatas: data
+			});
 			_this.initData(data);
 		});
 	}
 
 	showNodeAllOperatorName(operatorname) {
-		this.setState({ operatorname: operatorname });
+		this.setState({
+			operatorname: operatorname
+		});
 	}
 
 	goList() {
 		console.log(new Date());
-		this.setState({ operatorname: '' });
+		this.setState({
+			operatorname: ''
+		});
 	}
 
 	render() {
-		const { allitems, unsubmititems, submititems, selectAll, selectTabKey, selectnodes, operatorname } = this.state;
-		const { handleShowNodeOperator, setOperatorIds } = this.props;
+		const {
+			allitems,
+			unsubmititems,
+			submititems,
+			selectAll,
+			selectTabKey,
+			selectnodes,
+			operatorname
+		} = this.state;
+		const {
+			handleShowNodeOperator,
+			setOperatorIds
+		} = this.props;
 		const nodata = (<div className="no-data">没有数据</div>);
 
 		let allOperatorNameDiv = (
-				<div>
+			<div>
 					<div className="all-operator-name">
 						{operatorname}
 					</div>
 					<div className="btn-back">
 						<Icon type="rollback" onClick={this.goList.bind(this)}/>
 					</div>
-				</div>		
+				</div>
 		);
 
 		return(
@@ -106,42 +125,72 @@ class NodeOperator extends React.Component {
 	}
 
 	btnOnClick(setOperatorIds, handleShowNodeOperator) {
-		setOperatorIds({ datas: this.state.selectusers, isAllUser: false });
+		console.log(this.state.selectusers);
+		setOperatorIds({
+			datas: this.state.selectusers,
+			isAllUser: false
+		});
 		handleShowNodeOperator(false);
-		this.setState({ selectTabKey: '1', selectnodes: [], selectusers: [] });
+		this.setState({
+			selectTabKey: '1',
+			selectnodes: [],
+			selectusers: []
+		});
 	}
 
 	changeTab(key) {
-		this.setState({ selectTabKey: key, selectAll: false, selectusers: [], selectnodes: [], operatorname: '' });
+		this.setState({
+			selectTabKey: key,
+			selectAll: false,
+			selectusers: [],
+			selectnodes: [],
+			operatorname: ''
+		});
 	}
 
 	selectAll(e) {
 		if(e.target.checked) {
-			const { selectTabKey } = this.state;
+			const {
+				selectTabKey
+			} = this.state;
 			let selectusers = [];
 			let selectnodes = [];
 			if(selectTabKey == '1') {
-				const { allitems } = this.state;
+				const {
+					allitems
+				} = this.state;
 				allitems.map(o => {
 					selectusers = selectusers.concat(o.users);
 					selectnodes = selectnodes.concat(o.nodeid);
 				});
 			} else if(selectTabKey == '2') {
-				const { unsubmititems } = this.state;
+				const {
+					unsubmititems
+				} = this.state;
 				unsubmititems.map(o => {
 					selectusers = selectusers.concat(o.users);
 					selectnodes = selectnodes.concat(o.nodeid);
 				});
 			} else {
-				const { submititems } = this.state;
+				const {
+					submititems
+				} = this.state;
 				submititems.map(o => {
 					selectusers = selectusers.concat(o.users);
 					selectnodes = selectnodes.concat(o.nodeid);
 				});
 			}
-			this.setState({ selectAll: true, selectusers: selectusers, selectnodes: selectnodes });
+			this.setState({
+				selectAll: true,
+				selectusers: selectusers,
+				selectnodes: selectnodes
+			});
 		} else {
-			this.setState({ selectAll: false, selectusers: [], selectnodes: [] });
+			this.setState({
+				selectAll: false,
+				selectusers: [],
+				selectnodes: []
+			});
 		}
 	}
 
@@ -154,7 +203,16 @@ class NodeOperator extends React.Component {
 			let f1 = true;
 			let f2 = true;
 			let f3 = true;
-			let user = { 'id': o.uid, 'lastname': o.data, 'jobtitlename': o.jobtitlename, 'icon': o.icon, 'type': 'resource' };
+			let user = {
+				'id': o.uid,
+				'lastname': o.data,
+				'jobtitlename': o.jobtitlename,
+				'icon': o.icon,
+				'type': 'resource',
+				'departmentname': o.departmentname,
+				'subcompanyname': o.subcompanyname,
+				'supsubcompanyname': o.supsubcompanyname
+			};
 			allitems.map(a => {
 				if(a.nodeid == o.nodeid) {
 					a.users.push(user);
@@ -163,7 +221,12 @@ class NodeOperator extends React.Component {
 				}
 			});
 			if(f1) {
-				allitems.push({ 'nodeid': o.nodeid, 'nodename': o.nodename, 'names': o.data, 'users': [user] });
+				allitems.push({
+					'nodeid': o.nodeid,
+					'nodename': o.nodename,
+					'names': o.data,
+					'users': [user]
+				});
 			}
 			if(o.handed == '1') {
 				submititems.map(b => {
@@ -174,7 +237,13 @@ class NodeOperator extends React.Component {
 					}
 				});
 				if(f2) {
-					submititems.push({ 'nodeid': o.nodeid, 'nodename': o.nodename, 'ids': o.uid, 'names': o.data, 'users': [user] });
+					submititems.push({
+						'nodeid': o.nodeid,
+						'nodename': o.nodename,
+						'ids': o.uid,
+						'names': o.data,
+						'users': [user]
+					});
 				}
 			}
 			if(o.handed == '0') {
@@ -187,15 +256,31 @@ class NodeOperator extends React.Component {
 				});
 
 				if(f3) {
-					unsubmititems.push({ 'nodeid': o.nodeid, 'nodename': o.nodename, 'ids': o.uid, 'names': o.data, 'users': [user] });
+					unsubmititems.push({
+						'nodeid': o.nodeid,
+						'nodename': o.nodename,
+						'ids': o.uid,
+						'names': o.data,
+						'users': [user]
+					});
 				}
 			}
 		});
-		this.setState({ allitems: allitems, submititems: submititems, unsubmititems: unsubmititems });
+		this.setState({
+			allitems: allitems,
+			submititems: submititems,
+			unsubmititems: unsubmititems
+		});
 	}
 
 	updateSelectIds(bool, nodeid) {
-		const { selectTabKey, selectnodes, allitems, submititems, unsubmititems } = this.state;
+		const {
+			selectTabKey,
+			selectnodes,
+			allitems,
+			submititems,
+			unsubmititems
+		} = this.state;
 		let selectusers = [];
 		let _selectnodes = selectnodes;
 		if(bool) {
@@ -238,7 +323,11 @@ class NodeOperator extends React.Component {
 				});
 			})
 		}
-		this.setState({ selectusers: selectusers, selectnodes: _selectnodes });
+		console.log("selectusers", selectusers);
+		this.setState({
+			selectusers: selectusers,
+			selectnodes: _selectnodes
+		});
 	}
 }
 

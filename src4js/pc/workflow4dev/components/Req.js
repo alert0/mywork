@@ -3,21 +3,23 @@ import { connect } from 'react-redux'
 import * as ReqAction from '../actions/req'
 import * as ReqFormAction from '../actions/reqForm'
 import * as ReqLogListAction from '../actions/reqLogList'
+import * as DocUtil from '../util/docUtil'
 
 import {Button,Table,Spin,Popover } from 'antd'
-import FormLayout from './form/layout/FormLayout'
+import MainLayout from './form/layout/MainLayout'
 import Sign from './form/sign/Sign'
-import SignInput from './form/sign/SignInput'
+import FormSign from './form/sign/FormSign'
 import ImgZoom from './form/sign/ImgZoom'
 import WfStatus from './form/WfStatus'
 import Resources from './form/Resources'
 import Share from './form/Share'
 import Forward from './form/forward/Forward'
+import ReqErrorMsg from './form/ReqErrorMsg'
 
 
 import {WeaReqTop,WeaRightMenu} from 'ecCom'
 import {Synergy} from 'weaPortal';
-
+import objectAssign from 'object-assign'
 import PropTypes from 'react-router/lib/PropTypes'
 import Immutable from 'immutable'
 const is = Immutable.is;
@@ -99,12 +101,14 @@ class Req extends React.Component {
         return this.props.loading!==nextProps.loading||
         !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
         !is(this.props.params,nextProps.params)||
+        !is(this.props.submitParams, nextProps.submitParams)||
         !is(this.props.reqTabKey,nextProps.reqTabKey)||
         !is(this.props.wfStatus,nextProps.wfStatus)||
         !is(this.props.logList,nextProps.logList)||
         !is(this.props.logListTabKey,nextProps.logListTabKey)||
         !is(this.props.logCount,nextProps.logCount)||
         !is(this.props.resourcesTabKey,nextProps.resourcesTabKey)||
+        !is(this.props.resourcesKey,nextProps.resourcesKey)||
         !is(this.props.rightMenu,nextProps.rightMenu)||
         !is(this.props.reqIsSubmit,nextProps.reqIsSubmit)||
         !is(this.props.reqIsReload,nextProps.reqIsReload)||
@@ -118,7 +122,7 @@ class Req extends React.Component {
         //表单内容相关
         !is(this.props.mainData,nextProps.mainData)||
         !is(this.props.detailData,nextProps.detailData)||
-        !is(this.props.fieldVariable,nextProps.fieldVariable)||
+        !is(this.props.variableArea,nextProps.variableArea)||
         this.props.conf.size !== nextProps.conf.size||      //conf判断size即可，同时layout布局判断放在conf后面，基本上conf存在变化直接返回true
         !is(this.props.layout, nextProps.layout)||
         //性能测试
@@ -139,8 +143,8 @@ class Req extends React.Component {
     }
     render() {
         const {comsWeaTable,reqLoadDuration,jsLoadDuration,apiDuration,dispatchDuration,
-            signFields,showSearchDrop,params,layout,loading,markInfo,logList,location,logCount,wfStatus,actions,logParams,
-            resourcesTabKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,
+            signFields,showSearchDrop,params,submitParams,layout,loading,logList,location,logCount,wfStatus,actions,logParams,
+            resourcesTabKey,resourcesKey,reqTabKey,logListTabKey,isShowSignInput,initSignInput,
             isShowUserheadimg,reqsubmiterrormsghtml,rightMenu,rightMenuStatus,showBackToE8,showuserlogids,reqRequestId,relLogParams,isLoadingLog} = this.props;
         const {requestid} = location.query;
         const hasInitLayout = layout.size > 0;
@@ -148,25 +152,46 @@ class Req extends React.Component {
         const isshared = params?params.get("isshared"):"";
         const userId = params?params.get("f_weaver_belongto_userid"):"";
         const requestType = params?params.get('requestType'):'';
+        const markInfo = params.get("markInfo");
         const workflowid = params?params.get("workflowid"):"";
+        const isHideArea = params?params.get("isHideArea"):"";
+        const isWorkflowDoc = params?params.get("isWorkflowDoc"):false;
+        const signatureAttributesStr = params?params.get("signatureAttributesStr"):"";
+        const signatureSecretKey = params?params.get("signatureSecretKey"):"";
+        
         const requestLogParams = Immutable.fromJS(logParams.get('requestLogParams') ? JSON.parse(logParams.get('requestLogParams')) : {});
         const forward = rightMenu?rightMenu.get('forward'):'';
         const current = logListTabKey > 2 ? (relLogParams.get('pgnumber') ? relLogParams.get('pgnumber') :1):(logParams.get('pgnumber') ? logParams.get('pgnumber') : 1 );
+        const conf = this.props.conf;
+        const signInputInForm = conf && conf.hasIn(["cellInfo", "fieldCellInfo", "-4"]) && conf.getIn(["tableInfo", "main", "fieldinfomap", "-4", "viewattr"]) >=1 ;
         let tabDatas = [
             {title:'流程表单',key:"1"},
             {title:'流程图',key:"2"},
             {title:'流程状态',key:"3"},
-            {title:'相关资源',key:"4"},
+            {title:'相关资源',key:"4"}
         ];
         if(requestid > 0 && isshared && isshared == '1' && false){
             tabDatas.push({title:'流程共享',key:"5"})
         }
+        isWorkflowDoc && tabDatas.push({title:"正文",key:"6"});
+        //新分页需要key
+        const tablekey = resourcesKey ? resourcesKey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+		const loadingTable = tableNow.get('loading');
+		
+		const forwarParams = objectAssign({},{
+        	signatureAttributesStr:signatureAttributesStr,
+        	signatureSecretKey:signatureSecretKey,
+        	requestType:requestType,
+        	fromform:true,
+        	requestid:requestid,
+        },rightMenuStatus.toJS());
         return (
             <div>
                 <WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
                 <WeaReqTop
                     title={<div dangerouslySetInnerHTML={{__html: titleName}} />}
-                    loading={loading || comsWeaTable.get('loading')}
+                    loading={loading || loadingTable}
                     icon={<i className='icon-portal-workflow' />}
                     iconBgcolor='#55D2D4'
                     buttons={this.getButtons()}
@@ -179,25 +204,30 @@ class Req extends React.Component {
                 >
                     <WeaPopoverHrm>
                         <div className='wea-req-workflow-wrapper'>
-                            {reqTabKey == '1' &&
-                                <div id="reqsubmiterrormsghtml" dangerouslySetInnerHTML={{__html:reqsubmiterrormsghtml}}></div>
+                            {reqTabKey == '1' && reqsubmiterrormsghtml &&
+                                <ReqErrorMsg reqsubmiterrormsghtml={reqsubmiterrormsghtml}/>
                             }
-                            <div className='wea-req-workflow-form' style={{display:reqTabKey == '1' ? 'block' : 'none',margin:"0 auto"}}>
-                                {hasInitLayout && <FormLayout
+                            <div className='wea-req-workflow-form' style={{display:reqTabKey == '1' ? 'block' : 'none',margin:"0 auto",marginBottom:'20px'}}>
+                                {hasInitLayout && <MainLayout
                                     actions={actions}
                                     params={params}
-                                    symbol="emaintable"
+                                    submitParams={submitParams}
+                                    symbol="main"
                                     layout={layout}
                                     conf={this.props.conf}
                                     mainData={this.props.mainData}
                                     detailData={this.props.detailData}  
-                                    fieldVariable={this.props.fieldVariable} />
+                                    variableArea={this.props.variableArea} />
                                 }
                             </div>
                             <input type="hidden" id="e9form_review" value='1'/>
-                            {requestType > 0 && <SignInput requestType = {requestType} isShowSignInput={isShowSignInput} actions ={actions} signinputinfo={params.get('signinputinfo')} requestType={requestType} />}
+                            {!signInputInForm && 
+	                            <div style={{display:reqTabKey == '1' ? 'block' : 'none'}}>
+	                            	{requestType > 0 && markInfo && markInfo.get('hasLoadMarkInfo') && <FormSign requestType = {requestType} isShowSignInput={isShowSignInput} actions ={actions} markInfo={markInfo} requestType={requestType} />}
+	                            </div>
+                            }
                             <div className='wea-req-workflow-loglist' style={{display:reqTabKey == '1' ? 'block' : 'none'}}>
-                                {hasInitLayout && requestType != 2 && <Sign
+                                {hasInitLayout && requestType != 2 && isHideArea != "1" && <Sign
                                     logList={logList}
                                     actions={actions}
                                     logListTabKey={logListTabKey}
@@ -231,6 +261,7 @@ class Req extends React.Component {
                         {
                             reqTabKey == '4' &&
                                 <Resources
+                                	dataKey={resourcesKey}
                                		requestid={requestid}
                                     actions={actions}
                                     tabKey={resourcesTabKey}
@@ -239,6 +270,10 @@ class Req extends React.Component {
                         {
                             reqTabKey == '5' && false &&
                                 <Share />
+                        }
+                        {
+                        	reqTabKey == "6" && 
+                        	<div id="docContent"></div>
                         }
                         { reqTabKey == '1' && hasInitLayout && window.location.pathname.indexOf('/spa/workflow/index') >= 0 &&
                             <Popover trigger="click" content={
@@ -257,11 +292,11 @@ class Req extends React.Component {
                     </WeaPopoverHrm>
                 </WeaReqTop>
                 </WeaRightMenu>
-				<Forward showForward={rightMenuStatus.get('showForward')} requestType={requestType} forwardOperators={rightMenuStatus.get('forwarduserid')} fromform={true} actions={actions} requestid={requestid} controllShowForward={this.controllShowForward.bind(this)}/>
+				<Forward {...forwarParams} actions={actions} controllShowForward={this.controllShowForward.bind(this)}/>
                 <div className='back_to_old_req'
                     onMouseEnter={()=>actions.setShowBackToE8(true)}
                     onMouseLeave={()=>actions.setShowBackToE8(false)}
-                    onClick={()=>{openFullWindowHaveBarForWFList('/workflow/request/ViewRequest.jsp?requestid=' + requestid + '&isovertime=0',848)}}>
+                    onClick={()=>{openFullWindowHaveBarForWFList(this.getE8Url(), 848)}}>
                     <div style={{display: showBackToE8 ? 'block' : 'none'}}>
                         <p>E8</p>
                         <p>模式</p>
@@ -272,23 +307,22 @@ class Req extends React.Component {
             </div>
         )
     }
+    getE8Url(){
+        const {params} = this.props;
+        if(params && params.get("iscreate") == "1"){
+            return `/workflow/request/AddRequest.jsp?workflowid=${params.get("workflowid")}&isagent=0&beagenter=0`;
+        }else{
+            return `/workflow/request/ViewRequest.jsp?requestid=${params.get("requestid")}&isovertime=0`;
+        }
+    }
     onRightMenuClick(key){
         const {rightMenu} = this.props;
         rightMenu && !is(rightMenu,Immutable.fromJS({})) && rightMenu.get('rightMenus').map((m,i)=>{
-            let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
-            Number(key) == i && eval(fn)
+        	if(Number(key) == i){
+        		let fn = m.get('menuFun').indexOf('this') >= 0 ? `${m.get('menuFun').split('this')[0]})` : m.get('menuFun');
+        		eval(fn);
+        	}
         });
-        if(key == '0'){
-            actions.doSearch();
-            actions.setShowSearchAd(false)
-        }
-        if(key == '1'){
-            actions.batchSubmitClick({checkedKeys:`${selectedRowKeys.toJS()}`})
-        }
-        if(key == '2'){
-            actions.setColSetVisible(true);
-            actions.tableColSet(true)
-        }
     }
     getRightMenu(){
         const {rightMenu,loading} = this.props;
@@ -316,7 +350,12 @@ class Req extends React.Component {
         `/workflow/request/WorkflowRequestPictureInner.jsp?f_weaver_belongto_userid=&f_weaver_belongto_usertype=&fromFlowDoc=&modeid=${modeid}&requestid=${requestid}&workflowid=${workflowid}&nodeid=${nodeid}&isbill=${isbill}&formid=${formid}&showE9Pic=1`);
         key == "3" && is(wfStatus,Immutable.fromJS({})) && actions.loadWfStatusData({requestid:requestid},"all",true);
         key == "4" && actions.getResourcesKey(requestid, resourcesTabKey);
-        actions.setReqTabKey(key);
+        if(key == "6"){
+			 //调用外部    
+			DocUtil.showDoc({"workflowid":workflowid,"requestid":requestid});
+        }else{
+        	actions.setReqTabKey(key);
+        }
     }
     getButtons() {
         const {rightMenu,pathBack,loading,actions,params} = this.props;
@@ -352,7 +391,7 @@ class Req extends React.Component {
     
     controllShowForward(bool){
     	const {actions} = this.props;
-    	actions.setShowForward(bool);
+    	actions.setShowForward({showForward:bool});
     }
 }
 
@@ -377,9 +416,11 @@ function mapStateToProps(state) {
     const {workflowReq,workflowReqForm,workflowReqLogList,workflowlistDoing,comsWeaTable} = state;
     return {
         params:workflowReq.get("params"),   //基础参数
+        submitParams:workflowReq.get("submitParams"),   //提交所需隐藏域信息
         loading:workflowReq.get("loading"),
         wfStatus:workflowReq.get("wfStatus"),       //流程状态
         resourcesTabKey:workflowReq.get("resourcesTabKey"),     //相关资源tab
+        resourcesKey:workflowReq.get("resourcesKey"),     //相关资源table sessionkey
         rightMenu:workflowReq.get("rightMenu"),//右键按钮
         reqTabKey:workflowReq.get("reqTabKey"), //表单tab标识
         reqIsSubmit:workflowReq.get("reqIsSubmit"),//流程提交关闭
@@ -412,9 +453,9 @@ function mapStateToProps(state) {
         conf: workflowReqForm.get("conf"),     //Req相关不变配置信息
         mainData: workflowReqForm.get("mainData"),     //主表数据
         detailData: workflowReqForm.get("detailData"),   //明细数据
-        fieldVariable: workflowReqForm.get("fieldVariable"),    //字段相关可变值
+        variableArea: workflowReqForm.get("variableArea"),    //字段相关可变值
         //table
-        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
+        comsWeaTable, //绑定整个table
     }
 }
 

@@ -61,6 +61,8 @@ let initialState = Immutable.fromJS(initState);
 
 export default function list(state = initialState, action) {
     switch (action.type) {
+    	case types.LISTMINE_LOADING: 
+      		return state.merge({loading: action.loading});
     	case types.LISTMINE_CLEAR_PAGE_STATUS:
       		return state.merge({isClearNowPageStatus:action.isToReq});
       	case types.LISTMINE_UNMOUNT_CLEAR:

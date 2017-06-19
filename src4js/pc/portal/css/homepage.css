@@ -1,4 +1,4 @@
-.homepage {position:relative;margin-top:-10px;margin-right:-10px;background:transparent!important;}
+.homepage {height:100%;position:relative;margin-top:-10px;margin-right:-10px;background:transparent!important;}
 .homepage .page-noright {width:100%;position:absolute;top:250px;text-align:center;}
 .homepage #Container {border-spacing:0;width:100%;}
 .homepage #Container table {border-spacing:0;}
@@ -10,24 +10,8 @@
 .homepage .ant-table-body table {table-layout:fixed;}
 .homepage .layouttable {width:100%;table-layout:fixed;border-collapse:collapse;}
 .homepage .layouttable td {vertical-align:top;}
-.signPreview .arrowsblock {
-    height: 22px!important;
-    width: 100%!important;
-    position: absolute;
-    top: -14px;
-    text-align: left;
-    padding-left: 100px;
-    z-index: 1;
-}
-.signPreview .arrowsblockup {
-    height: 22px!important;
-    width: 100%!important;
-    position: absolute;
-    bottom: -16px;
-    text-align: left;
-    padding-left: 100px;
-    z-index: 1;
-}
+.homepage .signPreview .arrowsblock {height:22px!important;width:100%!important;position:absolute;top:-14px;text-align:left;padding-left:100px;z-index:1;}
+.homepage .signPreview .arrowsblockup {height:22px!important;width:100%!important;position:absolute;bottom:-16px;text-align:left;padding-left:100px;z-index:1;}
 .homepage .signPreview .signcontent-scroll {height:332px;}
 .homepage .item .elementdatatable tr {height:31px;}
 .homepage .item .elementdatatable tr td {height:31px;}
@@ -36,7 +20,8 @@
 .homepage .tabcontainer {width:100%;overflow:hidden;float:left;}
 .homepage .picturebackhp {cursor:hand;position:relative;float:left;left:0px;top:-7px;display:none;width:18px;height:32px;background:transparent url(/page/element/Picture/resource/image/scroll_left_wev8.gif) no-repeat 0 0;}
 .homepage .picturenexthp {cursor:hand;position:absolute;float:right;top:-8px;bottom:0;right:0px;display:none;padding-top:6px;width:18px;height:32px;background:transparent url(/page/element/Picture/resource/image/scroll_right_wev8.gif) no-repeat 0 0;}
-/* ---------- 影藏标题工具栏显示样式 ----------- */.homepage .optoolbar {position:absolute;float:right;top:0px;bottom:0px;right:0px;padding-top:6px;}
+/* ---------- 影藏标题工具栏显示样式 ----------- */
+.homepage .optoolbar {position:absolute;float:right;top:0px;bottom:0px;right:0px;padding-top:6px;}
 .homepage .optoolbar ul {list-style:none;overflow:hidden;}
 .homepage .optoolbar ul li {overflow:hidden;float:left;margin-right:5px;}
 .homepage .optoolbar ul li a {display:block;float:left;}
@@ -46,21 +31,27 @@
 .homepage .item .header {box-sizing:content-box;}
 .homepage .item .content {overflow:hidden !important;}
 .homepage .nodisplay {display:none;}
-/** ----------- 将antd的表格的宽高 ------------ **/.homepage .item .ant-table-small {border:0 !important;}
-.homepage .item .ant-table-tbody > tr > td {border:0 !important;padding:6px 2px;}
+/** ----------- 将antd的表格的宽高 ------------ **/
+.homepage .item .ant-table-small {border:0 !important;}
+.homepage .item .ant-table-tbody > tr > td {border:none;padding:6px 2px;}
 .homepage .item .ant-table-thead > tr > th {padding:8px 0px;}
 .homepage .ant-carousel {height:100%;}
 .homepage .ant-carousel .slick-slider {padding-bottom:0px !important;height:100%;}
-/** ----------- 将antd的表格线去除 ------------ **/.homepage .ant-tabs-bar {margin-bottom:0 !important;}
-/** ----------- 计划报告元素相关css ------------ **/.homepage .addWorkPlan {border:none;background:url(/page/element/MyCalendar/img/add_wev8.png) no-repeat;color:#333;width:24px;height:24px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
+/** ----------- 将antd的表格线去除 ------------ **/
+.homepage .ant-tabs-bar {margin-bottom:0 !important;}
+/** ----------- 计划报告元素相关css ------------ **/
+.homepage .addWorkPlan {border:none;background:url(/page/element/MyCalendar/img/add_wev8.png) no-repeat;color:#333;width:24px;height:24px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
 .homepage .addWorkPlan2 {border:none;background:url(/page/element/MyCalendar/img/add_hot_wev8.png) no-repeat;color:#333;width:94px;height:24px;text-align:left;cursor:pointer;padding-left:10px;padding-top:2px;margin-right:5px;background-position:50% 50%;}
-/** -------- 文档中心元素列表式2样式css------- **/.homepage .news-silde .ant-carousel .slick-dots li.slick-active button:before {color:#FFFFFF;opacity:1;}
+/** -------- 文档中心元素列表式2样式css------- **/
+.homepage .news-silde .ant-carousel .slick-dots li.slick-active button:before {color:#FFFFFF;opacity:1;}
 .homepage .news-silde .ant-carousel .slick-dots {overflow:hidden;height:23px;background:#adadb2;opacity:0.6;}
 .homepage .news-silde .ant-carousel .slick-dots li {width:8px;}
 .homepage .news-silde .ant-carousel .slick-dots li button:before {color:#242323;opacity:0.75;}
 .homepage .news-silde .ant-carousel .slick-dots li button:hover:before,.news-silde .ant-carousel .slick-dots li button:focus:before {color:#FFFFFF;}
-/** -------- 拖动元素，创建临时对象用于记住其原始位置，占位的css------- **/.homepage .location {border:2px dashed  #BCBCBC;margin-top:10px;}
-/**------个人数据css-------- **/.homepage .module {width:100%;height:100%;position:relative;cursor:pointer;}
+/** -------- 拖动元素，创建临时对象用于记住其原始位置，占位的css------- **/
+.homepage .location {border:2px dashed  #BCBCBC;margin-top:10px;}
+/**------个人数据css-------- **/
+.homepage .module {width:100%;height:100%;position:relative;cursor:pointer;}
 .homepage .workflow {background-color:#33a3ff;background-image:url("/images/homepage/portalcenter/workflow_wev8.png");background-position:center center;background-repeat:no-repeat;}
 .homepage .project {background-color:#cb61fe;background-image:url("/images/homepage/portalcenter/project_wev8.png");background-position:center center;background-repeat:no-repeat;}
 .homepage .capital {background-color:#ffd200;background-image:url("/images/homepage/portalcenter/capital_wev8.png");background-position:center center;background-repeat:no-repeat;}
@@ -72,7 +63,8 @@
 .homepage .workplan {background-color:#fd2677;background-image:url("/images/homepage/portalcenter/workplan_wev8.png");background-position:center center;background-repeat:no-repeat;}
 .homepage .num {position:absolute;left:0px;bottom:0px;color:#ffffff;padding-left:15px;padding-bottom:10px;font-size:24px;font-family:微软雅黑;}
 .homepage .mtitle {height:100%;margin:auto;bottom:0px;color:#ffffff;width:100%;line-height:100%;vertical-align:middle;font-size:20px;text-align:center;font-family:微软雅黑;display:none;}
-/**-------日历日程相关css---------**/.homepage .events {line-height:24px;list-style:none;margin:0;padding:0;}
+/**-------日历日程相关css---------**/
+.homepage .events {line-height:24px;list-style:none;margin:0;padding:0;}
 .homepage .events li {color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .homepage .events li span {vertical-align:middle;}
 .homepage .events li span:first-child {font-size:9px;margin-right:4px;}
@@ -85,19 +77,31 @@
 .homepage .ant-fullcalendar-event {color:#fff;background:url(/page/element/MyCalendar/img/green_circle_wev8.png) center center no-repeat;}
 .homepage .ant-fullcalendar-today .ant-fullcalendar-value {background:url(/page/element/MyCalendar/img/blue_circle_wev8.png) center center no-repeat;}
 .homepage .item .ant-fullcalendar-current {color:#666;background:url(/page/element/MyCalendar/img/blue_ring_wev8.png) center center no-repeat;}
-.homepage .ant-radio-group {display:none;}
-/**--------公告元素相关css---------**/.homepage .noticeitemimgblock {width:97px;height:66px;position:relative;border:1px solid #d7d8e0;}
+.homepage .hand {cursor:pointer;}
+.homepage .hashPlanDiv {background-image:url(/page/element/MyCalendar/img/green_circle_wev8.png);background-repeat:no-repeat;text-align:center;color:#fff;}
+.homepage .currentCalendar {background-image:url(/page/element/MyCalendar/img/blue_circle_wev8.png);background-repeat:no-repeat;text-align:center;color:#fff;}
+.homepage .currentSelect {background-image:url(/page/element/MyCalendar/img/blue_ring_wev8.png);background-repeat:no-repeat;text-align:center;color:#000;}
+.homepage .planDataEvent {height:100px;width:100%;overflow-y:hidden;position:relative;}
+.homepage .dataEvent {line-height:34px;border-width:0px;border-bottom:1px;border-style:solid;border-color:#F3F2F2;float:left;height:34px;width:100%;}
+.homepage .dataEvent1 {line-height:34px;float:left;height:34px;width:2px;}
+.homepage .dataEvent2 {line-height:34px;float:left;height:34px;width:80px;background:#F5F5F5;}
+.homepage .dataEvent2_1 {margin-left:5px;}
+.homepage .dataEvent3 {margin-left:5px;height:34px;display:block;overflow:hidden;text-overflow:ellipsis;-o-text-overflow:ellipsis;}
+/**--------公告元素相关css---------**/
+.homepage .noticeitemimgblock {width:97px;height:66px;position:relative;border:1px solid #d7d8e0;}
 .homepage .siteminputblock {/*margin:9px;*/}
 .homepage .noticeinfoline {height:8px!important;}
 .homepage .noticeitemtitle {font-size:14px;}
 .homepage .noticeitemdesc {color:#80828a;width:100%;text-Overflow:ellipsis;white-Space:nowrap;word-Break:keep-all;overflow:hidden;}
 .homepage .noticeitemline {height:1px!important;background:#ebebeb;margin:2px 0px;}
 .homepage .noticeitemnew {height:54px;border:1px dotted #eeeeee;position:relative;margin-top:2px;}
-/**--------我的邮件相关css---------**/.homepage .mail-sparator {margin-left:8px;margin-top:6px;color:#000000;}
+/**--------我的邮件相关css---------**/
+.homepage .mail-sparator {margin-left:8px;margin-top:6px;color:#000000;}
 .homepage .mail-sparator .mail-sparator-font a {color:blue;text-decoration:none;}
 .homepage .mail-sparator .mail-sparator-font:hover {color:#018efb;}
 .homepage .mail-sparator .mail-sparator-font a:hover {color:#018efb;}
-/**--------计划报告相关css---------**/.homepage .item .plan-view {margin-left:14px;}
+/**--------计划报告相关css---------**/
+.homepage .item .plan-view {margin-left:14px;}
 .homepage .item .plan-view .plan-title {width:48px;height:28px;text-align:center;font-weight:bold;border-top:1px #DBDBDB solid;border-bottom:1px #DBDBDB solid;}
 .homepage .item .plan-view .selected {background:#4F95E4;}
 .homepage .item .plan-view .month-sel {width:91px;height:100%;}
@@ -109,16 +113,19 @@
 .homepage .item .plan-view .week_month {width:56px;padding-top:5px;}
 .homepage .item .plan-view .sel-month-week {background:url(/page/element/plan/resource/image/tab_bg.png) repeat-x;}
 .homepage .item .custompage-iframe {border:0 !important;}
-/**--------多图元素相关css---------**/.homepage .item .imgslide {overflow:auto;}
+/**--------多图元素相关css---------**/
+.homepage .item .imgslide {overflow:auto;}
 .homepage .item .imgslide .slide-carousel {width:95%;text-align:center;margin:0 auto;}
 .homepage .item .imgslide .setting {width:5%;float:left;cursor:pointer;display:none;}
 .homepage .item .imgslide .slick-dots .li-class {width:20%;list-style:none;}
-/**--------图片元素相关css---------**/.homepage .jCarouselLite {margin:auto;}
+/**--------图片元素相关css---------**/
+.homepage .jCarouselLite {margin:auto;}
 .homepage .jCarouselLite li {margin-left:2px;margin-right:2px;}
 .homepage .clear {clear:both;display:block;}
 .homepage .picturenext {width:32px;height:32px;float:right;background:transparent url(/page/element/Picture/resource/image/next-horizontal_wev8.png) no-repeat 0 0;}
 .homepage .pictureback {width:32px;height:32px;float:left;background:transparent url(/page/element/Picture/resource/image/prev-horizontal_wev8.png) no-repeat 0 0;}
-/**--------多土元素相关css---------**/.homepage .slidebox_block {position:relative;width:100%;height:100%;overflow:hidden;}
+/**--------多土元素相关css---------**/
+.homepage .slidebox_block {position:relative;width:100%;height:100%;overflow:hidden;}
 .homepage .slidebox_list_item {width:100%;height:100%;position:absolute;left:0px;}
 .homepage .slidebox_list img {border:0px;}
 .homepage .slidebox_btbg {position:absolute;bottom:0;background-color:#000;height:50px;filter:Alpha(Opacity=30);opacity:0.3;z-index:1000;cursor:pointer;width:100%;}
@@ -130,4 +137,13 @@
 .homepage .slidebox_list a {position:absolute;width:100%;height:100%;left:0;}
 .homepage .slidebox_info_item {text-align:center;line-height:50px;font-size:16px;height:100%;width:100%;background-color:#fff;cursor:pointer;overflow:hidden;opacity:0.7;z-index:1000;color:#4d4d4d;filter:Alpha(Opacity=70);}
 .homepage .slidebox_info_item_slt {background-color:#213d7d;color:#fff;}
-/*------------- 通讯录相关css --------------*/.e-contacts-scroll {height:157px;}
+/*------------- 通讯录相关css --------------*/
+.homepage .e-contacts-scroll {height:157px;}
+.homepage .rightclickmenu {position:absolute;background:#FFFFFF;z-index:9999;border:1px solid #a59b9b;}
+.homepage .rightclickmenu-list {height:30px;width:125px;line-height:30px;padding-left:10px;font-size:12px;}
+.homepage .rightclickmenu-list img{height:16px;width:16px;margin-bottom: -3px;}
+.homepage .rightclickmenu-list:hover {background:rgb(230,230,230);}
+.homepage .rightclickmenu-list a {color:#000000;padding-left:10px;}
+
+
+

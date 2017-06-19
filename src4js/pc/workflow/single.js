@@ -25,13 +25,15 @@ const WorkflowRoute = Workflow.Route;
 const workflowReducer = Workflow.reducer;
 const WorkflowAction = Workflow.action;
 
+import { comsReducer } from '../coms/index'
+
 import objectAssign from 'object-assign'
 
 import Home from './components/Home.js'
 
 let reducers = objectAssign({},portalReducer,workflowReducer,{routing:routerReducer});
 
-const rootReducer = combineReducers(reducers);
+const rootReducer = combineReducers({...reducers, ...comsReducer});
 
 const debug = true;
 

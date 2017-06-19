@@ -23,7 +23,6 @@ class main extends React.Component {
 		const isSignMustInput = markInfo.isSignMustInput;
 		const isshowsigninputdiv = requestType == 1 && isHideInput == '0';
 		const defaultshowsigninput = isshowsigninputdiv && markInfo.remark != '' && markInfo.remark != null;
-		console.log("isshowsigninputdiv", isshowsigninputdiv, "isHideInput", isHideInput);
 
 		let signInputHiddebArea = [];
 		signinputinfo && signinputinfo.mapEntries(o => {

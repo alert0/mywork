@@ -105,6 +105,7 @@ class QueryFlow extends React.Component {
     render() {
         const isSingle = window.location.pathname == '/spa/workflow/index.jsp';
         const {
+        	loading,
         	comsWeaTable,
             title,
             dataKey,
@@ -114,7 +115,7 @@ class QueryFlow extends React.Component {
             showSearchAd,
             fields
         } = this.props;
-        const loading = comsWeaTable.get('loading');
+        const loadingTable = comsWeaTable.get('loading');
         const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div className='wea-workflow-query'>
@@ -122,7 +123,7 @@ class QueryFlow extends React.Component {
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
                 <WeaTop
                 	title={title}
-                	loading={loading}
+                	loading={loading || loadingTable}
                 	icon={<i className='icon-portal-workflow' />}
                 	iconBgcolor='#55D2D4'
                 	buttons={this.getButtons()}
@@ -234,12 +235,11 @@ class QueryFlow extends React.Component {
         return items;
     }
     getTree() {
-        const {leftTree,actions,searchParams,selectedTreeKeys,loading} = this.props;
+        const {leftTree,actions,searchParams,selectedTreeKeys} = this.props;
         return (
             <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 selectedKeys={selectedTreeKeys && selectedTreeKeys.toJS()}
-                loading={loading}
                 onFliterAll={()=>{
                 	actions.setShowSearchAd(false);
                 	actions.setSelectedTreeKeys();
@@ -332,6 +332,7 @@ QueryFlow = createForm({
 function mapStateToProps(state) {
     const {workflowqueryFlow,comsWeaTable} = state;
     return {
+    	loading: workflowqueryFlow.get('loading'),
         title: workflowqueryFlow.get('title'),
         condition: workflowqueryFlow.get('condition'),
         fields: workflowqueryFlow.get('fields'),

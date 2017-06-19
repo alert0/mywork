@@ -80,14 +80,14 @@ const rechoseoperator = () => {
 			eh_operators:datas.operators
 		};
 		const formdatas = window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.getformdatas());
-		window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setOperateInfo(chrostoperatorinfo));
+		window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.updateSubmitParams(chrostoperatorinfo));
 		window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9Api('requestOperation','submit',"",formdatas));
 	};
 	eh_dialog.closeHandle = function(paramobj, datas) {
-		const eh_setoperator = window.store_e9_workflow.getState().workflowReq.getIn(['params','hiddenarea']).get('eh_setoperator');
+		const eh_setoperator = window.store_e9_workflow.getState().workflowReq.get('submitParams').get('eh_setoperator');
 		if(eh_setoperator != 'y'){
 			const formdatas = window.store_e9_workflow.dispatch(getformdatas());
-			window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setOperateInfo({eh_setoperator:'n'}));
+			window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.updateSubmitParams({eh_setoperator:'n'}));
 			window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9Api('requestOperation','submit',"",formdatas));
 		}
 	};

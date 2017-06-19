@@ -70,7 +70,6 @@ class ListMine extends React.Component {
         !is(this.props.leftTreeCountType,nextProps.leftTreeCountType)||
         !is(this.props.topTab,nextProps.topTab)||
         !is(this.props.topTabCount,nextProps.topTabCount)||
-        !is(this.props.columns,nextProps.columns)||
         !is(this.props.loading,nextProps.loading)||
         !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
@@ -79,7 +78,6 @@ class ListMine extends React.Component {
         !is(this.props.orderFields,nextProps.orderFields)||
         !is(this.props.showSearchAd,nextProps.showSearchAd)||
         !is(this.props.selectedTreeKeys,nextProps.selectedTreeKeys)||
-        !is(this.props.isSpaForm,nextProps.isSpaForm)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
     }
@@ -91,8 +89,8 @@ class ListMine extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
-        const loading = comsWeaTable.get('loading');
+        const {loading,comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
+        const loadingTable = comsWeaTable.get('loading');
         const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div>
@@ -100,7 +98,7 @@ class ListMine extends React.Component {
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
             	<WeaTop
                 	title={title}
-                	loading={loading}
+                	loading={loading || loadingTable}
                 	icon={<i className='icon-portal-workflow' />}
                 	iconBgcolor='#55D2D4'
                 	buttons={this.getButtons()}
@@ -205,14 +203,13 @@ class ListMine extends React.Component {
         },{});
     }
     getTree() {
-        const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys,loading} = this.props;
+        const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys} = this.props;
         return (
             <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 counts={leftTreeCount && leftTreeCount.toJS()}
                 countsType={leftTreeCountType && leftTreeCountType.toJS()}
                 selectedKeys={selectedTreeKeys && selectedTreeKeys.toJS()}
-                loading={loading}
                 onFliterAll={()=>{
                 	actions.setShowSearchAd(false);
                 	actions.setSelectedTreeKeys([]);
@@ -294,6 +291,7 @@ ListMine = createForm({
 function mapStateToProps(state) {
     const {workflowlistMine,comsWeaTable} = state;
     return {
+    	loading: workflowlistMine.get('loading'),
         title: workflowlistMine.get('title'),
 		leftTree: workflowlistMine.get('leftTree'),
 		leftTreeCount: workflowlistMine.get('leftTreeCount'),
@@ -305,7 +303,6 @@ function mapStateToProps(state) {
 		orderFields: workflowlistMine.get('orderFields'),
 		showSearchAd: workflowlistMine.get('showSearchAd'),
 		selectedTreeKeys: workflowlistMine.get('selectedTreeKeys'),
-		isSpaForm: workflowlistMine.get('isSpaForm'),
 		isClearNowPageStatus: workflowlistMine.get('isClearNowPageStatus'),
 		sortParams: workflowlistMine.get('sortParams'),
 		conditioninfo: workflowlistMine.get('conditioninfo'),

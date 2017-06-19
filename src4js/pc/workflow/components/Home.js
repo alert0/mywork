@@ -1,3 +1,5 @@
+//import { WeaLocale } from '../../coms/index'
+
 class Home extends React.Component {
     render() {
         return (

@@ -4,9 +4,11 @@ import Immutable from 'immutable';
 import { WeaErrorPage, WeaTools } from 'ecCom';
 //引入元素组件
 import LayoutFlags from './LayoutFlags';
-import * as PortalAction from '../actions/';
+import * as PortalAction from '../actions/portal';
 
 import objectAssign from 'object-assign';
+
+import RightClickMenu from './RightClickMenu';
 //门户组件
 class Portal extends React.Component {
     componentWillMount() {
@@ -17,10 +19,11 @@ class Portal extends React.Component {
         const { params, actions } = this.props;
         actions.getPortalDatas(params.toJSON());
         this.refs.btnWfCenterReload.setAttribute("onclick","elmentReLoad('8')");
+        bindRightClickEvent();
     }
     _isRender(props,nextProps){
         const { params, hpdata } = props;
-        return nextProps.isRender || !Immutable.is(hpdata,nextProps.hpdata) || !Immutable.is(params,nextProps.params); 
+        return nextProps.isRender || window.isRefreshPortal || !Immutable.is(hpdata,nextProps.hpdata) || !Immutable.is(params,nextProps.params); 
     }
     shouldComponentUpdate(nextProps){
         return this._isRender(this.props,nextProps);
@@ -37,28 +40,29 @@ class Portal extends React.Component {
         const params = this.props.params.toJSON();
         //协同区门户
         if(params.hpid){
-            window.global_hpid = params.hpid;
-            window.global_subCompanyId = params.subCompanyId; 
             let hpdata = this.props.hpdata.toJSON();
             let hpHtml = null;
             let styleStr = "";
             if (!_isEmpty(hpdata)) {
-                if(hpdata.hasRight === 'true' && global_hpid == hpdata.hpinfo.hpid){
+                if(hpdata.hasRight === 'true'){
                     const layoutObj = {
                          layoutFlags: hpdata.hpinfo.layoutFlags,
                          bLayoutid: hpdata.hpinfo.bLayoutid,
                          layoutHtml: hpdata.hpinfo.html
                     };
+                    global_all_eids[global_hpid] = {}
                     styleStr = "<style type='text/css'>" + hpdata.hpCss.replace(/\"/g, "") + "</style>";
                     hpHtml = <LayoutFlags layoutObj = { layoutObj }/>;
                 }else{
                     hpHtml = <NoRightPage msg={hpdata.msg}/>;
                 }
             }
+            window.rightClickMenuShow = false;
             return <div className='homepage'>
                      <div dangerouslySetInnerHTML = { { __html: styleStr } }></div>
                      <input type="hidden" ref="btnWfCenterReload" value="btnWfCenterReload" id="btnWfCenterReload" name="btnWfCenterReload"/>
-                     {hpHtml}
+                        {hpHtml}
+                     <RightClickMenu hpid={params.hpid} isSetting={params.isSetting}/>
                 </div>;
         } else {
             return <div></div>
@@ -98,12 +102,18 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     if(ownProps.location) query = ownProps.location.query
     let params = objectAssign({},ownProps.params,query);
     if(ownProps.hpid) {
-        params['hpid'] = ownProps.hpid;
-        params['requestid'] = ownProps.requestid;
-        params['subCompanyId'] = '-1';
+        params = objectAssign(params, ownProps);
+        if(!params.isSetting) params.isSetting = false;
+    }else{
+        params.isSetting = false;
+        params.isfromportal = 1;
+        params.isfromhp = 0;
     }
+    window.global_hpid = params.hpid;
+    window.global_subCompanyId = params.subCompanyId; 
+    window.global_isSetting = params.isSetting;
     return {
-        hpdata: stateProps.hpdata.get(params.hpid) || Immutable.fromJS(ecLocalStorage.getObj("portal-" + params.hpid, "hpdata", true) || {}),
+        hpdata: stateProps.hpdata.get(params.hpid+"-"+params.isSetting) || Immutable.fromJS(ecLocalStorage.getObj("portal-" + params.hpid+"-"+params.isSetting, "hpdata", true) || {}),
         params: Immutable.fromJS(params),
         isRender: window.isPortalRender || false,
         actions: dispatchProps.actions

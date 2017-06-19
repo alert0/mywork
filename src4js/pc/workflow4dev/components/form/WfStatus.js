@@ -16,11 +16,11 @@ class WfStatus extends React.Component{
         const cardData = datas && datas.getIn([cardid,"datas"]);
         const counts = datas && datas.get("counts");
         const cardInfo = [
-			{id:'all', title:'总人次', color:'#3ac8d2', num:(counts && counts.get('allcount')), icon:'icon-form-Total-person-time'},
-			{id:'submit', title:'已提交', color:'#8dc139', num:(counts && counts.get('submitcount')), icon:'icon-form-Has-been-submitted'},
-			{id:'nosubmit', title:'未提交', color:'#b37bf8', num:(counts && counts.get('nosubmitcount')), icon:'icon-form-Not-submitted'},
-			{id:'view', title:'已查看', color:'#38b1ff', num:(counts && counts.get('viewcount')), icon:'icon-form-Already-view'},
-			{id:'noview', title:'未查看',  color:'#ff9736', num:(counts && counts.get('noviewcount')), icon:'icon-form-Not-viewed'}
+			{id:'all', title:'总人次', color:'#3ac8d2', num:(counts && counts.get('allcount')), icon:'icon-workflow-form-Total-person-time'},
+			{id:'submit', title:'已提交', color:'#8dc139', num:(counts && counts.get('submitcount')), icon:'icon-workflow-form-Has-been-submitted'},
+			{id:'nosubmit', title:'未提交', color:'#b37bf8', num:(counts && counts.get('nosubmitcount')), icon:'icon-workflow-form-Not-submitted'},
+			{id:'view', title:'已查看', color:'#38b1ff', num:(counts && counts.get('viewcount')), icon:'icon-workflow-form-Already-view'},
+			{id:'noview', title:'未查看',  color:'#ff9736', num:(counts && counts.get('noviewcount')), icon:'icon-workflow-form-Not-viewed'}
 		];
         const statusCode = ['',<span style={{color:"#FF0000"}}>未查看</span>,<span style={{color:"#FF33CC"}}>已查看</span>,'已提交','暂停','撤销','启用'];
         const tableColumn = cardid === 'all' ? [

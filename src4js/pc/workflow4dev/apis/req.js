@@ -44,12 +44,6 @@ export const getRejectInfo = params => {
 	return WeaTools.callApi('/api/workflow/reqform/rejectInfo', 'GET', params);
 }
 
-
-
-export const getRequestSubmit = params => {
-	return WeaTools.callApi('/workflow/core/ControlServlet.jsp?action=RequestSubmitAction', 'POST', params);
-}
-
 export const getWfStatus = params => {
 	return WeaTools.callApi('/api/workflow/reqform/wfstatusnew', 'GET', params);
 }
@@ -62,6 +56,43 @@ export const getResourcesKey = params => {
 	return WeaTools.callApi('/api/workflow/reqform/resources', 'GET', params);
 }
 
-export const updateUserTxStatus = params =>{
+export const updateUserTxStatus = params => {
 	return WeaTools.callApi('/workflow/request/WorkflowSignStatusAjax.jsp', 'GET', params);
+}
+
+export const reqDataInputResult = params => {
+	return WeaTools.callApi('/api/workflow/linkage/reqDataInputResult', 'POST', params);
+}
+
+export const reqFieldSqlResult = params => {
+	return WeaTools.callApi('/api/workflow/linkage/reqFieldSqlResult', 'POST', params);
+}
+
+export const reqDateTimeResult = params => {
+	return WeaTools.callApi('/api/workflow/linkage/reqDateTimeResult', 'POST', params);
+}
+
+export const createWfCode = params => {
+	return WeaTools.callApi('/api/workflow/reqform/createWfCode','POST',params);
+}
+
+export const loadWfCodeFieldValueInfo = params => {
+	return WeaTools.callApi('/api/workflow/reqform/loadWfCodeFieldValueInfo','POST',params);
+}
+
+export const functionLink = params => {
+	return WeaTools.callApi('/api/workflow/reqform/functionLink','POST',params);
+}
+
+export const reqOperate = (actionType,params) => {
+	return WeaTools.callApi('/api/workflow/reqform/'+actionType,'POST',params);
+}
+export const triggerSubWf = (params) => {
+	return WeaTools.callApi('/api/workflow/reqform/triggerSubWf','POST',params);
+}
+export const getUploadFileInfo = (params) => {
+	return WeaTools.callApi('/api/workflow/reqform/getUploadFileInfo','POST',params);
+}
+export const requestImport = (params) => {
+	return WeaTools.callApi('/api/workflow/reqform/requestImport','POST',params);
 }

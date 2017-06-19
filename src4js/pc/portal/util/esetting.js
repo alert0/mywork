@@ -567,15 +567,13 @@ function doUseSetting(eid, ebaseid) {
 					if ($.trim(data) == "") {
 						$("#item_" + eid).attr('needRefresh', 'true');
 						$("#item_" + eid).trigger("reload");
-						
-						onRefresh4React();
+						window.elementsRefresh[eid]();
 					}
 				});
 			} else {
 				$("#item_" + eid).attr('needRefresh', 'true');
 				$("#item_" + eid).trigger("reload");
-				
-				onRefresh4React();
+				window.elementsRefresh[eid]();
 			}
 		} else {
 			data = $.parseJSON($.trim(data));

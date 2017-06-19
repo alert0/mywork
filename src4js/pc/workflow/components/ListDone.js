@@ -71,7 +71,6 @@ class ListDone extends React.Component {
         !is(this.props.leftTreeCountType,nextProps.leftTreeCountType)||
         !is(this.props.topTab,nextProps.topTab)||
         !is(this.props.topTabCount,nextProps.topTabCount)||
-        !is(this.props.columns,nextProps.columns)||
         !is(this.props.loading,nextProps.loading)||
         !is(this.props.operates,nextProps.operates)||
         !is(this.props.searchParams,nextProps.searchParams)||
@@ -80,7 +79,6 @@ class ListDone extends React.Component {
         !is(this.props.orderFields,nextProps.orderFields)||
         !is(this.props.showSearchAd,nextProps.showSearchAd)||
         !is(this.props.comsWeaTable,nextProps.comsWeaTable)||
-        !is(this.props.isSpaForm,nextProps.isSpaForm)||
         !is(this.props.conditioninfo,nextProps.conditioninfo)||
         !is(this.props.isClearNowPageStatus,nextProps.isClearNowPageStatus);
     }
@@ -92,8 +90,8 @@ class ListDone extends React.Component {
     render() {
         let that = this;
         const isSingle = window.location.pathname.indexOf('/spa/workflow/index') >= 0;
-        const {comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
-        const loading = comsWeaTable.get('loading');
+        const {loading,comsWeaTable,topTab,topTabCount,actions,title,searchParams,showSearchAd,searchParamsAd,showBatchSubmit,phrasesObj} = this.props;
+        const loadingTable = comsWeaTable.get('loading');
         const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
         return (
             <div>
@@ -101,7 +99,7 @@ class ListDone extends React.Component {
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
             	<WeaTop
                 	title={title}
-                	loading={loading}
+                	loading={loading || loadingTable}
                 	icon={<i className='icon-portal-workflow' />}
                 	iconBgcolor='#55D2D4'
                 	buttons={this.getButtons()}
@@ -206,14 +204,13 @@ class ListDone extends React.Component {
         },{});
     }
     getTree() {
-        const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys,loading} = this.props;
+        const {leftTree,leftTreeCount,leftTreeCountType,actions,topTab,searchParams,selectedTreeKeys} = this.props;
         return (
             <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 counts={leftTreeCount && leftTreeCount.toJS()}
                 countsType={leftTreeCountType && leftTreeCountType.toJS()}
                 selectedKeys={selectedTreeKeys && selectedTreeKeys.toJS()}
-                loading={loading}
                 onFliterAll={()=>{
                 	actions.setShowSearchAd(false);
                 	actions.setSelectedTreeKeys([]);
@@ -295,6 +292,7 @@ ListDone = createForm({
 function mapStateToProps(state) {
 	const {workflowlistDone,comsWeaTable} = state;
     return {
+    	loading: workflowlistDone.get('loading'),
         title: workflowlistDone.get('title'),
 		leftTree: workflowlistDone.get('leftTree'),
 		leftTreeCount: workflowlistDone.get('leftTreeCount'),
@@ -306,7 +304,6 @@ function mapStateToProps(state) {
 		orderFields: workflowlistDone.get('orderFields'),
 		showSearchAd: workflowlistDone.get('showSearchAd'),
 		selectedTreeKeys: workflowlistDone.get('selectedTreeKeys'),
-		isSpaForm: workflowlistDone.get('isSpaForm'),
 		isClearNowPageStatus: workflowlistDone.get('isClearNowPageStatus'),
 		sortParams: workflowlistDone.get('sortParams'),
 		conditioninfo: workflowlistDone.get('conditioninfo'),

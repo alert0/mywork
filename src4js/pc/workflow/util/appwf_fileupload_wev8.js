@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+const {List} = Immutable;
 
 /* index 指定添加到工具栏上的那个位置，默认时追加到最后,
  * editorId 指定这个UI是那个编辑器实例上的，默认是页面上所有的编辑器都会添加这个按钮
@@ -75,7 +76,7 @@ const initwfannexbutton = (editor,uiName) => {
 						"				<div class=\"cg_optblock\" style=\"text-align:center;margin:2px 0 4px 0px;\">" +
 						"					<div style=\"margin:0 auto; height:22px;width:22px;background-image:url(/images/ecology8/workflow/phrase/addPhrase_wev8.png);\"> "+
 						"					<span class=\"phrase_btn\" style=\"color:#1ca96f;\" id=\"_addfilebtn\" title=\""+SystemEnv.getHtmlNoteName(3456,language)+"("+SystemEnv.getHtmlNoteName(4080,language)+annexmaxUploadImageSize+ "M/" + SystemEnv.getHtmlNoteName(4081,language)+")"+ "\">" +
-						"						<span id=\"_continueaddfile\" >	" +
+						"						<span id=\"_continueaddfile_"+editor.key+"\" >	" +
 						SystemEnv.getHtmlNoteName(3456,language) +
 						"						</span></span>" +
 						"				</div></div>" +
@@ -193,18 +194,18 @@ function cfileupload(editorid) {
 	const params = {'method':'uploadFile'};
 	let annexmaxUploadImageSize = '0';
 	if(editorid == 'remark'){
-		params.annexmainId = paramDiv.find('#annexmainId_param').val();
-		params.annexsubId = paramDiv.find('#annexsubId_param').val();
-		params.annexsecId = paramDiv.find('#annexsecId_param').val();
-		params.fileuserid = paramDiv.find('#fileuserid_param').val();
-		params.fileloginyype = paramDiv.find('#fileloginyype_param').val();
+		params.mainId = paramDiv.find('#annexmainId_param').val();
+		params.subId = paramDiv.find('#annexsubId_param').val();
+		params.secId = paramDiv.find('#annexsecId_param').val();
+		params.userid = paramDiv.find('#fileuserid_param').val();
+		params.logintype = paramDiv.find('#fileloginyype_param').val();
 		annexmaxUploadImageSize = paramDiv.find('#annexmaxUploadImageSize_param').val();
 	}else{
-		params.annexmainId = jQuery('#forwardremark_hidden_area').find('#annexmainId').val();
-		params.annexsubId = jQuery('#forwardremark_hidden_area').find('#annexsubId').val();
-		params.annexsecId = jQuery('#forwardremark_hidden_area').find('#annexsecId').val();
-		params.fileuserid = jQuery('#forwardremark_hidden_area').find('#fileuserid').val();
-		params.fileloginyype = jQuery('#forwardremark_hidden_area').find('#fileloginyype').val();
+		params.mainId = jQuery('#forwardremark_hidden_area').find('#annexmainId').val();
+		params.subId = jQuery('#forwardremark_hidden_area').find('#annexsubId').val();
+		params.secId = jQuery('#forwardremark_hidden_area').find('#annexsecId').val();
+		params.userid = jQuery('#forwardremark_hidden_area').find('#fileuserid').val();
+		params.logintype = jQuery('#forwardremark_hidden_area').find('#fileloginyype').val();
 		annexmaxUploadImageSize = jQuery('#forwardremark_hidden_area').find('#annexmaxUploadImageSize').val();
 	}
 	
@@ -227,7 +228,7 @@ function cfileupload(editorid) {
 
 			// Button settings
 		button_image_url : "",
-		button_placeholder_id : "_continueaddfile",
+		button_placeholder_id : "_continueaddfile_"+editorid,
 		button_width: 22,
 		button_height: 22,
 		//button_text: '添加附件',
@@ -375,17 +376,27 @@ function deletefile(id,names,editorid){
 	paramDiv.find("#_fileuploadphraseblock").attr("showfor","2");
 	top.Dialog.confirm(SystemEnv.getHtmlNoteName(3458,readCookie("languageidweaver"))+names+SystemEnv.getHtmlNoteName(3459,readCookie("languageidweaver")), function(){
 		var ids = paramDiv.find("#field-annexupload").val();
-		ids = ids.replace(id,"");
-		ids = ids.replace(",,",",");
-		if(ids.indexOf(",") == 0){
-			ids = ids.substr(1);
-		}
-		if (ids.lastIndexOf(",") == ids.length - 1) {
-			ids = ids.substring(0, ids.length - 1);
-		}
+		var fileNames = paramDiv.find("#field-annexupload-name").val();
+		
+		let idList = List(ids.split(','));
+		let filenameList = List(fileNames.split(splitchar));
+		let idIndex = -1;
+		idList.map((o,index)=>{
+			if(o == id){
+				idIndex = index;
+			}
+		});
+		
+		idList = idList.delete(idIndex);
+		filenameList = filenameList.delete(idIndex);
+		
+		ids  = idList.join(',');
+		fileNames = filenameList.join(splitchar);
 		paramDiv.find("#field-annexupload").val(ids);
+		paramDiv.find("#field-annexupload-name").val(fileNames);
 		if(editorid == 'forwardremark'){
 			jQuery('#forwardremark_hidden_area').find("#field-annexupload").val(ids);
+			jQuery('#forwardremark_hidden_area').find("#field-annexupload-name").val(fileNames);
 		}
 		paramDiv.find("#li_"+id).remove();
 		var _li = paramDiv.find("#_filecontentblock ul li");

@@ -9,6 +9,7 @@ import * as PLUGIN_API from '../../apis/plugin';
 
 import E9Theme from './ecology9/E9Theme';
 import E81Theme from './ecology81/E81Theme';
+import { WeaLocale } from '../../../coms/index'
 
 class Theme extends React.Component {
     componentWillMount() {
@@ -54,11 +55,11 @@ class Theme extends React.Component {
 
         switch (themeType) {
             case 'ecology9':
-                return <E9Theme themeColorType={themeColorType} {...this.props} />;
+                return <WeaLocale><E9Theme themeColorType={themeColorType} {...this.props} /></WeaLocale>;
             case 'ecology81':
-                return <E81Theme {...this.props} />;
+                return <WeaLocale><E81Theme {...this.props} /></WeaLocale>;
             default:
-                return <div></div>;
+                return <WeaLocale><div></div></WeaLocale>;
         }
     }
 }

@@ -105,6 +105,7 @@ class QueryFlow extends React.Component {
     render() {
         const isSingle = window.location.pathname == '/spa/workflow/index.jsp';
         const {
+        	loading,
         	comsWeaTable,
             title,
             dataKey,
@@ -114,15 +115,17 @@ class QueryFlow extends React.Component {
             showSearchAd,
             fields
         } = this.props;
-        const loading = comsWeaTable.get('loading');
-        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
+        const tablekey = dataKey ? dataKey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+		const loadingTable = tableNow.get('loading');
+        const selectedRowKeys = tableNow.get('selectedRowKeys');
         return (
             <div className='wea-workflow-query'>
             	{isSingle && <WeaPopoverHrm />}
             	<WeaRightMenu datas={this.getRightMenu()} onClick={this.onRightMenuClick.bind(this)}>
                 <WeaTop
                 	title={title}
-                	loading={loading}
+                	loading={loading || loadingTable}
                 	icon={<i className='icon-portal-workflow' />}
                 	iconBgcolor='#55D2D4'
                 	buttons={this.getButtons()}
@@ -146,6 +149,7 @@ class QueryFlow extends React.Component {
 	                        	onSearchChange={v=>{actions.saveFields({...fields.toJS(),requestname:{name:'requestname',value:v},_requestname:{name:'_requestname',value:v}})}}
 	                            />
 	                        <WeaTable 
+	                        	sessionkey={dataKey}
 		                    	hasOrder={true}
 		                    	needScroll={true}
 		                    	/>
@@ -165,8 +169,10 @@ class QueryFlow extends React.Component {
         )
     }
     onRightMenuClick(key){
-    	const {actions,comsWeaTable} = this.props;
-    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
+    	const { dataKey, comsWeaTable, actions} = this.props;
+		const tablekey = dataKey ? dataKey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+    	const selectedRowKeys = tableNow.get('selectedRowKeys');
     	if(key == '0'){
     		actions.doSearch();
     		actions.setShowSearchAd(false);
@@ -176,13 +182,15 @@ class QueryFlow extends React.Component {
     		actions.batchShareWf(`${selectedRowKeys.toJS()}`)
     	}
     	if(key == '2'){
-    		actions.setColSetVisible(true);
-    		actions.tableColSet(true)
+    		actions.setColSetVisible(dataKey,true);
+    		actions.tableColSet(dataKey,true)
     	}
     }
     getRightMenu(){
-    	const {comsWeaTable,showTable,actions} = this.props;
-    	const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
+    	const { dataKey, comsWeaTable, showTable } = this.props;
+		const tablekey = dataKey ? dataKey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+    	const selectedRowKeys = tableNow.get('selectedRowKeys');
     	let btns = [];
     	btns.push({
     		icon: <i className='icon-Right-menu--search'/>,
@@ -199,47 +207,33 @@ class QueryFlow extends React.Component {
     	})
     	return btns
     }
-    getSearchs(bool) {
-    	const {showTable} = this.props;
-        return [
-            (<WeaSearchGroup needTigger={showTable} title={this.getTitle()} showGroup={this.isShowFields()} items={this.getFields(0,bool)}/>),
-            (<WeaSearchGroup needTigger={showTable} title={this.getTitle(1)} showGroup={this.isShowFields(1)} items={this.getFields(1,bool)}/>)
-        ]
-    }
-    getTitle(index = 0) {
-        const {condition} = this.props;
-        return !isEmpty(condition.toJS()) && condition.toJS()[index].title
-    }
-    isShowFields(index = 0) {
-        const {condition} = this.props;
-        return !isEmpty(condition.toJS()) && condition.toJS()[index].defaultshow
-    }
-    // 0 常用条件，1 其他条件
-    getFields(index = 0,bool = false) {
-        const {condition, showTable, fields} = this.props;
-        const fieldsData = !isEmpty(condition.toJS()) && condition.toJS()[index].items;
-        let items = [];
-        forEach(fieldsData, (field) => {
-	        const domkeys = field.domkey.map(k =>{return (bool ? k : `_${k}`)})
-            items.push({
-                com:(<FormItem
-                    label={`${field.label}`}
-                    labelCol={{span: `${field.labelcol}`}}
-                    wrapperCol={{span: `${field.fieldcol}`}}>
-                        {WeaTools.switchComponent(this.props, field.key, domkeys, field)}
-                    </FormItem>),
-                colSpan:1
-            })
-        })
-        return items;
+    getSearchs(bool = false) {
+    	const { condition, showTable } = this.props;
+		let group = [];
+		condition.toJS().map(c =>{
+			let items = [];
+			c.items.map(fields => {
+				const domkeys = fields.domkey.map(k =>{return (bool ? k : `_${k}`)})
+				items.push({
+	                com:(<FormItem
+	                    label={`${fields.label}`}
+	                    labelCol={{span: `${fields.labelcol}`}}
+	                    wrapperCol={{span: `${fields.fieldcol}`}}>
+	                        { WeaTools.switchComponent(this.props, fields.key, domkeys, fields )}
+	                    </FormItem>),
+	                colSpan:1
+	            })
+			});
+			group.push(<WeaSearchGroup needTigger={showTable} title={c.title} showGroup={c.defaultshow} items={items}/>)
+		});
+		return group
     }
     getTree() {
-        const {leftTree,actions,searchParams,selectedTreeKeys,loading} = this.props;
+        const {leftTree,actions,searchParams,selectedTreeKeys} = this.props;
         return (
             <WeaLeftTree
                 datas={leftTree && leftTree.toJS()}
                 selectedKeys={selectedTreeKeys && selectedTreeKeys.toJS()}
-                loading={loading}
                 onFliterAll={()=>{
                 	actions.setShowSearchAd(false);
                 	actions.setSelectedTreeKeys();
@@ -293,8 +287,10 @@ class QueryFlow extends React.Component {
         ]
     }
     getButtons() {
-        const {actions,showTable,comsWeaTable} = this.props;
-        const selectedRowKeys = comsWeaTable.get('selectedRowKeys');
+        const { dataKey, comsWeaTable, actions, showTable } = this.props;
+		const tablekey = dataKey ? dataKey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+    	const selectedRowKeys = tableNow.get('selectedRowKeys');
         let btns =[];
         showTable && btns.push(<Button type="primary" disabled={!(selectedRowKeys && `${selectedRowKeys.toJS()}`)} onClick={()=>{actions.batchShareWf(`${selectedRowKeys.toJS()}`)}}  >批量共享</Button>);
         return btns
@@ -332,6 +328,7 @@ QueryFlow = createForm({
 function mapStateToProps(state) {
     const {workflowqueryFlow,comsWeaTable} = state;
     return {
+    	loading: workflowqueryFlow.get('loading'),
         title: workflowqueryFlow.get('title'),
         condition: workflowqueryFlow.get('condition'),
         fields: workflowqueryFlow.get('fields'),
@@ -343,7 +340,7 @@ function mapStateToProps(state) {
         searchParams:workflowqueryFlow.get('searchParams'),
         selectedTreeKeys:workflowqueryFlow.get('selectedTreeKeys'),
         //table
-        comsWeaTable: comsWeaTable.get(comsWeaTable.get('tableNow')), //绑定整个table
+        comsWeaTable, //绑定整个table
     }
 }
 

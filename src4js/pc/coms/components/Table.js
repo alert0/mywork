@@ -10,13 +10,11 @@ class WeaTableRedux extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	shouldComponentUpdate(nextProps, nextState) {
-		return !is(this.props.table, nextProps.table)
-	}
 	render() {
+		const { comsWeaTable, sessionkey, hasOrder, needScroll,actions} = this.props;
+		const tablekey = sessionkey ? sessionkey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
 		const {
-			hasOrder,
-			needScroll,
 			//table
 			datakey,
 			datas,
@@ -35,9 +33,7 @@ class WeaTableRedux extends React.Component {
 			count,
 			current,
 			pageSize,
-			//actions
-			actions
-		} = this.props;
+		} = tableNow.toJS();
 		return (
 			<WeaTable
 	            hasOrder={hasOrder}
@@ -50,35 +46,41 @@ class WeaTableRedux extends React.Component {
 	        	current={current}
 	            pageSize={pageSize}
 	            
-	            datas={datas.toJS()}
+	            datas={datas}
 	            columns={this.getColumns()}
 	            rowSel={this.getRowSel()}
-	            operates={operates.toJS()}
-	            sortParams={sortParams.toJS()}
-	            onChange={(p,f,s) => actions.getDatas("",p.current,p.pageSize,s)}
+	            operates={operates}
+	            sortParams={sortParams}
+	            onChange={(p,f,s) => actions.getDatas(sessionkey,p.current,p.pageSize,s)}
 	            
 	            colSetVisible={colSetVisible}
-	            colSetdatas={colSetdatas.toJS()}
-	            colSetKeys={colSetKeys.toJS()}
-	            showColumnsSet={bool => actions.setColSetVisible(bool)}
-	            onTransferChange={keys => actions.setTableColSetkeys(keys)}
-	            saveColumnsSet={() => actions.tableColSet()}
+	            colSetdatas={colSetdatas}
+	            colSetKeys={colSetKeys}
+	            showColumnsSet={bool => actions.setColSetVisible(sessionkey,bool)}
+	            onTransferChange={keys => actions.setTableColSetkeys(sessionkey,keys)}
+	            saveColumnsSet={() => actions.tableColSet(sessionkey)}
 	            />
 		)
 	}
 	getRowSel() {
-		const { actions, selectedRowKeys } = this.props;
+		const { actions, comsWeaTable, sessionkey } = this.props;
+		const tablekey = sessionkey ? sessionkey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+		const selectedRowKeys = tableNow.get('selectedRowKeys');
 		return {
 			selectedRowKeys: selectedRowKeys.toJS(),
 			onChange(sRowKeys, selectedRows) {
-				actions.setSelectedRowKeys(sRowKeys);
+				actions.setSelectedRowKeys(sessionkey,sRowKeys);
 			},
 			onSelect(record, selected, selectedRows) {},
 			onSelectAll(selected, selectedRows, changeRows) {}
 		};
 	}
 	getColumns() {
-		const { columns } = this.props;
+		const { comsWeaTable, sessionkey } = this.props;
+		const tablekey = sessionkey ? sessionkey.split('_')[0] : 'init';
+		const tableNow = comsWeaTable.get(tablekey);
+		const columns = tableNow.get('columns');
 		let newColumns = [].concat(columns.toJS());
 		return newColumns.map(column => {
 			let newColumn = column;
@@ -97,27 +99,27 @@ class WeaTableRedux extends React.Component {
 
 const mapStateToProps = state => {
 	const { comsWeaTable } = state;
-	const name = comsWeaTable.get('tableNow');
-	return {
-		table: comsWeaTable.get(name),
-		datakey: comsWeaTable.getIn([name, 'datakey']),
-		datas: comsWeaTable.getIn([name, 'datas']),
-		columns: comsWeaTable.getIn([name, 'columns']),
-		operates: comsWeaTable.getIn([name, 'operates']),
-		sortParams: comsWeaTable.getIn([name, 'sortParams']),
-		selectedRowKeys: comsWeaTable.getIn([name, 'selectedRowKeys']),
-		loading: comsWeaTable.getIn([name, 'loading']),
-		showCheck: comsWeaTable.getIn([name, 'showCheck']),
-		pageAutoWrap: comsWeaTable.getIn([name, 'pageAutoWrap']),
-		//自定义列
-		colSetVisible: comsWeaTable.getIn([name, 'colSetVisible']),
-		colSetdatas: comsWeaTable.getIn([name, 'colSetdatas']),
-		colSetKeys: comsWeaTable.getIn([name, 'colSetKeys']),
-		//pagination
-		count: comsWeaTable.getIn([name, 'count']),
-		current: comsWeaTable.getIn([name, 'current']),
-		pageSize: comsWeaTable.getIn([name, 'pageSize']),
-	}
+	return { comsWeaTable } 
+//	return {
+//		table: comsWeaTable.get(name),
+//		datakey: comsWeaTable.getIn([name, 'datakey']),
+//		datas: comsWeaTable.getIn([name, 'datas']),
+//		columns: comsWeaTable.getIn([name, 'columns']),
+//		operates: comsWeaTable.getIn([name, 'operates']),
+//		sortParams: comsWeaTable.getIn([name, 'sortParams']),
+//		selectedRowKeys: comsWeaTable.getIn([name, 'selectedRowKeys']),
+//		loading: comsWeaTable.getIn([name, 'loading']),
+//		showCheck: comsWeaTable.getIn([name, 'showCheck']),
+//		pageAutoWrap: comsWeaTable.getIn([name, 'pageAutoWrap']),
+//		//自定义列
+//		colSetVisible: comsWeaTable.getIn([name, 'colSetVisible']),
+//		colSetdatas: comsWeaTable.getIn([name, 'colSetdatas']),
+//		colSetKeys: comsWeaTable.getIn([name, 'colSetKeys']),
+//		//pagination
+//		count: comsWeaTable.getIn([name, 'count']),
+//		current: comsWeaTable.getIn([name, 'current']),
+//		pageSize: comsWeaTable.getIn([name, 'pageSize']),
+//	}
 }
 
 const mapDispatchToProps = dispatch => {

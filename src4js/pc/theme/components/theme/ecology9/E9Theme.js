@@ -10,7 +10,7 @@ import ECLocalStorage from '../../../util/ecLocalStorage';
 import E9Header from './E9Header';
 import E9LeftMenu from './E9LeftMenu';
 import Birthday from '../../plugin/Birthday';
-
+import { PortalSetting } from 'weaPortal';
 class E9Theme extends React.Component {
     componentWillMount() {
         let pathname = this.props.location.pathname;
@@ -35,6 +35,9 @@ class E9Theme extends React.Component {
         const {themeColorType} = this.props;
         return (
             <div className={`e9theme-layout-container e9theme-color-${themeColorType}`}>
+                <div id="e9PortalSetting">
+                    <PortalSetting/>
+                </div>
                 <iframe id="hiddenPreLoader" name="hiddenPreLoader" style={{display: "none"}} frameBorder="0" width="0" height="0" src="/spa/workflow/index.html"></iframe>
                 <WeaPopoverHrm />
                 <Birthday />

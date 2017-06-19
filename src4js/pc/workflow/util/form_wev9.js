@@ -84,3 +84,50 @@ jQuery(function () {
 		e.stopPropagation();
 	});
 });
+
+
+//Iframe区域相关方法
+var iframeOperate = (function(){
+	
+	function showIframeArea(vthis){
+		jQuery(vthis).closest("td").find(".iframeLoading").hide();
+		jQuery(vthis).show();
+	}
+	
+	//Iframe区域高度自适应高度
+	function autoAdjustHeight(vthis){
+		var iframeObj = jQuery(vthis);
+		var funObj = function(){autoAdjustHeight(vthis)};
+		var eachcount = parseInt(iframeObj.attr("eachcount"));
+		if(eachcount > 10){
+			iframeObj.css("height", "100px");
+			return;
+		}
+		
+		var contextObj = iframeObj[0].contentWindow.document;
+		var bodyContentHeight = contextObj.body.scrollHeight;
+		if(window.console) console.log("scrollHeight:"+bodyContentHeight+"  |offsetHeight:"+contextObj.body.offsetHeight)
+		if(bodyContentHeight == 0){
+			iframeObj.attr("eachcount", eachcount+1);
+			window.setTimeout(funObj, 500);
+		}else{
+			iframeObj.css("height", bodyContentHeight+"px");
+		}
+	}
+
+	return{
+		//Iframe区域onload事件
+		loadingOver: function(vthis){
+			if(jQuery(vthis).attr("adjustheight") == "y"){
+				window.setTimeout(function(){
+					showIframeArea(vthis);
+					autoAdjustHeight(vthis);
+				},800);
+			}else{
+				showIframeArea(vthis);
+			}
+		}
+	}
+})();
+
+window.iframeOperate = iframeOperate;

@@ -24,14 +24,41 @@ const workflowReducer = Workflow.reducer;
 const WorkflowAction = Workflow.action;
 //import workflowReducer from '../workflow/reducers/'
 
+import Blog from 'weaBlog'
+const BlogRoute = Blog.Route;
+const blogReducer = Blog.reducer;
+const BlogAction = Blog.action;
+
+import Meeting from 'weaMeeting'
+const MeetingRoute = Meeting.Route;
+const meetingReducer = Meeting.reducer;
+const MeetingAction = Meeting.action;
+
+import Fna from 'weaFna'
+const FnaRoute = Fna.Route;
+const fnaReducer = Fna.reducer;
+const FnaAction = Fna.action;
+
 import theme from '../theme/'
 const Login = theme.Login;
 const Theme = theme.Theme;
 const portalThemeReducer = theme.reducer;
 
+
+import { comsReducer } from '../coms/index'
+
 import objectAssign from 'object-assign'
 
-let reducers = objectAssign({},portalReducer,workflowReducer,portalThemeReducer,{routing:routerReducer});
+let reducers = objectAssign({}, 
+	comsReducer,
+	portalReducer, 
+	portalThemeReducer, 
+	workflowReducer, 
+	blogReducer, 
+	meetingReducer, 
+	fnaReducer, 
+	{routing: routerReducer}
+);
 
 const rootReducer = combineReducers(reducers);
 
@@ -81,21 +108,42 @@ const loginClear = () => {
     $("#addressdiv", parent.document).remove();
 };
 
+import { WeaLocaleProvider } from 'ecCom'
+const Set = WeaLocaleProvider.Set;
+
+class Wrap extends React.Component {
+    render() {
+        return (
+            <div style={{height:"100%"}}>
+            	{this.props.children}
+            </div>
+        )
+    }
+}
+
 class Root extends React.Component {
     render() {
 		return (
             <Provider store={store}>
 				<Router history={history}>
                     <Route path="/" component={Login} onEnter={loginClear} />
+                    <Route path="locale" component={Set} />
                     <Route path="main" component={Theme}>
                         <Route path="portal/portal-:hpid-:subCompanyId" component={Homepage} />
+                        <Route name="report" path="report" component={Wrap}>
+					    	{FnaRoute}
+					    </Route>
                         {WorkflowRoute}
+                        {BlogRoute}
+                        {MeetingRoute}
+                        {FnaRoute}
                     </Route>
 				</Router>
 			</Provider>
         )
     }
 }
+
 
 try{
 	//console.time("time");

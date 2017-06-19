@@ -21,12 +21,13 @@ import './css/worflowmessage_wev8.css'
 import './css/forward.css'
 
 import reducers from './reducers/'
-import { comsReducer } from '../coms/index'
 import * as WorkflowListAction from './actions/list'
 import * as WorkflowReqAction from './actions/req'
 import * as WorkflowQueryAction from './actions/queryFlow'
 
-const reducer = { ...reducers, ...comsReducer }
+import { comsReducer } from '../coms/index'
+
+let reducer = {...reducers,...comsReducer};
 
 require("./util/doing");
 require("./util/formbtn");
@@ -44,7 +45,6 @@ require('./util/img_zoom')
 require('./util/applocation_wev8')
 
 import { WeaTools } from 'ecCom';
-
 //onEnter={(nextState,replace,callback)=>WeaTools.checkSession(nextState,replace,callback)}
 
 const WorkflowRoute = (

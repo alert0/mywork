@@ -11,6 +11,7 @@ const initialState = Immutable.fromJS({
 	dispatchDuration: 0,
 	loading: false,
 	params: {},
+	submitParams:{},
 	markInfo: {},
 	wfStatus: {},
 	reqTabKey: '1',
@@ -26,13 +27,11 @@ const initialState = Immutable.fromJS({
 export default function req(state = initialState, action) {
 	switch(action.type) {
 		case types.REQ_INIT_PARAMS:
-			return state.merge({ loading: false, params: action.params, });
+			return state.merge({ loading: false, params: action.params, submitParams: action.submitParams });
 		case types.REQ_CLEAR_INFO:
 			return state.merge({ logList: [], logParams: {}, markInfo: {}, logCount: 0, wfStatus: {} });
 		case types.SET_SHOWBACK_TO_E8:
 			return state.merge({ showBackToE8: action.bool });
-		case types.SET_HIDDEN_AREA:
-			return state.merge({ params: state.get('params').merge({ hiddenarea: state.getIn(['params', 'hiddenarea']).merge(action.hiddenarea) }) });
 		case types.SET_RESOURCES_KEY:
 			return state.merge({ resourcesKey: action.key, resourcesTabKey: action.tabindex });
 		case types.FORM_LOADING:
@@ -45,7 +44,9 @@ export default function req(state = initialState, action) {
 				dispatchDuration: action.dispatchDuration,
 			});
 		case types.SET_MARK_INPUT_INFO:
-			return state.merge({ markInfo: action.markInfo });
+			return state.update("params", val=>{
+				return val && val.merge({ markInfo: action.markInfo });
+			});
 		case types.SET_RIGHT_MENU_INFO:
 			return state.merge({ rightMenu: action.rightMenu });
 		case types.SET_WORKFLOW_STATUS:
@@ -80,8 +81,10 @@ export default function req(state = initialState, action) {
 			return state.merge({ dangerouslyhtml: { reqsubmiterrormsghtml: action.msghtml } });
 		case types.SET_SHOW_FORWARD:
 			return state.merge({ rightMenuStatus: action.forwardParams });
-		case types.SET_OPERATE_INFO:
-			return state.mergeDeep({ params: { hiddenarea: action.updateinfo } });
+		case types.REQ_UPDATE_SUBMIT_PARAMS:
+			return state.update("submitParams", val=>{
+				return val.merge(action.updateinfo);
+			});
 		case types.CLEAR_ALL:
 			return initialState;
 		default:

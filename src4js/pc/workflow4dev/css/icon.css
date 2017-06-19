@@ -1,17 +1,17 @@
 @font-face {
-  font-family: 'form';
-  src:  url('/font/workflow/form.eot?4qncbq');
-  src:  url('/font/workflow/form.eot?4qncbq#iefix') format('embedded-opentype'),
-    url('/font/workflow/form.ttf?4qncbq') format('truetype'),
-    url('/font/workflow/form.woff?4qncbq') format('woff'),
-    url('/font/workflow/form.svg?4qncbq#form') format('svg');
+  font-family: 'icon-workflow';
+  src:  url('/font/workflow/icon-workflow.eot?q4xh3i');
+  src:  url('/font/workflow/icon-workflow.eot?q4xh3i#iefix') format('embedded-opentype'),
+    url('/font/workflow/icon-workflow.ttf?q4xh3i') format('truetype'),
+    url('/font/workflow/icon-workflow.woff?q4xh3i') format('woff'),
+    url('/font/workflow/icon-workflow.svg?q4xh3i#icon-workflow') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
-[class^="icon-Right-menu-"], [class*=" icon-Right-menu-"],[class^="icon-form-"], [class*=" icon-form-"], [class^="icon-Browse-box-"], [class*=" icon-Browse-box-"] {
+[class^="icon-workflow"], [class*=" icon-workflow"] {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'form' !important;
+  font-family: 'icon-workflow' !important;
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -24,186 +24,198 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-Browse-box-add-all:before {
+.icon-workflow-Right-menu-copy:before {
   content: "\e90e";
 }
-.icon-Browse-box-Add-to:before {
-  content: "\e90f";
+.icon-workflow-Right-menu-PageAddress:before {
+  content: "\e914";
 }
-.icon-Browse-box-Delete-all:before {
-  content: "\e910";
+.icon-workflow-Right-menu-Paste:before {
+  content: "\e915";
 }
-.icon-Browse-box-delete:before {
+.icon-workflow-delete:before {
   content: "\e911";
 }
-.icon-Right-menu-Batch-sharing:before {
-  content: "\e90a";
+.icon-workflow-download:before {
+  content: "\e912";
 }
-.icon-Right-menu-Need-feedback:before {
-  content: "\e90b";
+.icon-workflow-upload:before {
+  content: "\e913";
 }
-.icon-Right-menu-Print-log2:before {
-  content: "\e90c";
+.icon-workflow-down:before {
+  content: "\e90f";
 }
-.icon-Right-menu-Turn-to-do-need-feedback:before {
-  content: "\e90d";
+.icon-workflow-up:before {
+  content: "\e910";
 }
-.icon-form-left:before {
-  content: "\e907";
-}
-.icon-form-right:before {
-  content: "\e909";
-}
-.icon-form-down:before {
-  content: "\e906";
-}
-.icon-form-up:before {
-  content: "\e908";
-}
-.icon-Right-menu--search:before {
-  content: "\e905";
-}
-.icon-Right-menu-Edition:before {
-  content: "\e900";
-}
-.icon-Right-menu-export:before {
-  content: "\e901";
-}
-.icon-Right-menu-Preservation:before {
-  content: "\e902";
-}
-.icon-Right-menu-Reopen:before {
-  content: "\e903";
-}
-.icon-Right-menu-Supervise:before {
-  content: "\e904";
-}
-.icon-Right-menu--go-back:before {
-  content: "\ea44";
-}
-.icon-Right-menu-Advice:before {
-  content: "\ea43";
-}
-.icon-Right-menu-Approval:before {
-  content: "\ea42";
-}
-.icon-Right-menu-batch:before {
-  content: "\ea41";
-}
-.icon-Right-menu-Collection:before {
-  content: "\ea40";
-}
-.icon-Right-menu-Custom:before {
-  content: "\ea3f";
-}
-.icon-Right-menu-delete:before {
-  content: "\ea3e";
-}
-.icon-Right-menu-Detailed:before {
-  content: "\ea3d";
-}
-.icon-Right-menu-edit:before {
-  content: "\ea3c";
-}
-.icon-Right-menu-Enable:before {
-  content: "\ea3b";
-}
-.icon-Right-menu-File:before {
-  content: "\ea3a";
-}
-.icon-Right-menu-Flow-setting:before {
-  content: "\ea39";
-}
-.icon-Right-menu-Forcible:before {
-  content: "\ea47";
-}
-.icon-Right-menu-help:before {
-  content: "\ea46";
-}
-.icon-Right-menu-Journal:before {
-  content: "\ea45";
-}
-.icon-Right-menu-leading-in:before {
-  content: "\ea38";
-}
-.icon-Right-menu-New-Flow:before {
-  content: "\ea37";
-}
-.icon-Right-menu-New-SMS:before {
-  content: "\ea36";
-}
-.icon-Right-menu-overtime:before {
-  content: "\ea35";
-}
-.icon-Right-menu-Print-log:before {
-  content: "\ea34";
-}
-.icon-Right-menu-Return:before {
-  content: "\ea33";
-}
-.icon-Right-menu-Revoke:before {
-  content: "\ea32";
-}
-.icon-Right-menu-suspend:before {
-  content: "\ea31";
-}
-.icon-Right-menu-task-list:before {
-  content: "\ea30";
-}
-.icon-Right-menu-Trigger-process:before {
-  content: "\ea2f";
-}
-.icon-Right-menu-Turn-to-do:before {
-  content: "\ea2e";
-}
-.icon-Right-menu-WeChat:before {
-  content: "\ea2d";
-}
-.icon-form-Batch-add-hot:before {
-  content: "\ea23";
-}
-.icon-form-Batch-add:before {
-  content: "\ea24";
-}
-.icon-form-Add-to-hot:before {
-  content: "\ea25";
-}
-.icon-form-Add-to:before {
-  content: "\ea26";
-}
-.icon-form-copy-hot:before {
-  content: "\ea27";
-}
-.icon-form-copy:before {
-  content: "\ea28";
-}
-.icon-form-delete-hot:before {
-  content: "\ea29";
-}
-.icon-form-delete:before {
-  content: "\ea2a";
-}
-.icon-form-sap-hot:before {
-  content: "\ea2b";
-}
-.icon-form-sap:before {
-  content: "\ea2c";
-}
-.icon-form-Total-person-time:before {
+.icon-workflow-form-Total-person-time:before {
   content: "\a900";
 }
-.icon-form-Already-view:before {
+.icon-workflow-form-Already-view:before {
   content: "\a901";
 }
-.icon-form-Has-been-submitted:before {
+.icon-workflow-form-Has-been-submitted:before {
   content: "\a902";
 }
-.icon-form-Not-submitted:before {
+.icon-workflow-form-Not-submitted:before {
   content: "\a903";
 }
-.icon-form-Not-viewed:before {
+.icon-workflow-form-Not-viewed:before {
   content: "\a904";
 }
-.icon-form-open:before {
+.icon-workflow-form-open:before {
   content: "\a905";
+}
+.icon-workflow-Right-menu-Edition:before {
+  content: "\e900";
+}
+.icon-workflow-Right-menu-export:before {
+  content: "\e901";
+}
+.icon-workflow-Right-menu-Preservation:before {
+  content: "\e902";
+}
+.icon-workflow-Right-menu-Reopen:before {
+  content: "\e903";
+}
+.icon-workflow-Right-menu-Supervise:before {
+  content: "\e904";
+}
+.icon-workflow-Right-menu--search:before {
+  content: "\e905";
+}
+.icon-workflow-form-down:before {
+  content: "\e906";
+}
+.icon-workflow-form-left:before {
+  content: "\e907";
+}
+.icon-workflow-form-up:before {
+  content: "\e908";
+}
+.icon-workflow-form-right:before {
+  content: "\e909";
+}
+.icon-workflow-Right-menu-Batch-sharing:before {
+  content: "\e90a";
+}
+.icon-workflow-Right-menu-Need-feedback:before {
+  content: "\e90b";
+}
+.icon-workflow-Right-menu-Print-log2:before {
+  content: "\e90c";
+}
+.icon-workflow-Right-menu-Turn-to-do-need-feedback:before {
+  content: "\e90d";
+}
+.icon-workflow-form-Batch-add-hot:before {
+  content: "\ea23";
+}
+.icon-workflow-form-Batch-add:before {
+  content: "\ea24";
+}
+.icon-workflow-form-Add-to-hot:before {
+  content: "\ea25";
+}
+.icon-workflow-form-Add-to:before {
+  content: "\ea26";
+}
+.icon-workflow-form-copy-hot:before {
+  content: "\ea27";
+}
+.icon-workflow-form-copy:before {
+  content: "\ea28";
+}
+.icon-workflow-form-delete-hot:before {
+  content: "\ea29";
+}
+.icon-workflow-form-delete:before {
+  content: "\ea2a";
+}
+.icon-workflow-form-sap-hot:before {
+  content: "\ea2b";
+}
+.icon-workflow-form-sap:before {
+  content: "\ea2c";
+}
+.icon-workflow-Right-menu-WeChat:before {
+  content: "\ea2d";
+}
+.icon-workflow-Right-menu-Turn-to-do:before {
+  content: "\ea2e";
+}
+.icon-workflow-Right-menu-Trigger-process:before {
+  content: "\ea2f";
+}
+.icon-workflow-Right-menu-task-list:before {
+  content: "\ea30";
+}
+.icon-workflow-Right-menu-suspend:before {
+  content: "\ea31";
+}
+.icon-workflow-Right-menu-Revoke:before {
+  content: "\ea32";
+}
+.icon-workflow-Right-menu-Return:before {
+  content: "\ea33";
+}
+.icon-workflow-Right-menu-Print-log:before {
+  content: "\ea34";
+}
+.icon-workflow-Right-menu-overtime:before {
+  content: "\ea35";
+}
+.icon-workflow-Right-menu-New-SMS:before {
+  content: "\ea36";
+}
+.icon-workflow-Right-menu-New-Flow:before {
+  content: "\ea37";
+}
+.icon-workflow-Right-menu-leading-in:before {
+  content: "\ea38";
+}
+.icon-workflow-Right-menu-Flow-setting:before {
+  content: "\ea39";
+}
+.icon-workflow-Right-menu-File:before {
+  content: "\ea3a";
+}
+.icon-workflow-Right-menu-Enable:before {
+  content: "\ea3b";
+}
+.icon-workflow-Right-menu-edit:before {
+  content: "\ea3c";
+}
+.icon-workflow-Right-menu-Detailed:before {
+  content: "\ea3d";
+}
+.icon-workflow-Right-menu-delete:before {
+  content: "\ea3e";
+}
+.icon-workflow-Right-menu-Custom:before {
+  content: "\ea3f";
+}
+.icon-workflow-Right-menu-Collection:before {
+  content: "\ea40";
+}
+.icon-workflow-Right-menu-batch:before {
+  content: "\ea41";
+}
+.icon-workflow-Right-menu-Approval:before {
+  content: "\ea42";
+}
+.icon-workflow-Right-menu-Advice:before {
+  content: "\ea43";
+}
+.icon-workflow-Right-menu--go-back:before {
+  content: "\ea44";
+}
+.icon-workflow-Right-menu-Journal:before {
+  content: "\ea45";
+}
+.icon-workflow-Right-menu-help:before {
+  content: "\ea46";
+}
+.icon-workflow-Right-menu-Forcible:before {
+  content: "\ea47";
 }

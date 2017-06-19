@@ -1,47 +1,9 @@
 /** --------- 元素工具栏功能js函数 -----------**/
-//删除元素
-function onDel(eid){  
-  if(!confirm("此元素被删除后将不能被恢复，是否继续?")) return;
-  var group=$($("#item_"+eid).parents(".group")[0]);
-  var flag=group.attr(_handleAttrName("areaflag"));
-  var eids="";
-  group.find(".item").each(function(){
-      if($(this).attr("data-eid")!=eid)   eids+=$(this).attr("data-eid")+",";
-  });
-  //alert(eids);
-  $.get("/homepage/element/EsettingOperate.jsp",{method: "delElement", hpid: global_hpid,eid:eid,delFlag:flag,delAreaElement:eids,subCompanyId:global_subCompanyId},
-      function(data){         
-        if($.trim(data)=="")  {
-          $("#item_"+eid).remove();
-        } else {
-          alert($.trim(data))
-        }
-      }
-  );
+//刷新元素
+function onRefresh(eid,ebaseid){
+    if(typeof elementsRefresh === 'object' && typeof elementsRefresh[eid] === 'function') elementsRefresh[eid]();
 }
 
-//锁定/解锁函数
-function onLockOrUn(eid,e){
-  var obj = e.currentTarget;
-  if(confirm("此操作可能花较长的时间,是否继续?")){
-      //divInfo.style.display='inline';
-      var url;
-      if(jQuery(obj).attr("data-status")=="unlocked"){
-          url="/homepage/element/EsettingOperate.jsp?method=locked&eid="+eid+"&hpid="+global_hpid+"&subCompanyId="+global_subCompanyId;
-      } else {
-          url="/homepage/element/EsettingOperate.jsp?method=unlocked&eid="+eid+"&hpid="+global_hpid+"&subCompanyId="+global_subCompanyId;
-      }
-      $.get(url,{},function(data){
-        //divInfo.style.display='none';
-        if(jQuery(obj).attr("data-status")=="unlocked"){
-              jQuery(obj).attr("data-status","locked");   
-          } else {
-              jQuery(obj).attr("data-status","unlocked");
-          }           
-        jQuery(obj).children(":first").attr("src",$.trim(data));
-       });
-  }
-}
 function onSetting(eid, ebaseid) {
   // 获取设置页面内容
   var settingUrl = "/page/element/setting.jsp"
@@ -114,8 +76,6 @@ var openMoreWin = function(eid, event){
     }
     openLinkUrl(moreurl, '2');
 }
-
-window.onDel = onDel;
-window.onLockOrUn = onLockOrUn;
+window.onRefresh = onRefresh;
 window.onSetting = onSetting;
 window.openMoreWin = openMoreWin;

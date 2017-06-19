@@ -65,20 +65,3 @@ export const getResourcesKey = params => {
 export const updateUserTxStatus = params =>{
 	return WeaTools.callApi('/workflow/request/WorkflowSignStatusAjax.jsp', 'GET', params);
 }
-
-//请求提交
-export const requestSubmit = params =>{
-	return WeaTools.callApi('/api/workflow/request/requestOperation', 'POST', params);
-}
-//批注提交
-export const reqRemarkOperation = params =>{
-	return WeaTools.callApi('/api/workflow/request/remarkOperation', 'POST', params);
-}
-//转发提交
-export const reqRemarkOperate= params => {
-	return WeaTools.callApi('/api/workflow/request/remarkOperate', 'POST', params);
-}
-//暂停 撤销 强制归档 强制收回
-export const reqFunctionLink = params => {
-	return WeaTools.callApi('/api/workflow/request/functionLink', 'POST', params);
-}

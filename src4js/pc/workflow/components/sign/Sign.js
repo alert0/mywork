@@ -42,10 +42,14 @@ class Sign extends React.Component {
 	        this.props.forward !== nextProps.forward;
     }
 	componentDidMount() {
-		const {actions,ismanagePage} = this.props;
+		const {actions,ismanagePage,signinputinfo} = this.props;
     	actions.setLoglistTabKey('1');
     	if(ismanagePage == '1'){
-			var _ue = UEUtil.initRemark('remark', false);
+    		const isSignWorkflow_edit = signinputinfo.get('isSignWorkflow_edit');
+			const isannexupload_edit = signinputinfo.get('isannexupload_edit');
+			const isSignDoc_edit = signinputinfo.get('isSignDoc_edit');
+			const  haswfresource = (isSignWorkflow_edit == '1' || isannexupload_edit == '1' || isSignDoc_edit=='1');
+			var _ue = UEUtil.initRemark('remark', false , haswfresource);
 			bindRemark(_ue);
     	}
     }

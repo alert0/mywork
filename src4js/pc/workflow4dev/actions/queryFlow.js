@@ -63,9 +63,9 @@ export const doSearch = (params = {}) => {
     return (dispatch, getState) => {
     	const {searchParamsAd,searchParams} = getState()['workflowqueryFlow'].toJS();
         QUERY_FLOW.queryFieldsSearch(params.jsonstr ? params : {...searchParams,...searchParamsAd}).then((data)=>{
+        	dispatch(WeaTableAction.getDatas(data.sessionkey, params.current || 1));
             dispatch({type: types.QUERY_FLOW_SEARCH_RESULT, value: data.sessionkey});
             //dispatch(getDatas(data.sessionkey, params.current || 1));
-            dispatch(WeaTableAction.getDatas(data.sessionkey, params.current || 1));
         })
     }
 }

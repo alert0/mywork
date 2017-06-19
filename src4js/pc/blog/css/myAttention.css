@@ -1,0 +1,22 @@
+.wea-blog-my-attention {
+	height: 100%;
+}
+
+.wea-blog-my-attention .ant-tabs-nav {
+	width: 100%;
+}
+
+.wea-blog-my-attention .ant-tabs-nav .ant-tabs-tab {
+	width: 33.3%;
+	margin-right: 0;
+}
+
+.wea-blog-my-attention .ant-tabs-bar {
+	margin: 0;
+}
+
+.wea-blog-my-attention .ant-tabs-nav .ant-tabs-tab-inner {
+	text-align: center;
+	font-size: 12px;
+	padding: 12px 0;
+}

@@ -12,13 +12,14 @@ class Resources extends React.Component {
     }
 	shouldComponentUpdate(nextProps,nextState) {
 		return !is(this.props.tabKey,nextProps.tabKey)||
+		!is(this.props.dataKey,nextProps.dataKey)||
 		!is(this.props.actions,nextProps.actions);
    }
 	componentDidMount(){
 //		jQuery('.wea-workflow-resources').height(jQuery('.wea-new-top-req-content').height() - 5);
 	}
     render() {
-    	const {actions,tabKey} = this.props;
+    	const {actions,tabKey,dataKey} = this.props;
     	const menu = [
 			{title:'全部',key:'0',},
 			{title:'相关流程',key:'1'},
@@ -36,7 +37,7 @@ class Resources extends React.Component {
         			}
         		)}
         	</div>
-    		<WeaTable />
+    		<WeaTable sessionkey={dataKey}/>
         </div>
     }
     doChange(key){

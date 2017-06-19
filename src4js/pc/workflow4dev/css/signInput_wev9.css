@@ -115,8 +115,9 @@
 
 
 .wea-req-workflow-signInput{
-	
+	background-color:#fff;
 }
 .remarkDiv{
 	box-shadow: 0 0 5px #ddd; 
+	border: 1px solid #d0d0d0;
 }

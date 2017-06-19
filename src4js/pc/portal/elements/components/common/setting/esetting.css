@@ -1,0 +1,180 @@
+/* container */
+.esetting-container {
+    position: relative;
+    border-bottom: 1px solid #e9e9e9;
+}
+
+/* confirm */
+.esetting-confirm {
+    padding: 8px 0;
+    text-align: center;
+}
+
+.esetting-confirm .ant-btn {
+    width: 70px;
+    height: 30px;
+    border-radius: 3px;
+}
+
+/* modal */
+.esetting-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.esetting-modal .ant-modal {
+    top: 0;
+    padding-bottom: 0;
+}
+
+.esetting-modal .ant-modal-header {
+    padding: 8px 16px;
+}
+
+.esetting-modal .ant-modal-body {
+    padding: 0;
+}
+
+.esetting-modal .ant-modal-footer {
+    padding: 0;
+    border-top: 0;
+    text-align: center;
+}
+
+/* form */
+.esetting-form .ant-form-item {
+    margin: 0;
+    padding: 0;
+    background: #f8f8f8;
+    border-bottom: 1px solid #e9e9e9;
+}
+
+.esetting-form .ant-form-item-label {
+    text-align: center;
+}
+
+.esetting-form .ant-form-item-label label:after {
+    content: "";
+}
+
+.esetting-form .ant-form-item-control {
+    padding: 5px;
+    line-height: 2;
+    background: #fff;
+    border-left: 1px solid #e9e9e9;
+}
+
+/* table */
+.esetting-table .ant-table-thead > tr,
+.esetting-table .ant-table-tbody > tr {
+    transition: none;
+}
+
+.esetting-table .ant-table-thead th {
+    padding: 8px 0;
+    text-align: center;
+    background: #f8fcff;
+    border-bottom: 2px solid #e0edf3;
+    border-radius: 0;
+}
+
+.esetting-table .ant-table-tbody td {
+    padding: 6px 0;
+    text-align: center;
+    border-bottom: 1px solid #e9e9e9 !important;
+}
+
+/* browser */
+.esetting-browser {
+    width: 90%;
+}
+
+.esetting-browser-input {
+    padding-right: 28px;
+    border-radius: 6px !important;
+}
+
+.esetting-browser-search {
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    background: none !important;
+    border: none !important;
+}
+
+/* 数据来源操作 */
+.esetting-dso {
+    display: inline-block;
+    position: absolute;
+    right: 50px;
+}
+
+.esetting-dso-add {
+    float: left;
+    width: 21px;
+    height: 35px;
+    margin-right: 10px;
+    background: url('/spa/portal/image/add.png') no-repeat center;
+    cursor: pointer;
+}
+
+.esetting-dso-add:hover {
+    background: url('/spa/portal/image/add2.png') no-repeat center;
+}
+
+.esetting-dso-deletes {
+    float: left;
+    width: 21px;
+    height: 35px;
+    background: url('/spa/portal/image/delete.png') no-repeat center;
+    cursor: pointer;
+}
+
+.esetting-dso-deletes:hover {
+    background: url('/spa/portal/image/delete2.png') no-repeat center;
+}
+
+.esetting-dso-delete,
+.esetting-dso-setting {
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.esetting-dso-delete:hover,
+.esetting-dso-setting:hover {
+    color: #2db7f5;
+}
+
+/* checkbox group */
+.esetting-checkbox-group .ant-checkbox-group-item {
+    display: block;
+}
+
+.esetting-checkbox-group .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+    margin-left: 0;
+}
+
+/* share */
+.esetting-share-no-right {
+    text-align: center;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    border-bottom: 1px solid #e9e9e9;
+}
+
+/* other */
+.esetting-table-rf-param .ant-table-thead th,
+.esetting-table-rf-param .ant-table-tbody td {
+    text-align: left !important;
+    padding: 6px 30px !important;
+}
+
+.rc-color-picker-trigger {
+    width: 50px;
+}
+
+.ant-tooltip-inner {
+    max-width: 999px;
+}

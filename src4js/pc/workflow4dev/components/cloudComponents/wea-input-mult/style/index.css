@@ -1,3 +1,16 @@
 .wea-input-mult{
-	
+	position: relative;
+}
+
+.wea-input-mult .ant-input{
+	border-radius:3px;
+}
+
+.textArea_required:after {
+    content: "*";
+    font-size: 14px;
+    color: #ff0000;
+    position: absolute;
+    right: 2px;
+    top: 48%;
 }

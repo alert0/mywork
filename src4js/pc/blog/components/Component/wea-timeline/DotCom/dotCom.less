@@ -1,0 +1,78 @@
+@P: wea-timeline-item-dot;
+@OutCircle: 22px;
+@InCircle: 16px;
+@Red: #ff3044;
+@Blue: #32a8ff;
+@Green: #75bf26;
+@Orange: #f5b400;
+@Grey: #c5c5c5;
+@Width: 100px;
+
+.@{P} {
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  display: inline-block;
+
+  .@{P}-circle {
+    width: @OutCircle;
+    height: @OutCircle;
+    border-radius: 50%;
+    border: 1px solid @Grey;
+
+    //text-align: center;
+    padding: ((@OutCircle - 2) - @InCircle )/2;
+
+    .@{P}-icon {
+      display: inline-block;
+      width: @InCircle;
+      height: @InCircle;
+      border-radius: 50%;
+      font-size: (@InCircle)/2;
+
+      line-height: @InCircle;
+      font-weight: bold;
+      color: white;
+    }
+    .@{P}-icon-none {
+      background-color: @Red;
+    }
+    .@{P}-icon-current {
+      background-color: @Blue;
+    }
+    .@{P}-icon-normal {
+      background-color: @Green;
+    }
+    .@{P}-icon-expired {
+      background-color: @Orange;
+    }
+    .@{P}-icon-white {
+      background-color: @Red;
+    }
+  }
+
+  .@{P}-text {
+    position: relative;
+    display: inline-block;
+    width: @Width;
+    line-height: 24px;
+    overflow: hidden;
+    text-align: center;
+    left: -(@Width - 22)/2;
+  }
+  .@{P}-text-invalid {
+    color: @Red;
+  }
+  .@{P}-text-current {
+    color: @Blue;
+  }
+  .@{P}-text-week {
+    color: @Grey;
+  }
+  .@{P}-text-month {
+    color: @Grey;
+  }
+  .@{P}-text-year {
+    color: @Grey;
+  }
+}

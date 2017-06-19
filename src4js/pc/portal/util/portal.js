@@ -1,6 +1,70 @@
+//门户刷新函数
+var onRightClickMenuShow = function(position){
+	window.store_e9_element.dispatch(window.action_e9_element.RightClickMenuAction.showRightClickMenu(position));
+}
+window.onRightClickMenuShow = onRightClickMenuShow;
+
+//门户刷新函数
+var onRightClickMenuClose = function(type){
+	window.store_e9_element.dispatch(window.action_e9_element.RightClickMenuAction.closeRightClickMenu(type));
+}
+window.onRightClickMenuClose = onRightClickMenuClose;
+
+var bindRightClickEvent = function(){
+	//屏蔽浏览器右键
+	$(".homepage").unbind("mousedown").bind("contextmenu", function (e) {
+	    e.preventDefault();
+	    return false;
+	});
+	//屏蔽浏览器右键
+	$(".homepage").unbind("mousedown").bind("mousedown", function (event) {
+	    if (event.which == 3) {
+	    	const position = {
+	    		left: event.pageX - $(".homepage").offset().left,
+	    		top: event.pageY- $(".homepage").offset().top
+	    	}
+	    	const pos = {
+	    		height : window.innerHeight - event.pageY,
+	    		width : window.innerWidth - event.pageX,
+	    		position : position
+	    	}
+	        onRightClickMenuShow(pos);
+	    }else if(event.which == 1){
+	    	var e = event || window.event;
+			var ele = e.srcElement || e.target;
+			var rcdom = $(ele).parents(".rightclickmenu");
+			if(!rcdom[0]){//鼠标点击的范围不在指定范围内
+			    onRightClickMenuClose();
+			}
+	    }
+	});
+}
+window.bindRightClickEvent = bindRightClickEvent;
+
+//门户刷新函数
+var refreshPortal = function(){
+	const paramsObj = window.store_e9_element.getState().portal.get("params").toJSON();
+	const params = paramsObj[window.global_hpid+"-"+window.global_isSetting];
+	window.isRefreshPortal = true;
+	window.store_e9_element.dispatch(window.action_e9_element.PortalAction.getPortalDatas(params));
+}
+window.refreshPortal = refreshPortal;
+
+
+//门户刷新函数
+var getHpName = function(){
+	const hpNameObj = window.store_e9_element.getState().portal.get("hpdata").toJSON();
+	const hpdata = hpNameObj[window.global_hpid+"-"+window.global_isSetting];
+	var hpname = "";
+	if(hpdata && hpdata.hpinfo){
+		hpname = hpdata.hpinfo.hpname;
+	}
+	return hpname;
+}
+window.getHpName = getHpName;
+
 //重写map函数，实现间隔遍历
-Array.prototype.map = function(fn, mul) {
-	mul = _str2Int(mul, 1);
+Array.prototype.map = function(fn, mul = 1) {
 	var a = [];
 	for (var i = 0; i < this.length; i += mul) {
 		var value = fn(this[i], i);
@@ -162,7 +226,7 @@ function pointerXY(event, doc) {
 	clickSize[0] = jQuery(targ).offset().left;
 	clickSize[1] = jQuery(targ).offset().top;
 	clickSize[2] = jQuery(targ).height();
-	//alert(bodySize[0]+"::"+bodySize[1]+":::"+clickSize[0]+"::"+clickSize[1]);
+	alert(bodySize[0]+"::"+bodySize[1]+":::"+clickSize[0]+"::"+clickSize[1]);
 }
 
 window.pointerXY = pointerXY;

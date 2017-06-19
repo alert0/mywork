@@ -377,7 +377,7 @@ export const doSubmitE9Api = (actiontype,src,needwfback,formdatas) => {
 							dispatch(setReqTabKey('2'));
 							const {requestid,workflowid,isbill,formid,isfromtab,f_weaver_belongto_userid,f_weaver_belongto_usertype} = params;
 							jQuery('.req-workflow-map').attr('src',
-							`/workflow/request/WorkflowDirection.jsp?requestid=${requestid}&workflowid=${workflowid}&isbill=${isbill}&formid=${formid}&isfromtab=${isfromtab}&f_weaver_belongto_userid=${f_weaver_belongto_userid}&f_weaver_belongto_usertype`);
+							`/workflow/request/WorkflowDirection.jsp?requestid=${requestid}&workflowid=${workflowid}&isbill=${isbill}&formid=${formid}&isfromtab=${isfromtab}&f_weaver_belongto_userid=${f_weaver_belongto_userid}&f_weaver_belongto_usertype&showE9Pic=1`);
 							try{
 								window.opener._table.reLoad();
 							}catch(e){}

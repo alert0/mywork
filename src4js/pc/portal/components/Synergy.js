@@ -15,11 +15,10 @@ class Synergy extends React.Component {
     }
 
     componentWillMount() {
-        const {
-            pathname,
-            workflowid,
-            requestid
-        } = this.props;
+        const pathname = this.props.pathname;
+        const workflowid = this.props.workflowid || -1;
+        const requestid = this.props.requestid || -1;
+
         const urlObj = SYNERGY_ROUTER_MAPPING_URL[pathname];
         let path = '';
         let viewScope = '';

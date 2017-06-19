@@ -1,0 +1,618 @@
+{
+  "comment": "----- 基本信息 -------",
+  "hpid": "1",
+  "subCompanyId": "1",
+  "eid": "45",
+  "ebaseid": "7",
+  "hasShare": true,
+  "eShareLevel": "2",
+  "comment_0": "----- 通用元素 -------",
+  "eContent": {
+    "eTitle": "我是元素标题",
+    "eShowNum": "5",
+    "eLinkMode": {
+      "selected": "2",
+      "options": [
+        {
+          "key": "1",
+          "value": "当前页"
+        },
+        {
+          "key": "2",
+          "value": "弹出页"
+        }
+      ]
+    },
+    "eField": {
+      "title": {
+        "value": "1",
+        "label": "标题",
+        "checked": true
+      },
+      "urgency": {
+        "value": "2",
+        "label": "紧急程度",
+        "checked": true
+      },
+      "creator": {
+        "value": "3",
+        "label": "创建人",
+        "checked": true
+      },
+      "creatorDepartment": {
+        "value": "4",
+        "label": "创建人部门",
+        "checked": true
+      },
+      "image": {
+        "value": "5",
+        "label": "图片",
+        "checked": true,
+        "type": "image",
+        "width": "200",
+        "height": "200",
+        "autoHeight": false
+      },
+      "workflowType": {
+        "value": "6",
+        "label": "流程类型",
+        "checked": true
+      },
+      "receiveDate": {
+        "value": "7",
+        "label": "接受日期",
+        "checked": true
+      },
+      "receiveTime": {
+        "value": "8",
+        "label": "接受时间",
+        "checked": false
+      }
+    },
+    "comment_7/8/17": "----- 文档中心、流程中心、多新闻中心 -------",
+    "eRemindMode": {
+      "icon": {
+        "value": "1",
+        "label": "图标",
+        "checked": true
+      },
+      "bold": {
+        "value": "2",
+        "label": "加粗",
+        "checked": false
+      },
+      "tilt": {
+        "value": "3",
+        "label": "倾斜",
+        "checked": false
+      },
+      "color": {
+        "value": "4",
+        "label": "颜色",
+        "checked": false,
+        "color": "#000"
+      }
+    },
+    "comment_7/17": "----- 文档中心、多新闻中心、搜索元素 -------",
+    "eNewsMould": {
+      "selected": "2",
+      "options": [
+        {
+          "key": "0",
+          "value": "请选择"
+        },
+        {
+          "key": "1",
+          "value": "模板一"
+        },
+        {
+          "key": "2",
+          "value": "模板二"
+        }
+      ]
+    },
+    "comment_17": "----- 多新闻中心 -------",
+    "eNewsPageId": "1,2,3",
+    "eNewsMoreAddress": "http://www.weaver.com.cn",
+    "comment_8": "----- 流程中心 -------",
+    "eScrollDirection": {
+      "selected": "0",
+      "options": [
+        {
+          "key": "0",
+          "value": "无"
+        },
+        {
+          "key": "1",
+          "value": "向上"
+        },
+        {
+          "key": "2",
+          "value": "向右"
+        },
+        {
+          "key": "3",
+          "value": "向下"
+        },
+        {
+          "key": "4",
+          "value": "向左"
+        }
+      ]
+    },
+    "comment_6": "----- 未读文档 -------",
+    "eDocSourceType": {
+      "selected": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "文档目录"
+        },
+        {
+          "value": "2",
+          "label": "虚拟目录"
+        },
+        {
+          "value": "3",
+          "label": "所有文档"
+        }
+      ]
+    },
+    "eDocSourceValue": "1,2,3",
+    "comment_13": "----- 未读协作 -------",
+    "eShowContent": {
+      "checked": [
+        "2"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "直接参与的工作"
+        },
+        {
+          "value": "2",
+          "label": "其他关注的工作"
+        }
+      ]
+    },
+    "comment_15": "----- 当日计划 -------",
+    "eShowDays": "2",
+    "comment_16": "----- 我的邮件 -------",
+    "eContentFrom": {
+      "checked": [
+        "1",
+        "2"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "内部邮件"
+        },
+        {
+          "value": "2",
+          "label": "外部邮件"
+        }
+      ]
+    },
+    "comment_9": "----- 消息提醒 -------",
+    "eMessageRemind": {
+      "checked": [
+        "1"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "新到达流程"
+        },
+        {
+          "value": "2",
+          "label": "工作流完成"
+        }
+      ]
+    },
+    "comment_18": "----- 期刊中心 -------",
+    "eMagazine": {
+      "checked": [
+        "1"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "测试期刊1"
+        },
+        {
+          "value": "2",
+          "label": "测试期刊2"
+        }
+      ]
+    },
+    "comment_19": "----- 股票元素 -------",
+    "eStockImageSize": {
+      "width": "300",
+      "height": "165"
+    },
+    "eStockCode": "SHA:603039",
+    "comment_25": "----- 文档内容 -------",
+    "comment_32": "----- 计划任务 -------",
+    "ePlanCreator": {
+      "checked": [
+        "1"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "本人"
+        },
+        {
+          "value": "2",
+          "label": "他人"
+        }
+      ]
+    },
+    "eUserRole": {
+      "checked": [
+        "2"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "责任人"
+        },
+        {
+          "value": "2",
+          "label": "验证人"
+        },
+        {
+          "value": "3",
+          "label": "创建人"
+        }
+      ]
+    },
+    "ePlanState": {
+      "checked": [
+        "4"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "待执行"
+        },
+        {
+          "value": "2",
+          "label": "进行中"
+        },
+        {
+          "value": "3",
+          "label": "已超期"
+        },
+        {
+          "value": "4",
+          "label": "待验证"
+        }
+      ]
+    },
+    "ePlanType": {
+      "checked": [
+        "2"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "默认类型"
+        },
+        {
+          "value": "2",
+          "label": "工作安排"
+        },
+        {
+          "value": "3",
+          "label": "年度计划"
+        },
+        {
+          "value": "4",
+          "label": "季度计划"
+        }
+      ]
+    },
+    "comment_Task": "----- 任务元素 -------",
+    "eCreator": false,
+    "eUser": true,
+    "eStartDate": true,
+    "eEndDate": false,
+    "comment_34": "----- 知识订阅 -------",
+    "eSubscribeTheme": "111111,222222",
+    "eSubscribeStartDate": "2016-01-01",
+    "eSubscribeEndDate": "2017-12-31",
+    "comment_audio": "----- 音频元素 -------",
+    "eAudioShow": {
+      "height": "27",
+      "autoPlay": true
+    },
+    "eAudioForm": {
+      "type": "1",
+      "src": "/page/resource/userfile/video/hymusic.mp3",
+      "url": ""
+    },
+    "comment_Flash": "----- Flash元素 -------",
+    "eFlashShow": {
+      "height": "27",
+      "autoPlay": true
+    },
+    "eFlashForm": {
+      "type": "1",
+      "src": "/page/resource/userfile/video/hymusic.flv",
+      "url": ""
+    },
+    "comment_menu": "----- 自定义菜单 -------",
+    "comment_picture": "----- 图片元素 -------",
+    "comment_searchengine": "----- 搜索元素 -------",
+    "comment_Slide": "----- 幻灯片 -------",
+    "eAutoScrollTime": "1000",
+    "eChangeEffect": {
+      "selected": "fadeZoom",
+      "options": [
+        {
+          "key": "uncover",
+          "value": "uncover"
+        },
+        {
+          "key": "blindX",
+          "value": "blindX"
+        },
+        {
+          "key": "fade",
+          "value": "fade"
+        },
+        {
+          "key": "curtainX",
+          "value": "curtainX"
+        },
+        {
+          "key": "curtainY",
+          "value": "curtainY"
+        },
+        {
+          "key": "fadeZoom",
+          "value": "fadeZoom"
+        }
+      ]
+    },
+    "eSmoothMoveTime": "2000",
+    "eNavDisplayPosition": "2",
+    "eSlideDetail": [
+      {
+        "key": "1",
+        "mainImage": "/page/main/1/...",
+        "bgImage": "/page/bg/1/...",
+        "fgImage": "/page/fg/1/...",
+        "title": "百度",
+        "desc": "baidu",
+        "link": "http://www.baidu.com"
+      },
+      {
+        "key": "2",
+        "mainImage": "/page/main/2/...",
+        "bgImage": "/page/bg/2/...",
+        "fgImage": "/page/fg/2/...",
+        "title": "百度",
+        "desc": "baidu",
+        "link": "http://www.baidu.com"
+      },
+      {
+        "key": "3",
+        "mainImage": "/page/main/3/...",
+        "bgImage": "/page/bg/3/...",
+        "fgImage": "/page/fg/3/...",
+        "title": "百度",
+        "desc": "baidu",
+        "link": "http://www.baidu.com"
+      },
+      {
+        "key": "4",
+        "mainImage": "/page/main/4/...",
+        "bgImage": "/page/bg/4/...",
+        "fgImage": "/page/fg/4/...",
+        "title": "百度",
+        "desc": "baidu",
+        "link": "http://www.baidu.com"
+      }
+    ],
+    "comment_video": "----- 视频元素 -------",
+    "eVideoShow": {
+      "height": "27",
+      "showFullScreen": true,
+      "autoPlay": true
+    },
+    "eVideoForm": {
+      "type": "1",
+      "src": "/page/resource/userfile/video/hymusic.flv",
+      "url": ""
+    },
+    "comment_weather": "----- 天气元素 -------",
+    "eCityName": "上海,北京",
+    "eAutoScroll": {
+      "selected": "0",
+      "options": [
+        {
+          "value": "1",
+          "label": "滚动"
+        },
+        {
+          "value": "0",
+          "label": "不滚动"
+        }
+      ]
+    },
+    "eShowWidth": "200",
+    "comment_scratchpad": "----- 便签元素 -------",
+    "eNoteSetting": {
+      "height": "200"
+    },
+    "comment_DataCenter": "----- 个人数据 -------",
+    "eSyncContent": true,
+    "eShowContent4Person": {
+      "todo": {
+        "value": "1",
+        "label": "待办事宜",
+        "checked": true,
+        "color": "#33a3ff"
+      },
+      "asset": {
+        "value": "2",
+        "label": "资产",
+        "checked": true,
+        "color": "#ffD200"
+      },
+      "cowork": {
+        "value": "3",
+        "label": "协作",
+        "checked": false,
+        "color": "#fd9000"
+      },
+      "proj": {
+        "value": "4",
+        "label": "我的项目",
+        "checked": true,
+        "color": "#cb61fe"
+      }
+    },
+    "comment_plan": "----- 计划报告元素 -------",
+    "eClassify": true,
+    "ePlanStartDate": true,
+    "ePlanEndDate": true,
+    "ePlanDays": true,
+    "eWeekly": false,
+    "eMonthly": false,
+    "comment_jobsinfo": "----- 多岗位办理事项 -------",
+    "eShowClassify": {
+      "checked": [
+        "1",
+        "2"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "待办"
+        },
+        {
+          "value": "2",
+          "label": "会议"
+        },
+        {
+          "value": "3",
+          "label": "日程"
+        },
+        {
+          "value": "4",
+          "label": "邮件"
+        }
+      ]
+    },
+    "comment_outterSys": "----- 集成登录 -------",
+    "eShowField": {
+      "title": {
+        "value": "1",
+        "label": "名称",
+        "checked": true,
+        "wordNumber": "10"
+      },
+      "icon": {
+        "value": "1",
+        "label": "图标",
+        "checked": true
+      }
+    },
+    "eShowMode": {
+      "selected": "2",
+      "options": [
+        {
+          "key": "1",
+          "value": "左图式"
+        },
+        {
+          "key": "2",
+          "value": "上图式"
+        }
+      ]
+    },
+    "eShowLayout": {
+      "selected": "3",
+      "options": [
+        {
+          "key": "1",
+          "value": "1栏"
+        },
+        {
+          "key": "2",
+          "value": "2栏"
+        },
+        {
+          "key": "3",
+          "value": "3栏"
+        }
+      ]
+    },
+    "comment_addwf": "----- 新建流程 -------",
+    "eShowLayout4AddWf": {
+      "selected": "2",
+      "options": [
+        {
+          "key": "1",
+          "value": "1列"
+        },
+        {
+          "key": "2",
+          "value": "2列"
+        }
+      ]
+    },
+    "comment_contacts": "----- 通讯录 -------",
+    "eShowSubordinates": true,
+    "comment_newNotice": "----- 公告元素 -------",
+    "eNewNoticeFrom": {
+      "selected": "2",
+      "options": [
+        {
+          "key": "1",
+          "value": "直接创建"
+        },
+        {
+          "key": "2",
+          "value": "来自文档"
+        }
+      ]
+    },
+    "comment_1/7/8/29/reportForm": "----- RSS阅读器、文档中心、流程中心、自定义页面、图表元素 -------",
+    "eTabs": {}
+  },
+  "eStyle": {
+    "eStyleList": {
+      "selected": "3",
+      "options": [
+        {
+          "key": "1",
+          "value": "e-cology8样式"
+        },
+        {
+          "key": "2",
+          "value": "e-cology8样式-隐藏标题"
+        },
+        {
+          "key": "3",
+          "value": "协同区样式（蓝色）"
+        }
+      ]
+    },
+    "eIcon": "/page/element/8/resource/image/8_wev8.gif",
+    "eHeight": "0",
+    "eSpacing": {
+      "top": "10",
+      "right": "5",
+      "bottom": "10",
+      "left": "5"
+    }
+  },
+  "eShare": {
+    "hasRight": false
+  }
+}

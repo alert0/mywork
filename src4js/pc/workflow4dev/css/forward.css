@@ -53,12 +53,12 @@
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .label {
-	width: 80px;
 	float: left;
 	height: 32px;
 	line-height: 32px;
 	color: #484848;
 	font-size: 12px;
+	margin-right: 10px;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .label span:first-of-type {
@@ -68,8 +68,8 @@
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input {
-	width: 490px;
 	float: left;
+	width:600px;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .input .ant-select-selection__rendered {
@@ -86,7 +86,7 @@
 	width: 32px;
 	height: 32px;
 	line-height: 32px;
-	font-size: 21px;
+	font-size: 16px;
 }
 
 .wea-req-forward-modal .wea-req-forward-content .wea-req-forward-content-receive .btns .wea-workflow-icon {

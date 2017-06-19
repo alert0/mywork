@@ -2,6 +2,11 @@ export const getCellAttr = (cellObj,colCusAttr,rowHeight) =>{
     let cellAttr = {};
     let styleObj = {};
     let innerStyleObj = {};
+    const etype = parseInt(cellObj && cellObj.get("etype") || 0)
+    if(etype === 3){    //字段内容默认上下1px外边距避免边框重叠
+        innerStyleObj["padding-top"] = "1px";
+        innerStyleObj["padding-bottom"] = "1px";
+    }
 
     //单元格边框
     appendBorder(cellObj, styleObj);
@@ -18,7 +23,7 @@ export const getCellAttr = (cellObj,colCusAttr,rowHeight) =>{
         styleObj["display"] = "none";
     if(colCusAttr && colCusAttr.get("class"))
         cellAttr.tdClass = colCusAttr.get("class");
-    //单元格自定义属性
+    //单元格自定义属性(放最后可覆盖之前的CSS)
     const cusattrs = cellObj.get("attrs");
     cusattrs && appendCusAttrObj(cellAttr, cusattrs, innerStyleObj);
     

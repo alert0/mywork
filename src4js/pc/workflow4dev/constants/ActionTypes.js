@@ -4,10 +4,12 @@
 export const REQFORM_INIT_INFO = 'reqform_init_info'
 export const REQFORM_SET_DETAILVALUE = 'reqform_set_detailvalue'
 export const REQFORM_CLEAR_INFO = 'reqform_clear_info'
-export const REQFORM_CHANGE_MAIN_VALUE = 'reqform_change_main_value'
-export const REQFORM_CHANGE_DETAIL_VALUE = 'reqform_change_detail_value'
-export const REQFORM_SET_FIELD_VARIABLE = 'reqform_set_field_variable'
-export const REQFORM_CLEAR_FIELD_VARIABLE = 'reqform_clear_field_variable'
+export const REQFORM_CHANGE_MORE_FIELD_DATA = 'reqform_change_more_field_data'
+export const REQFORM_CONTROL_VARIABLE_AREA = 'reqform_control_variable_area'
+export const REQFORM_ADD_DETAIL_ROW = 'reqform_add_detail_row'
+export const REQFORM_DEL_DETAIL_ROW = 'reqform_del_detail_row'
+export const REQFORM_SET_DETAIL_ROW_CHECKED = 'reqform_set_detail_row_checked'
+export const REQFORM_SET_DETAIL_ALLROW_CHECKED = 'reqform_set_detail_allrow_checked'
 
 
 /**
@@ -36,7 +38,6 @@ export const SET_MARK_INPUT_INFO = 'set_mark_input_info' //签字意见输入框
 export const SET_RIGHT_MENU_INFO = 'set_right_menu_info' //右键菜单
 export const SET_WORKFLOW_STATUS = 'set_workflow_status' //流程状态
 export const SET_RESOURCES_KEY = 'set_resources_key' //相关资源sessionkey
-export const SET_HIDDEN_AREA = 'set_hidden_area' //设置隐藏域
 export const SET_REQ_TABKEY = 'set_req_tabkey' //设置表单tabkey
 export const REQ_IS_SUBMIT = 'req_is_submit' //表单已提交
 export const REQ_IS_RELOAD = 'req_is_reload' //表单保存
@@ -44,7 +45,7 @@ export const CONTROLL_SIGN_INPUT ='control_sign_input' //签字意见框控制
 export const INIT_SIGN_INPUT ='init_sign_input' //初始化签字意见框
 export const SET_REQ_SUBMIT_ERROR_MSG_HTML = 'set_req_submit_error_msg_html' //设置提交精确提示信息
 export const SET_SHOW_FORWARD ='set_show_forward' //是否点击转发按钮
-export const SET_OPERATE_INFO ='set_operate_info' //变更提交信息
+export const REQ_UPDATE_SUBMIT_PARAMS = "req_update_submit_params"; //更新提交参数
 export const SET_SHOWBACK_TO_E8 ='set_showback_to_e8' //切回e8按钮
 export const CLEAR_ALL = 'clear_all' //清除所有
 

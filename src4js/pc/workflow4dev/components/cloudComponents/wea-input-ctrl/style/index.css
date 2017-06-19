@@ -17,6 +17,8 @@
     height: inherit;
     font-size: inherit;
     padding: 0;
+   	height: 28px;
+   	border-radius:3px;
 }
 
 .wea-input-ctrl .ant-input-wrapper {
@@ -25,11 +27,34 @@
     height: inherit;
 }
 
-.required:after {
+.input_required:after {
     content: "*";
     font-size: 14px;
     color: #ff0000;
     position: absolute;
-    right: -10px;
-    top: 0px;
+    right: 2px;
+    top: 20%;
+}
+
+
+.findiv{
+	height:100%; overflow:hidden; text-align:center;
+}
+.fintable{
+	width:100%; height:100%; float:right; border:0px; border-spacing:0px !important;
+}
+.fintable .ftoprow td{
+	border-bottom:solid 1px black;
+}
+.fintable .finborder{
+	min-width:18px;
+}
+.fintable .fborder1{
+	border-right:solid 1px black; 
+}
+.fintable .fborder2{
+	border-right:solid 2px red;
+}
+.fintable .fborder3{
+	border-right:solid 2px blue;
 }

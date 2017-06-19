@@ -16,7 +16,9 @@ export const initLogParams = (formParams) => {
 			loadmethod:loadmethod,
 			submit:formParams.requestType,
 			workflowid:formParams.workflowid,
-			nodeid:formParams.nodeid
+			nodeid:formParams.nodeid,
+			signatureAttributesStr:formParams.signatureAttributesStr||"",
+			signatureSecretKey:formParams.signatureSecretKey||""
 		};
 		dispatch(setlogParams(logParamsInit));
 	}

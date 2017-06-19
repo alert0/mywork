@@ -143,5 +143,5 @@
 
  //group Div组件
  const GroupDiv = ({ layoutFlag }) => <div className="group" data-areaflag={layoutFlag.areaflag}>
-        <div>{layoutFlag.areaElements.map(ele => <ElementType key={_uuid()} ele={ele}/>)}</div>
+        <div><div style={{height: '35px',width: 'auto',margin: '5px',border: '1px dashed rgb(18, 17, 17)',display:'none'}} className='itemholderClass' id='itemholder'></div>{layoutFlag.areaElements.map(ele => <ElementType key={_uuid()} ele={ele}/>)}</div>
       </div>

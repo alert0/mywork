@@ -35,14 +35,33 @@ window.openUnFullWindow  = openUnFullWindow;
 /**
  * 提交需返回
  */
-const doSubmitBack = () => { window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9('requestOperation', 'submit', '1')) }
+const doSubmitBack = () => { 
+	const para = {actiontype:"requestOperation",src:"submit",needwfback:"1"};
+	const isFree = window.store_e9_workflow.getState().workflowReq.getIn(['rightMenu','isFree']);
+	const freewftype = window.store_e9_workflow.getState().workflowReq.getIn(['rightMenu','freewftype']);
+	const isremark = window.store_e9_workflow.getState().workflowReq.getIn(['rightMenu','isremark']);
+	const takisremark = window.store_e9_workflow.getState().workflowReq.getIn(['rightMenu','takisremark']);
+	const nodetype = window.store_e9_workflow.getState().workflowReq.getIn(['params','nodetype']);
+	const isCptwf = window.store_e9_workflow.getState().workflowReq.getIn(['params','isCptwf']);
+	
+	if(isCptwf){
+		
+	}if(isFree == "1" && freewftype == "1" && nodetype == "0" && isremark == "0" && takisremark == "0"){
+		doFreeWorkflow();
+	}else{
+		window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+	}
+}
 
 window.doSubmitBack = doSubmitBack;
 
 /**
  * 
  */
-const doSubmit_Pre = () => { window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9('requestOperation', 'submit')) }
+const doSubmit_Pre = () => {
+	const para = {actiontype:"requestOperation",src:"submit"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+}
 
 window.doSubmit_Pre = doSubmit_Pre;
 
@@ -50,39 +69,51 @@ window.doSubmit_Pre = doSubmit_Pre;
 /**
  * 提交后不需返回
  */
-const doSubmitNoBack = () => { window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9('requestOperation', 'submit', '0')) }
+const doSubmitNoBack = () => {
+	const para = {actiontype:"requestOperation",src:"submit",needwfback:"0"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+}
 
 window.doSubmitNoBack = doSubmitNoBack;
 /**
  * 流程保存
  */
-const doSave_nNew = () => { window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9('requestOperation', 'save')) }
+const doSave_nNew = () => { 
+	const para = {actiontype:"requestOperation",src:"save"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+}
 
 window.doSave_nNew = doSave_nNew;
 
 //流程督办
-const doSupervise = () => { window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9('requestOperation', 'supervise')) }
+const doSupervise = () => { 
+	const para = {actiontype:"requestOperation",src:"supervise"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+}
 
 window.doSupervise = doSupervise;
 
 //表单---转发，zdialog
 const doReviewE9 = (destuserid) => {
-	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
-	const requestid = formstate.get('requestid');
-	const userid = formstate.get('f_weaver_belongto_userid');
-//	doReview(requestid, userid);
-	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(true));
+	const params = {showForward: true,forwardflag: "1"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(params));
 }
 
 window.doReviewE9 = doReviewE9;
 
 //批注需反馈
-const doRemark_nBack = () => { window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9('remarkOperation', 'save', '1')) }
+const doRemark_nBack = () => { 
+	const para = {actiontype:"remarkOperation",src:"save",needwfback:"1"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+}
 
 window.doRemark_nBack = doRemark_nBack;
 
 //批注不需反馈
-const doRemark_nNoBack = () => { window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9('remarkOperation', 'save', '0')) }
+const doRemark_nNoBack = () => {
+	const para = {actiontype:"remarkOperation",src:"save",needwfback:"0"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+}
 
 window.doRemark_nNoBack = doRemark_nNoBack;
 
@@ -90,7 +121,7 @@ window.doRemark_nNoBack = doRemark_nNoBack;
  * 流程打印
  */
 const openSignPrint = () => {
-	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
+	const formstate = window.store_e9_workflow.getState().workflowReq.get('submitParams');
 	const requestid = formstate.get('requestid');
 	const userid = formstate.get('f_weaver_belongto_userid');
 	doPrint(requestid, userid);
@@ -132,10 +163,10 @@ const doPrintViewLog = () => {
 		diag_vote = new Dialog();
 	}
 
-	const formstate = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']);
-	const requestid = formstate.get('requestid');
-	const userid = formstate.get('f_weaver_belongto_userid');
-	const usertype = formstate.get('f_weaver_belongto_usertype');
+	const params = window.store_e9_workflow.getState().workflowReq.get('params');
+	const requestid = params.get('requestid');
+	const userid = params.get('f_weaver_belongto_userid');
+	const usertype = params.get('f_weaver_belongto_usertype');
 
 	diag_vote.currentWindow = window;
 	diag_vote.Width = 800;
@@ -237,15 +268,19 @@ window.doDelete = doDelete;
 
 //
 const doSubmitDirect = (subfun) => {
-	const { lastnodeid, ifchangstatus } = window.store_e9_workflow.getState().workflowReq.getIn(['params', 'hiddenarea']).toJS();
-	const { hasback, hasnoback } = window.store_e9_workflow.getState().workflowReq.get('rightMenu').toJS();
-
+	const ifchangstatus  = window.store_e9_workflow.getState().workflowReq.getIn(['submitParams','ifchangstatus']);
+	const { hasback, hasnoback,lastnodeid } = window.store_e9_workflow.getState().workflowReq.get('rightMenu').toJS();
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.updateSubmitParams({SubmitToNodeid:lastnodeid}));
 	if("" != ifchangstatus && ("1" == hasback || ("" == hasback && "" == hasnoback))) {
-		if("Affirmance" == subfun) {} else {
+		if("Affirmance" == subfun) {
+			doAffirmanceBack();
+		} else {
 			doSubmitBack();
 		}
 	} else {
-		if("Affirmance" == subfun) {} else {
+		if("Affirmance" == subfun) {
+			doAffirmanceNoBack();
+		} else {
 			doSubmitNoBack();
 		}
 	}
@@ -276,34 +311,34 @@ const doLocationHref = (resourceid, forwardflag,needwfback) => {
 	}
 }
 
-
-
-window.openDialog = openDialog;
-
 //转办需反馈
-const doReviewback3 = (resourceid) => {
-	doLocationHref(resourceid,3);
+const doReviewback3 = () => {
+	const params = {showForward: true,forwardflag: "3",needwfback: "1"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(params));
 }
 
 window.doReviewback3 =  doReviewback3;
 
 //转办
-const doReview3 = (resourceid) =>{
-	doLocationHref(resourceid,3);
+const doReview3 = () =>{
+	const params = {showForward: true,forwardflag: "3"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(params));
 }
 
 window.doReview3 = doReview3;
 
 //意见征询
 const doReview2 = (resourceid) =>{
-	doLocationHref(resourceid,2);
+	const params = {showForward: true,forwardflag: "2"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(params));
 }
 
 window.doReview2 = doReview2;
 
 //转办不需反馈
 const doReviewnoback3 = (resourceid) =>{
-	 doLocationHref(resourceid,3,0);
+	const params = {showForward: true,forwardflag: "3",needwfback:"0"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.setShowForward(params));
 }
 
 window.doReviewnoback3 = doReviewnoback3;
@@ -418,11 +453,87 @@ window.doFreeWorkflow = doFreeWorkflow;
 
 //触发子流程
 const triSubwf2 = (subwfid,workflowNames) =>{
-	
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.triggerSubWf(subwfid,workflowNames));
 }
 
 window.triSubwf2 = triSubwf2;
 
+
+const doAffirmanceBack = () =>{
+	const para = {actiontype:"requestOperation",src:"save",needwfback:"1","isaffirmance":"1"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.updateSubmitToNodeId());
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para)) 
+}
+
+window.doAffirmanceBack = doAffirmanceBack;
+
+
+const doAffirmanceNoBack = () =>{
+	const para = {actiontype:"requestOperation",src:"save",needwfback:"0","isaffirmance":"1"};
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.updateSubmitToNodeId());
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doSubmitE9(para))
+}
+
+//流程共享
+const doShare  = () =>{
+	const params = window.store_e9_workflow.getState().workflowReq.get('params');
+	const requestid  = params.get("requestid");
+	const requestname = params.get("requestname");
+	
+	var returnjson = '[{"sharetype":"workflow","sharetitle":"'+requestname+'","objectname":"FW:CustomShareMsg","shareid":"'+requestid+'"}]';
+    var url="/social/im/SocialHrmBrowserForShare.jsp?sharejson="+encodeURIComponent(returnjson);
+    var diag =new window.top.Dialog();
+    diag.currentWindow = window; 
+    diag.Modal = true;
+    diag.Drag=true;
+    diag.Width =400;	
+    diag.Height =500;
+    diag.ShowButtonRow=false;
+    diag.Title = "分享";
+    diag.URL =url;
+    diag.openerWin = window;
+    diag.show();
+    document.body.click();
+}
+window.doShare = doShare;
+
+//流程导入
+const doImportWorkflow =() =>{
+	const params = window.store_e9_workflow.getState().workflowReq.get('params');
+	const userid = params.get('f_weaver_belongto_userid');
+	const formid = params.get('formid');
+	const isbill = params.get('isbill');
+	const workflowid = params.get('workflowid');
+	const ismode = params.get('ismode');
+	var dialog = new window.top.Dialog();
+	dialog.currentWindow = window;
+	var url = "/systeminfo/BrowserMain.jsp?url="+escape("/workflow/request/RequestImport.jsp?f_weaver_belongto_userid="+userid+"&f_weaver_belongto_usertype=0&formid="+formid+"&isbill="+isbill+"&workflowid="+workflowid+"&status=2&ismode="+ismode+"&isfromE9=1");
+	var title = "导入流程";
+	dialog.Width = 600;
+	dialog.Height = 600;
+	dialog.Title=title;
+	dialog.Drag = true;
+	dialog.maxiumnable = true;
+	dialog.URL = url;
+	dialog.callbackfun = function(paramobj, datas) {
+		window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.requestImport(datas));					
+	};
+	dialog.show();
+}
+
+window.doImportWorkflow  = doImportWorkflow;
+
+const doEdit = () =>{
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doEdit());
+}
+
+window.doEdit = doEdit;
+
+//明细导入
+const doImportDetail =() =>{
+	window.store_e9_workflow.dispatch(window.action_e9_workflow.WorkflowReqAction.doImportDetail());
+}
+window.doImportDetail = doImportDetail;
 //
 const openDialog = (title, url) => {　
 	var dlg = new window.top.Dialog();
@@ -437,3 +548,4 @@ const openDialog = (title, url) => {　
 	window.dialog = dlg;
 }
 
+window.openDialog = openDialog;

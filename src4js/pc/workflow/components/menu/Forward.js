@@ -194,7 +194,9 @@ class Forward extends React.Component {
 											 onVisibleChange={this.handleShowNodeOperator.bind(this)}
 											 visible={isshownodeoperators}
 											 overlayClassName="wea-req-forward-node-operator">
-										 <Button type="large" style={{'margin-left':'5px'}} disabled={isdisabledbtns} title="选择节点参与人作为转发对象"><i className='icon-New-Flow-channel' /></Button>
+										 <Button type="large" style={{'margin-left':'5px'}} disabled={isdisabledbtns} title="选择节点参与人作为转发对象">
+										 	<img src="/images/forward_btn_operator.png"/>
+										 </Button>
 									</Popover>
 								</div>
 							</div>
